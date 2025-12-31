@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+/* Typography - Geist font */
+:root {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+/* Wiki-link styling */
+.wiki-link {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.wiki-link:hover {
+  text-decoration-style: solid;
+}
+
+/* Broken wiki-links (target doesn't exist) */
+.wiki-link.broken,
+.wiki-link-new {
+  color: var(--ui-text-muted);
+  text-decoration: line-through;
+}
+
+/* Content page styling */
+.prose {
+  --tw-prose-body: var(--ui-text);
+  --tw-prose-headings: var(--ui-text-highlighted);
+  --tw-prose-links: var(--ui-primary);
+  --tw-prose-bold: var(--ui-text-highlighted);
+  --tw-prose-counters: var(--ui-text-muted);
+  --tw-prose-bullets: var(--ui-text-dimmed);
+  --tw-prose-hr: var(--ui-border);
+  --tw-prose-quotes: var(--ui-text-muted);
+  --tw-prose-quote-borders: var(--ui-border-accented);
+  --tw-prose-code: var(--ui-text-highlighted);
+  --tw-prose-pre-code: var(--ui-text);
+  --tw-prose-pre-bg: var(--ui-bg-elevated);
+  --tw-prose-th-borders: var(--ui-border);
+  --tw-prose-td-borders: var(--ui-border);
+}
+
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  background-color: var(--ui-bg-elevated);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before,
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
+  content: none;
+}
+
+.prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  background-color: var(--ui-bg-elevated);
+  border: 1px solid var(--ui-border);
+  border-radius: 0.5rem;
+}
+
+.prose :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  border-left-color: var(--ui-primary);
+  background-color: var(--ui-bg-elevated);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: normal;
+}
+
+.prose :where(blockquote p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  margin: 0;
+}
+
+/* Graph container */
+.graph-container {
+  width: 100%;
+  height: calc(100vh - 4rem);
+}
