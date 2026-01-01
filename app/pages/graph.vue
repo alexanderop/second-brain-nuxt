@@ -34,6 +34,9 @@ const { data: graphData } = await useAsyncData<GraphData>('graph-data', () => $f
 
 const selectedNode = ref<GraphNode | null>(null)
 
+// Template ref for KnowledgeGraph component (for zoom controls)
+const graphRef = ref<{ fitAll: () => void, zoomIn: () => void, zoomOut: () => void }>()
+
 // Mobile detection
 const isMobile = useMediaQuery('(max-width: 768px)')
 
@@ -206,19 +209,56 @@ const showMobileFilters = ref(false)
       />
     </div>
 
-    <!-- Graph (full width) -->
-    <ClientOnly>
-      <KnowledgeGraph
-        :graph-data="filteredGraphData"
-        :selected-id="selectedNode?.id"
-        @select="handleSelectNode"
-      />
-      <template #fallback>
-        <div class="w-full h-[calc(100vh-12rem)] rounded-lg flex items-center justify-center">
-          <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-[var(--ui-text-muted)]" />
-        </div>
-      </template>
-    </ClientOnly>
+    <!-- Graph (full width) with zoom controls -->
+    <div class="relative">
+      <ClientOnly>
+        <KnowledgeGraph
+          ref="graphRef"
+          :graph-data="filteredGraphData"
+          :selected-id="selectedNode?.id"
+          @select="handleSelectNode"
+        />
+        <template #fallback>
+          <div class="w-full h-[calc(100vh-12rem)] rounded-lg flex items-center justify-center">
+            <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-[var(--ui-text-muted)]" />
+          </div>
+        </template>
+      </ClientOnly>
+
+      <!-- Zoom controls -->
+      <div class="absolute bottom-4 right-4 z-10 flex gap-1">
+        <UTooltip text="Fit all nodes">
+          <UButton
+            icon="i-lucide-maximize-2"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            aria-label="Fit all nodes"
+            @click="graphRef?.fitAll()"
+          />
+        </UTooltip>
+        <UTooltip text="Zoom in">
+          <UButton
+            icon="i-lucide-plus"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            aria-label="Zoom in"
+            @click="graphRef?.zoomIn()"
+          />
+        </UTooltip>
+        <UTooltip text="Zoom out">
+          <UButton
+            icon="i-lucide-minus"
+            color="neutral"
+            variant="soft"
+            size="sm"
+            aria-label="Zoom out"
+            @click="graphRef?.zoomOut()"
+          />
+        </UTooltip>
+      </div>
+    </div>
 
     <!-- Desktop: Fixed sidebar for node details -->
     <Transition

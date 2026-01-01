@@ -38,6 +38,7 @@ export default defineNuxtConfig({
       title: 'Second Brain',
       meta: [
         { name: 'description', content: 'Personal knowledge base with connected notes' },
+        { name: 'robots', content: 'noindex, nofollow' },
       ],
     },
   },

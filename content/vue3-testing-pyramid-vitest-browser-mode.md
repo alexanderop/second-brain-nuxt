@@ -44,3 +44,7 @@ With browser mode, Testing Library becomes unnecessary. The built-in `page` obje
 
 > "When an AI writes code, tests become even more critical. They serve three purposes: catch bugs, enable refactoring, and document behavior."
 
+## Related
+
+When using AI coding tools like [[writing-a-good-claude-md|Claude Code]], tests become essential for validating generated code. See also [[12-factor-agents]] for principles on building reliable AI-assisted workflows.
+

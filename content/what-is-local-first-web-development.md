@@ -43,3 +43,7 @@ date: 2026-01-01
 ## References
 
 Based on the principles from [[local-first-software]] by Ink & Switch.
+
+## Related
+
+For Vue-specific patterns when building local-first apps, see [[mastering-vue-3-composables-style-guide]] for state management approaches and [[how-to-structure-vue-projects]] for architecture at different scales.

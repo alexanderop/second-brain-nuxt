@@ -44,3 +44,7 @@ Cover the **WHY**, **WHAT**, and **HOW**:
 ## Notable Quote
 
 > "CLAUDE.md is the highest leverage point of the harness...you should spend some time thinking carefully about every line."
+
+## Related
+
+See [[12-factor-agents]] for broader principles on AI agent design, and [[context-efficient-backpressure]] for practical context management techniques.

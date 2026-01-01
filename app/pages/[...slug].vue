@@ -12,6 +12,7 @@ if (!page.value) {
 // Get slug from path (remove leading slash)
 const slug = computed(() => route.path.replace(/^\//, ''))
 const { backlinks } = useBacklinks(slug.value)
+const { mentions } = useMentions(slug.value, page.value?.title ?? '')
 
 useSeoMeta({
   title: () => page.value?.title ?? 'Second Brain',
@@ -49,6 +50,6 @@ useSeoMeta({
       <ContentRenderer :value="page" />
     </div>
 
-    <ContentBacklinksSection :backlinks="backlinks" />
+    <ContentBacklinksSection :backlinks="backlinks" :mentions="mentions" />
   </article>
 </template>

@@ -1,75 +1,81 @@
-# Nuxt Content Starter
+# Second Brain
 
-Look at the [Nuxt Content documentation](https://content.nuxt.com) to learn more.
+A personal knowledge base for capturing and connecting content using Zettelkasten-style wiki-links.
+
+## Features
+
+- **Content Library**: Store articles, podcasts, books, videos, and notes
+- **Wiki-Links**: Connect ideas with `[[slug]]` syntax
+- **Knowledge Graph**: Visualize connections between notes
+- **Full-Text Search**: Find anything with Cmd+K
+- **Backlinks**: See what links to each note
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## AI-Assisted Workflow
 
-Build the application for production:
+This project includes skills for AI coding assistants (Claude Code, Cursor, Windsurf, etc.) to help manage your knowledge base.
 
-```bash
-# npm
-npm run build
+### Available Skills
 
-# pnpm
-pnpm build
+| Skill | Trigger | What it does |
+|-------|---------|--------------|
+| **adding-notes** | "add a note", "save this article" | Create new notes from URLs with proper frontmatter |
+| **linking-notes** | "find connections", "what should I link to" | Discover wiki-link opportunities |
+| **reviewing-notes** | "review my notes", "find broken links" | Audit quality (missing summaries, orphans, broken links) |
+| **managing-tags** | "clean up tags", "merge tags" | Consolidate similar tags, fix naming |
+| **exploring-graph** | "analyze connections", "find orphans" | Graph analytics and insights |
+| **summarizing-topic** | "what do I know about X" | Synthesize knowledge across notes |
 
-# yarn
-yarn build
+### Example Workflows
 
-# bun
-bun run build
+**Adding Content:**
+```
+"Add this article to my notes: https://example.com/interesting-article"
 ```
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+**Building Connections:**
+```
+"Find connections for my note on Vue composables"
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+**Maintenance:**
+```
+"Review my knowledge base for quality issues"
+"Clean up my tags"
+```
+
+**Learning:**
+```
+"What do I know about testing?"
+"Analyze my knowledge graph"
+```
+
+### Skill Location
+
+Skills are stored in `.claude/skills/` and work with any AI assistant that supports the skills/agents pattern.
+
+## Content Types
+
+- `article` - Web articles and blog posts
+- `book` - Books and long-form reading
+- `podcast` - Podcast episodes
+- `youtube` - YouTube videos
+- `movie` / `tv` - Films and shows
+- `tweet` - Twitter/X posts
+- `quote` - Memorable quotes
+- `course` - Online courses
+- `note` - Personal notes
+- `evergreen` - Timeless reference notes
+
+## Tech Stack
+
+- [Nuxt 4](https://nuxt.com) - Vue framework
+- [@nuxt/content v3](https://content.nuxt.com) - Markdown content with SQLite
+- [@nuxt/ui v3](https://ui.nuxt.com) - UI components
+- [D3.js](https://d3js.org) - Knowledge graph visualization

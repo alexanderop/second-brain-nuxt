@@ -19,37 +19,54 @@ interface GraphData {
   edges: Array<GraphEdge>
 }
 
-// Recursively extract internal links from AST body
-function extractLinksFromAst(node: unknown): Array<string> {
+// Minimark node type: [tag, props, ...children]
+type MinimarkNode = [string, Record<string, unknown>, ...unknown[]]
+
+// Extract internal links from minimark body format
+// Minimark uses arrays: [tag, props, ...children] instead of objects
+function extractLinksFromMinimark(node: unknown): Array<string> {
   const links: Array<string> = []
 
-  if (!node || typeof node !== 'object') return links
+  if (!node) return links
 
-  const n = node as Record<string, unknown>
+  // Handle minimark node format: [tag, props, ...children]
+  if (Array.isArray(node)) {
+    const [tag, props, ...children] = node as MinimarkNode
 
-  // Check if this is a link element with internal href
-  if (n.tag === 'a' && typeof n.props === 'object' && n.props !== null) {
-    const props = n.props as Record<string, unknown>
-    const href = props.href
-    if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
-      // Extract slug from href (remove leading slash)
-      const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
-      if (slugParts) {
-        links.push(slugParts)
+    // Check if this is an anchor tag with internal href
+    if (tag === 'a' && typeof props === 'object' && props !== null) {
+      const href = props.href
+      if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
+        // Extract slug from href (remove leading slash)
+        const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
+        if (slugParts) {
+          links.push(slugParts)
+        }
       }
     }
-  }
 
-  // Recursively check children
-  if (Array.isArray(n.children)) {
-    for (const child of n.children) {
-      links.push(...extractLinksFromAst(child))
+    // Recursively process children
+    for (const child of children) {
+      links.push(...extractLinksFromMinimark(child))
     }
   }
 
-  // Also check body if it exists (for root content object)
-  if (n.body && typeof n.body === 'object') {
-    links.push(...extractLinksFromAst(n.body))
+  return links
+}
+
+// Extract links from the body object which contains minimark value array
+function extractLinksFromBody(body: unknown): Array<string> {
+  const links: Array<string> = []
+
+  if (!body || typeof body !== 'object') return links
+
+  const b = body as { type?: string, value?: unknown[] }
+
+  // Handle minimark format: { type: 'minimark', value: [...nodes] }
+  if (b.type === 'minimark' && Array.isArray(b.value)) {
+    for (const node of b.value) {
+      links.push(...extractLinksFromMinimark(node))
+    }
   }
 
   return links
@@ -62,7 +79,10 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
 
   try {
     // Query all content from the database using auto-imported queryCollection
-    const allContent = await queryCollection(event, 'content').all()
+    // Must explicitly select body to get the AST for link extraction
+    const allContent = await queryCollection(event, 'content')
+      .select('path', 'stem', 'title', 'type', 'tags', 'summary', 'body')
+      .all()
 
     // First pass: create nodes
     for (const item of allContent) {
@@ -84,8 +104,8 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
     for (const item of allContent) {
       const sourceSlug = item.path?.slice(1) || item.stem || ''
 
-      // Extract links from the parsed body AST
-      const links = extractLinksFromAst(item.body)
+      // Extract links from the parsed body (minimark format)
+      const links = extractLinksFromBody(item.body)
       const uniqueLinks = [...new Set(links)]
 
       for (const targetSlug of uniqueLinks) {

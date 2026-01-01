@@ -32,3 +32,9 @@ Run `pnpm lint:fix && pnpm typecheck` after code changes.
 - Query content via `queryCollection('content')`
 - Catch-all route at `app/pages/[...slug].vue`
 
+## Nuxt Content v3 Gotchas
+
+- **Minimark format**: Body content uses array-based minimark `[tag, props, ...children]`, NOT object AST `{ tag, props, children }`
+- **Querying body**: Must explicitly `.select('body')` - not included by default in `.all()`
+- **Body structure**: `{ type: 'minimark', value: [...nodes] }`
+

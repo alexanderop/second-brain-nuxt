@@ -29,7 +29,26 @@ The script auto-detects type from URL patterns:
 
 ### 2. Fetch Resource Details
 
-For URLs, use WebFetch to extract:
+#### For YouTube Videos (WebFetch doesn't work on YouTube)
+
+Use these dedicated scripts instead:
+
+```bash
+# Get title, channel, duration, description
+.claude/skills/adding-notes/scripts/get-youtube-metadata.sh "URL"
+
+# Get full transcript for content analysis
+python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py "URL"
+```
+
+Use the transcript to:
+- Extract accurate key takeaways
+- Find notable quotes (exact wording)
+- Understand the full context of the video
+
+#### For Other URLs
+
+Use WebFetch to extract:
 - **Title**: The main heading or page title
 - **Description**: Meta description or first paragraph
 - **Key content**: Main points, quotes, or takeaways
@@ -109,15 +128,17 @@ Related to [[other-book]] and [[related-concept]].
 ### Podcasts/YouTube
 ```markdown
 ## Key Takeaways
-- Point 1
+- Point 1 (from transcript analysis)
 - Point 2
 
 ## Notable Quotes
-> "Quote from the episode"
+> "Exact quote from transcript"
 
 ## References
 Discusses ideas from [[referenced-book]].
 ```
+
+For YouTube videos, use the transcript to extract accurate quotes and key points rather than relying on page metadata alone.
 
 ### Articles
 ```markdown

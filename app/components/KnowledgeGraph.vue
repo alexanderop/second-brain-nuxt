@@ -37,6 +37,13 @@ const emit = defineEmits<{
 const container = ref<HTMLDivElement>()
 const hoveredId = ref<string | null>(null)
 
+// Refs for zoom control (accessible outside initGraph)
+const svgRef = shallowRef<d3.Selection<SVGSVGElement, unknown, null, undefined>>()
+const zoomRef = shallowRef<d3.ZoomBehavior<SVGSVGElement, unknown>>()
+const currentNodes = shallowRef<Array<GraphNode>>([])
+const widthRef = ref(0)
+const heightRef = ref(0)
+
 // Type-specific colors with glow
 const typeColors: Record<string, { fill: string, glow: string }> = {
   book: { fill: '#f59e0b', glow: 'rgba(245, 158, 11, 0.5)' }, // Amber
@@ -85,6 +92,51 @@ function getConnectedIds(nodeId: string | null): Set<string> {
       connected.add(sourceId)
   }
   return connected
+}
+
+// Zoom to fit all nodes in view with padding
+function zoomToFit(padding = 60) {
+  if (!currentNodes.value.length || !svgRef.value || !zoomRef.value) return
+
+  const xExtent = d3.extent(currentNodes.value, d => d.x) as [number, number]
+  const yExtent = d3.extent(currentNodes.value, d => d.y) as [number, number]
+
+  // Handle edge case where all nodes are at same position
+  const boundsWidth = (xExtent[1] - xExtent[0]) || 1
+  const boundsHeight = (yExtent[1] - yExtent[0]) || 1
+
+  // Calculate scale to fit bounds in viewport (max 1.5x to avoid over-zoom)
+  const scale = Math.min(
+    (widthRef.value - padding * 2) / boundsWidth,
+    (heightRef.value - padding * 2) / boundsHeight,
+    1.5,
+  )
+
+  // Calculate center of bounds
+  const centerX = (xExtent[0] + xExtent[1]) / 2
+  const centerY = (yExtent[0] + yExtent[1]) / 2
+
+  // Calculate translation to center the bounds
+  const translateX = widthRef.value / 2 - centerX * scale
+  const translateY = heightRef.value / 2 - centerY * scale
+
+  // Apply transform with smooth transition
+  svgRef.value.transition().duration(500).call(
+    zoomRef.value.transform,
+    d3.zoomIdentity.translate(translateX, translateY).scale(scale),
+  )
+}
+
+// Zoom in by 1.3x
+function zoomIn() {
+  if (!svgRef.value || !zoomRef.value) return
+  svgRef.value.transition().duration(300).call(zoomRef.value.scaleBy, 1.3)
+}
+
+// Zoom out by 0.7x
+function zoomOut() {
+  if (!svgRef.value || !zoomRef.value) return
+  svgRef.value.transition().duration(300).call(zoomRef.value.scaleBy, 0.7)
 }
 
 // Apply highlight styling based on active node (hovered or selected)
@@ -167,12 +219,19 @@ function initGraph() {
   const width = container.value.clientWidth
   const height = container.value.clientHeight
 
+  // Store dimensions in refs for zoom functions
+  widthRef.value = width
+  heightRef.value = height
+
   // Clear existing SVG
   d3.select(container.value).select('svg').remove()
 
   // Deep clone nodes and edges to avoid D3 mutating the original data
   const nodes: Array<GraphNode> = props.graphData.nodes.map(n => ({ ...n }))
   const edges: Array<GraphEdge> = props.graphData.edges.map(e => ({ ...e }))
+
+  // Store nodes ref for zoom-to-fit calculations
+  currentNodes.value = nodes
 
   // Create radius scale based on connection count (sqrt for perceptually accurate area-based sizing)
   const maxConnections = Math.max(1, ...nodes.map(n => n.connections ?? 0))
@@ -185,6 +244,9 @@ function initGraph() {
     .attr('width', width)
     .attr('height', height)
     .attr('viewBox', [0, 0, width, height])
+
+  // Store svg ref for zoom control
+  svgRef.value = svg
 
   // Add glow filter definitions
   const defs = svg.append('defs')
@@ -216,7 +278,14 @@ function initGraph() {
       g.attr('transform', event.transform)
     })
 
+  // Store zoom ref for external control
+  zoomRef.value = zoom
+
   svg.call(zoom)
+
+  // Double-click on background to reset view
+  svg.on('dblclick.zoom', null) // Disable default d3 double-click zoom
+  svg.on('dblclick', () => zoomToFit())
 
   // Create simulation
   const simulation = d3.forceSimulation<GraphNode>(nodes)
@@ -294,6 +363,11 @@ function initGraph() {
     node.attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`)
   })
 
+  // Auto zoom-to-fit when simulation settles
+  simulation.on('end', () => {
+    zoomToFit()
+  })
+
   // Apply initial state if there's a selection
   if (props.selectedId) {
     setTimeout(() => applyHighlight(props.selectedId ?? null), 100)
@@ -335,6 +409,13 @@ watch(() => props.graphData, () => {
 
 // Reinitialize on container resize (auto-cleanup via VueUse)
 useResizeObserver(container, useDebounceFn(initGraph, 200))
+
+// Expose zoom methods for external control
+defineExpose({
+  fitAll: zoomToFit,
+  zoomIn,
+  zoomOut,
+})
 </script>
 
 <template>
