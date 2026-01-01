@@ -52,11 +52,11 @@ const defaultAccordionValue = computed(() =>
 </script>
 
 <template>
-  <aside class="w-80 border-l border-[var(--ui-border)] bg-[var(--ui-bg)] overflow-y-auto">
+  <aside class="w-80 overflow-y-auto">
     <UCard
       variant="soft"
       :ui="{
-        root: 'rounded-none border-0 shadow-none',
+        root: 'rounded-none border-0 shadow-none bg-transparent',
         header: 'p-4 pb-0',
         body: 'p-4',
         footer: 'p-4 pt-0',

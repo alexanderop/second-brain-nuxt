@@ -32,6 +32,11 @@ useSeoMeta({
       :date="page.date"
     />
 
+    <YouTubePlayer
+      v-if="page.type === 'youtube' && page.url"
+      :url="page.url"
+    />
+
     <div v-if="page.summary" class="mb-8 p-5 bg-[var(--ui-bg-elevated)] rounded-xl border border-[var(--ui-border)]">
       <p class="text-[var(--ui-text-muted)] italic leading-relaxed">
         {{ page.summary }}

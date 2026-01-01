@@ -24,7 +24,7 @@ defineShortcuts({
 <template>
   <UApp>
     <UContainer>
-      <div class="max-w-3xl mx-auto">
+      <div class="max-w-6xl mx-auto">
         <AppHeader v-model:search-open="searchOpen" v-model:shortcuts-open="shortcutsOpen" />
         <main class="py-8">
           <slot />

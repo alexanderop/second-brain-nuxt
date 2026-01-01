@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { ContentType } from '~~/content.config'
 
+// Use immersive graph layout (no header)
+definePageMeta({
+  layout: 'graph',
+})
+
 interface GraphNode {
   id: string
   title: string
@@ -31,12 +36,18 @@ useSeoMeta({
   title: 'Graph - Second Brain',
 })
 
+// Collapsible filter panel state
+const filtersExpanded = ref(true)
+
 const { data: graphData } = await useAsyncData<GraphData>('graph-data', () => $fetch<GraphData>('/api/graph'))
 
 const selectedNode = ref<GraphNode | null>(null)
 
 // Template ref for KnowledgeGraph component (for zoom controls)
 const graphRef = ref<{ fitAll: () => void, zoomIn: () => void, zoomOut: () => void }>()
+
+// Zoom level for display
+const zoomLevel = ref(1)
 
 // Mobile detection
 const isMobile = useMediaQuery('(max-width: 768px)')
@@ -182,102 +193,134 @@ const showMobileFilters = ref(false)
 </script>
 
 <template>
-  <div>
-    <!-- Header row -->
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div class="p-2 rounded-lg bg-[var(--ui-bg-elevated)]">
-          <UIcon name="i-lucide-network" class="size-5 text-[var(--ui-primary)]" />
-        </div>
-        <div>
-          <h1 class="text-xl font-semibold">
-            Knowledge Graph
-          </h1>
-          <p class="text-xs text-[var(--ui-text-muted)] hidden sm:block">
-            {{ filteredNodes.length }} nodes &bull; {{ filteredEdges.length }} connections
-          </p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3">
-        <!-- Mobile filter button -->
-        <UButton
-          v-if="isMobile"
-          variant="soft"
-          size="sm"
-          icon="i-lucide-filter"
-          aria-label="Filter"
-          @click="showMobileFilters = true"
-        />
-        <p class="text-xs text-[var(--ui-text-dimmed)] hidden md:block">
-          Click &bull; Drag &bull; Scroll to zoom
-        </p>
-      </div>
-    </div>
-
-    <!-- Filters row (desktop) -->
-    <div
-      v-if="!isMobile"
-      class="mb-4 pb-4 border-b border-[var(--ui-border)]"
-    >
-      <GraphFilters
-        :available-tags="availableTags"
-        :available-types="availableTypes"
-        :available-authors="availableAuthors"
+  <div class="relative h-screen w-screen overflow-hidden">
+    <!-- Full-canvas graph -->
+    <ClientOnly>
+      <KnowledgeGraph
+        ref="graphRef"
+        :graph-data="filteredGraphData"
+        :selected-id="selectedNode?.id"
+        class="!h-screen"
+        @select="handleSelectNode"
+        @zoom-change="zoomLevel = $event"
       />
+      <template #fallback>
+        <div class="w-full h-screen flex items-center justify-center">
+          <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-[var(--ui-text-muted)]" />
+        </div>
+      </template>
+    </ClientOnly>
+
+    <!-- Floating title/stats overlay (top-left) -->
+    <div class="absolute top-4 left-4 z-10">
+      <div class="glass-panel px-4 py-3">
+        <div class="flex items-center gap-3">
+          <NuxtLink to="/" class="p-2 -m-2 rounded-lg hover:bg-white/5 transition-colors">
+            <UIcon name="i-lucide-arrow-left" class="size-4 text-[var(--ui-text-muted)]" />
+          </NuxtLink>
+          <div>
+            <h1 class="text-sm font-semibold">Knowledge Graph</h1>
+            <p class="text-xs text-[var(--ui-text-muted)]">
+              {{ filteredNodes.length }} nodes &bull; {{ filteredEdges.length }} connections
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Graph (full width) with zoom controls -->
-    <div class="relative">
-      <ClientOnly>
-        <KnowledgeGraph
-          ref="graphRef"
-          :graph-data="filteredGraphData"
-          :selected-id="selectedNode?.id"
-          @select="handleSelectNode"
-        />
-        <template #fallback>
-          <div class="w-full h-[calc(100vh-12rem)] rounded-lg flex items-center justify-center">
-            <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-[var(--ui-text-muted)]" />
+    <!-- Collapsible filter panel (top-right) - Desktop -->
+    <div v-if="!isMobile" class="absolute top-4 right-4 z-10">
+      <div class="glass-panel">
+        <!-- Collapse toggle header -->
+        <button
+          class="flex items-center justify-between w-full px-4 py-2 text-xs font-medium text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] transition-colors"
+          @click="filtersExpanded = !filtersExpanded"
+        >
+          <span class="flex items-center gap-2">
+            <UIcon name="i-lucide-filter" class="size-3.5" />
+            Filters
+          </span>
+          <UIcon
+            :name="filtersExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+            class="size-3.5 transition-transform"
+          />
+        </button>
+        <!-- Filter content -->
+        <Transition
+          enter-active-class="transition-all duration-200 ease-out"
+          enter-from-class="opacity-0 max-h-0"
+          enter-to-class="opacity-100 max-h-96"
+          leave-active-class="transition-all duration-150 ease-in"
+          leave-from-class="opacity-100 max-h-96"
+          leave-to-class="opacity-0 max-h-0"
+        >
+          <div v-show="filtersExpanded" class="overflow-hidden">
+            <div class="px-4 pb-3 pt-1">
+              <GraphFilters
+                :available-tags="availableTags"
+                :available-types="availableTypes"
+                :available-authors="availableAuthors"
+                class="!flex-col !items-start !gap-4"
+              />
+            </div>
           </div>
-        </template>
-      </ClientOnly>
+        </Transition>
+      </div>
+    </div>
 
-      <!-- Zoom controls -->
-      <div class="absolute bottom-4 left-4 z-10 flex gap-1">
+    <!-- Zoom controls - glassmorphism panel (bottom-left) -->
+    <div class="absolute bottom-4 left-4 z-10">
+      <div class="glass-panel flex items-center gap-1 p-1">
         <UTooltip text="Fit all nodes">
           <UButton
             icon="i-lucide-maximize-2"
             color="neutral"
-            variant="soft"
-            size="sm"
+            variant="ghost"
+            size="xs"
             aria-label="Fit all nodes"
             @click="graphRef?.fitAll()"
           />
+        </UTooltip>
+        <div class="w-px h-4 bg-white/10" />
+        <UTooltip text="Zoom out">
+          <UButton
+            icon="i-lucide-minus"
+            color="neutral"
+            variant="ghost"
+            size="xs"
+            aria-label="Zoom out"
+            @click="graphRef?.zoomOut()"
+          />
+        </UTooltip>
+        <UTooltip text="Reset zoom">
+          <button
+            class="px-2 py-1 text-xs font-medium text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] transition-colors min-w-[3rem] text-center"
+            @click="graphRef?.fitAll()"
+          >
+            {{ Math.round(zoomLevel * 100) }}%
+          </button>
         </UTooltip>
         <UTooltip text="Zoom in">
           <UButton
             icon="i-lucide-plus"
             color="neutral"
-            variant="soft"
-            size="sm"
+            variant="ghost"
+            size="xs"
             aria-label="Zoom in"
             @click="graphRef?.zoomIn()"
-          />
-        </UTooltip>
-        <UTooltip text="Zoom out">
-          <UButton
-            icon="i-lucide-minus"
-            color="neutral"
-            variant="soft"
-            size="sm"
-            aria-label="Zoom out"
-            @click="graphRef?.zoomOut()"
           />
         </UTooltip>
       </div>
     </div>
 
-    <!-- Desktop: Fixed sidebar for node details -->
+    <!-- Mobile filter button (bottom-right) -->
+    <div v-if="isMobile" class="absolute bottom-4 right-4 z-10">
+      <button class="glass-panel p-3" @click="showMobileFilters = true">
+        <UIcon name="i-lucide-filter" class="size-5" />
+      </button>
+    </div>
+
+    <!-- Desktop: Floating sidebar for node details -->
     <Transition
       enter-active-class="transition-transform duration-200 ease-out"
       enter-from-class="translate-x-full"
@@ -291,7 +334,7 @@ const showMobileFilters = ref(false)
         :node="selectedNode"
         :outgoing-links="outgoingLinks"
         :backlinks="backlinks"
-        class="fixed top-16 right-0 h-[calc(100vh-4rem)] shadow-xl z-20"
+        class="fixed top-4 right-4 bottom-4 z-20 glass-panel !bg-black/60"
         @close="handleClosePanel"
         @select-node="handleSelectNode"
       />
@@ -335,3 +378,12 @@ const showMobileFilters = ref(false)
     </UDrawer>
   </div>
 </template>
+
+<style scoped>
+.glass-panel {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+</style>

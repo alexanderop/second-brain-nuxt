@@ -4,6 +4,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
+  // Reduce file watchers to prevent EMFILE errors
+  vite: {
+    server: {
+      watch: {
+        usePolling: false,
+        ignored: ['**/node_modules/**', '**/.git/**', '**/.nuxt/**'],
+      },
+    },
+  },
+
   css: ['~/assets/css/main.css'],
 
   // Required for Vercel serverless deployment

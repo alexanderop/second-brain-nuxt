@@ -47,19 +47,19 @@ const typeItems = computed(() =>
   })),
 )
 
-// Type-specific colors matching the graph nodes
+// Type-specific colors matching the graph nodes (softer pastels)
 const typeColors: Record<string, string> = {
-  book: '#f59e0b',
-  podcast: '#8b5cf6',
-  article: '#06b6d4',
-  note: '#10b981',
-  youtube: '#ef4444',
-  course: '#ec4899',
-  quote: '#f97316',
-  movie: '#6366f1',
-  tv: '#a855f7',
-  tweet: '#0ea5e9',
-  evergreen: '#22c55e',
+  book: '#fcd34d',
+  podcast: '#c4b5fd',
+  article: '#67e8f9',
+  note: '#6ee7b7',
+  youtube: '#fca5a5',
+  course: '#f9a8d4',
+  quote: '#fdba74',
+  movie: '#a5b4fc',
+  tv: '#d8b4fe',
+  tweet: '#7dd3fc',
+  evergreen: '#86efac',
 }
 
 function getTypeColor(type: string): string {

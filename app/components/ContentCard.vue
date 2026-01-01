@@ -43,14 +43,14 @@ function formatDate(date?: Date | string) {
           <p v-if="summary" class="mt-1 text-sm text-[var(--ui-text-muted)] line-clamp-2">
             {{ summary }}
           </p>
-          <div class="mt-2 flex flex-wrap items-center gap-2">
-            <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
-            <span v-if="date" class="text-xs text-[var(--ui-text-muted)]">
-              {{ formatDate(date) }}
-            </span>
-          </div>
         </div>
       </div>
     </NuxtLink>
+    <div v-if="tags?.length || date" class="mt-2 ml-8 flex flex-wrap items-center gap-2">
+      <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
+      <span v-if="date" class="text-xs text-[var(--ui-text-muted)]">
+        {{ formatDate(date) }}
+      </span>
+    </div>
   </article>
 </template>
