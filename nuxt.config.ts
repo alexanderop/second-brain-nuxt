@@ -6,6 +6,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Required for Vercel serverless deployment
+  content: {
+    database: {
+      type: 'sqlite',
+      filename: '/tmp/contents.sqlite',
+    },
+  },
+
   fonts: {
     families: [
       { name: 'Geist', provider: 'fontsource' },
