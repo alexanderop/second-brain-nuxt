@@ -26,7 +26,6 @@
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
     "@vueuse/router": "^14.1.0",
-    "better-sqlite3": "^12.5.0",
     "d3": "^7.9.0",
     "eslint": "^9.39.2",
     "fuse.js": "^7.1.0",

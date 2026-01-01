@@ -12,6 +12,10 @@ export default defineNuxtConfig({
       type: 'sqlite',
       filename: ':memory:',
     },
+    // Use Node.js built-in SQLite (v22.5.0+) to avoid better-sqlite3 native bindings
+    experimental: {
+      sqliteConnector: 'native',
+    },
   },
 
   // Pre-render content pages to avoid cold start delays
