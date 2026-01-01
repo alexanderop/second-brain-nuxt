@@ -39,3 +39,7 @@ date: 2026-01-01
 - Dexie.js (IndexedDB wrapper)
 - Progressive Web Apps (PWAs)
 - IndexedDB
+
+## References
+
+Based on the principles from [[local-first-software]] by Ink & Switch.
