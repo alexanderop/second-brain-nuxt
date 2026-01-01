@@ -1,0 +1,103 @@
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'UTC'
+    open-pull-requests-limit: 10
+    labels:
+      - 'dependencies'
+      - 'npm'
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      # Nuxt ecosystem
+      nuxt:
+        patterns:
+          - '@nuxt/*'
+          - 'nuxt'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Vue ecosystem
+      vue:
+        patterns:
+          - 'vue'
+          - '@vue/*'
+          - '@vueuse/*'
+          - 'vue-*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Testing
+      testing:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+          - '@nuxt/test-utils'
+          - '@vue/test-utils'
+          - 'happy-dom'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Linting
+      linting:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - 'oxlint'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # TypeScript
+      typescript:
+        patterns:
+          - 'typescript'
+          - '@types/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Visualization
+      visualization:
+        patterns:
+          - 'd3'
+          - '@types/d3'
+          - 'mermaid'
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      # Ignore major updates for core frameworks (review manually)
+      - dependency-name: 'nuxt'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nuxt/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'vue'
+        update-types: ['version-update:semver-major']
+
+  # GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'UTC'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'github-actions'
+    commit-message:
+      prefix: 'ci(deps)'
+    groups:
+      # Group all GitHub Actions updates
+      github-actions:
+        patterns:
+          - '*'
