@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ContentType } from '~~/content.config'
 import * as d3 from 'd3'
+import { typeColors, defaultColor, getNodeColor, getGlowFilter, graphColors } from '~/utils/graphColors'
 
 interface GraphNode {
   id: string
@@ -96,39 +97,7 @@ function shouldShowLabel(
   return true // All labels at high zoom
 }
 
-// Type-specific colors with glow (softer pastel palette for Obsidian-like feel)
-const typeColors: Record<string, { fill: string, glow: string }> = {
-  book: { fill: '#fcd34d', glow: 'rgba(252, 211, 77, 0.4)' }, // Softer amber
-  podcast: { fill: '#c4b5fd', glow: 'rgba(196, 181, 253, 0.4)' }, // Softer violet
-  article: { fill: '#67e8f9', glow: 'rgba(103, 232, 249, 0.4)' }, // Softer cyan
-  note: { fill: '#6ee7b7', glow: 'rgba(110, 231, 183, 0.4)' }, // Softer emerald
-  youtube: { fill: '#fca5a5', glow: 'rgba(252, 165, 165, 0.4)' }, // Softer red
-  course: { fill: '#f9a8d4', glow: 'rgba(249, 168, 212, 0.4)' }, // Softer pink
-  quote: { fill: '#fdba74', glow: 'rgba(253, 186, 116, 0.4)' }, // Softer orange
-  movie: { fill: '#a5b4fc', glow: 'rgba(165, 180, 252, 0.4)' }, // Softer indigo
-  tv: { fill: '#d8b4fe', glow: 'rgba(216, 180, 254, 0.4)' }, // Softer purple
-  tweet: { fill: '#7dd3fc', glow: 'rgba(125, 211, 252, 0.4)' }, // Softer sky
-  evergreen: { fill: '#86efac', glow: 'rgba(134, 239, 172, 0.4)' }, // Softer green
-  map: { fill: '#f472b6', glow: 'rgba(244, 114, 182, 0.4)' }, // Pink for Maps of Content
-  default: { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }, // Softer slate
-}
-
-const colors = {
-  selected: '#ffffff', // White ring for selected
-  connectedEdge: 'rgba(255, 255, 255, 0.4)', // Brighter edge for connections
-  edge: 'rgba(255, 255, 255, 0.15)', // Subtle white edge (Obsidian-like)
-  text: 'currentColor',
-}
-
-const defaultColor = { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }
-
-function getNodeColor(type: string): { fill: string, glow: string } {
-  return typeColors[type] ?? defaultColor
-}
-
-function getGlowFilter(type: string): string {
-  return `url(#glow-${type in typeColors ? type : 'default'})`
-}
+// Colors imported from ~/utils/graphColors
 
 // Generate hexagon path for map nodes
 function getHexagonPath(radius: number): string {
@@ -225,7 +194,7 @@ function applyHighlight(activeId: string | null) {
     })
     .attr('stroke', (d) => {
       if (d.id === props.selectedId)
-        return colors.selected
+        return graphColors.selected
       return 'transparent'
     })
     .attr('stroke-width', d => d.id === props.selectedId ? 2 : 0)
@@ -237,12 +206,12 @@ function applyHighlight(activeId: string | null) {
     .duration(100) // Faster transition for snappier feel
     .attr('stroke', (d) => {
       if (!activeId)
-        return colors.edge
+        return graphColors.edge
       const sourceId = typeof d.source === 'string' ? d.source : d.source.id
       const targetId = typeof d.target === 'string' ? d.target : d.target.id
       if (sourceId === activeId || targetId === activeId)
-        return colors.connectedEdge
-      return colors.edge
+        return graphColors.connectedEdge
+      return graphColors.edge
     })
     .attr('stroke-opacity', (d) => {
       if (!activeId)
@@ -449,7 +418,7 @@ function initGraph() {
     .selectAll('line')
     .data(edges)
     .join('line')
-    .attr('stroke', colors.edge)
+    .attr('stroke', graphColors.edge)
     .attr('stroke-opacity', 0.4)
     .attr('stroke-width', 1.5)
     .attr('stroke-linecap', 'round')
@@ -507,18 +476,17 @@ function initGraph() {
         .attr('stroke-width', 0)
         .attr('filter', getGlowFilter(d.type))
         .attr('class', 'node-shape')
+      return
     }
-    else {
-      // Circle for regular nodes
-      nodeGroup.append('circle')
-        .attr('r', radius)
-        .attr('fill', getNodeColor(d.type).fill)
-        .attr('fill-opacity', 0.85)
-        .attr('stroke', 'transparent')
-        .attr('stroke-width', 0)
-        .attr('filter', getGlowFilter(d.type))
-        .attr('class', 'node-shape')
-    }
+    // Circle for regular nodes
+    nodeGroup.append('circle')
+      .attr('r', radius)
+      .attr('fill', getNodeColor(d.type).fill)
+      .attr('fill-opacity', 0.85)
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 0)
+      .attr('filter', getGlowFilter(d.type))
+      .attr('class', 'node-shape')
   })
 
   // Create font scale for labels (scales with node size for hierarchy)
@@ -533,7 +501,7 @@ function initGraph() {
     .attr('x', d => radiusScale(d.connections ?? 0) + 4)
     .attr('y', 4)
     .attr('font-size', d => `${fontScale(radiusScale(d.connections ?? 0))}px`)
-    .attr('fill', colors.text)
+    .attr('fill', graphColors.text)
     .attr('stroke', 'var(--ui-bg)') // Background color stroke for halo
     .attr('stroke-width', 3)
     .attr('paint-order', 'stroke') // Draw stroke behind fill
@@ -562,11 +530,11 @@ function initGraph() {
       // Restore previous zoom/pan state
       svgRef.value.call(zoomRef.value.transform, savedTransform)
       emit('zoomChange', savedTransform.k)
+      startBreathing()
+      return
     }
-    else {
-      // First visit: zoom to fit all nodes
-      zoomToFit()
-    }
+    // First visit: zoom to fit all nodes
+    zoomToFit()
     startBreathing()
   })
 

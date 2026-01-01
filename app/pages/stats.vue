@@ -74,15 +74,16 @@ useSeoMeta({
 
 <template>
   <div>
-    <h1 class="text-2xl font-semibold mb-6">
+    <h1 class="text-2xl font-semibold mb-8 tracking-tight">
       Stats
     </h1>
 
     <div v-if="status === 'pending'" class="text-center py-12 text-[var(--ui-text-muted)]">
-      Loading stats...
+      <UIcon name="i-heroicons-arrow-path" class="size-5 animate-spin mb-2" />
+      <p>Loading stats...</p>
     </div>
 
-    <div v-else-if="stats" class="space-y-8">
+    <div v-else-if="stats" class="space-y-10">
       <!-- Overview Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
@@ -108,10 +109,10 @@ useSeoMeta({
       </div>
 
       <!-- Charts Row -->
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid md:grid-cols-2 gap-8">
         <!-- Content by Type -->
-        <div class="p-4 rounded-lg border border-[var(--ui-border)]">
-          <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+        <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
             Content by Type
           </h2>
           <StatsBarChart
@@ -120,14 +121,15 @@ useSeoMeta({
             :horizontal="true"
             :height="Math.max(160, typeChartData.length * 32)"
           />
-          <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-            No content yet
+          <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+            <UIcon name="i-heroicons-document-plus" class="size-8 mb-2 opacity-50" />
+            <p class="text-sm">No content yet</p>
           </div>
         </div>
 
         <!-- Top Tags -->
-        <div class="p-4 rounded-lg border border-[var(--ui-border)]">
-          <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+        <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
             Top Tags
           </h2>
           <StatsBarChart
@@ -136,81 +138,89 @@ useSeoMeta({
             :horizontal="true"
             :height="Math.max(160, tagChartData.length * 32)"
           />
-          <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-            No tags yet
+          <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+            <UIcon name="i-heroicons-tag" class="size-8 mb-2 opacity-50" />
+            <p class="text-sm">No tags yet</p>
           </div>
         </div>
       </div>
 
       <!-- Growth Over Time -->
-      <div v-if="growthChartData.length > 1" class="p-4 rounded-lg border border-[var(--ui-border)]">
-        <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+      <div v-if="growthChartData.length > 1" class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+        <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
           Growth Over Time
         </h2>
         <StatsLineChart :data="growthChartData" :height="180" />
       </div>
 
       <!-- Bottom Row: Hubs & Quality -->
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid md:grid-cols-2 gap-8">
         <!-- Hub Notes -->
-        <div class="p-4 rounded-lg border border-[var(--ui-border)]">
-          <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+        <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
             Hub Notes
-            <span class="text-xs font-normal">(most connected)</span>
+            <span class="font-normal normal-case tracking-normal">(most connected)</span>
           </h2>
-          <div v-if="stats.connections.hubs.length" class="space-y-2">
+          <div v-if="stats.connections.hubs.length" class="space-y-1">
             <NuxtLink
               v-for="(hub, i) in stats.connections.hubs"
               :key="hub.id"
               :to="`/${hub.id}`"
-              class="flex items-center gap-3 py-2 px-3 -mx-3 rounded-lg hover:bg-[var(--ui-bg-muted)] transition-colors"
+              class="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-lg hover:bg-[var(--ui-bg-elevated)] transition-all duration-150"
             >
-              <span class="text-[var(--ui-text-muted)] text-sm w-4">{{ i + 1 }}.</span>
+              <span class="text-[var(--ui-text-muted)] text-xs font-mono w-5">{{ i + 1 }}.</span>
               <span class="flex-1 truncate">{{ hub.title }}</span>
-              <span class="text-xs text-[var(--ui-text-muted)] bg-[var(--ui-bg-muted)] px-2 py-0.5 rounded">
+              <span class="text-xs font-mono text-[var(--ui-text-muted)] bg-[var(--ui-bg-muted)] px-2 py-0.5 rounded-md">
                 {{ hub.connections }}
               </span>
             </NuxtLink>
           </div>
-          <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-            No connected notes yet
+          <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+            <UIcon name="i-heroicons-link" class="size-8 mb-2 opacity-50" />
+            <p class="text-sm mb-1">No connected notes yet</p>
+            <p class="text-xs opacity-70">Add [[wiki-links]] to build your knowledge graph</p>
           </div>
         </div>
 
         <!-- Quality Metrics -->
-        <div class="p-4 rounded-lg border border-[var(--ui-border)]">
-          <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+        <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
             Quality Metrics
           </h2>
-          <div v-if="qualityMetrics.length" class="space-y-4">
-            <div v-for="metric in qualityMetrics" :key="metric.label">
-              <div class="flex justify-between text-sm mb-1">
+          <div v-if="qualityMetrics.length" class="space-y-5">
+            <div v-for="metric in qualityMetrics" :key="metric.label" class="quality-metric">
+              <div class="flex justify-between text-sm mb-2">
                 <span>{{ metric.label }}</span>
-                <span class="text-[var(--ui-text-muted)]">{{ metric.value }} / {{ stats.quality.total }} ({{ metric.percent }}%)</span>
+                <span class="text-[var(--ui-text-muted)] font-mono text-xs">{{ metric.value }} / {{ stats.quality.total }} ({{ metric.percent }}%)</span>
               </div>
-              <UProgress :model-value="metric.percent" :color="metric.percent >= 70 ? 'success' : metric.percent >= 40 ? 'warning' : 'error'" />
+              <div class="progress-animated">
+                <UProgress :model-value="metric.percent" :color="metric.percent >= 70 ? 'success' : metric.percent >= 40 ? 'warning' : 'error'" />
+              </div>
             </div>
             <!-- Orphan progress (inverted - lower is better) -->
-            <div>
-              <div class="flex justify-between text-sm mb-1">
+            <div class="quality-metric">
+              <div class="flex justify-between text-sm mb-2">
                 <span>Orphan-free</span>
-                <span class="text-[var(--ui-text-muted)]">{{ 100 - stats.connections.orphanPercent }}%</span>
+                <span class="text-[var(--ui-text-muted)] font-mono text-xs">{{ 100 - stats.connections.orphanPercent }}%</span>
               </div>
-              <UProgress
-                :model-value="100 - stats.connections.orphanPercent"
-                :color="stats.connections.orphanPercent <= 15 ? 'success' : stats.connections.orphanPercent <= 30 ? 'warning' : 'error'"
-              />
+              <div class="progress-animated">
+                <UProgress
+                  :model-value="100 - stats.connections.orphanPercent"
+                  :color="stats.connections.orphanPercent <= 15 ? 'success' : stats.connections.orphanPercent <= 30 ? 'warning' : 'error'"
+                />
+              </div>
             </div>
           </div>
-          <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-            No content yet
+          <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+            <UIcon name="i-heroicons-chart-bar" class="size-8 mb-2 opacity-50" />
+            <p class="text-sm">No content yet</p>
           </div>
         </div>
       </div>
 
       <!-- Top Authors -->
-      <div v-if="stats.byAuthor.length" class="p-4 rounded-lg border border-[var(--ui-border)]">
-        <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">
+      <div v-if="stats.byAuthor.length" class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+        <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
           Top Authors
         </h2>
         <div class="flex flex-wrap gap-3">
@@ -218,13 +228,39 @@ useSeoMeta({
             v-for="{ author, count } in stats.byAuthor.slice(0, 10)"
             :key="author"
             :to="`/authors/${author.toLowerCase().replace(/\s+/g, '-')}`"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors text-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--ui-border)] hover:bg-[var(--ui-bg-elevated)] hover:border-[var(--ui-border-accented)] transition-all duration-150 text-sm"
           >
             <span>{{ author }}</span>
-            <span class="text-xs text-[var(--ui-text-muted)]">{{ count }}</span>
+            <span class="text-xs font-mono text-[var(--ui-text-muted)]">{{ count }}</span>
           </NuxtLink>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.stats-card {
+  transition: border-color 200ms ease-out;
+}
+
+.stats-card:hover {
+  border-color: var(--ui-border-accented);
+}
+
+/* Animate progress bars on mount */
+.progress-animated :deep(.relative > div) {
+  animation: progress-fill 600ms ease-out;
+}
+
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+</style>

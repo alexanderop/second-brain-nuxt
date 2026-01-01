@@ -32,6 +32,11 @@ export default tseslint.config(
           message: 'Use ref() instead of reactive() for consistent reactivity patterns.',
         }],
       }],
+      // Ban else blocks - use early return or ternary instead
+      'no-restricted-syntax': ['error', {
+        selector: 'IfStatement > .alternate',
+        message: 'Use early return or ternary instead of else.',
+      }],
     },
   },
   {
@@ -77,6 +82,11 @@ export default tseslint.config(
       'vuejs-accessibility/no-static-element-interactions': 'error',
       'vuejs-accessibility/role-has-required-aria-props': 'error',
       'vuejs-accessibility/tabindex-no-positive': 'error',
+      // Ban else blocks - use early return or ternary instead
+      'no-restricted-syntax': ['error', {
+        selector: 'IfStatement > .alternate',
+        message: 'Use early return or ternary instead of else.',
+      }],
     },
   },
   {

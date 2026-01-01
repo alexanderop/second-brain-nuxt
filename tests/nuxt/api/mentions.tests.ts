@@ -28,17 +28,17 @@ describe('/api/mentions', () => {
     const result = await $fetch('/api/mentions?slug=some-slug&title=Atomic Habits')
 
     if (result.length > 0) {
-      const item = result[0]!
+      const item = result[0]
       expect(item).toHaveProperty('slug')
       expect(item).toHaveProperty('title')
       expect(item).toHaveProperty('type')
       expect(item).toHaveProperty('snippet')
       expect(item).toHaveProperty('highlightedSnippet')
-      expect(typeof item.slug).toBe('string')
-      expect(typeof item.title).toBe('string')
-      expect(typeof item.type).toBe('string')
-      expect(typeof item.snippet).toBe('string')
-      expect(typeof item.highlightedSnippet).toBe('string')
+      expect(typeof item?.slug).toBe('string')
+      expect(typeof item?.title).toBe('string')
+      expect(typeof item?.type).toBe('string')
+      expect(typeof item?.snippet).toBe('string')
+      expect(typeof item?.highlightedSnippet).toBe('string')
     }
   })
 
@@ -46,8 +46,8 @@ describe('/api/mentions', () => {
     const result = await $fetch('/api/mentions?slug=some-slug&title=Atomic Habits')
 
     if (result.length > 0) {
-      const item = result[0]!
-      expect(item.highlightedSnippet).toContain('<mark')
+      const item = result[0]
+      expect(item?.highlightedSnippet).toContain('<mark')
     }
   })
 })

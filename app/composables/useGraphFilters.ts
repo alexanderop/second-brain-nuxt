@@ -53,10 +53,9 @@ export function useGraphFilters() {
       // If all types selected, remove from URL (default state)
       if (v.length === ALL_CONTENT_TYPES.length) {
         typesParam.value = null
+        return
       }
-      else {
-        typesParam.value = v.length ? v : null
-      }
+      typesParam.value = v.length ? v : null
     },
   })
 
@@ -97,10 +96,9 @@ export function useGraphFilters() {
   function toggleType(type: ContentType) {
     if (isTypeSelected(type)) {
       selectedTypes.value = selectedTypes.value.filter(t => t !== type)
+      return
     }
-    else {
-      selectedTypes.value = [...selectedTypes.value, type]
-    }
+    selectedTypes.value = [...selectedTypes.value, type]
   }
 
   // Check if any filters are active

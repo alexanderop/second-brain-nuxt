@@ -10,6 +10,7 @@ const externalContentTypes = [
   'tv',
   'tweet',
   'course',
+  'reddit',
 ] as const
 
 // Personal content types have optional authors

@@ -35,23 +35,23 @@ This project includes skills for AI coding assistants (Claude Code, Cursor, Wind
 ### Example Workflows
 
 **Adding Content:**
-```
+```text
 "Add this article to my notes: https://example.com/interesting-article"
 ```
 
 **Building Connections:**
-```
+```text
 "Find connections for my note on Vue composables"
 ```
 
 **Maintenance:**
-```
+```text
 "Review my knowledge base for quality issues"
 "Clean up my tags"
 ```
 
 **Learning:**
-```
+```text
 "What do I know about testing?"
 "Analyze my knowledge graph"
 ```

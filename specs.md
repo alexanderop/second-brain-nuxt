@@ -84,7 +84,7 @@ the ideas in [[naval-thread]] about leverage.
 
 **Flat structure** — all content in one folder, type is frontmatter metadata:
 
-```
+```text
 content/
 ├── atomic-habits.md              # type: book
 ├── lex-fridman-elon-musk.md      # type: podcast
@@ -136,7 +136,7 @@ tags:
 
 On each content page, show "Linked References":
 
-```
+```text
 ── Linked References ──────────────────
 • [[lex-fridman-james-clear]] mentions this
 • [[my-note-on-habits]] mentions this
@@ -180,7 +180,7 @@ Interactive visualization of all connections:
 
 ### URL Examples
 
-```
+```text
 /                           → Homepage (recent)
 /graph                      → Graph visualization
 /search                     → Search page

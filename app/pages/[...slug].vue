@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
+const router = useRouter()
 
 const { data: page } = await useAsyncData(`page-${route.path}`, () => {
   return queryCollection('content').path(route.path).first()
@@ -13,6 +14,16 @@ if (!page.value) {
 const slug = computed(() => route.path.replace(/^\//, ''))
 const { backlinks } = useBacklinks(slug.value)
 const { mentions } = useMentions(slug.value, page.value?.title ?? '')
+
+// Fetch note graph data for mini-graph visualization
+const { data: noteGraph } = await useAsyncData(
+  `note-graph-${slug.value}`,
+  () => $fetch(`/api/note-graph/${slug.value}`),
+)
+
+function navigateToNote(targetSlug: string) {
+  router.push(`/${targetSlug}`)
+}
 
 useSeoMeta({
   title: () => page.value?.title ?? 'Second Brain',
@@ -57,5 +68,11 @@ useSeoMeta({
     </div>
 
     <ContentBacklinksSection :backlinks="backlinks" :mentions="mentions" />
+
+    <NoteGraph
+      :slug="slug"
+      :graph-data="noteGraph"
+      @navigate="navigateToNote"
+    />
   </article>
 </template>

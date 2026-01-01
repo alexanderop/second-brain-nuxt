@@ -382,24 +382,29 @@ const showMobileFilters = ref(false)
       </div>
     </UDrawer>
 
-    <!-- Mobile: Node details drawer -->
-    <UDrawer
+    <!-- Mobile: Node details modal (centered) -->
+    <UModal
       v-if="isMobile"
       v-model:open="drawerOpen"
+      :close="false"
       :ui="{
-        content: 'max-h-[70vh]',
+        overlay: 'bg-black/40 backdrop-blur-sm',
+        content: 'h-[70vh] w-[calc(100vw-2rem)] bg-black/60 backdrop-blur-xl rounded-2xl flex flex-col border border-white/10',
+        body: 'flex-1 overflow-auto p-0',
       }"
     >
-      <GraphNodePanel
-        v-if="selectedNode"
-        :node="selectedNode"
-        :outgoing-links="outgoingLinks"
-        :backlinks="backlinks"
-        class="border-0 w-full"
-        @close="handleClosePanel"
-        @select-node="handleSelectNode"
-      />
-    </UDrawer>
+      <template #body>
+        <GraphNodePanel
+          v-if="selectedNode"
+          :node="selectedNode"
+          :outgoing-links="outgoingLinks"
+          :backlinks="backlinks"
+          class="border-0 w-full h-full"
+          @close="handleClosePanel"
+          @select-node="handleSelectNode"
+        />
+      </template>
+    </UModal>
   </div>
 </template>
 

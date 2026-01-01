@@ -49,6 +49,7 @@ const typeColors: Record<ContentType, BadgeColor> = {
   note: 'neutral',
   evergreen: 'success',
   map: 'secondary',
+  reddit: 'warning',
 }
 </script>
 

@@ -98,8 +98,8 @@ function processSearchResults(fuseResults: FuseResult<SearchSection>[]): SearchR
         snippet = getSnippet(contentMatch.value, debouncedSearch.value)
         highlightedSnippet = highlightMatch(snippet, debouncedSearch.value)
       }
-      else if (titleMatch?.value) {
-        snippet = section.content?.slice(0, 150) || ''
+      if (!contentMatch?.value && titleMatch?.value) {
+        snippet = section.content?.slice(0, 150) ?? ''
         highlightedSnippet = snippet
       }
 
@@ -152,10 +152,10 @@ defineShortcuts({
     if (debouncedSearch.value && results.value.length) {
       const item = results.value[selectedIndex.value]
       if (item) navigateTo(item.path)
-    } else {
-      const item = defaultContent.value[selectedIndex.value]
-      if (item) navigateTo(`/${item.stem}`)
+      return
     }
+    const item = defaultContent.value[selectedIndex.value]
+    if (item) navigateTo(`/${item.stem}`)
   },
 })
 

@@ -20,6 +20,7 @@ Run the script to get a dated template with auto-detected type:
 
 The script auto-detects type from URL patterns:
 - YouTube → `youtube`
+- Reddit → `reddit`
 - Spotify/Apple Podcasts → `podcast`
 - Twitter/X → `tweet`
 - Amazon/Goodreads → `book`
@@ -52,6 +53,25 @@ Use the transcript to:
 - Extract accurate key takeaways
 - Find notable quotes (exact wording)
 - Understand the full context of the video
+
+#### For Reddit Threads (WebFetch doesn't work on Reddit)
+
+Use the dedicated script:
+
+```bash
+# Get thread metadata and top comments
+python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py "URL"
+
+# Optionally limit comments or filter by score
+python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py "URL" --comments 5 --min-score 10
+```
+
+Use the output to:
+- Extract the OP's main argument or question
+- Identify the most insightful responses
+- Note any consensus or counterpoints in the discussion
+
+Author should be the OP's username with `u/` prefix (e.g., `u/mario_candela`).
 
 #### For Other URLs
 
@@ -175,6 +195,32 @@ For YouTube videos, use the transcript to extract accurate quotes and key points
 
 ## Related
 See also [[related-note]].
+```
+
+### Reddit Threads
+```markdown
+## Summary
+[What the discussion is about - the core question or topic]
+
+## Key Points from OP
+- Main argument or question
+- Supporting context provided
+
+## Notable Comments
+> "Quote from highly-upvoted comment"
+>
+> — u/commenter (X points)
+
+> "Another insightful response"
+>
+> — u/other_user (Y points)
+
+## Discussion Takeaways
+- Key consensus or insights from the thread
+- Notable counterarguments or alternative perspectives
+
+## Related
+See also [[related-topic]].
 ```
 
 ### Personal Notes
@@ -368,6 +414,13 @@ Some videos don't have transcripts (auto-captions disabled, live streams):
 1. Check if the video has CC enabled
 2. If no transcript: summarize based on watching/listening
 3. Note in the body: "No transcript available - summarized from viewing"
+
+### Reddit Thread Unavailable
+If `get-reddit-thread.py` fails:
+1. Check if the thread is deleted, private, or in a quarantined subreddit
+2. If rate-limited (429 error), wait 60 seconds and retry
+3. For quarantined subreddits, the JSON API may require authentication
+4. Fallback: manually copy key content from the browser
 
 ### Network Errors
 If scripts fail due to network issues:

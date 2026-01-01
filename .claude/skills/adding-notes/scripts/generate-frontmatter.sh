@@ -10,6 +10,7 @@ TYPE="${2:-note}"
 if [[ -n "$URL" && "$TYPE" == "note" ]]; then
   case "$URL" in
     *youtube.com*|*youtu.be*) TYPE="youtube" ;;
+    *reddit.com*|*redd.it*) TYPE="reddit" ;;
     *spotify.com/episode*|*podcasts.apple.com*|*podcast*) TYPE="podcast" ;;
     *twitter.com*|*x.com*) TYPE="tweet" ;;
     *amazon.com*|*goodreads.com*) TYPE="book" ;;

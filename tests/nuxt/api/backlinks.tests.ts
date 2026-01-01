@@ -17,20 +17,20 @@ describe('/api/backlinks', () => {
     const slugsWithBacklinks = Object.keys(result)
 
     if (slugsWithBacklinks.length > 0) {
-      const firstSlug = slugsWithBacklinks[0]!
-      const backlinks = result[firstSlug]
+      const firstSlug = slugsWithBacklinks[0]
+      const backlinks = firstSlug ? result[firstSlug] : undefined
 
       if (backlinks) {
         expect(Array.isArray(backlinks)).toBe(true)
 
         if (backlinks.length > 0) {
-          const item = backlinks[0]!
+          const item = backlinks[0]
           expect(item).toHaveProperty('slug')
           expect(item).toHaveProperty('title')
           expect(item).toHaveProperty('type')
-          expect(typeof item.slug).toBe('string')
-          expect(typeof item.title).toBe('string')
-          expect(typeof item.type).toBe('string')
+          expect(typeof item?.slug).toBe('string')
+          expect(typeof item?.title).toBe('string')
+          expect(typeof item?.type).toBe('string')
         }
       }
     }

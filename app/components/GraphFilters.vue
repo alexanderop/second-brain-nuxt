@@ -22,7 +22,7 @@ const {
 // Filter to only show types that exist in content
 const visibleTypes = computed(() =>
   props.availableTypes.filter(type =>
-    ['book', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map'].includes(type),
+    ['book', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit'].includes(type),
   ),
 )
 
@@ -40,6 +40,7 @@ const typeLabels: Record<ContentType, string> = {
   tweet: 'Tweets',
   evergreen: 'Evergreen',
   map: 'Maps',
+  reddit: 'Reddit',
 }
 
 // Build checkbox items for UCheckboxGroup
@@ -64,6 +65,7 @@ const typeColors: Record<string, string> = {
   tweet: '#7dd3fc',
   evergreen: '#86efac',
   map: '#f472b6',
+  reddit: '#ff6b35',
 }
 
 // Build map items for USelectMenu

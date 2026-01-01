@@ -35,7 +35,7 @@ Before debugging, internalize these common pitfalls:
 
 **Data flows through these layers:**
 
-```
+```text
 Content File (Markdown)
     ↓ Parsed by Nuxt Content
 Minimark AST (body.value array)

@@ -15,17 +15,17 @@ describe('/api/graph', () => {
     const result = await $fetch('/api/graph')
 
     if (result.nodes.length > 0) {
-      const node = result.nodes[0]!
+      const node = result.nodes[0]
       expect(node).toHaveProperty('id')
       expect(node).toHaveProperty('title')
       expect(node).toHaveProperty('type')
       expect(node).toHaveProperty('tags')
       expect(node).toHaveProperty('connections')
-      expect(typeof node.id).toBe('string')
-      expect(typeof node.title).toBe('string')
-      expect(typeof node.type).toBe('string')
-      expect(Array.isArray(node.tags)).toBe(true)
-      expect(typeof node.connections).toBe('number')
+      expect(typeof node?.id).toBe('string')
+      expect(typeof node?.title).toBe('string')
+      expect(typeof node?.type).toBe('string')
+      expect(Array.isArray(node?.tags)).toBe(true)
+      expect(typeof node?.connections).toBe('number')
     }
   })
 
@@ -43,11 +43,11 @@ describe('/api/graph', () => {
     const result = await $fetch('/api/graph')
 
     if (result.edges.length > 0) {
-      const edge = result.edges[0]!
+      const edge = result.edges[0]
       expect(edge).toHaveProperty('source')
       expect(edge).toHaveProperty('target')
-      expect(typeof edge.source).toBe('string')
-      expect(typeof edge.target).toBe('string')
+      expect(typeof edge?.source).toBe('string')
+      expect(typeof edge?.target).toBe('string')
     }
   })
 
