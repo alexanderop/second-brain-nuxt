@@ -42,7 +42,7 @@ function formatDate(date?: Date | string) {
       <span>by </span>
       <template v-for="(author, index) in authors" :key="author">
         <NuxtLink
-          :to="`/author/${encodeURIComponent(author)}`"
+          :to="`/authors/${encodeURIComponent(author)}`"
           class="hover:underline text-[var(--ui-text)]"
         >
           {{ author }}

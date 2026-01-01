@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/', '/api/graph', '/api/backlinks'],
+      failOnError: false, // Continue on prerender errors to see what fails
     },
   },
 

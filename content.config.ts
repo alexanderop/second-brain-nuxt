@@ -31,7 +31,7 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: '**/*.md',
+      source: { include: '**/*.md', exclude: ['authors/**'] },
       schema: z.object({
         title: z.string(),
         type: contentTypes,
@@ -51,6 +51,24 @@ export default defineContentConfig({
             path: ['authors'],
           })
         }
+      }),
+    }),
+
+    authors: defineCollection({
+      type: 'data',
+      source: 'authors/**/*.md',
+      schema: z.object({
+        name: z.string(),
+        slug: z.string(),
+        bio: z.string().optional(),
+        avatar: z.string().optional(),
+        website: z.string().optional(),
+        socials: z.object({
+          twitter: z.string().optional(),
+          github: z.string().optional(),
+          linkedin: z.string().optional(),
+          youtube: z.string().optional(),
+        }).optional(),
       }),
     }),
   },

@@ -8,6 +8,8 @@ tags:
   - ai-tools
   - developer-experience
   - productivity
+authors:
+  - Visual Studio Code
 summary: "A systematic approach to providing AI agents with targeted project information through custom instructions, planning agents, and structured workflows to improve code generation quality."
 notes: ""
 date: 2026-01-01

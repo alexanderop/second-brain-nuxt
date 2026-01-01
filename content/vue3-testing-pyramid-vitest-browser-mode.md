@@ -8,6 +8,8 @@ tags:
   - vitest
   - browser-mode
   - integration-testing
+authors:
+  - Alex
 summary: "A practical testing strategy for Vue 3 that inverts the traditional pyramid—prioritizing integration tests (~70%) over unit tests, using Vitest browser mode for real browser execution and 4x faster performance than JSDOM."
 notes: ""
 date: 2026-01-01

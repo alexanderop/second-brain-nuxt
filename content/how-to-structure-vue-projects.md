@@ -7,6 +7,8 @@ tags:
   - project-structure
   - architecture
   - scalability
+authors:
+  - Alex
 summary: "A guide to structuring Vue projects at different scales—from flat folder structures for small apps, to modular monolithic architecture for medium-scale, to micro frontends for large enterprise projects."
 notes: ""
 date: 2026-01-01

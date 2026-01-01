@@ -8,6 +8,8 @@ tags:
   - code-style
   - best-practices
   - architecture
+authors:
+  - Alex
 summary: "A comprehensive style guide for writing clean, testable, and maintainable Vue 3 composables by applying time-tested software design principles like single responsibility, separation of concerns, and functional core/imperative shell."
 notes: ""
 date: 2026-01-01

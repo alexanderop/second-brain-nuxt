@@ -7,6 +7,8 @@ tags:
   - accountability
   - military
   - self-improvement
+authors:
+  - Jocko Willink
 summary: "Jocko Willink shares a powerful lesson from his time as a Navy SEAL in Ramadi, Iraq: true leaders take extreme ownership of everything in their world, including mistakes and failures, rather than blaming others."
 notes: ""
 date: 2026-01-01

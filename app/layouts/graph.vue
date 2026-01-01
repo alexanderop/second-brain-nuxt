@@ -26,14 +26,10 @@ defineShortcuts({
 
 <template>
   <UApp>
-    <UContainer>
-      <div class="max-w-6xl mx-auto">
-        <AppHeader v-model:search-open="searchOpen" v-model:shortcuts-open="shortcutsOpen" />
-        <main class="py-8">
-          <slot />
-        </main>
-      </div>
-    </UContainer>
+    <!-- Full viewport, no container constraints -->
+    <div class="h-screen overflow-hidden bg-[var(--ui-bg)]">
+      <slot />
+    </div>
     <AppSearchModal v-model:open="searchOpen" />
     <AppShortcutsModal v-model:open="shortcutsOpen" />
   </UApp>

@@ -8,6 +8,8 @@ tags:
   - context-management
   - developer-experience
   - productivity
+authors:
+  - HumanLayer Team
 summary: "Techniques for reducing context window waste in AI coding agents by suppressing verbose output from tests and builds, showing full details only on failure."
 notes: ""
 date: 2026-01-01
