@@ -17,6 +17,7 @@ const personalContentTypes = [
   'quote',
   'note',
   'evergreen',
+  'map',
 ] as const
 
 const contentTypeValues = [...externalContentTypes, ...personalContentTypes] as const

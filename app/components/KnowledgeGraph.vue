@@ -10,8 +10,12 @@ interface GraphNode {
   authors: Array<string>
   summary?: string
   connections?: number
+  maps?: Array<string>
+  isMap?: boolean
   x?: number
   y?: number
+  vx?: number
+  vy?: number
   fx?: number | null
   fy?: number | null
 }
@@ -105,6 +109,7 @@ const typeColors: Record<string, { fill: string, glow: string }> = {
   tv: { fill: '#d8b4fe', glow: 'rgba(216, 180, 254, 0.4)' }, // Softer purple
   tweet: { fill: '#7dd3fc', glow: 'rgba(125, 211, 252, 0.4)' }, // Softer sky
   evergreen: { fill: '#86efac', glow: 'rgba(134, 239, 172, 0.4)' }, // Softer green
+  map: { fill: '#f472b6', glow: 'rgba(244, 114, 182, 0.4)' }, // Pink for Maps of Content
   default: { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }, // Softer slate
 }
 
@@ -123,6 +128,18 @@ function getNodeColor(type: string): { fill: string, glow: string } {
 
 function getGlowFilter(type: string): string {
   return `url(#glow-${type in typeColors ? type : 'default'})`
+}
+
+// Generate hexagon path for map nodes
+function getHexagonPath(radius: number): string {
+  const points: string[] = []
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2 // Start from top
+    const x = radius * Math.cos(angle)
+    const y = radius * Math.sin(angle)
+    points.push(`${x},${y}`)
+  }
+  return `M${points.join('L')}Z`
 }
 
 // Get connected node IDs for a given node
@@ -194,9 +211,9 @@ function applyHighlight(activeId: string | null) {
 
   const connectedIds = getConnectedIds(activeId)
 
-  // Update node circles
+  // Update node shapes (circles and hexagons)
   d3.select(container.value)
-    .selectAll<SVGCircleElement, GraphNode>('.node-circle')
+    .selectAll<SVGElement, GraphNode>('.node-shape')
     .transition()
     .duration(100) // Faster transition for snappier feel
     .attr('opacity', (d) => {
@@ -376,6 +393,46 @@ function initGraph() {
   svg.on('dblclick.zoom', null) // Disable default d3 double-click zoom
   svg.on('dblclick', () => zoomToFit())
 
+  // Custom clustering force for map gravity
+  function clusteringForce(alpha: number) {
+    // Build map position lookup
+    const mapPositions = new Map<string, { x: number, y: number }>()
+    for (const node of nodes) {
+      if (node.isMap) {
+        mapPositions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 })
+      }
+    }
+
+    // Apply gravitational pull toward map centers
+    for (const node of nodes) {
+      if (node.maps && node.maps.length > 0 && !node.isMap) {
+        // Calculate centroid of all maps this node belongs to
+        let targetX = 0
+        let targetY = 0
+        let mapCount = 0
+
+        for (const mapId of node.maps) {
+          const mapPos = mapPositions.get(mapId)
+          if (mapPos) {
+            targetX += mapPos.x
+            targetY += mapPos.y
+            mapCount++
+          }
+        }
+
+        if (mapCount > 0) {
+          targetX /= mapCount
+          targetY /= mapCount
+
+          // Strong pull toward map centers
+          const strength = 0.15 * alpha
+          node.vx = (node.vx ?? 0) + (targetX - (node.x ?? 0)) * strength
+          node.vy = (node.vy ?? 0) + (targetY - (node.y ?? 0)) * strength
+        }
+      }
+    }
+  }
+
   // Create simulation with tuned physics for organic Obsidian-like feel
   const simulation = d3.forceSimulation<GraphNode>(nodes)
     .force('link', d3.forceLink<GraphNode, GraphEdge>(edges)
@@ -385,6 +442,7 @@ function initGraph() {
     .force('center', d3.forceCenter(width / 2, height / 2))
     .force('y', d3.forceY(height / 2).strength(0.02)) // Prevent vertical clustering
     .force('collision', d3.forceCollide<GraphNode>().radius(d => radiusScale(d.connections ?? 0) + 6))
+    .force('cluster', clusteringForce) // Map gravity clustering
 
   // Create edges
   const link = g.append('g')
@@ -414,7 +472,7 @@ function initGraph() {
     .on('mouseenter', function (_, d) {
       hoveredId.value = d.id
       // Scale up hovered node
-      d3.select(this).select('.node-circle')
+      d3.select(this).select('.node-shape')
         .transition()
         .duration(100)
         .attr('transform', 'scale(1.15)')
@@ -426,7 +484,7 @@ function initGraph() {
     .on('mouseleave', function () {
       hoveredId.value = null
       // Scale back down
-      d3.select(this).select('.node-circle')
+      d3.select(this).select('.node-shape')
         .transition()
         .duration(100)
         .attr('transform', 'scale(1)')
@@ -434,15 +492,34 @@ function initGraph() {
       applyHighlight(props.selectedId ?? null)
     })
 
-  // Node circles (radius based on connection count, color based on type)
-  node.append('circle')
-    .attr('r', d => radiusScale(d.connections ?? 0))
-    .attr('fill', d => getNodeColor(d.type).fill)
-    .attr('fill-opacity', 0.85) // Transparency for depth when overlapping
-    .attr('stroke', 'transparent')
-    .attr('stroke-width', 0)
-    .attr('filter', d => getGlowFilter(d.type))
-    .attr('class', 'node-circle')
+  // Node shapes: hexagon for maps, circle for others
+  node.each(function (d) {
+    const nodeGroup = d3.select(this)
+    const radius = radiusScale(d.connections ?? 0)
+
+    if (d.isMap) {
+      // Hexagon for map nodes (slightly larger for prominence)
+      nodeGroup.append('path')
+        .attr('d', getHexagonPath(radius * 1.2))
+        .attr('fill', getNodeColor(d.type).fill)
+        .attr('fill-opacity', 0.85)
+        .attr('stroke', 'transparent')
+        .attr('stroke-width', 0)
+        .attr('filter', getGlowFilter(d.type))
+        .attr('class', 'node-shape')
+    }
+    else {
+      // Circle for regular nodes
+      nodeGroup.append('circle')
+        .attr('r', radius)
+        .attr('fill', getNodeColor(d.type).fill)
+        .attr('fill-opacity', 0.85)
+        .attr('stroke', 'transparent')
+        .attr('stroke-width', 0)
+        .attr('filter', getGlowFilter(d.type))
+        .attr('class', 'node-shape')
+    }
+  })
 
   // Create font scale for labels (scales with node size for hierarchy)
   const fontScale = d3.scaleLinear()

@@ -5,11 +5,13 @@ const props = defineProps<{
   availableTags: Array<string>
   availableTypes: Array<ContentType>
   availableAuthors: Array<string>
+  availableMaps: Array<{ id: string, title: string }>
 }>()
 
 const {
   selectedTags,
   selectedAuthors,
+  selectedMaps,
   showOrphans,
   isTypeSelected,
   toggleType,
@@ -20,7 +22,7 @@ const {
 // Filter to only show types that exist in content
 const visibleTypes = computed(() =>
   props.availableTypes.filter(type =>
-    ['book', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen'].includes(type),
+    ['book', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map'].includes(type),
   ),
 )
 
@@ -37,6 +39,7 @@ const typeLabels: Record<ContentType, string> = {
   tv: 'TV Shows',
   tweet: 'Tweets',
   evergreen: 'Evergreen',
+  map: 'Maps',
 }
 
 // Build checkbox items for UCheckboxGroup
@@ -60,7 +63,16 @@ const typeColors: Record<string, string> = {
   tv: '#d8b4fe',
   tweet: '#7dd3fc',
   evergreen: '#86efac',
+  map: '#f472b6',
 }
+
+// Build map items for USelectMenu
+const mapItems = computed(() =>
+  props.availableMaps.map(m => ({
+    label: m.title,
+    value: m.id,
+  })),
+)
 
 function getTypeColor(type: string): string {
   return typeColors[type] || '#64748b'
@@ -125,6 +137,23 @@ function getTypeColor(type: string): string {
         size="sm"
         class="w-48"
         aria-label="Authors"
+      />
+    </div>
+
+    <!-- Maps Filter -->
+    <div v-if="mapItems.length" class="flex items-center gap-2">
+      <span class="text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider">
+        Maps
+      </span>
+      <USelectMenu
+        v-model="selectedMaps"
+        :items="mapItems"
+        value-key="value"
+        multiple
+        placeholder="Focus on map..."
+        size="sm"
+        class="w-48"
+        aria-label="Maps"
       />
     </div>
 

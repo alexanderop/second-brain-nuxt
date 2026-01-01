@@ -9,6 +9,8 @@ interface GraphNode {
   authors: Array<string>
   summary?: string
   connections: number
+  maps: Array<string>
+  isMap: boolean
 }
 
 interface GraphEdge {
@@ -45,6 +47,8 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
         authors: Array.isArray(item.authors) ? item.authors : [],
         summary: item.summary,
         connections: 0,
+        maps: [],
+        isMap: item.type === 'map',
       })
 
       existingNodes.add(slug)
@@ -80,6 +84,28 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
     }
     for (const node of nodes) {
       node.connections = connectionCounts.get(node.id) || 0
+    }
+
+    // Third pass: compute map membership (reverse lookup)
+    // For each map node, find its outgoing links and mark target nodes as members
+    const nodeMap = new Map<string, GraphNode>()
+    for (const node of nodes) {
+      nodeMap.set(node.id, node)
+    }
+
+    for (const item of allContent) {
+      if (item.type !== 'map') continue
+
+      const mapSlug = item.path?.slice(1) || item.stem || ''
+      const links = extractLinksFromBody(item.body)
+      const uniqueLinks = [...new Set(links)]
+
+      for (const targetSlug of uniqueLinks) {
+        const targetNode = nodeMap.get(targetSlug)
+        if (targetNode && targetSlug !== mapSlug) {
+          targetNode.maps.push(mapSlug)
+        }
+      }
     }
 
     return { nodes, edges }

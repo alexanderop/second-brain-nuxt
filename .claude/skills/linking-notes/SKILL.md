@@ -55,6 +55,7 @@ grep -l "specific concept" content/*.md
 - Directly builds on or responds to the other content
 - Covers the same core topic (e.g., two notes about "habit formation")
 - Part of the same series or project
+- Should be grouped together in a **Map Note** (MOC)
 
 ❌ **Do NOT link when:**
 - Only a vague thematic overlap (e.g., "both mention AI")
@@ -84,6 +85,20 @@ For each suggested link, provide:
 - [[maybe-related]] - Shares "testing" tag, similar topic
 ```
 
+## Map Notes for Clustering
+
+If you find a group of 3+ notes with strong thematic connections, consider suggesting a **Map Note** (MOC) instead of individual links:
+
+```bash
+# Check existing maps
+grep -l "type: map" content/*.md
+```
+
+Map notes (`type: map`) create visual clusters on the graph - notes linked from the map are pulled together. This is useful for:
+- Learning paths (e.g., "Vue 3 Development Guide")
+- Topic clusters (e.g., "Leadership Principles")
+- Curated collections (e.g., "AI Agents Roadmap")
+
 ## Quality Checklist
 
 Before suggesting links:
@@ -92,3 +107,4 @@ Before suggesting links:
 - [ ] Excluded vague thematic overlaps
 - [ ] Checked that suggested notes actually exist
 - [ ] Provided clear justification for each link
+- [ ] Considered whether a Map Note would better organize related content

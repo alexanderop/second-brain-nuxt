@@ -14,6 +14,8 @@ interface GraphNode {
   authors: Array<string>
   summary?: string
   connections?: number
+  maps?: Array<string>
+  isMap?: boolean
 }
 
 // Edge source/target can be string (from API) or object (after D3 processes it)
@@ -74,6 +76,16 @@ const availableAuthors = computed<Array<string>>(() => {
   return [...new Set(graphData.value.nodes.flatMap(n => n.authors || []))].sort()
 })
 
+// Extract available maps (nodes with isMap: true)
+const availableMaps = computed<Array<{ id: string, title: string }>>(() => {
+  if (!graphData.value)
+    return []
+  return graphData.value.nodes
+    .filter(n => n.isMap)
+    .map(n => ({ id: n.id, title: n.title }))
+    .sort((a, b) => a.title.localeCompare(b.title))
+})
+
 // Build connectivity map for orphan detection
 const connectedNodeIds = computed(() => {
   if (!graphData.value)
@@ -110,6 +122,16 @@ const filteredNodes = computed(() => {
         author => (node.authors || []).includes(author),
       )
       if (!hasMatchingAuthor)
+        return false
+    }
+
+    // Map filter (node must belong to a selected map, or be a selected map itself)
+    if (filterState.value.maps.length > 0) {
+      const isSelectedMap = filterState.value.maps.includes(node.id)
+      const belongsToSelectedMap = filterState.value.maps.some(
+        mapId => (node.maps || []).includes(mapId),
+      )
+      if (!isSelectedMap && !belongsToSelectedMap)
         return false
     }
 
@@ -260,6 +282,7 @@ const showMobileFilters = ref(false)
                 :available-tags="availableTags"
                 :available-types="availableTypes"
                 :available-authors="availableAuthors"
+                :available-maps="availableMaps"
                 class="!flex-col !items-start !gap-4"
               />
             </div>
@@ -354,6 +377,7 @@ const showMobileFilters = ref(false)
           :available-tags="availableTags"
           :available-types="availableTypes"
           :available-authors="availableAuthors"
+          :available-maps="availableMaps"
         />
       </div>
     </UDrawer>

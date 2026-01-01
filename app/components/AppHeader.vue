@@ -2,6 +2,7 @@
 const links = [
   { label: 'Home', to: '/', icon: 'i-lucide-home' },
   { label: 'Graph', to: '/graph', icon: 'i-lucide-network' },
+  { label: 'Stats', to: '/stats', icon: 'i-lucide-bar-chart-2' },
   { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
   { label: 'Authors', to: '/authors', icon: 'i-lucide-users' },
 ]

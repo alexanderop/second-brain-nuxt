@@ -48,6 +48,7 @@ const typeColors: Record<ContentType, BadgeColor> = {
   course: 'warning',
   note: 'neutral',
   evergreen: 'success',
+  map: 'secondary',
 }
 </script>
 

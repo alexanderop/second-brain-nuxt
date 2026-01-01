@@ -44,11 +44,12 @@ describe('ALL_CONTENT_TYPES', () => {
     expect(ALL_CONTENT_TYPES).toContain('article')
     expect(ALL_CONTENT_TYPES).toContain('book')
     expect(ALL_CONTENT_TYPES).toContain('note')
+    expect(ALL_CONTENT_TYPES).toContain('map')
   })
 
   it('has expected length', async () => {
     const { ALL_CONTENT_TYPES } = await import('../../../app/composables/useGraphFilters')
-    expect(ALL_CONTENT_TYPES.length).toBe(11)
+    expect(ALL_CONTENT_TYPES.length).toBe(12)
   })
 })
 

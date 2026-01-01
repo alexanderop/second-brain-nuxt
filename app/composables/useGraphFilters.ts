@@ -5,6 +5,7 @@ export interface GraphFilterState {
   types: Array<ContentType>
   tags: Array<string>
   authors: Array<string>
+  maps: Array<string>
   showOrphans: boolean
 }
 
@@ -21,6 +22,7 @@ export const ALL_CONTENT_TYPES: Array<ContentType> = [
   'course',
   'note',
   'evergreen',
+  'map',
 ]
 
 export function useGraphFilters() {
@@ -35,6 +37,7 @@ export function useGraphFilters() {
   const typesParam = useRouteQuery<string | Array<string> | null>('types')
   const tagsParam = useRouteQuery<string | Array<string> | null>('tags')
   const authorsParam = useRouteQuery<string | Array<string> | null>('authors')
+  const mapsParam = useRouteQuery<string | Array<string> | null>('maps')
   const orphansParam = useRouteQuery<string | null>('orphans')
 
   // Computed getters/setters with proper typing
@@ -71,6 +74,13 @@ export function useGraphFilters() {
     },
   })
 
+  const selectedMaps = computed({
+    get: () => parseArrayParam(mapsParam.value),
+    set: (v: Array<string>) => {
+      mapsParam.value = v.length ? v : null
+    },
+  })
+
   const showOrphans = computed({
     get: () => orphansParam.value !== 'false', // default true
     set: (v: boolean) => {
@@ -99,6 +109,7 @@ export function useGraphFilters() {
       selectedTypes.value.length < ALL_CONTENT_TYPES.length
       || selectedTags.value.length > 0
       || selectedAuthors.value.length > 0
+      || selectedMaps.value.length > 0
       || !showOrphans.value
     )
   })
@@ -108,6 +119,7 @@ export function useGraphFilters() {
     typesParam.value = null
     tagsParam.value = null
     authorsParam.value = null
+    mapsParam.value = null
     orphansParam.value = null
   }
 
@@ -116,6 +128,7 @@ export function useGraphFilters() {
     types: selectedTypes.value,
     tags: selectedTags.value,
     authors: selectedAuthors.value,
+    maps: selectedMaps.value,
     showOrphans: showOrphans.value,
   }))
 
@@ -124,6 +137,7 @@ export function useGraphFilters() {
     selectedTypes,
     selectedTags,
     selectedAuthors,
+    selectedMaps,
     showOrphans,
     filterState,
     // Helpers

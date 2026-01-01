@@ -54,6 +54,19 @@ Notes with the highest total connections - these are central to the knowledge ba
 Groups of notes that link heavily to each other but less to the rest. Identify by:
 - Shared tags
 - Mutual links
+- **Map membership** - notes linked from a `type: map` note form visual clusters
+
+#### Map Notes (MOCs)
+Map notes (`type: map`) act as cluster centers on the graph:
+- Appear as **pink hexagons** instead of circles
+- Pull member notes toward them with gravitational force
+- Members are defined by wiki-links FROM the map
+- Use the Maps filter in the graph UI to focus on specific clusters
+
+To find existing maps:
+```bash
+grep -l "type: map" content/*.md
+```
 
 #### Broken Links
 Wiki-links pointing to non-existent notes.

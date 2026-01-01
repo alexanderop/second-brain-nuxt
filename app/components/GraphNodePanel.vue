@@ -9,6 +9,8 @@ interface GraphNode {
   authors: Array<string>
   summary?: string
   connections?: number
+  maps?: Array<string>
+  isMap?: boolean
 }
 
 const props = defineProps<{
@@ -49,6 +51,12 @@ const accordionItems = computed(() => {
 const defaultAccordionValue = computed(() =>
   accordionItems.value.map(item => item.value),
 )
+
+// Count notes that belong to this map (for map nodes)
+const mapMemberCount = computed(() => {
+  if (!props.node.isMap) return 0
+  return props.outgoingLinks.length
+})
 </script>
 
 <template>
@@ -103,6 +111,32 @@ const defaultAccordionValue = computed(() =>
           color="neutral"
           size="sm"
         />
+      </div>
+
+      <!-- Map membership (for non-map nodes) -->
+      <div v-if="node.maps?.length && !node.isMap" class="mb-4">
+        <div class="flex items-center gap-2 mb-2 text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider">
+          <UIcon name="i-lucide-hexagon" class="size-3.5" />
+          Member of
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <UBadge
+            v-for="mapId in node.maps"
+            :key="mapId"
+            :label="mapId"
+            variant="soft"
+            color="secondary"
+            size="sm"
+          />
+        </div>
+      </div>
+
+      <!-- Map member count (for map nodes) -->
+      <div v-if="node.isMap && mapMemberCount > 0" class="mb-4">
+        <div class="flex items-center gap-2 text-sm text-[var(--ui-text-muted)]">
+          <UIcon name="i-lucide-layers" class="size-4" />
+          Contains {{ mapMemberCount }} notes
+        </div>
       </div>
 
       <!-- View Page button -->

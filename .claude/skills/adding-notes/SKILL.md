@@ -32,6 +32,7 @@ The script auto-detects type from URL patterns:
 - `quote` - For standalone quotes (pass as second argument)
 - `evergreen` - For synthesized reference notes (pass as second argument)
 - `tv` - For TV series (IMDB shows auto-detect as `movie`, override if needed)
+- `map` - For Maps of Content (MOCs) that curate and cluster related notes
 
 ### 2. Fetch Resource Details
 
@@ -218,6 +219,37 @@ Use `type: evergreen` for foundational reference notes that synthesize ideas acr
 ## Sources
 Synthesized from [[source-1]], [[source-2]], and [[source-3]].
 ```
+
+### Map Notes (MOCs)
+Use `type: map` for Maps of Content that curate and cluster related notes. Maps appear as **pink hexagons** on the knowledge graph and pull their member notes toward them visually.
+
+```markdown
+---
+title: "Topic Roadmap"
+type: map
+tags:
+  - learning-path
+  - topic-area
+summary: "A curated map connecting key resources about [topic]"
+date: 2026-01-01
+---
+
+This map connects essential resources for [topic description].
+
+## Section 1
+- [[related-note-1]] - Brief description
+- [[related-note-2]] - Brief description
+
+## Section 2
+- [[related-note-3]] - Brief description
+```
+
+**Key points for maps:**
+- Notes linked via `[[wiki-links]]` become **members** of the map
+- Members cluster around the map on the graph visualization
+- Notes can belong to **multiple maps** (multi-membership)
+- Use maps to create learning paths, topic clusters, or curated collections
+- Keep maps focused - 3-10 members is ideal for clear clustering
 
 ## Mermaid Diagrams
 
