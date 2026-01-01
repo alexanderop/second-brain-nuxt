@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks'],
+  modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks', '@vite-pwa/nuxt'],
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
@@ -54,7 +54,58 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: 'Personal knowledge base with connected notes' },
         { name: 'robots', content: 'noindex, nofollow' },
+        { name: 'theme-color', content: '#1a1a2e' },
       ],
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+        { rel: 'icon', href: '/brain-icon.svg', type: 'image/svg+xml' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png', sizes: '180x180' },
+      ],
+    },
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Second Brain',
+      short_name: 'SecondBrain',
+      description: 'Personal knowledge base with connected notes',
+      theme_color: '#1a1a2e',
+      background_color: '#1a1a2e',
+      display: 'standalone',
+      icons: [
+        {
+          src: 'pwa-64x64.png',
+          sizes: '64x64',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'maskable-icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
+    client: {
+      installPrompt: true,
+    },
+    devOptions: {
+      enabled: false,
     },
   },
 })

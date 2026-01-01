@@ -27,3 +27,7 @@ coverage/
 
 # Git worktrees
 .worktrees/
+
+# PWA
+sw.*
+dev-dist/
