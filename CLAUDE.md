@@ -32,11 +32,3 @@ Run `pnpm lint:fix && pnpm typecheck` after code changes.
 - Query content via `queryCollection('content')`
 - Catch-all route at `app/pages/[...slug].vue`
 
-## Documentation
-
-Use specialized subagents before implementing:
-
-- **nuxt-specialist** - Configuration, routing, data fetching, server routes, middleware
-- **nuxt-content-specialist** - Collections, queries, MDC syntax
-- **nuxt-ui-specialist** - Components, theming, forms
-- **vue-specialist** - Reactivity, Composition API, components, TypeScript

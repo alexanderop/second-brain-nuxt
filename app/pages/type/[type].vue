@@ -28,6 +28,8 @@ const { data: items } = await useAsyncData(`type-${type.value}`, () => {
     .all()
 })
 
+const { selectedIndex } = useListNavigation(items)
+
 useSeoMeta({
   title: () => `${type.value.charAt(0).toUpperCase() + type.value.slice(1)}s - Second Brain`,
 })
@@ -36,7 +38,7 @@ useSeoMeta({
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <TypeIcon :type="type" size="lg" />
+      <BaseTypeIcon :type="type" size="lg" />
       <h1 class="text-2xl font-semibold capitalize">
         {{ type }}s
       </h1>
@@ -44,6 +46,6 @@ useSeoMeta({
         ({{ items?.length ?? 0 }})
       </span>
     </div>
-    <ContentList :items="items ?? []" />
+    <ContentList :items="items ?? []" :selected-index="selectedIndex" />
   </div>
 </template>

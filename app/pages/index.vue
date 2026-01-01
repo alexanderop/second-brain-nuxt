@@ -5,6 +5,8 @@ const { data: items } = await useAsyncData('recent-content', () => {
     .limit(30)
     .all()
 })
+
+const { selectedIndex } = useListNavigation(items)
 </script>
 
 <template>
@@ -12,6 +14,6 @@ const { data: items } = await useAsyncData('recent-content', () => {
     <h1 class="text-2xl font-semibold mb-6">
       Recent Additions
     </h1>
-    <ContentList :items="items ?? []" />
+    <ContentList :items="items ?? []" :selected-index="selectedIndex" />
   </div>
 </template>

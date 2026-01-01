@@ -30,7 +30,7 @@ function formatDate(date?: Date | string) {
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-2 mb-2 text-[var(--ui-text-muted)]">
-      <TypeIcon :type="type" size="sm" />
+      <BaseTypeIcon :type="type" size="sm" />
       <span class="text-sm capitalize">{{ type }}</span>
       <span v-if="date" class="text-sm">{{ formatDate(date) }}</span>
     </div>
@@ -38,7 +38,7 @@ function formatDate(date?: Date | string) {
       {{ title }}
     </h1>
     <div class="flex flex-wrap items-center gap-2">
-      <TagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
+      <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
       <UButton
         variant="ghost"
         color="neutral"

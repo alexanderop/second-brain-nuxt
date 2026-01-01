@@ -7,9 +7,10 @@ interface GraphNode {
   type: ContentType
   tags: Array<string>
   summary?: string
+  connections?: number
 }
 
-defineProps<{
+const props = defineProps<{
   node: GraphNode
   outgoingLinks: Array<GraphNode>
   backlinks: Array<GraphNode>
@@ -19,26 +20,64 @@ const emit = defineEmits<{
   close: []
   selectNode: [node: GraphNode]
 }>()
+
+const accordionItems = computed(() => {
+  const items: Array<{ value: string, label: string, icon: string, slot: string }> = []
+
+  if (props.outgoingLinks.length) {
+    items.push({
+      value: 'links-to',
+      label: `Links to (${props.outgoingLinks.length})`,
+      icon: 'i-lucide-arrow-right',
+      slot: 'links-to',
+    })
+  }
+
+  if (props.backlinks.length) {
+    items.push({
+      value: 'linked-from',
+      label: `Linked from (${props.backlinks.length})`,
+      icon: 'i-lucide-arrow-left',
+      slot: 'linked-from',
+    })
+  }
+
+  return items
+})
+
+const defaultAccordionValue = computed(() =>
+  accordionItems.value.map(item => item.value),
+)
 </script>
 
 <template>
   <aside class="w-80 border-l border-[var(--ui-border)] bg-[var(--ui-bg)] overflow-y-auto">
-    <div class="p-4">
-      <!-- Header -->
-      <div class="flex items-start justify-between gap-2 mb-4">
-        <div class="flex items-start gap-2 min-w-0">
-          <TypeIcon :type="node.type" size="md" class="mt-1 text-[var(--ui-text-muted)]" />
-          <h2 class="font-semibold text-lg leading-tight">
-            {{ node.title }}
-          </h2>
+    <UCard
+      variant="soft"
+      :ui="{
+        root: 'rounded-none border-0 shadow-none',
+        header: 'p-4 pb-0',
+        body: 'p-4',
+        footer: 'p-4 pt-0',
+      }"
+    >
+      <template #header>
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-start gap-2 min-w-0">
+            <BaseTypeIcon :type="node.type" size="md" class="mt-1 text-[var(--ui-text-muted)]" />
+            <h2 class="font-semibold text-lg leading-tight">
+              {{ node.title }}
+            </h2>
+          </div>
+          <UButton
+            icon="i-lucide-x"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="emit('close')"
+          />
         </div>
-        <button
-          class="p-1 rounded hover:bg-[var(--ui-bg-muted)] text-[var(--ui-text-muted)]"
-          @click="emit('close')"
-        >
-          <UIcon name="i-lucide-x" class="size-5" />
-        </button>
-      </div>
+      </template>
 
       <!-- Summary -->
       <p v-if="node.summary" class="text-sm text-[var(--ui-text-muted)] mb-4">
@@ -47,60 +86,82 @@ const emit = defineEmits<{
 
       <!-- Tags -->
       <div v-if="node.tags.length" class="flex flex-wrap gap-1.5 mb-4">
-        <TagPill v-for="tag in node.tags" :key="tag" :tag="tag" />
+        <UBadge
+          v-for="tag in node.tags"
+          :key="tag"
+          :label="tag"
+          variant="subtle"
+          color="neutral"
+          size="sm"
+        />
       </div>
 
       <!-- View Page button -->
-      <NuxtLink
+      <UButton
         :to="`/${node.id}`"
-        class="block w-full text-center py-2 px-4 rounded-lg bg-[var(--ui-bg-muted)] hover:bg-[var(--ui-bg-elevated)] text-sm font-medium mb-6"
+        label="View Page"
+        variant="soft"
+        color="neutral"
+        block
+        class="mb-4"
+      />
+
+      <USeparator v-if="accordionItems.length" class="mb-4" />
+
+      <!-- Links Accordion -->
+      <UAccordion
+        v-if="accordionItems.length"
+        type="multiple"
+        :default-value="defaultAccordionValue"
+        :items="accordionItems"
+        :ui="{
+          trigger: 'text-xs font-semibold uppercase tracking-wide text-[var(--ui-text-muted)]',
+        }"
       >
-        View Page
-      </NuxtLink>
+        <template #links-to>
+          <div class="space-y-1 pt-2">
+            <UButton
+              v-for="link in outgoingLinks"
+              :key="link.id"
+              variant="ghost"
+              color="neutral"
+              block
+              :ui="{ base: 'justify-start' }"
+              @click="emit('selectNode', link)"
+            >
+              <template #leading>
+                <BaseTypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
+              </template>
+              <span class="truncate">{{ link.title }}</span>
+            </UButton>
+          </div>
+        </template>
 
-      <!-- Outgoing Links -->
-      <div v-if="outgoingLinks.length" class="mb-6">
-        <h3 class="text-xs font-semibold text-[var(--ui-text-muted)] uppercase tracking-wide mb-2">
-          Links to ({{ outgoingLinks.length }})
-        </h3>
-        <div class="space-y-1">
-          <button
-            v-for="link in outgoingLinks"
-            :key="link.id"
-            class="w-full flex items-center gap-2 p-2 rounded hover:bg-[var(--ui-bg-muted)] text-left"
-            @click="emit('selectNode', link)"
-          >
-            <TypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
-            <span class="text-sm truncate">{{ link.title }}</span>
-          </button>
-        </div>
-      </div>
+        <template #linked-from>
+          <div class="space-y-1 pt-2">
+            <UButton
+              v-for="link in backlinks"
+              :key="link.id"
+              variant="ghost"
+              color="neutral"
+              block
+              :ui="{ base: 'justify-start' }"
+              @click="emit('selectNode', link)"
+            >
+              <template #leading>
+                <BaseTypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
+              </template>
+              <span class="truncate">{{ link.title }}</span>
+            </UButton>
+          </div>
+        </template>
+      </UAccordion>
 
-      <!-- Backlinks -->
-      <div v-if="backlinks.length">
-        <h3 class="text-xs font-semibold text-[var(--ui-text-muted)] uppercase tracking-wide mb-2">
-          Linked from ({{ backlinks.length }})
-        </h3>
-        <div class="space-y-1">
-          <button
-            v-for="link in backlinks"
-            :key="link.id"
-            class="w-full flex items-center gap-2 p-2 rounded hover:bg-[var(--ui-bg-muted)] text-left"
-            @click="emit('selectNode', link)"
-          >
-            <TypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
-            <span class="text-sm truncate">{{ link.title }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- No links message -->
-      <p
-        v-if="!outgoingLinks.length && !backlinks.length"
-        class="text-sm text-[var(--ui-text-muted)] text-center py-4"
-      >
-        No connections found
-      </p>
-    </div>
+      <template v-if="!outgoingLinks.length && !backlinks.length" #footer>
+        <p class="text-sm text-[var(--ui-text-muted)] text-center">
+          No connections found
+        </p>
+      </template>
+    </UCard>
   </aside>
 </template>

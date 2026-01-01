@@ -13,10 +13,12 @@ date: 2025-01-08
 
 Sleep is the foundation that enables everything else to work properly.
 
-Key insights:
+## Key Insights
 
 - 8 hours is non-negotiable for most people
 - Sleep deprivation affects memory, creativity, and emotional regulation
 - REM sleep is crucial for learning
+
+## Connections
 
 Relates to habit formation from [[atomic-habits]] - you can't build good habits if you're sleep deprived.

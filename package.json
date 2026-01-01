@@ -7,7 +7,10 @@
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
-    "lint:fix": "eslint --fix",
+    "lint": "oxlint && eslint .",
+    "lint:fix": "oxlint --fix && eslint . --fix",
+    "lint:ox": "oxlint",
+    "lint:es": "eslint .",
     "preview": "nuxt preview"
   },
   "dependencies": {
@@ -19,19 +22,25 @@
     "@types/d3": "^7.4.3",
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
+    "@vueuse/router": "^14.1.0",
     "better-sqlite3": "^12.5.0",
     "d3": "^7.9.0",
     "eslint": "^9.39.2",
+    "fuse.js": "^7.1.0",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.7.3",
+    "@eslint/markdown": "^7.5.1",
     "@iconify-json/lucide": "^1.2.82",
     "@nuxt/kit": "^4.2.2",
     "@types/node": "^25.0.3",
+    "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^9.39.2",
-    "eslint-plugin-format": "^1.1.0"
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "oxlint": "^1.0.0",
+    "typescript-eslint": "^8.32.1",
+    "vue-eslint-parser": "^10.1.3"
   }
 }

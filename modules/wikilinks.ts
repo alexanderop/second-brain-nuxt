@@ -20,7 +20,7 @@ export default defineNuxtModule({
     configKey: 'wikilinks',
   },
   setup(_options: unknown, nuxt: Nuxt) {
-    // eslint-disable-next-line ts/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any -- Nuxt hooks typing is incomplete
     ;(nuxt.hooks as any).hook('content:file:beforeParse', (ctx: ContentFileContext) => {
       if (typeof ctx.file?.body === 'string') {
         ctx.file.body = ctx.file.body.replace(wikiLinkRegex, (_, slug: string, displayText?: string) => {

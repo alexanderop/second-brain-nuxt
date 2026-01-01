@@ -23,7 +23,7 @@ defineProps<{
           :to="`/${link.slug}`"
           class="flex items-center gap-2 p-2 -mx-2 rounded hover:bg-[var(--ui-bg-muted)] transition-colors"
         >
-          <TypeIcon :type="link.type as ContentType" size="sm" class="text-[var(--ui-text-muted)]" />
+          <BaseTypeIcon :type="link.type as ContentType" size="sm" class="text-[var(--ui-text-muted)]" />
           <span>{{ link.title }}</span>
         </NuxtLink>
       </li>

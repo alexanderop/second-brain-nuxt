@@ -1,17 +1,13 @@
 <script setup lang="ts">
 const links = [
-  { label: 'Home', to: '/' },
-  { label: 'Graph', to: '/graph' },
-  { label: 'Tags', to: '/tags' },
+  { label: 'Home', to: '/', icon: 'i-lucide-home' },
+  { label: 'Graph', to: '/graph', icon: 'i-lucide-network' },
+  { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
 ]
 
 const searchOpen = defineModel<boolean>('searchOpen', { default: false })
-
-defineShortcuts({
-  meta_k: () => {
-    searchOpen.value = true
-  },
-})
+const shortcutsOpen = defineModel<boolean>('shortcutsOpen', { default: false })
+const mobileMenuOpen = ref(false)
 </script>
 
 <template>
@@ -46,12 +42,41 @@ defineShortcuts({
           </UKbd>
         </UButton>
         <UButton
+          variant="ghost"
+          color="neutral"
+          class="hidden sm:inline-flex"
+          @click="shortcutsOpen = true"
+        >
+          <UKbd>?</UKbd>
+        </UButton>
+        <UButton
           class="md:hidden"
           variant="ghost"
           color="neutral"
           icon="i-lucide-menu"
           aria-label="Menu"
+          @click="mobileMenuOpen = true"
         />
+
+        <USlideover v-model:open="mobileMenuOpen" side="right" title="Navigation">
+          <template #body>
+            <nav class="flex flex-col gap-1">
+              <UButton
+                v-for="link in links"
+                :key="link.to"
+                :to="link.to"
+                :icon="link.icon"
+                variant="ghost"
+                color="neutral"
+                class="justify-start"
+                block
+                @click="mobileMenuOpen = false"
+              >
+                {{ link.label }}
+              </UButton>
+            </nav>
+          </template>
+        </USlideover>
       </div>
     </div>
   </header>

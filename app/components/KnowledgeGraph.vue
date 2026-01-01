@@ -8,6 +8,7 @@ interface GraphNode {
   type: ContentType
   tags: Array<string>
   summary?: string
+  connections?: number
   x?: number
   y?: number
   fx?: number | null
@@ -25,6 +26,7 @@ interface GraphData {
 }
 
 const props = defineProps<{
+  graphData?: GraphData | null
   selectedId?: string | null
 }>()
 
@@ -35,26 +37,46 @@ const emit = defineEmits<{
 const container = ref<HTMLDivElement>()
 const hoveredId = ref<string | null>(null)
 
-const { data: graphData } = await useAsyncData<GraphData>('graph-data', () => $fetch('/api/graph'))
+// Type-specific colors with glow
+const typeColors: Record<string, { fill: string, glow: string }> = {
+  book: { fill: '#f59e0b', glow: 'rgba(245, 158, 11, 0.5)' }, // Amber
+  podcast: { fill: '#8b5cf6', glow: 'rgba(139, 92, 246, 0.5)' }, // Violet
+  article: { fill: '#06b6d4', glow: 'rgba(6, 182, 212, 0.5)' }, // Cyan
+  note: { fill: '#10b981', glow: 'rgba(16, 185, 129, 0.5)' }, // Emerald
+  youtube: { fill: '#ef4444', glow: 'rgba(239, 68, 68, 0.5)' }, // Red
+  course: { fill: '#ec4899', glow: 'rgba(236, 72, 153, 0.5)' }, // Pink
+  quote: { fill: '#f97316', glow: 'rgba(249, 115, 22, 0.5)' }, // Orange
+  movie: { fill: '#6366f1', glow: 'rgba(99, 102, 241, 0.5)' }, // Indigo
+  tv: { fill: '#a855f7', glow: 'rgba(168, 85, 247, 0.5)' }, // Purple
+  tweet: { fill: '#0ea5e9', glow: 'rgba(14, 165, 233, 0.5)' }, // Sky
+  evergreen: { fill: '#22c55e', glow: 'rgba(34, 197, 94, 0.5)' }, // Green
+  default: { fill: '#64748b', glow: 'rgba(100, 116, 139, 0.4)' }, // Slate
+}
 
-// Obsidian-inspired colors
 const colors = {
-  node: '#7c8594', // Default node fill (muted gray)
-  nodeStroke: '#9ca3af', // Default stroke
-  selected: '#a78bfa', // Purple for selected node
-  connected: '#34d399', // Green for connected nodes
-  connectedEdge: '#34d399', // Green for connected edges
-  edge: '#4b5563', // Default edge color
+  selected: '#ffffff', // White ring for selected
+  connectedEdge: '#94a3b8', // Brighter edge for connections
+  edge: '#334155', // Subtle default edge
   text: 'currentColor',
+}
+
+const defaultColor = { fill: '#64748b', glow: 'rgba(100, 116, 139, 0.4)' }
+
+function getNodeColor(type: string): { fill: string, glow: string } {
+  return typeColors[type] ?? defaultColor
+}
+
+function getGlowFilter(type: string): string {
+  return `url(#glow-${type in typeColors ? type : 'default'})`
 }
 
 // Get connected node IDs for a given node
 function getConnectedIds(nodeId: string | null): Set<string> {
   const connected = new Set<string>()
-  if (!nodeId || !graphData.value)
+  if (!nodeId || !props.graphData)
     return connected
 
-  for (const edge of graphData.value.edges) {
+  for (const edge of props.graphData.edges) {
     const sourceId = typeof edge.source === 'string' ? edge.source : edge.source.id
     const targetId = typeof edge.target === 'string' ? edge.target : edge.target.id
     if (sourceId === nodeId)
@@ -67,7 +89,7 @@ function getConnectedIds(nodeId: string | null): Set<string> {
 
 // Apply highlight styling based on active node (hovered or selected)
 function applyHighlight(activeId: string | null) {
-  if (!container.value || !graphData.value)
+  if (!container.value || !props.graphData)
     return
 
   const connectedIds = getConnectedIds(activeId)
@@ -77,26 +99,19 @@ function applyHighlight(activeId: string | null) {
     .selectAll<SVGCircleElement, GraphNode>('.node-circle')
     .transition()
     .duration(150)
-    .attr('fill', (d) => {
-      if (d.id === activeId)
-        return colors.selected
-      if (activeId && connectedIds.has(d.id))
-        return colors.connected
-      return colors.node
-    })
-    .attr('stroke', (d) => {
-      if (d.id === props.selectedId)
-        return colors.selected
-      return colors.nodeStroke
-    })
-    .attr('stroke-width', d => d.id === props.selectedId ? 3 : 1.5)
     .attr('opacity', (d) => {
       if (!activeId)
         return 1
       if (d.id === activeId || connectedIds.has(d.id))
         return 1
-      return 0.15
+      return 0.2
     })
+    .attr('stroke', (d) => {
+      if (d.id === props.selectedId)
+        return colors.selected
+      return 'transparent'
+    })
+    .attr('stroke-width', d => d.id === props.selectedId ? 2 : 0)
 
   // Update edges
   d3.select(container.value)
@@ -146,7 +161,7 @@ function applyHighlight(activeId: string | null) {
 }
 
 function initGraph() {
-  if (!container.value || !graphData.value)
+  if (!container.value || !props.graphData)
     return
 
   const width = container.value.clientWidth
@@ -155,11 +170,42 @@ function initGraph() {
   // Clear existing SVG
   d3.select(container.value).select('svg').remove()
 
+  // Deep clone nodes and edges to avoid D3 mutating the original data
+  const nodes: Array<GraphNode> = props.graphData.nodes.map(n => ({ ...n }))
+  const edges: Array<GraphEdge> = props.graphData.edges.map(e => ({ ...e }))
+
+  // Create radius scale based on connection count (sqrt for perceptually accurate area-based sizing)
+  const maxConnections = Math.max(1, ...nodes.map(n => n.connections ?? 0))
+  const radiusScale = d3.scaleSqrt()
+    .domain([0, maxConnections])
+    .range([6, 20])
+
   const svg = d3.select(container.value)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
     .attr('viewBox', [0, 0, width, height])
+
+  // Add glow filter definitions
+  const defs = svg.append('defs')
+
+  // Create a glow filter for each type
+  Object.entries(typeColors).forEach(([type, color]) => {
+    const filter = defs.append('filter')
+      .attr('id', `glow-${type}`)
+      .attr('x', '-50%')
+      .attr('y', '-50%')
+      .attr('width', '200%')
+      .attr('height', '200%')
+
+    filter.append('feGaussianBlur')
+      .attr('stdDeviation', '4')
+      .attr('result', 'coloredBlur')
+
+    const feMerge = filter.append('feMerge')
+    feMerge.append('feMergeNode').attr('in', 'coloredBlur')
+    feMerge.append('feMergeNode').attr('in', 'SourceGraphic')
+  })
 
   const g = svg.append('g')
 
@@ -173,29 +219,31 @@ function initGraph() {
   svg.call(zoom)
 
   // Create simulation
-  const simulation = d3.forceSimulation<GraphNode>(graphData.value.nodes)
-    .force('link', d3.forceLink<GraphNode, GraphEdge>(graphData.value.edges)
+  const simulation = d3.forceSimulation<GraphNode>(nodes)
+    .force('link', d3.forceLink<GraphNode, GraphEdge>(edges)
       .id(d => d.id)
       .distance(100))
     .force('charge', d3.forceManyBody().strength(-300))
     .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('collision', d3.forceCollide().radius(30))
+    .force('collision', d3.forceCollide<GraphNode>().radius(d => radiusScale(d.connections ?? 0) + 4))
 
   // Create edges
   const link = g.append('g')
     .selectAll('line')
-    .data(graphData.value.edges)
+    .data(edges)
     .join('line')
     .attr('stroke', colors.edge)
-    .attr('stroke-opacity', 0.3)
-    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 0.4)
+    .attr('stroke-width', 1.5)
+    .attr('stroke-linecap', 'round')
     .attr('class', 'graph-edge')
 
   // Create nodes
   const node = g.append('g')
     .selectAll<SVGGElement, GraphNode>('g')
-    .data(graphData.value.nodes)
+    .data(nodes)
     .join('g')
+    .attr('data-node-id', d => d.id)
     .attr('cursor', 'pointer')
     .call(d3.drag<SVGGElement, GraphNode>()
       .on('start', dragstarted)
@@ -217,18 +265,19 @@ function initGraph() {
       applyHighlight(props.selectedId ?? null)
     })
 
-  // Node circles
+  // Node circles (radius based on connection count, color based on type)
   node.append('circle')
-    .attr('r', 6)
-    .attr('fill', colors.node)
-    .attr('stroke', colors.nodeStroke)
-    .attr('stroke-width', 1.5)
+    .attr('r', d => radiusScale(d.connections ?? 0))
+    .attr('fill', d => getNodeColor(d.type).fill)
+    .attr('stroke', 'transparent')
+    .attr('stroke-width', 0)
+    .attr('filter', d => getGlowFilter(d.type))
     .attr('class', 'node-circle')
 
-  // Node labels
+  // Node labels (x offset based on node radius)
   node.append('text')
     .text(d => d.title)
-    .attr('x', 10)
+    .attr('x', d => radiusScale(d.connections ?? 0) + 4)
     .attr('y', 4)
     .attr('font-size', '11px')
     .attr('fill', colors.text)
@@ -278,6 +327,11 @@ onMounted(() => {
 watch(() => props.selectedId, (newId) => {
   applyHighlight(newId ?? null)
 })
+
+// Reinitialize when graphData changes (filters applied)
+watch(() => props.graphData, () => {
+  initGraph()
+}, { deep: true })
 
 // Reinitialize on container resize (auto-cleanup via VueUse)
 useResizeObserver(container, useDebounceFn(initGraph, 200))

@@ -13,10 +13,12 @@ date: 2025-01-15
 
 Excellent long-form discussion expanding on concepts from [[atomic-habits]].
 
-Key takeaways:
+## Key Takeaways
 
 - Identity is more powerful than outcomes
 - Environment design beats willpower
 - The plateau of latent potential
+
+## Connections
 
 Also mentions sleep habits which connects to [[why-we-sleep]].

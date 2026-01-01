@@ -8,6 +8,7 @@ interface GraphNode {
   type: string
   tags: Array<string>
   summary?: string
+  connections: number
 }
 
 interface GraphEdge {
@@ -99,6 +100,7 @@ export default defineEventHandler(async (): Promise<GraphData> => {
         type: meta?.type ?? 'note',
         tags: meta?.tags ?? [],
         summary: meta?.summary,
+        connections: 0,
       })
 
       existingNodes.add(slug)
@@ -118,6 +120,19 @@ export default defineEventHandler(async (): Promise<GraphData> => {
           })
         }
       }
+    }
+
+    // Calculate connection counts (both directions count)
+    const connectionCounts = new Map<string, number>()
+    for (const node of nodes) {
+      connectionCounts.set(node.id, 0)
+    }
+    for (const edge of edges) {
+      connectionCounts.set(edge.source, (connectionCounts.get(edge.source) || 0) + 1)
+      connectionCounts.set(edge.target, (connectionCounts.get(edge.target) || 0) + 1)
+    }
+    for (const node of nodes) {
+      node.connections = connectionCounts.get(node.id) || 0
     }
 
     return { nodes, edges }

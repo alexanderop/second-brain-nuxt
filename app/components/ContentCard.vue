@@ -8,6 +8,7 @@ defineProps<{
   tags?: Array<string>
   date?: Date | string
   summary?: string
+  selected?: boolean
 }>()
 
 function formatDate(date?: Date | string) {
@@ -22,11 +23,14 @@ function formatDate(date?: Date | string) {
 </script>
 
 <template>
-  <article class="py-4 border-b border-[var(--ui-border)] last:border-b-0">
+  <article
+    class="py-4 border-b border-[var(--ui-border)] last:border-b-0 -mx-2 px-2 rounded-lg transition-colors"
+    :class="{ 'bg-[var(--ui-bg-muted)]': selected }"
+  >
     <NuxtLink :to="`/${slug}`" class="group block">
       <div class="flex items-start gap-3">
         <div class="mt-1 text-[var(--ui-text-muted)]">
-          <TypeIcon :type="type" size="md" />
+          <BaseTypeIcon :type="type" size="md" />
         </div>
         <div class="flex-1 min-w-0">
           <h2 class="font-medium group-hover:underline">
@@ -36,7 +40,7 @@ function formatDate(date?: Date | string) {
             {{ summary }}
           </p>
           <div class="mt-2 flex flex-wrap items-center gap-2">
-            <TagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
+            <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
             <span v-if="date" class="text-xs text-[var(--ui-text-muted)]">
               {{ formatDate(date) }}
             </span>

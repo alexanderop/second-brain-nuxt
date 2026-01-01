@@ -11,6 +11,7 @@ const contentTypeValues = [
   'quote',
   'course',
   'note',
+  'evergreen',
 ] as const
 
 export type ContentType = typeof contentTypeValues[number]

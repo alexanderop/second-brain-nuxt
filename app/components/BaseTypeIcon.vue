@@ -17,6 +17,7 @@ const iconMap: Record<ContentType, string> = {
   quote: 'i-lucide-quote',
   course: 'i-lucide-graduation-cap',
   note: 'i-lucide-pencil',
+  evergreen: 'i-lucide-leaf',
 }
 
 const sizeClasses = {

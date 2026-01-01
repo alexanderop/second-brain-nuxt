@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
+/* Smooth scroll behavior for anchor navigation */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Typography - Geist font */
 :root {
   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;

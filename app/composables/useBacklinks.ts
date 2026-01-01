@@ -11,7 +11,7 @@ interface BacklinksIndex {
 export function useBacklinks(slug: string) {
   const { data: backlinksIndex } = useAsyncData<BacklinksIndex>(
     'backlinks-index',
-    () => $fetch('/api/backlinks'),
+    () => $fetch<BacklinksIndex>('/api/backlinks'),
     { default: () => ({}) },
   )
 

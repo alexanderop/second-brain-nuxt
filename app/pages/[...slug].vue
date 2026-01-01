@@ -20,7 +20,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <article v-if="page" class="max-w-prose mx-auto">
+  <article v-if="page">
     <ContentHeader
       :title="page.title"
       :type="page.type"
@@ -49,6 +49,6 @@ useSeoMeta({
       <ContentRenderer :value="page" />
     </div>
 
-    <BacklinksSection :backlinks="backlinks" />
+    <ContentBacklinksSection :backlinks="backlinks" />
   </article>
 </template>

@@ -12,13 +12,14 @@ interface ContentItem {
 
 defineProps<{
   items: Array<ContentItem>
+  selectedIndex?: number
 }>()
 </script>
 
 <template>
   <div v-if="items.length > 0">
     <ContentCard
-      v-for="item in items"
+      v-for="(item, index) in items"
       :key="item.stem"
       :slug="item.stem"
       :title="item.title"
@@ -26,6 +27,7 @@ defineProps<{
       :tags="item.tags"
       :date="item.date"
       :summary="item.summary"
+      :selected="index === selectedIndex"
     />
   </div>
   <div v-else class="py-8 text-center text-[var(--ui-text-muted)]">
