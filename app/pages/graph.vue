@@ -226,7 +226,7 @@ const showMobileFilters = ref(false)
       </ClientOnly>
 
       <!-- Zoom controls -->
-      <div class="absolute bottom-4 right-4 z-10 flex gap-1">
+      <div class="absolute bottom-4 left-4 z-10 flex gap-1">
         <UTooltip text="Fit all nodes">
           <UButton
             icon="i-lucide-maximize-2"

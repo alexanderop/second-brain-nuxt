@@ -11,7 +11,10 @@
     "lint:fix": "oxlint --fix && eslint . --fix",
     "lint:ox": "oxlint",
     "lint:es": "eslint .",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "test:unit": "vitest run --project unit --project api-unit",
+    "test:unit:cov": "vitest run --project unit --project api-unit --coverage",
+    "test:e2e": "vitest run --project nuxt"
   },
   "dependencies": {
     "@nuxt/content": "^3.10.0",
@@ -35,12 +38,17 @@
     "@eslint/markdown": "^7.5.1",
     "@iconify-json/lucide": "^1.2.82",
     "@nuxt/kit": "^4.2.2",
+    "@nuxt/test-utils": "^3.21.0",
     "@types/node": "^25.0.3",
     "@typescript-eslint/parser": "^8.32.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vue/test-utils": "^2.4.6",
     "eslint": "^9.39.2",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "happy-dom": "^20.0.11",
     "oxlint": "^1.0.0",
     "typescript-eslint": "^8.32.1",
+    "vitest": "^3.2.4",
     "vue-eslint-parser": "^10.1.3"
   }
 }

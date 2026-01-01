@@ -1,4 +1,5 @@
 import { queryCollection } from '@nuxt/content/server'
+import { extractLinksFromBody } from '../utils/minimark'
 
 interface GraphNode {
   id: string
@@ -17,59 +18,6 @@ interface GraphEdge {
 interface GraphData {
   nodes: Array<GraphNode>
   edges: Array<GraphEdge>
-}
-
-// Minimark node type: [tag, props, ...children]
-type MinimarkNode = [string, Record<string, unknown>, ...unknown[]]
-
-// Extract internal links from minimark body format
-// Minimark uses arrays: [tag, props, ...children] instead of objects
-function extractLinksFromMinimark(node: unknown): Array<string> {
-  const links: Array<string> = []
-
-  if (!node) return links
-
-  // Handle minimark node format: [tag, props, ...children]
-  if (Array.isArray(node)) {
-    const [tag, props, ...children] = node as MinimarkNode
-
-    // Check if this is an anchor tag with internal href
-    if (tag === 'a' && typeof props === 'object' && props !== null) {
-      const href = props.href
-      if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
-        // Extract slug from href (remove leading slash)
-        const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
-        if (slugParts) {
-          links.push(slugParts)
-        }
-      }
-    }
-
-    // Recursively process children
-    for (const child of children) {
-      links.push(...extractLinksFromMinimark(child))
-    }
-  }
-
-  return links
-}
-
-// Extract links from the body object which contains minimark value array
-function extractLinksFromBody(body: unknown): Array<string> {
-  const links: Array<string> = []
-
-  if (!body || typeof body !== 'object') return links
-
-  const b = body as { type?: string, value?: unknown[] }
-
-  // Handle minimark format: { type: 'minimark', value: [...nodes] }
-  if (b.type === 'minimark' && Array.isArray(b.value)) {
-    for (const node of b.value) {
-      links.push(...extractLinksFromMinimark(node))
-    }
-  }
-
-  return links
 }
 
 export default defineEventHandler(async (event): Promise<GraphData> => {

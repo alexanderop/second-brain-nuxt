@@ -13,6 +13,15 @@ pnpm typecheck    # Verify type safety
 
 Run `pnpm lint:fix && pnpm typecheck` after code changes.
 
+## Testing
+
+```bash
+pnpm test:unit    # Fast tests for local dev (~500ms)
+pnpm test:e2e     # E2E tests - CI only (~30s)
+```
+
+Always use `pnpm test:unit` for local development. E2E tests (`test:e2e`) run in CI pipeline only.
+
 ## Stack
 
 - **Nuxt 4** - Vue framework
