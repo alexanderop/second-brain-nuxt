@@ -10,7 +10,19 @@ export default defineNuxtConfig({
   content: {
     database: {
       type: 'sqlite',
-      filename: '/tmp/contents.sqlite',
+      filename: ':memory:',
+    },
+  },
+
+  // Pre-render content pages to avoid cold start delays
+  routeRules: {
+    '/**': { prerender: true },
+  },
+
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/', '/api/graph', '/api/backlinks'],
     },
   },
 

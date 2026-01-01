@@ -1,6 +1,4 @@
-import { readdir, readFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import process from 'node:process'
+import { queryCollection } from '@nuxt/content/server'
 
 interface GraphNode {
   id: string
@@ -21,97 +19,76 @@ interface GraphData {
   edges: Array<GraphEdge>
 }
 
-// Extract wiki-links from markdown content
-function extractWikiLinks(content: string): Array<string> {
-  const wikiLinkRegex = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g
+// Recursively extract internal links from AST body
+function extractLinksFromAst(node: unknown): Array<string> {
   const links: Array<string> = []
 
-  for (const match of content.matchAll(wikiLinkRegex)) {
-    if (match[1]) {
-      const slug = match[1].toLowerCase().replace(/\s+/g, '-')
-      links.push(slug)
-    }
-  }
+  if (!node || typeof node !== 'object') return links
 
-  return [...new Set(links)]
-}
+  const n = node as Record<string, unknown>
 
-// Parse frontmatter from markdown file
-function parseFrontmatter(content: string): { title: string, type: string, tags: Array<string>, summary?: string } | null {
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/)
-  if (!frontmatterMatch || !frontmatterMatch[1])
-    return null
-
-  const frontmatter = frontmatterMatch[1]
-  const titleMatch = frontmatter.match(/title:\s*["']?([^"'\n]+)["']?/)
-  const typeMatch = frontmatter.match(/type:\s*(\w+)/)
-  const summaryMatch = frontmatter.match(/summary:\s*["']?([^"'\n]+)["']?/)
-
-  // Extract tags - simple line-by-line parsing
-  const tags: Array<string> = []
-  const lines = frontmatter.split('\n')
-  let inTags = false
-  for (const line of lines) {
-    if (line.startsWith('tags:')) {
-      inTags = true
-      continue
-    }
-    if (inTags) {
-      const tagMatch = line.match(/^[\t ]+- (.+)$/)
-      if (tagMatch?.[1]) {
-        tags.push(tagMatch[1].trim())
-      }
-      else if (!line.startsWith(' ') && !line.startsWith('\t') && line.trim()) {
-        inTags = false
+  // Check if this is a link element with internal href
+  if (n.tag === 'a' && typeof n.props === 'object' && n.props !== null) {
+    const props = n.props as Record<string, unknown>
+    const href = props.href
+    if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
+      // Extract slug from href (remove leading slash)
+      const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
+      if (slugParts) {
+        links.push(slugParts)
       }
     }
   }
 
-  return {
-    title: titleMatch?.[1] ?? 'Untitled',
-    type: typeMatch?.[1] ?? 'note',
-    tags,
-    summary: summaryMatch?.[1],
+  // Recursively check children
+  if (Array.isArray(n.children)) {
+    for (const child of n.children) {
+      links.push(...extractLinksFromAst(child))
+    }
   }
+
+  // Also check body if it exists (for root content object)
+  if (n.body && typeof n.body === 'object') {
+    links.push(...extractLinksFromAst(n.body))
+  }
+
+  return links
 }
 
-export default defineEventHandler(async (): Promise<GraphData> => {
-  const contentDir = join(process.cwd(), 'content')
+export default defineEventHandler(async (event): Promise<GraphData> => {
   const nodes: Array<GraphNode> = []
   const edges: Array<GraphEdge> = []
   const existingNodes = new Set<string>()
 
   try {
-    const files = await readdir(contentDir)
-    const mdFiles = files.filter((f: string) => f.endsWith('.md'))
+    // Query all content from the database using auto-imported queryCollection
+    const allContent = await queryCollection(event, 'content').all()
 
     // First pass: create nodes
-    const fileContents: Map<string, string> = new Map()
-
-    for (const file of mdFiles) {
-      const filePath = join(contentDir, file)
-      const content = await readFile(filePath, 'utf-8')
-      const slug = file.replace(/\.md$/, '')
-      const meta = parseFrontmatter(content)
+    for (const item of allContent) {
+      const slug = item.path?.slice(1) || item.stem || ''
 
       nodes.push({
         id: slug,
-        title: meta?.title ?? slug,
-        type: meta?.type ?? 'note',
-        tags: meta?.tags ?? [],
-        summary: meta?.summary,
+        title: item.title || slug,
+        type: item.type || 'note',
+        tags: Array.isArray(item.tags) ? item.tags : [],
+        summary: item.summary,
         connections: 0,
       })
 
       existingNodes.add(slug)
-      fileContents.set(slug, content)
     }
 
-    // Second pass: create edges
-    for (const [sourceSlug, content] of fileContents) {
-      const links = extractWikiLinks(content)
+    // Second pass: create edges by extracting links from AST
+    for (const item of allContent) {
+      const sourceSlug = item.path?.slice(1) || item.stem || ''
 
-      for (const targetSlug of links) {
+      // Extract links from the parsed body AST
+      const links = extractLinksFromAst(item.body)
+      const uniqueLinks = [...new Set(links)]
+
+      for (const targetSlug of uniqueLinks) {
         // Only create edges to existing nodes, avoid self-links
         if (existingNodes.has(targetSlug) && targetSlug !== sourceSlug) {
           edges.push({
