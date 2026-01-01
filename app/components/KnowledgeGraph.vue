@@ -7,6 +7,7 @@ interface GraphNode {
   title: string
   type: ContentType
   tags: Array<string>
+  authors: Array<string>
   summary?: string
   connections?: number
   x?: number

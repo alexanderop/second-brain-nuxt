@@ -6,6 +6,7 @@ interface GraphNode {
   title: string
   type: ContentType
   tags: Array<string>
+  authors: Array<string>
   summary?: string
   connections?: number
 }
@@ -56,6 +57,12 @@ const availableTags = computed<Array<string>>(() => {
   return [...new Set(graphData.value.nodes.flatMap(n => n.tags))].sort()
 })
 
+const availableAuthors = computed<Array<string>>(() => {
+  if (!graphData.value)
+    return []
+  return [...new Set(graphData.value.nodes.flatMap(n => n.authors || []))].sort()
+})
+
 // Build connectivity map for orphan detection
 const connectedNodeIds = computed(() => {
   if (!graphData.value)
@@ -83,6 +90,15 @@ const filteredNodes = computed(() => {
     if (filterState.value.tags.length > 0) {
       const hasMatchingTag = filterState.value.tags.some(tag => node.tags.includes(tag))
       if (!hasMatchingTag)
+        return false
+    }
+
+    // Author filter (node must have at least one selected author)
+    if (filterState.value.authors.length > 0) {
+      const hasMatchingAuthor = filterState.value.authors.some(
+        author => (node.authors || []).includes(author),
+      )
+      if (!hasMatchingAuthor)
         return false
     }
 
@@ -206,6 +222,7 @@ const showMobileFilters = ref(false)
       <GraphFilters
         :available-tags="availableTags"
         :available-types="availableTypes"
+        :available-authors="availableAuthors"
       />
     </div>
 
@@ -293,6 +310,7 @@ const showMobileFilters = ref(false)
         <GraphFilters
           :available-tags="availableTags"
           :available-types="availableTypes"
+          :available-authors="availableAuthors"
         />
       </div>
     </UDrawer>

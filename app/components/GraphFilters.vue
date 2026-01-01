@@ -4,10 +4,12 @@ import type { ContentType } from '~~/content.config'
 const props = defineProps<{
   availableTags: Array<string>
   availableTypes: Array<ContentType>
+  availableAuthors: Array<string>
 }>()
 
 const {
   selectedTags,
+  selectedAuthors,
   showOrphans,
   isTypeSelected,
   toggleType,
@@ -107,6 +109,22 @@ function getTypeColor(type: string): string {
         size="sm"
         class="w-44"
         aria-label="Tags"
+      />
+    </div>
+
+    <!-- Authors Filter -->
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider">
+        Authors
+      </span>
+      <USelectMenu
+        v-model="selectedAuthors"
+        :items="availableAuthors"
+        multiple
+        placeholder="Filter by authors..."
+        size="sm"
+        class="w-48"
+        aria-label="Authors"
       />
     </div>
 

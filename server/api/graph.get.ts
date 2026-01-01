@@ -6,6 +6,7 @@ interface GraphNode {
   title: string
   type: string
   tags: Array<string>
+  authors: Array<string>
   summary?: string
   connections: number
 }
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
     // Query all content from the database using auto-imported queryCollection
     // Must explicitly select body to get the AST for link extraction
     const allContent = await queryCollection(event, 'content')
-      .select('path', 'stem', 'title', 'type', 'tags', 'summary', 'body')
+      .select('path', 'stem', 'title', 'type', 'tags', 'authors', 'summary', 'body')
       .all()
 
     // First pass: create nodes
@@ -41,6 +42,7 @@ export default defineEventHandler(async (event): Promise<GraphData> => {
         title: item.title || slug,
         type: item.type || 'note',
         tags: Array.isArray(item.tags) ? item.tags : [],
+        authors: Array.isArray(item.authors) ? item.authors : [],
         summary: item.summary,
         connections: 0,
       })

@@ -6,6 +6,7 @@ interface ContentItem {
   title: string
   type: ContentType
   tags?: Array<string>
+  authors?: Array<string>
   date?: Date | string
   summary?: string
 }
@@ -25,6 +26,7 @@ defineProps<{
       :title="item.title"
       :type="item.type"
       :tags="item.tags"
+      :authors="item.authors"
       :date="item.date"
       :summary="item.summary"
       :selected="index === selectedIndex"

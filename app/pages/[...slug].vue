@@ -28,6 +28,7 @@ useSeoMeta({
       :slug="slug"
       :url="page.url"
       :tags="page.tags"
+      :authors="page.authors"
       :date="page.date"
     />
 

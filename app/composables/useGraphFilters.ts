@@ -4,6 +4,7 @@ import { useRouteQuery } from '@vueuse/router'
 export interface GraphFilterState {
   types: Array<ContentType>
   tags: Array<string>
+  authors: Array<string>
   showOrphans: boolean
 }
 
@@ -19,6 +20,7 @@ export const ALL_CONTENT_TYPES: Array<ContentType> = [
   'quote',
   'course',
   'note',
+  'evergreen',
 ]
 
 export function useGraphFilters() {
@@ -32,6 +34,7 @@ export function useGraphFilters() {
   // URL-synced refs
   const typesParam = useRouteQuery<string | Array<string> | null>('types')
   const tagsParam = useRouteQuery<string | Array<string> | null>('tags')
+  const authorsParam = useRouteQuery<string | Array<string> | null>('authors')
   const orphansParam = useRouteQuery<string | null>('orphans')
 
   // Computed getters/setters with proper typing
@@ -58,6 +61,13 @@ export function useGraphFilters() {
     get: () => parseArrayParam(tagsParam.value),
     set: (v: Array<string>) => {
       tagsParam.value = v.length ? v : null
+    },
+  })
+
+  const selectedAuthors = computed({
+    get: () => parseArrayParam(authorsParam.value),
+    set: (v: Array<string>) => {
+      authorsParam.value = v.length ? v : null
     },
   })
 
@@ -88,6 +98,7 @@ export function useGraphFilters() {
     return (
       selectedTypes.value.length < ALL_CONTENT_TYPES.length
       || selectedTags.value.length > 0
+      || selectedAuthors.value.length > 0
       || !showOrphans.value
     )
   })
@@ -96,6 +107,7 @@ export function useGraphFilters() {
   function clearFilters() {
     typesParam.value = null
     tagsParam.value = null
+    authorsParam.value = null
     orphansParam.value = null
   }
 
@@ -103,6 +115,7 @@ export function useGraphFilters() {
   const filterState = computed<GraphFilterState>(() => ({
     types: selectedTypes.value,
     tags: selectedTags.value,
+    authors: selectedAuthors.value,
     showOrphans: showOrphans.value,
   }))
 
@@ -110,6 +123,7 @@ export function useGraphFilters() {
     // State
     selectedTypes,
     selectedTags,
+    selectedAuthors,
     showOrphans,
     filterState,
     // Helpers

@@ -6,6 +6,7 @@ interface GraphNode {
   title: string
   type: ContentType
   tags: Array<string>
+  authors: Array<string>
   summary?: string
   connections?: number
 }
@@ -83,6 +84,14 @@ const defaultAccordionValue = computed(() =>
       <p v-if="node.summary" class="text-sm text-[var(--ui-text-muted)] mb-4">
         {{ node.summary }}
       </p>
+
+      <!-- Authors -->
+      <div v-if="node.authors?.length" class="flex items-center gap-2 mb-4 text-sm">
+        <UIcon name="i-lucide-user" class="size-4 text-[var(--ui-text-muted)]" />
+        <span class="text-[var(--ui-text-muted)]">
+          {{ node.authors.join(', ') }}
+        </span>
+      </div>
 
       <!-- Tags -->
       <div v-if="node.tags.length" class="flex flex-wrap gap-1.5 mb-4">

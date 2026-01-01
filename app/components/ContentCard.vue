@@ -6,6 +6,7 @@ defineProps<{
   title: string
   type: ContentType
   tags?: Array<string>
+  authors?: Array<string>
   date?: Date | string
   summary?: string
   selected?: boolean
@@ -36,6 +37,9 @@ function formatDate(date?: Date | string) {
           <h2 class="font-medium group-hover:underline">
             {{ title }}
           </h2>
+          <p v-if="authors?.length" class="text-sm text-[var(--ui-text-muted)]">
+            by {{ authors.join(', ') }}
+          </p>
           <p v-if="summary" class="mt-1 text-sm text-[var(--ui-text-muted)] line-clamp-2">
             {{ summary }}
           </p>

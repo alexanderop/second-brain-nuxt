@@ -7,6 +7,7 @@ const props = defineProps<{
   slug: string
   url?: string
   tags?: Array<string>
+  authors?: Array<string>
   date?: Date | string
 }>()
 
@@ -37,6 +38,18 @@ function formatDate(date?: Date | string) {
     <h1 class="text-3xl font-bold mb-4">
       {{ title }}
     </h1>
+    <div v-if="authors?.length" class="mb-4 text-[var(--ui-text-muted)]">
+      <span>by </span>
+      <template v-for="(author, index) in authors" :key="author">
+        <NuxtLink
+          :to="`/author/${encodeURIComponent(author)}`"
+          class="hover:underline text-[var(--ui-text)]"
+        >
+          {{ author }}
+        </NuxtLink>
+        <span v-if="index < authors.length - 1">, </span>
+      </template>
+    </div>
     <div class="flex flex-wrap items-center gap-2">
       <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
       <UButton
