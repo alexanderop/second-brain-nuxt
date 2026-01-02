@@ -36,6 +36,14 @@ export default defineNuxtConfig({
     experimental: {
       sqliteConnector: 'native',
     },
+    build: {
+      markdown: {
+        toc: {
+          depth: 3, // Include h2, h3 headings
+          searchDepth: 2,
+        },
+      },
+    },
   },
 
   // Pre-render content pages to avoid cold start delays

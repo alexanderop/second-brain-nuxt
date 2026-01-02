@@ -62,6 +62,9 @@ export default defineContentConfig({
         readingStatus: z.enum(readingStatusValues).optional(),
         startedReading: z.string().optional(),
         finishedReading: z.string().optional(),
+        // GitHub-specific fields
+        stars: z.number().optional(),
+        language: z.string().optional(),
       }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
