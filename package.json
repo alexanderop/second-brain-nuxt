@@ -11,6 +11,7 @@
     "node": "24.x"
   },
   "scripts": {
+    "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
