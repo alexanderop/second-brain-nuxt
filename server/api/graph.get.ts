@@ -23,90 +23,101 @@ interface GraphData {
   edges: Array<GraphEdge>
 }
 
-export default defineEventHandler(async (event): Promise<GraphData> => {
-  const nodes: Array<GraphNode> = []
-  const edges: Array<GraphEdge> = []
-  const existingNodes = new Set<string>()
+interface ContentItem {
+  path?: string
+  stem?: string
+  title?: string
+  type?: string
+  tags?: string[]
+  authors?: string[]
+  summary?: string
+  body?: unknown
+}
 
+// Helper: Extract slug from content item
+function getSlug(item: ContentItem): string {
+  return item.path?.slice(1) || item.stem || ''
+}
+
+// Helper: Create a graph node from content item
+function createNode(item: ContentItem): GraphNode {
+  const slug = getSlug(item)
+  return {
+    id: slug,
+    title: item.title || slug,
+    type: item.type || 'note',
+    tags: Array.isArray(item.tags) ? item.tags : [],
+    authors: Array.isArray(item.authors) ? item.authors : [],
+    summary: item.summary,
+    connections: 0,
+    maps: [],
+    isMap: item.type === 'map',
+  }
+}
+
+// Helper: Extract edges from content item
+function extractEdges(item: ContentItem, existingNodes: Set<string>): GraphEdge[] {
+  const sourceSlug = getSlug(item)
+  const links = extractLinksFromBody(item.body)
+  const uniqueLinks = [...new Set(links)]
+
+  return uniqueLinks
+    .filter(targetSlug => existingNodes.has(targetSlug) && targetSlug !== sourceSlug)
+    .map(targetSlug => ({ source: sourceSlug, target: targetSlug }))
+}
+
+// Helper: Calculate connection counts from edges
+function calculateConnectionCounts(nodes: GraphNode[], edges: GraphEdge[]): void {
+  const counts = new Map<string, number>()
+  for (const node of nodes) {
+    counts.set(node.id, 0)
+  }
+  for (const edge of edges) {
+    counts.set(edge.source, (counts.get(edge.source) || 0) + 1)
+    counts.set(edge.target, (counts.get(edge.target) || 0) + 1)
+  }
+  for (const node of nodes) {
+    node.connections = counts.get(node.id) || 0
+  }
+}
+
+// Helper: Compute map membership for nodes
+function computeMapMembership(allContent: ContentItem[], nodeMap: Map<string, GraphNode>): void {
+  for (const item of allContent) {
+    if (item.type !== 'map') continue
+
+    const mapSlug = getSlug(item)
+    const links = extractLinksFromBody(item.body)
+    const uniqueLinks = [...new Set(links)]
+
+    for (const targetSlug of uniqueLinks) {
+      const targetNode = nodeMap.get(targetSlug)
+      if (targetNode && targetSlug !== mapSlug) {
+        targetNode.maps.push(mapSlug)
+      }
+    }
+  }
+}
+
+export default defineEventHandler(async (event): Promise<GraphData> => {
   try {
-    // Query all content from the database using auto-imported queryCollection
-    // Must explicitly select body to get the AST for link extraction
     const allContent = await queryCollection(event, 'content')
       .select('path', 'stem', 'title', 'type', 'tags', 'authors', 'summary', 'body')
       .all()
 
     // First pass: create nodes
-    for (const item of allContent) {
-      const slug = item.path?.slice(1) || item.stem || ''
+    const nodes = allContent.map(createNode)
+    const existingNodes = new Set(nodes.map(n => n.id))
 
-      nodes.push({
-        id: slug,
-        title: item.title || slug,
-        type: item.type || 'note',
-        tags: Array.isArray(item.tags) ? item.tags : [],
-        authors: Array.isArray(item.authors) ? item.authors : [],
-        summary: item.summary,
-        connections: 0,
-        maps: [],
-        isMap: item.type === 'map',
-      })
+    // Second pass: create edges
+    const edges = allContent.flatMap(item => extractEdges(item, existingNodes))
 
-      existingNodes.add(slug)
-    }
+    // Calculate connection counts
+    calculateConnectionCounts(nodes, edges)
 
-    // Second pass: create edges by extracting links from AST
-    for (const item of allContent) {
-      const sourceSlug = item.path?.slice(1) || item.stem || ''
-
-      // Extract links from the parsed body (minimark format)
-      const links = extractLinksFromBody(item.body)
-      const uniqueLinks = [...new Set(links)]
-
-      for (const targetSlug of uniqueLinks) {
-        // Only create edges to existing nodes, avoid self-links
-        if (existingNodes.has(targetSlug) && targetSlug !== sourceSlug) {
-          edges.push({
-            source: sourceSlug,
-            target: targetSlug,
-          })
-        }
-      }
-    }
-
-    // Calculate connection counts (both directions count)
-    const connectionCounts = new Map<string, number>()
-    for (const node of nodes) {
-      connectionCounts.set(node.id, 0)
-    }
-    for (const edge of edges) {
-      connectionCounts.set(edge.source, (connectionCounts.get(edge.source) || 0) + 1)
-      connectionCounts.set(edge.target, (connectionCounts.get(edge.target) || 0) + 1)
-    }
-    for (const node of nodes) {
-      node.connections = connectionCounts.get(node.id) || 0
-    }
-
-    // Third pass: compute map membership (reverse lookup)
-    // For each map node, find its outgoing links and mark target nodes as members
-    const nodeMap = new Map<string, GraphNode>()
-    for (const node of nodes) {
-      nodeMap.set(node.id, node)
-    }
-
-    for (const item of allContent) {
-      if (item.type !== 'map') continue
-
-      const mapSlug = item.path?.slice(1) || item.stem || ''
-      const links = extractLinksFromBody(item.body)
-      const uniqueLinks = [...new Set(links)]
-
-      for (const targetSlug of uniqueLinks) {
-        const targetNode = nodeMap.get(targetSlug)
-        if (targetNode && targetSlug !== mapSlug) {
-          targetNode.maps.push(mapSlug)
-        }
-      }
-    }
+    // Third pass: compute map membership
+    const nodeMap = new Map(nodes.map(n => [n.id, n]))
+    computeMapMembership(allContent, nodeMap)
 
     return { nodes, edges }
   }

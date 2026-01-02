@@ -6,12 +6,17 @@ const externalContentTypes = [
   'podcast',
   'article',
   'book',
+  'manga',
   'movie',
   'tv',
   'tweet',
   'course',
   'reddit',
 ] as const
+
+// Manga status values
+const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
+export type MangaStatus = typeof mangaStatusValues[number]
 
 // Personal content types have optional authors
 const personalContentTypes = [
@@ -38,11 +43,15 @@ export default defineContentConfig({
         title: z.string(),
         type: contentTypes,
         url: z.string().url().optional(),
+        cover: z.string().url().optional(),
         tags: z.array(z.string()).default([]),
         authors: z.array(z.string()).default([]),
         summary: z.string().optional(),
         notes: z.string().optional(),
         date: z.string().optional(),
+        // Manga-specific fields
+        volumes: z.number().optional(),
+        status: z.enum(mangaStatusValues).optional(),
       }).superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
@@ -52,6 +61,23 @@ export default defineContentConfig({
             message: `authors is required for ${data.type} content type`,
             path: ['authors'],
           })
+        }
+        // Volumes and status required for manga type
+        if (data.type === 'manga') {
+          if (data.volumes === undefined) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'volumes is required for manga content type',
+              path: ['volumes'],
+            })
+          }
+          if (data.status === undefined) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'status is required for manga content type',
+              path: ['status'],
+            })
+          }
         }
       }),
     }),

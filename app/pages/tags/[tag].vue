@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const tag = computed(() => route.params.tag as string)
+const tag = computed(() => String(route.params.tag))
 
 const { data: items } = await useAsyncData(`tag-${tag.value}`, () => {
   return queryCollection('content')

@@ -50,6 +50,16 @@ function getGlowFilter(type: string): string {
   return `url(#glow-${type in typeColors ? type : 'default'})`
 }
 
+// Helper: Get x coordinate from edge endpoint (source or target)
+function getEdgeX(endpoint: string | NoteGraphNode): number {
+  return typeof endpoint === 'string' ? 0 : (endpoint.x ?? 0)
+}
+
+// Helper: Get y coordinate from edge endpoint (source or target)
+function getEdgeY(endpoint: string | NoteGraphNode): number {
+  return typeof endpoint === 'string' ? 0 : (endpoint.y ?? 0)
+}
+
 function initGraph() {
   if (!container.value || !props.graphData) return
 
@@ -138,11 +148,15 @@ function initGraph() {
     .data(nodes)
     .join('g')
     .attr('cursor', 'pointer')
-    .call(d3.drag<SVGGElement, NoteGraphNode>()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended) as unknown as (selection: d3.Selection<SVGGElement, NoteGraphNode, SVGGElement, unknown>) => void)
-    .on('click', (_, d) => {
+
+  // Apply drag behavior (D3 types require separate call for type compatibility)
+  const dragBehavior = d3.drag<SVGGElement, NoteGraphNode>()
+    .on('start', dragstarted)
+    .on('drag', dragged)
+    .on('end', dragended)
+  node.call(dragBehavior)
+
+  node.on('click', (_, d) => {
       if (!d.isCenter) {
         emit('navigate', d.id)
       }
@@ -259,10 +273,10 @@ function initGraph() {
   // Update positions on tick
   simulation.on('tick', () => {
     link
-      .attr('x1', d => (d.source as NoteGraphNode).x ?? 0)
-      .attr('y1', d => (d.source as NoteGraphNode).y ?? 0)
-      .attr('x2', d => (d.target as NoteGraphNode).x ?? 0)
-      .attr('y2', d => (d.target as NoteGraphNode).y ?? 0)
+      .attr('x1', d => getEdgeX(d.source))
+      .attr('y1', d => getEdgeY(d.source))
+      .attr('x2', d => getEdgeX(d.target))
+      .attr('y2', d => getEdgeY(d.target))
 
     node.attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`)
   })

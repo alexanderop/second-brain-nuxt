@@ -1,20 +1,14 @@
 <script setup lang="ts">
-import type { ContentType } from '~~/content.config'
+import type { ContentItem } from '~/types/content'
 
 const props = defineProps<{
-  title: string
-  type: ContentType
-  slug: string
-  url?: string
-  tags?: Array<string>
-  authors?: Array<string>
-  date?: Date | string
+  content: ContentItem
 }>()
 
 const { copy, copied } = useClipboard()
 
 function copyWikiLink() {
-  copy(`[[${props.slug}]]`)
+  copy(`[[${props.content.slug}]]`)
 }
 
 function formatDate(date?: Date | string) {
@@ -31,27 +25,27 @@ function formatDate(date?: Date | string) {
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-2 mb-2 text-[var(--ui-text-muted)]">
-      <BaseTypeIcon :type="type" size="sm" />
-      <span class="text-sm capitalize">{{ type }}</span>
-      <span v-if="date" class="text-sm">{{ formatDate(date) }}</span>
+      <BaseTypeIcon :type="content.type" size="sm" />
+      <span class="text-sm capitalize">{{ content.type }}</span>
+      <span v-if="content.date" class="text-sm">{{ formatDate(content.date) }}</span>
     </div>
     <h1 class="text-3xl font-bold mb-4">
-      {{ title }}
+      {{ content.title }}
     </h1>
-    <div v-if="authors?.length" class="mb-4 text-[var(--ui-text-muted)]">
+    <div v-if="content.authors?.length" class="mb-4 text-[var(--ui-text-muted)]">
       <span>by </span>
-      <template v-for="(author, index) in authors" :key="author">
+      <template v-for="(author, index) in content.authors" :key="author">
         <NuxtLink
           :to="`/authors/${encodeURIComponent(author)}`"
           class="hover:underline text-[var(--ui-text)]"
         >
           {{ author }}
         </NuxtLink>
-        <span v-if="index < authors.length - 1">, </span>
+        <span v-if="index < content.authors.length - 1">, </span>
       </template>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <BaseTagPill v-for="tag in (tags ?? [])" :key="tag" :tag="tag" />
+      <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
       <UButton
         variant="ghost"
         color="neutral"
@@ -63,8 +57,8 @@ function formatDate(date?: Date | string) {
         {{ copied ? 'Copied!' : 'Copy link' }}
       </UButton>
       <UButton
-        v-if="url"
-        :to="url"
+        v-if="content.url"
+        :to="content.url"
         target="_blank"
         variant="outline"
         color="neutral"

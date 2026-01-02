@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import type { ContentType } from '~~/content.config'
+import type { ContentItem } from '~/types/content'
 
-interface ContentItem {
+interface ContentListItem extends Omit<ContentItem, 'slug'> {
   stem: string
-  title: string
-  type: ContentType
-  tags?: Array<string>
-  authors?: Array<string>
-  date?: Date | string
-  summary?: string
 }
 
 defineProps<{
-  items: Array<ContentItem>
+  items: Array<ContentListItem>
   selectedIndex?: number
 }>()
 </script>
@@ -22,13 +16,7 @@ defineProps<{
     <ContentCard
       v-for="(item, index) in items"
       :key="item.stem"
-      :slug="item.stem"
-      :title="item.title"
-      :type="item.type"
-      :tags="item.tags"
-      :authors="item.authors"
-      :date="item.date"
-      :summary="item.summary"
+      :content="{ slug: item.stem, title: item.title, type: item.type, tags: item.tags, authors: item.authors, date: item.date, summary: item.summary }"
       :selected="index === selectedIndex"
     />
   </div>

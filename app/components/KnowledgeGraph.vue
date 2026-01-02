@@ -128,12 +128,28 @@ function getConnectedIds(nodeId: string | null): Set<string> {
   return connected
 }
 
+// Helper: Get numeric extent from array, returns [0, 0] if undefined
+function getExtent(nodes: Array<GraphNode>, accessor: (d: GraphNode) => number | undefined): [number, number] {
+  const extent = d3.extent(nodes, accessor)
+  return [extent[0] ?? 0, extent[1] ?? 0]
+}
+
+// Helper: Get x coordinate from edge endpoint (source or target)
+function getEdgeX(endpoint: string | GraphNode): number {
+  return typeof endpoint === 'string' ? 0 : (endpoint.x ?? 0)
+}
+
+// Helper: Get y coordinate from edge endpoint (source or target)
+function getEdgeY(endpoint: string | GraphNode): number {
+  return typeof endpoint === 'string' ? 0 : (endpoint.y ?? 0)
+}
+
 // Zoom to fit all nodes in view with padding
 function zoomToFit(padding = 60) {
   if (!currentNodes.value.length || !svgRef.value || !zoomRef.value) return
 
-  const xExtent = d3.extent(currentNodes.value, d => d.x) as [number, number]
-  const yExtent = d3.extent(currentNodes.value, d => d.y) as [number, number]
+  const xExtent = getExtent(currentNodes.value, d => d.x)
+  const yExtent = getExtent(currentNodes.value, d => d.y)
 
   // Handle edge case where all nodes are at same position
   const boundsWidth = (xExtent[1] - xExtent[0]) || 1
@@ -362,43 +378,52 @@ function initGraph() {
   svg.on('dblclick.zoom', null) // Disable default d3 double-click zoom
   svg.on('dblclick', () => zoomToFit())
 
-  // Custom clustering force for map gravity
-  function clusteringForce(alpha: number) {
-    // Build map position lookup
+  // Helper: Build map position lookup from nodes
+  function buildMapPositions(nodes: GraphNode[]): Map<string, { x: number, y: number }> {
     const mapPositions = new Map<string, { x: number, y: number }>()
     for (const node of nodes) {
       if (node.isMap) {
         mapPositions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 })
       }
     }
+    return mapPositions
+  }
 
-    // Apply gravitational pull toward map centers
-    for (const node of nodes) {
-      if (node.maps && node.maps.length > 0 && !node.isMap) {
-        // Calculate centroid of all maps this node belongs to
-        let targetX = 0
-        let targetY = 0
-        let mapCount = 0
-
-        for (const mapId of node.maps) {
-          const mapPos = mapPositions.get(mapId)
-          if (mapPos) {
-            targetX += mapPos.x
-            targetY += mapPos.y
-            mapCount++
-          }
-        }
-
-        if (mapCount > 0) {
-          targetX /= mapCount
-          targetY /= mapCount
-
-          // Strong pull toward map centers
-          const strength = 0.15 * alpha
-          node.vx = (node.vx ?? 0) + (targetX - (node.x ?? 0)) * strength
-          node.vy = (node.vy ?? 0) + (targetY - (node.y ?? 0)) * strength
-        }
+  // Helper: Calculate centroid of maps for a node
+  function calculateMapCentroid(
+    mapIds: string[],
+    mapPositions: Map<string, { x: number, y: number }>,
+  ): { x: number, y: number, count: number } {
+    let targetX = 0
+    let targetY = 0
+    let mapCount = 0
+    for (const mapId of mapIds) {
+      const mapPos = mapPositions.get(mapId)
+      if (mapPos) {
+        targetX += mapPos.x
+        targetY += mapPos.y
+        mapCount++
       }
+    }
+    return { x: targetX, y: targetY, count: mapCount }
+  }
+
+  // Custom clustering force for map gravity
+  function clusteringForce(alpha: number) {
+    const mapPositions = buildMapPositions(nodes)
+
+    for (const node of nodes) {
+      if (!node.maps || node.maps.length === 0 || node.isMap) continue
+
+      const centroid = calculateMapCentroid(node.maps, mapPositions)
+      if (centroid.count === 0) continue
+
+      const targetX = centroid.x / centroid.count
+      const targetY = centroid.y / centroid.count
+      const strength = 0.15 * alpha
+
+      node.vx = (node.vx ?? 0) + (targetX - (node.x ?? 0)) * strength
+      node.vy = (node.vy ?? 0) + (targetY - (node.y ?? 0)) * strength
     }
   }
 
@@ -431,10 +456,15 @@ function initGraph() {
     .join('g')
     .attr('data-node-id', d => d.id)
     .attr('cursor', 'pointer')
-    .call(d3.drag<SVGGElement, GraphNode>()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended) as unknown as (selection: d3.Selection<SVGGElement, GraphNode, SVGGElement, unknown>) => void)
+
+  // Apply drag behavior (D3 types require separate call for type compatibility)
+  const dragBehavior = d3.drag<SVGGElement, GraphNode>()
+    .on('start', dragstarted)
+    .on('drag', dragged)
+    .on('end', dragended)
+  node.call(dragBehavior)
+
+  node
     .on('click', (_, d) => {
       emit('select', d)
     })
@@ -512,10 +542,10 @@ function initGraph() {
   // Update positions on tick
   simulation.on('tick', () => {
     link
-      .attr('x1', d => (d.source as GraphNode).x ?? 0)
-      .attr('y1', d => (d.source as GraphNode).y ?? 0)
-      .attr('x2', d => (d.target as GraphNode).x ?? 0)
-      .attr('y2', d => (d.target as GraphNode).y ?? 0)
+      .attr('x1', d => getEdgeX(d.source))
+      .attr('y1', d => getEdgeY(d.source))
+      .attr('x2', d => getEdgeX(d.target))
+      .attr('y2', d => getEdgeY(d.target))
 
     node.attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`)
   })

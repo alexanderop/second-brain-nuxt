@@ -2,9 +2,9 @@
 import type { ContentType } from '~~/content.config'
 
 const route = useRoute()
-const type = computed(() => route.params.type as ContentType)
+const typeParam = computed(() => String(route.params.type))
 
-const validTypes: Array<ContentType> = [
+const validTypes: readonly ContentType[] = [
   'youtube',
   'podcast',
   'article',
@@ -15,11 +15,22 @@ const validTypes: Array<ContentType> = [
   'quote',
   'course',
   'note',
+  'evergreen',
+  'map',
+  'reddit',
 ]
 
-if (!validTypes.includes(type.value)) {
+function asContentType(value: string): ContentType | undefined {
+  const found = validTypes.find(t => t === value)
+  return found
+}
+
+const validatedType = asContentType(typeParam.value)
+if (!validatedType) {
   throw createError({ statusCode: 404, statusMessage: 'Invalid content type', fatal: true })
 }
+
+const type = computed<ContentType>(() => asContentType(typeParam.value) ?? validatedType)
 
 const { data: items } = await useAsyncData(`type-${type.value}`, () => {
   return queryCollection('content')

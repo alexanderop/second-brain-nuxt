@@ -98,50 +98,36 @@ const connectedNodeIds = computed(() => {
   return connected
 })
 
+// Filter helpers
+function passesTagFilter(node: GraphNode, selectedTags: string[]): boolean {
+  if (selectedTags.length === 0) return true
+  return selectedTags.some(tag => node.tags.includes(tag))
+}
+
+function passesAuthorFilter(node: GraphNode, selectedAuthors: string[]): boolean {
+  if (selectedAuthors.length === 0) return true
+  return selectedAuthors.some(author => (node.authors || []).includes(author))
+}
+
+function passesMapFilter(node: GraphNode, selectedMaps: string[]): boolean {
+  if (selectedMaps.length === 0) return true
+  const isSelectedMap = selectedMaps.includes(node.id)
+  const belongsToSelectedMap = selectedMaps.some(mapId => (node.maps || []).includes(mapId))
+  return isSelectedMap || belongsToSelectedMap
+}
+
 // Apply filters to nodes
 const filteredNodes = computed(() => {
-  if (!graphData.value)
-    return []
+  if (!graphData.value) return []
+
+  const { types, tags, authors, maps, showOrphans } = filterState.value
 
   return graphData.value.nodes.filter((node) => {
-    // Type filter
-    if (!filterState.value.types.includes(node.type)) {
-      return false
-    }
-
-    // Tag filter (node must have at least one selected tag)
-    if (filterState.value.tags.length > 0) {
-      const hasMatchingTag = filterState.value.tags.some(tag => node.tags.includes(tag))
-      if (!hasMatchingTag)
-        return false
-    }
-
-    // Author filter (node must have at least one selected author)
-    if (filterState.value.authors.length > 0) {
-      const hasMatchingAuthor = filterState.value.authors.some(
-        author => (node.authors || []).includes(author),
-      )
-      if (!hasMatchingAuthor)
-        return false
-    }
-
-    // Map filter (node must belong to a selected map, or be a selected map itself)
-    if (filterState.value.maps.length > 0) {
-      const isSelectedMap = filterState.value.maps.includes(node.id)
-      const belongsToSelectedMap = filterState.value.maps.some(
-        mapId => (node.maps || []).includes(mapId),
-      )
-      if (!isSelectedMap && !belongsToSelectedMap)
-        return false
-    }
-
-    // Orphan filter
-    if (!filterState.value.showOrphans) {
-      const isOrphan = !connectedNodeIds.value.has(node.id)
-      if (isOrphan)
-        return false
-    }
-
+    if (!types.includes(node.type)) return false
+    if (!passesTagFilter(node, tags)) return false
+    if (!passesAuthorFilter(node, authors)) return false
+    if (!passesMapFilter(node, maps)) return false
+    if (!showOrphans && !connectedNodeIds.value.has(node.id)) return false
     return true
   })
 })

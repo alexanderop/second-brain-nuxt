@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const authorSlug = computed(() => decodeURIComponent(route.params.name as string))
+const authorSlug = computed(() => decodeURIComponent(String(route.params.name)))
 
 const { data: authorData } = await useAsyncData(`author-data-${authorSlug.value}`, () => {
   return queryCollection('authors')

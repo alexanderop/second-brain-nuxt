@@ -1,35 +1,40 @@
 // Minimark node type: [tag, props, ...children]
 export type MinimarkNode = [string, Record<string, unknown>, ...unknown[]]
 
+// Helper: Check if href is an internal link
+function isInternalLink(href: unknown): href is string {
+  return typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')
+}
+
+// Helper: Extract slug from internal href
+function extractSlugFromHref(href: string): string | null {
+  const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
+  return slugParts || null
+}
+
+// Helper: Extract link from anchor node if valid
+function extractLinkFromAnchor(props: Record<string, unknown>): string | null {
+  if (!isInternalLink(props.href)) return null
+  return extractSlugFromHref(props.href)
+}
+
 /**
  * Extract internal links from a minimark AST node.
  * Minimark uses arrays: [tag, props, ...children] instead of objects.
  */
 export function extractLinksFromMinimark(node: unknown): string[] {
+  if (!node || !Array.isArray(node) || node.length < 2) return []
+
+  const [tag, props, ...children] = node
   const links: string[] = []
 
-  if (!node) return links
+  if (tag === 'a' && typeof props === 'object' && props !== null) {
+    const slug = extractLinkFromAnchor(props)
+    if (slug) links.push(slug)
+  }
 
-  // Handle minimark node format: [tag, props, ...children]
-  if (Array.isArray(node)) {
-    const [tag, props, ...children] = node as MinimarkNode
-
-    // Check if this is an anchor tag with internal href
-    if (tag === 'a' && typeof props === 'object' && props !== null) {
-      const href = props.href
-      if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
-        // Extract slug from href (remove leading slash, hash, and query params)
-        const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
-        if (slugParts) {
-          links.push(slugParts)
-        }
-      }
-    }
-
-    // Recursively process children
-    for (const child of children) {
-      links.push(...extractLinksFromMinimark(child))
-    }
+  for (const child of children) {
+    links.push(...extractLinksFromMinimark(child))
   }
 
   return links
@@ -39,12 +44,17 @@ export function extractLinksFromMinimark(node: unknown): string[] {
  * Extract links from a body object which contains minimark value array.
  * Body format: { type: 'minimark', value: [...nodes] }
  */
+interface MinimarkBody {
+  type?: string
+  value?: unknown[]
+}
+
 export function extractLinksFromBody(body: unknown): string[] {
   const links: string[] = []
 
   if (!body || typeof body !== 'object') return links
 
-  const b = body as { type?: string, value?: unknown[] }
+  const b: MinimarkBody = body
 
   // Handle minimark format: { type: 'minimark', value: [...nodes] }
   if (b.type === 'minimark' && Array.isArray(b.value)) {

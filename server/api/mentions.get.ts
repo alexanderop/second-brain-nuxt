@@ -10,94 +10,124 @@ interface MentionItem {
   highlightedSnippet: string
 }
 
-export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const targetSlug = query.slug as string
-  const targetTitle = query.title as string
+interface ContentMeta {
+  title: string
+  type: string
+  linksTo: Set<string>
+}
 
-  if (!targetSlug || !targetTitle) {
-    return []
+interface ContentItem {
+  path?: string
+  stem?: string
+  title?: string
+  type?: string
+  body?: unknown
+}
+
+interface SearchSection {
+  id: string
+  content?: string
+  titles?: string[]
+  title?: string
+}
+
+// Helper: Build content metadata map
+function buildContentMap(allContent: ContentItem[]): Map<string, ContentMeta> {
+  const contentMap = new Map<string, ContentMeta>()
+  for (const item of allContent) {
+    const slug = item.path?.slice(1) || item.stem || ''
+    const links = extractLinksFromBody(item.body)
+    contentMap.set(slug, {
+      title: item.title || slug,
+      type: item.type || 'note',
+      linksTo: new Set(links),
+    })
+  }
+  return contentMap
+}
+
+// Helper: Check if section should be included as a mention
+function shouldIncludeSection(
+  section: SearchSection,
+  targetSlug: string,
+  contentMap: Map<string, ContentMeta>,
+  titleRegex: RegExp,
+): boolean {
+  const path = section.id.split('#')[0]?.slice(1) || ''
+  if (path === targetSlug) return false
+
+  const contentMeta = contentMap.get(path)
+  if (contentMeta?.linksTo.has(targetSlug)) return false
+
+  return Boolean(section.content && titleRegex.test(section.content))
+}
+
+// Helper: Build mentions map from sections
+function buildMentionsMap(
+  searchSections: SearchSection[],
+  targetSlug: string,
+  contentMap: Map<string, ContentMeta>,
+  titleRegex: RegExp,
+): Map<string, { content: string, sectionTitle: string }> {
+  const mentionsByPath = new Map<string, { content: string, sectionTitle: string }>()
+
+  for (const section of searchSections) {
+    const path = section.id.split('#')[0]?.slice(1) || ''
+    if (mentionsByPath.has(path)) continue
+    if (!shouldIncludeSection(section, targetSlug, contentMap, titleRegex)) continue
+
+    mentionsByPath.set(path, {
+      content: section.content || '',
+      sectionTitle: section.titles?.[0] || section.title || path,
+    })
   }
 
-  // Skip very short titles to avoid false positives
-  if (targetTitle.length < 3) {
+  return mentionsByPath
+}
+
+// Helper: Convert mentions map to response array
+function buildMentionItems(
+  mentionsByPath: Map<string, { content: string }>,
+  contentMap: Map<string, ContentMeta>,
+  targetTitle: string,
+): MentionItem[] {
+  const mentions: MentionItem[] = []
+
+  for (const [path, data] of mentionsByPath) {
+    const contentMeta = contentMap.get(path)
+    if (!contentMeta) continue
+
+    const snippet = getSnippet(data.content, targetTitle)
+    mentions.push({
+      slug: path,
+      title: contentMeta.title,
+      type: contentMeta.type,
+      snippet,
+      highlightedSnippet: highlightMatch(snippet, targetTitle),
+    })
+  }
+
+  return mentions
+}
+
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event)
+  const targetSlug = String(query.slug || '')
+  const targetTitle = String(query.title || '')
+
+  if (!targetSlug || !targetTitle || targetTitle.length < 3) {
     return []
   }
 
   try {
-    // Get all content with body for link extraction
     const allContent = await queryCollection(event, 'content').all()
-
-    // Get search sections for plain text content
     const searchSections = await queryCollectionSearchSections(event, 'content')
 
-    // Build a map of slug -> content metadata and outgoing links
-    const contentMap = new Map<string, {
-      title: string
-      type: string
-      linksTo: Set<string>
-    }>()
-
-    for (const item of allContent) {
-      const slug = item.path?.slice(1) || item.stem || ''
-      const links = extractLinksFromBody(item.body)
-      contentMap.set(slug, {
-        title: item.title || slug,
-        type: item.type || 'note',
-        linksTo: new Set(links),
-      })
-    }
-
-    // Create case-insensitive regex for title matching
-    // Use word boundaries to avoid partial matches
+    const contentMap = buildContentMap(allContent)
     const titleRegex = new RegExp(`\\b${escapeRegex(targetTitle)}\\b`, 'i')
+    const mentionsByPath = buildMentionsMap(searchSections, targetSlug, contentMap, titleRegex)
 
-    // Group sections by document path
-    const mentionsByPath = new Map<string, { content: string, sectionTitle: string }>()
-
-    for (const section of searchSections) {
-      // Extract path from section id (e.g., "/atomic-habits#section" -> "atomic-habits")
-      const path = section.id.split('#')[0]?.slice(1) || ''
-
-      // Skip self-references
-      if (path === targetSlug) continue
-
-      // Check if this note already has an explicit link to target
-      const contentMeta = contentMap.get(path)
-      if (contentMeta?.linksTo.has(targetSlug)) continue
-
-      // Check if content contains the title
-      if (section.content && titleRegex.test(section.content)) {
-        // Only keep the first match per document
-        if (!mentionsByPath.has(path)) {
-          mentionsByPath.set(path, {
-            content: section.content,
-            sectionTitle: section.titles?.[0] || section.title || path,
-          })
-        }
-      }
-    }
-
-    // Build the response
-    const mentions: MentionItem[] = []
-
-    for (const [path, data] of mentionsByPath) {
-      const contentMeta = contentMap.get(path)
-      if (!contentMeta) continue
-
-      const snippet = getSnippet(data.content, targetTitle)
-      const highlightedSnippet = highlightMatch(snippet, targetTitle)
-
-      mentions.push({
-        slug: path,
-        title: contentMeta.title,
-        type: contentMeta.type,
-        snippet,
-        highlightedSnippet,
-      })
-    }
-
-    return mentions
+    return buildMentionItems(mentionsByPath, contentMap, targetTitle)
   }
   catch (error) {
     console.error('Error finding unlinked mentions:', error)

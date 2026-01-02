@@ -77,42 +77,45 @@ function highlightMatch(text: string, term: string): string {
   return text.replace(regex, '<mark class="bg-[var(--ui-primary)]/20 text-[var(--ui-primary)] rounded px-0.5">$1</mark>')
 }
 
+// Helper: Extract snippet and highlighted version from match results
+function extractSnippetFromMatch(
+  result: FuseResult<SearchSection>,
+  searchTerm: string,
+): { snippet: string, highlightedSnippet: string } {
+  const contentMatch = result.matches?.find(m => m.key === 'content')
+  const titleMatch = result.matches?.find(m => m.key === 'title')
+
+  if (contentMatch?.value) {
+    const snippet = getSnippet(contentMatch.value, searchTerm)
+    return { snippet, highlightedSnippet: highlightMatch(snippet, searchTerm) }
+  }
+
+  if (titleMatch?.value) {
+    const snippet = result.item.content?.slice(0, 150) ?? ''
+    return { snippet, highlightedSnippet: snippet }
+  }
+
+  return { snippet: '', highlightedSnippet: '' }
+}
+
+// Helper: Create search result from fuse result
+function createSearchResult(result: FuseResult<SearchSection>, searchTerm: string): SearchResult {
+  const section = result.item
+  const path = section.id.split('#')[0] ?? section.id
+  const title = section.titles?.[0] || section.title || path
+  const { snippet, highlightedSnippet } = extractSnippetFromMatch(result, searchTerm)
+
+  return { id: path, path, title, snippet, highlightedSnippet }
+}
+
 // Group sections by document and return search results
 function processSearchResults(fuseResults: FuseResult<SearchSection>[]): SearchResult[] {
   const resultMap = new Map<string, SearchResult>()
 
   for (const result of fuseResults) {
-    const section = result.item
-    // Extract path from section id (e.g., "/atomic-habits#section" -> "/atomic-habits")
-    const path = section.id.split('#')[0] ?? section.id
-
+    const path = result.item.id.split('#')[0] ?? result.item.id
     if (!resultMap.has(path)) {
-      // Find the best match content for snippet
-      const contentMatch = result.matches?.find(m => m.key === 'content')
-      const titleMatch = result.matches?.find(m => m.key === 'title')
-
-      let snippet = ''
-      let highlightedSnippet = ''
-
-      if (contentMatch?.value) {
-        snippet = getSnippet(contentMatch.value, debouncedSearch.value)
-        highlightedSnippet = highlightMatch(snippet, debouncedSearch.value)
-      }
-      if (!contentMatch?.value && titleMatch?.value) {
-        snippet = section.content?.slice(0, 150) ?? ''
-        highlightedSnippet = snippet
-      }
-
-      // Get title from section titles hierarchy or section title
-      const title = section.titles?.[0] || section.title || path
-
-      resultMap.set(path, {
-        id: path,
-        path,
-        title,
-        snippet,
-        highlightedSnippet,
-      })
+      resultMap.set(path, createSearchResult(result, debouncedSearch.value))
     }
   }
 

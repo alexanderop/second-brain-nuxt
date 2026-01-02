@@ -41,13 +41,22 @@ export function useGraphFilters() {
   const orphansParam = useRouteQuery<string | null>('orphans')
 
   // Computed getters/setters with proper typing
+  // Set of valid content types for O(1) lookup
+  const contentTypeSet = new Set<string>(ALL_CONTENT_TYPES)
+
+  // Helper: Check if string is a valid ContentType
+  function isContentType(value: string): value is ContentType {
+    return contentTypeSet.has(value)
+  }
+
   const selectedTypes = computed({
-    get: () => {
+    get: (): Array<ContentType> => {
       const parsed = parseArrayParam(typesParam.value)
       // If no types in URL, all are selected (default state)
       if (parsed.length === 0)
         return [...ALL_CONTENT_TYPES]
-      return parsed as Array<ContentType>
+      // Filter to only valid content types
+      return parsed.filter(isContentType)
     },
     set: (v: Array<ContentType>) => {
       // If all types selected, remove from URL (default state)

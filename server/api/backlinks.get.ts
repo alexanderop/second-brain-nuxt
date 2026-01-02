@@ -11,50 +11,72 @@ interface BacklinksIndex {
   [targetSlug: string]: Array<BacklinkItem>
 }
 
+interface ContentItem {
+  path?: string
+  stem?: string
+  title?: string
+  type?: string
+  body?: unknown
+}
+
+// Helper: Extract slug from content item
+function getSlug(item: ContentItem): string {
+  return item.path?.slice(1) || item.stem || ''
+}
+
+// Helper: Build metadata map from content
+function buildContentMap(allContent: ContentItem[]): Map<string, { title: string, type: string }> {
+  const contentMap = new Map<string, { title: string, type: string }>()
+  for (const item of allContent) {
+    const slug = getSlug(item)
+    contentMap.set(slug, {
+      title: item.title || slug,
+      type: item.type || 'note',
+    })
+  }
+  return contentMap
+}
+
+// Helper: Add backlinks for a single source item
+function addBacklinksForItem(
+  item: ContentItem,
+  sourceMeta: { title: string, type: string },
+  sourceSlug: string,
+  backlinksIndex: BacklinksIndex,
+): void {
+  const links = extractLinksFromBody(item.body)
+  const uniqueLinks = [...new Set(links)]
+
+  for (const targetSlug of uniqueLinks) {
+    if (targetSlug === sourceSlug) continue
+
+    if (!backlinksIndex[targetSlug]) {
+      backlinksIndex[targetSlug] = []
+    }
+
+    backlinksIndex[targetSlug].push({
+      slug: sourceSlug,
+      title: sourceMeta.title,
+      type: sourceMeta.type,
+    })
+  }
+}
+
 export default defineEventHandler(async (event) => {
   const backlinksIndex: BacklinksIndex = {}
 
   try {
-    // Query all content from the database using auto-imported queryCollection
-    // Must explicitly select body to get the AST for link extraction
     const allContent = await queryCollection(event, 'content')
       .select('path', 'stem', 'title', 'type', 'tags', 'summary', 'body')
       .all()
 
-    // Build a map of slug -> metadata for all content
-    const contentMap = new Map<string, { title: string, type: string }>()
-    for (const item of allContent) {
-      const slug = item.path?.slice(1) || item.stem || ''
-      contentMap.set(slug, {
-        title: item.title || slug,
-        type: item.type || 'note',
-      })
-    }
+    const contentMap = buildContentMap(allContent)
 
-    // Extract links from each content item and build reverse index
     for (const item of allContent) {
-      const sourceSlug = item.path?.slice(1) || item.stem || ''
+      const sourceSlug = getSlug(item)
       const sourceMeta = contentMap.get(sourceSlug)
-
-      if (!sourceMeta) continue
-
-      // Extract links from the parsed body (minimark format)
-      const links = extractLinksFromBody(item.body)
-      const uniqueLinks = [...new Set(links)]
-
-      for (const targetSlug of uniqueLinks) {
-        // Skip self-references
-        if (targetSlug === sourceSlug) continue
-
-        if (!backlinksIndex[targetSlug]) {
-          backlinksIndex[targetSlug] = []
-        }
-
-        backlinksIndex[targetSlug].push({
-          slug: sourceSlug,
-          title: sourceMeta.title,
-          type: sourceMeta.type,
-        })
+      if (sourceMeta) {
+        addBacklinksForItem(item, sourceMeta, sourceSlug, backlinksIndex)
       }
     }
 

@@ -20,8 +20,8 @@ export default defineNuxtModule({
     configKey: 'wikilinks',
   },
   setup(_options: unknown, nuxt: Nuxt) {
-    // oxlint-disable-next-line @typescript-eslint/no-explicit-any -- Nuxt hooks typing is incomplete
-    ;(nuxt.hooks as any).hook('content:file:beforeParse', (ctx: ContentFileContext) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Nuxt hooks typing is incomplete for content hooks
+    ;(nuxt.hooks as { hook: (name: string, cb: (ctx: ContentFileContext) => void) => void }).hook('content:file:beforeParse', (ctx: ContentFileContext) => {
       if (typeof ctx.file?.body === 'string') {
         ctx.file.body = ctx.file.body.replace(wikiLinkRegex, (_, slug: string, displayText?: string) => {
           const normalizedSlug = slug.trim().toLowerCase().replace(/\s+/g, '-')

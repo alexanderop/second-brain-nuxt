@@ -34,18 +34,18 @@ useSeoMeta({
 <template>
   <article v-if="page">
     <ContentHeader
-      :title="page.title"
-      :type="page.type"
-      :slug="slug"
-      :url="page.url"
-      :tags="page.tags"
-      :authors="page.authors"
-      :date="page.date"
+      :content="{ slug, title: page.title, type: page.type, url: page.url, tags: page.tags, authors: page.authors, date: page.date }"
     />
 
     <YouTubePlayer
       v-if="page.type === 'youtube' && page.url"
       :url="page.url"
+    />
+
+    <BookCover
+      v-if="(page.type === 'book' || page.type === 'manga') && page.cover"
+      :cover="page.cover"
+      :title="page.title"
     />
 
     <div v-if="page.summary" class="mb-8 p-5 bg-[var(--ui-bg-elevated)] rounded-xl border border-[var(--ui-border)]">

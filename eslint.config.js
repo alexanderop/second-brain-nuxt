@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint'
 import vueParser from 'vue-eslint-parser'
+import vuePlugin from 'eslint-plugin-vue'
 import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 import markdown from '@eslint/markdown'
 
@@ -23,7 +24,12 @@ export default tseslint.config(
         sourceType: 'module',
       },
     },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     rules: {
+      // Cyclomatic complexity - fail build if function exceeds threshold
+      'complexity': ['error', 10],
       // Block reactive() in favor of ref() - oxlint doesn't support this
       'no-restricted-imports': ['error', {
         paths: [{
@@ -36,6 +42,10 @@ export default tseslint.config(
       'no-restricted-syntax': ['error', {
         selector: 'IfStatement > .alternate',
         message: 'Use early return or ternary instead of else.',
+      }],
+      // Forbid `as` type assertions - use type guards with Zod instead
+      '@typescript-eslint/consistent-type-assertions': ['error', {
+        assertionStyle: 'never',
       }],
     },
   },
@@ -50,9 +60,17 @@ export default tseslint.config(
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      'vue': vuePlugin,
       'vuejs-accessibility': vuejsAccessibility,
     },
     rules: {
+      // Limit template nesting depth for maintainability
+      'vue/max-template-depth': ['error', { maxDepth: 10 }],
+      // Limit props count - use objects for complex prop sets
+      'vue/max-props': ['error', { maxProps: 6 }],
+      // Cyclomatic complexity - fail build if function exceeds threshold
+      'complexity': ['error', 10],
       // Block reactive() in favor of ref() - oxlint doesn't support this
       'no-restricted-imports': ['error', {
         paths: [{
@@ -86,6 +104,10 @@ export default tseslint.config(
       'no-restricted-syntax': ['error', {
         selector: 'IfStatement > .alternate',
         message: 'Use early return or ternary instead of else.',
+      }],
+      // Forbid `as` type assertions - use type guards with Zod instead
+      '@typescript-eslint/consistent-type-assertions': ['error', {
+        assertionStyle: 'never',
       }],
     },
   },

@@ -41,6 +41,7 @@ const typeColors: Record<ContentType, BadgeColor> = {
   podcast: 'secondary',
   article: 'info',
   book: 'warning',
+  manga: 'warning',
   movie: 'error',
   tv: 'info',
   tweet: 'info',

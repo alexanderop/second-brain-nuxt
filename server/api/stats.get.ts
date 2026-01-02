@@ -3,8 +3,8 @@ import { queryCollection } from '@nuxt/content/server'
 
 interface ContentItem {
   type: string
-  tags: string[]
-  authors: string[]
+  tags?: string[]
+  authors?: string[]
   date?: string
   summary?: string
   notes?: string
@@ -143,9 +143,9 @@ async function fetchGraphData(event: H3Event): Promise<GraphData> {
 
 export default defineCachedEventHandler(async (event): Promise<StatsData> => {
   // Query content with minimal fields needed for stats
-  const allContent = await queryCollection(event, 'content')
+  const allContent: ContentItem[] = await queryCollection(event, 'content')
     .select('type', 'tags', 'authors', 'date', 'summary', 'notes')
-    .all() as ContentItem[]
+    .all()
 
   // Fetch graph data for connection metrics
   const graphData = await fetchGraphData(event)

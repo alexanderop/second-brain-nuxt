@@ -11,6 +11,7 @@ const iconMap: Record<ContentType, string> = {
   podcast: 'i-lucide-mic',
   article: 'i-lucide-file-text',
   book: 'i-lucide-book-open',
+  manga: 'i-lucide-book-image',
   movie: 'i-lucide-clapperboard',
   tv: 'i-lucide-tv',
   tweet: 'i-lucide-message-circle',

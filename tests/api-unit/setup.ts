@@ -143,11 +143,12 @@ export function setupGlobalMocks() {
 // Create a mock H3 event
 export function createMockEvent(options: {
   query?: Record<string, string>
-} = {}) {
+} = {}): Parameters<typeof import('../../server/api/graph.get').default>[0] {
   // Update getQuery mock for this specific call
   if (options.query) {
     vi.mocked(globalThis.getQuery).mockReturnValue(options.query)
   }
 
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Mock event object for testing
   return {} as Parameters<typeof import('../../server/api/graph.get').default>[0]
 }

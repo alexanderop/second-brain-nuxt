@@ -22,13 +22,14 @@ const {
 // Filter to only show types that exist in content
 const visibleTypes = computed(() =>
   props.availableTypes.filter(type =>
-    ['book', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit'].includes(type),
+    ['book', 'manga', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit'].includes(type),
   ),
 )
 
 // Type display names
 const typeLabels: Record<ContentType, string> = {
   book: 'Books',
+  manga: 'Manga',
   podcast: 'Podcasts',
   article: 'Articles',
   note: 'Notes',
@@ -54,6 +55,7 @@ const typeItems = computed(() =>
 // Type-specific colors matching the graph nodes (softer pastels)
 const typeColors: Record<string, string> = {
   book: '#fcd34d',
+  manga: '#fb7185',
   podcast: '#c4b5fd',
   article: '#67e8f9',
   note: '#6ee7b7',

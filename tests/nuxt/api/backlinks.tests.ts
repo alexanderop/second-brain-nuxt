@@ -40,7 +40,8 @@ describe('/api/backlinks', () => {
     const result = await $fetch('/api/backlinks')
 
     for (const [targetSlug, backlinks] of Object.entries(result)) {
-      for (const item of backlinks as Array<{ slug: string }>) {
+      const backlinkItems: Array<{ slug: string }> = backlinks
+      for (const item of backlinkItems) {
         expect(item.slug).not.toBe(targetSlug)
       }
     }

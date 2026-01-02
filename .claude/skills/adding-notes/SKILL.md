@@ -23,7 +23,8 @@ The script auto-detects type from URL patterns:
 - Reddit → `reddit`
 - Spotify/Apple Podcasts → `podcast`
 - Twitter/X → `tweet`
-- Amazon/Goodreads → `book`
+- Goodreads series (`/series/`) → `manga`
+- Amazon/Goodreads (books) → `book`
 - IMDB → `movie`
 - Udemy/Coursera/Skillshare → `course`
 - Other URLs → `article`
@@ -73,6 +74,48 @@ Use the output to:
 
 Author should be the OP's username with `u/` prefix (e.g., `u/mario_candela`).
 
+#### For Books (Goodreads)
+
+Use the dedicated script to fetch book metadata including cover image:
+
+```bash
+# Get title, author, and cover image URL
+.claude/skills/adding-notes/scripts/get-goodreads-metadata.sh "URL"
+```
+
+Use the output to populate:
+- **title**: The book title
+- **authors**: The author name (create profile if needed)
+- **cover**: The high-resolution cover image URL (displays on book detail page)
+
+**Book Cover Feature**: Notes with `type: book` and a valid `cover` URL automatically display the book cover image at the top of the page, below the header. No additional markup needed.
+
+#### For Manga (Goodreads Series URLs)
+
+When adding a manga, use the series metadata script with the **series URL** (not a volume URL):
+
+```bash
+# Fetch manga series metadata
+.claude/skills/adding-notes/scripts/get-manga-metadata.sh "https://www.goodreads.com/series/57513-slam-dunk"
+```
+
+**Output**:
+```text
+Title: Slam Dunk           # Series name (may be in Japanese - use WebFetch to get English title if needed)
+Author: Takehiko Inoue     # Mangaka
+Cover: https://...         # First volume cover
+Volumes: 31                # Total volume count
+Status: completed          # ongoing | completed | hiatus
+```
+
+**Manga workflow**:
+1. Pass `type="manga"` to `generate-frontmatter.sh` or set manually
+2. Run `get-manga-metadata.sh` with the **series URL**
+3. Use the series URL as the note's `url` field
+4. Fill in `volumes` and `status` from script output
+5. If title is in Japanese, use WebFetch to get the English title
+6. Create ONE note for the entire series
+
 #### For Other URLs
 
 Use WebFetch to extract:
@@ -80,7 +123,85 @@ Use WebFetch to extract:
 - **Description**: Meta description or first paragraph
 - **Key content**: Main points, quotes, or takeaways
 
-### 3. Generate Content
+### 3. Handle Authors
+
+For external content types (youtube, podcast, article, book, movie, tv, tweet, course, reddit), authors are **required** in the frontmatter.
+
+#### Check for Existing Authors
+
+```bash
+# Check if author exists
+.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
+
+# List all existing authors for reference
+.claude/skills/adding-notes/scripts/list-existing-authors.sh
+
+# Search for similar names (disambiguation)
+.claude/skills/adding-notes/scripts/list-existing-authors.sh "partial-name"
+```
+
+#### Create Missing Authors
+
+For each author referenced in the note that does not exist:
+
+1. **Use WebSearch** to find the author's official presence:
+   - Search for: `"Author Name" official site`
+   - Look for: personal website, Wikipedia, LinkedIn, Twitter/X, GitHub, YouTube channel
+
+2. **Extract author information:**
+   - **bio**: 1-2 sentence professional description
+   - **avatar**: Profile image URL (prefer official headshots, GitHub avatars)
+   - **website**: Personal/official website
+   - **socials**: Extract handles (not full URLs) for twitter, github, linkedin, youtube
+
+3. **Generate the author profile:**
+
+```bash
+# Generate frontmatter with extracted info
+.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Author Name" \
+    --bio "Description here" \
+    --avatar "https://example.com/avatar.jpg" \
+    --website "https://author.com" \
+    --twitter "handle" \
+    --github "handle" \
+    --linkedin "handle" \
+    --youtube "handle"
+```
+
+4. **Save silently** to `content/authors/{slug}.md` without user confirmation.
+
+Generate the slug (kebab-case filename) from the author name:
+- "Simon Sinek" → `simon-sinek.md`
+- "Andrew Huberman" → `andrew-huberman.md`
+
+#### Multiple Authors
+
+When content has multiple authors (e.g., co-authored books, academic papers):
+
+1. Check each author separately using `check-author-exists.sh`
+2. For each missing author, **prompt the user**:
+   - "Author 'X' not found. Should I create a profile? (yes/no/skip)"
+3. If yes, proceed with web search and creation
+4. If skip, omit that author from the note's `authors` array
+
+#### Special Cases
+
+**Reddit Authors:**
+- Use `u/username` format (e.g., `u/mario_candela`)
+- Filename: `u-username.md` (e.g., `u-mario-candela.md`)
+- Skip WebSearch for Reddit users (pseudonymous, no reliable public profiles)
+- Create minimal profile: name and slug only, leave other fields empty
+
+**Author Not Found Online:**
+- Create a minimal profile with just `name` and `slug`
+- Leave `bio`, `avatar`, `website`, and `socials` empty
+
+**Organizations as Authors:**
+- Treat like regular authors (e.g., "HumanLayer Team")
+- Avatar can be company logo
+- Socials are company accounts
+
+### 4. Generate Content
 
 Fill in the frontmatter:
 
@@ -108,16 +229,32 @@ Fill in the frontmatter:
 - When to revisit (e.g., "after finishing project X")
 - Leave empty if no personal context needed
 
-### 4. Discover Wiki-Links
+### 5. Discover Related Notes
 
-Search existing content for related notes:
+After saving the note, use the AI-powered related notes finder to discover connections:
 
 ```bash
-# Find existing notes to link to
-ls content/*.md
+# Find semantically related notes using AI embeddings
+.claude/skills/adding-notes/scripts/find-related-notes.py content/my-note.md
+
+# Options:
+#   --limit 10       Max suggestions (default: 10)
+#   --min-score 5    Minimum score threshold (default: 5)
+#   --no-mentions    Skip mentions API if dev server not running
 ```
 
-**Be selective with connections.** Only add wiki-links when there is a strong, direct relationship:
+**First run**: Downloads the embedding model (~22MB) and builds cache for all notes (~2-5 seconds).
+**Subsequent runs**: Uses cached embeddings, runs in <1 second.
+
+**Dependencies**: `pip install sentence-transformers numpy`
+
+The script uses a hybrid scoring approach:
+- **Semantic similarity** (50 points max) - AI embeddings capture meaning
+- **Tag overlap** (weighted by rarity) - Rare shared tags score higher
+- **Same author** (15 points) - Strong creator connection
+- **Mentions** - Unlinked text references from mentions API
+
+Review the suggestions and **be selective with connections.** Only add wiki-links when there is a strong, direct relationship:
 
 ✅ **Link when:**
 - Same author or creator
@@ -136,7 +273,7 @@ ls content/*.md
 
 Add wiki-links using `[[slug]]` syntax in the body content.
 
-### 5. Generate Slug and Save
+### 6. Generate Slug and Save
 
 Use the slug generator to create a kebab-case filename:
 
@@ -156,6 +293,20 @@ Save to: `content/{slug}.md`
 
 ### Books
 ```markdown
+---
+title: "Book Title"
+type: book
+url: "https://www.goodreads.com/book/show/..."
+cover: "https://images-na.ssl-images-amazon.com/..."
+tags:
+  - topic-1
+  - topic-2
+authors:
+  - author-slug
+summary: "One-sentence description of the book's core idea"
+date: 2026-01-01
+---
+
 ## Core Framework
 [Main structure or methodology]
 
@@ -166,6 +317,48 @@ Save to: `content/{slug}.md`
 ## Connections
 Related to [[other-book]] and [[related-concept]].
 ```
+
+### Manga
+
+**Important**: Create ONE note per manga series, not per volume. Use the series URL and aggregate metadata.
+
+```markdown
+---
+title: "Vagabond"
+type: manga
+url: "https://www.goodreads.com/series/69255-vagabond"
+cover: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/..."
+tags:
+  - manga
+  - samurai
+  - historical-fiction
+authors:
+  - takehiko-inoue
+volumes: 37
+status: hiatus
+summary: "Epic manga following Miyamoto Musashi's journey to become Japan's greatest swordsman."
+date: 2026-01-01
+---
+
+## Overview
+[Series premise and main themes]
+
+## Key Arcs
+- Arc 1: Description
+- Arc 2: Description
+
+## Why Read This
+[What makes this series notable]
+
+## Connections
+Similar to [[other-manga]] or explores themes from [[related-concept]].
+```
+
+**Manga-specific fields**:
+- `volumes`: Total volume count (number)
+- `status`: Series status — `ongoing`, `completed`, or `hiatus`
+
+**Cover display**: Like books, manga notes with a `cover` URL automatically display the cover image.
 
 ### Podcasts/YouTube
 ```markdown
@@ -317,7 +510,7 @@ Add visual diagrams **only when they genuinely clarify structure** that's hard t
 
 ### Diagram Syntax
 
-Use the MDC component with `<pre>` to preserve formatting:
+Use the MDC component with `<pre>` to preserve formatting. **Never add colors or styling** — let the app's theme handle appearance.
 
 ```markdown
 ::mermaid
@@ -334,7 +527,7 @@ graph TD
 | Content Pattern | Mermaid Type | Example Use |
 |-----------------|--------------|-------------|
 | Hierarchy/layers | `graph TD` | Maslow's pyramid, org charts |
-| Concentric model | `graph TD` with styling | Golden Circle, zones of control |
+| Concentric model | `graph TD` with subgraphs | Golden Circle, zones of control |
 | Process/workflow | `flowchart LR` | GTD workflow, sales funnel |
 | Timeline | `timeline` | Historical events, project phases |
 | Comparison | `graph LR` with subgraphs | Before/after, two approaches |
@@ -353,9 +546,6 @@ graph TD
         WHAT[What]
     end
     WHY --> HOW --> WHAT
-    style WHY fill:#f9d71c,stroke:#333
-    style HOW fill:#87ceeb,stroke:#333
-    style WHAT fill:#98fb98,stroke:#333
 </pre>
 ::
 ```
@@ -422,6 +612,13 @@ If `get-reddit-thread.py` fails:
 3. For quarantined subreddits, the JSON API may require authentication
 4. Fallback: manually copy key content from the browser
 
+### Goodreads Metadata Fails
+If `get-goodreads-metadata.sh` fails or returns incomplete data:
+1. Open the book page in a browser to verify it's accessible
+2. Use WebFetch to extract title, author, and cover from the page
+3. The cover URL is typically in the `og:image` meta tag
+4. Fallback: manually copy the cover image URL from the page source
+
 ### Network Errors
 If scripts fail due to network issues:
 1. Verify internet connectivity
@@ -435,7 +632,10 @@ Before saving, verify:
 - [ ] **Slug available**: No existing file at `content/{slug}.md`
 - [ ] Title is clean and descriptive
 - [ ] Type matches the content format
+- [ ] **Authors exist**: All authors in `authors` array have profiles in `content/authors/`
 - [ ] URL is valid (for YouTube: ensures video embed displays automatically)
+- [ ] **Cover added** (for books/manga): Goodreads cover URL in `cover` field
+- [ ] **Manga fields** (for manga): `volumes` (number) and `status` (ongoing/completed/hiatus) filled
 - [ ] 3-5 relevant tags (check existing tags with `grep -h "^  - " content/*.md | sort | uniq -c | sort -rn`)
 - [ ] Summary captures the core idea in 1-2 sentences
 - [ ] Wiki-links added only for strong, direct connections (or none if no strong matches)
