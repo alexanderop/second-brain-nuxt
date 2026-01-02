@@ -1,8 +1,8 @@
 ---
 name: "Alexander Opalic"
-slug: "Alex"
+slug: "alexander-opalic"
 bio: "Developer from Germany passionate about technology and knowledge sharing. Writes about Vue, TypeScript, AI tooling, and testing strategies."
-avatar: "https://avatars.githubusercontent.com/u/16639780?v=4"
+avatar: "https://avatars.githubusercontent.com/u/33398393?v=4"
 website: "https://alexop.dev/"
 socials:
   twitter: "alexanderopalic"

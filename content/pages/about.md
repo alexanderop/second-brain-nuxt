@@ -1,7 +1,7 @@
 ---
 title: About
 description: About the owner of this Second Brain
-avatar: https://avatars.githubusercontent.com/u/16639780?v=4
+avatar: https://avatars.githubusercontent.com/u/33398393?v=4
 website: https://alexop.dev
 socials:
   twitter: alexanderopalic
