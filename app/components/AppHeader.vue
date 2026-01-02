@@ -9,6 +9,7 @@ const links = [
   { label: 'Stats', to: '/stats', icon: 'i-lucide-bar-chart-2' },
   { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
   { label: 'Authors', to: '/authors', icon: 'i-lucide-users' },
+  { label: 'About', to: '/about', icon: 'i-lucide-user' },
 ]
 
 const searchOpen = defineModel<boolean>('searchOpen', { default: false })

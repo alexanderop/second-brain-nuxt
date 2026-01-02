@@ -42,7 +42,7 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: { include: '**/*.md', exclude: ['authors/**'] },
+      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**'] },
       schema: z.object({
         title: z.string(),
         type: contentTypes,
@@ -104,6 +104,24 @@ export default defineContentConfig({
           github: z.string().optional(),
           linkedin: z.string().optional(),
           youtube: z.string().optional(),
+        }).optional(),
+      }),
+    }),
+
+    pages: defineCollection({
+      type: 'page',
+      source: 'pages/**/*.md',
+      schema: z.object({
+        title: z.string(),
+        description: z.string().optional(),
+        avatar: z.string().optional(),
+        website: z.string().optional(),
+        socials: z.object({
+          twitter: z.string().optional(),
+          github: z.string().optional(),
+          linkedin: z.string().optional(),
+          youtube: z.string().optional(),
+          bluesky: z.string().optional(),
         }).optional(),
       }),
     }),
