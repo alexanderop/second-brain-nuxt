@@ -137,6 +137,13 @@ export function createSearchSectionsMock(data: unknown[] = searchSectionFixtures
 // Setup global mocks for Nitro auto-imports
 export function setupGlobalMocks() {
   vi.stubGlobal('defineEventHandler', (handler: Function) => handler)
+  vi.stubGlobal('getQuery', (event: { url: URL }) => {
+    const params: Record<string, string> = {}
+    event.url.searchParams.forEach((value, key) => {
+      params[key] = value
+    })
+    return params
+  })
 }
 
 // Create a mock H3 event with proper URL for getQuery to parse
