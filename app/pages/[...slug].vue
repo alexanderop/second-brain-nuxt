@@ -1,4 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
+import { ContentRenderer } from '#components'
+import ContentHeader from '~/components/ContentHeader.vue'
+import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue'
+import YouTubePlayer from '~/components/YouTubePlayer.vue'
+import BookCover from '~/components/BookCover.vue'
+import NoteGraph from '~/components/NoteGraph.vue'
+import { useBacklinks } from '~/composables/useBacklinks'
+import { useMentions } from '~/composables/useMentions'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -7,7 +18,7 @@ const { data: page } = await useAsyncData(`page-${route.path}`, () => {
 })
 
 if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  throw createError({ status: 404, statusText: 'Page not found' })
 }
 
 // Get slug from path (remove leading slash)

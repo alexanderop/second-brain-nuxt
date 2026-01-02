@@ -2,6 +2,7 @@
 title: "Ralph Wiggum as a Software Engineer"
 type: article
 url: "https://ghuntley.com/ralph/"
+author: "[[geoffrey-huntley]]"
 tags:
   - ai-agents
   - automation

@@ -1,3 +1,4 @@
+import { defineEventHandler, getQuery } from 'h3'
 import { queryCollection, queryCollectionSearchSections } from '@nuxt/content/server'
 import { extractLinksFromBody } from '../utils/minimark'
 import { escapeRegex, getSnippet, highlightMatch } from '../utils/text'

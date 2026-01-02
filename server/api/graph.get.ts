@@ -1,3 +1,4 @@
+import { defineEventHandler } from 'h3'
 import { queryCollection } from '@nuxt/content/server'
 import { extractLinksFromBody } from '../utils/minimark'
 

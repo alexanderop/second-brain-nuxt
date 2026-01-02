@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
+import ContentList from '~/components/ContentList.vue'
+
 const { data: books } = await useAsyncData('all-books', () => {
   return queryCollection('content')
     .where('type', '=', 'book')

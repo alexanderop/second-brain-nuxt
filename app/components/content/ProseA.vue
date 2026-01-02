@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useAsyncData, queryCollection } from '#imports'
+import { NuxtLink, UPopover, UBadge } from '#components'
 import type { ContentType } from '~~/content.config'
 
 const props = defineProps<{

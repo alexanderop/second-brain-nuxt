@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 import type { ContentType } from '~~/content.config'
 import { useRouteQuery } from '@vueuse/router'
 

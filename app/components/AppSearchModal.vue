@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ref, computed, watch, nextTick } from 'vue'
+import { watchDebounced } from '@vueuse/core'
+import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections } from '#imports'
+import { UModal, UIcon, UKbd } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
 

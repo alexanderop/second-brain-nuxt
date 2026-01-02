@@ -4,6 +4,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
+  // Disable all auto-imports
+  imports: {
+    autoImport: false,
+  },
+  components: {
+    dirs: [],
+  },
+
   // Reduce file watchers to prevent EMFILE errors
   vite: {
     server: {
@@ -34,6 +42,9 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    imports: {
+      autoImport: false,
+    },
     prerender: {
       crawlLinks: true,
       routes: ['/', '/api/graph', '/api/backlinks'],

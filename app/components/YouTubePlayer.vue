@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { UIcon } from '#components'
 import { extractYouTubeVideoId, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from '~/utils/youtube'
 
 const props = defineProps<{
@@ -7,7 +9,7 @@ const props = defineProps<{
 
 const videoId = computed(() => extractYouTubeVideoId(props.url))
 const embedUrl = computed(() => videoId.value ? getYouTubeEmbedUrl(videoId.value) : null)
-const thumbnailUrl = computed(() => videoId.value ? getYouTubeThumbnailUrl(videoId.value) : null)
+const thumbnailUrl = computed(() => videoId.value ? getYouTubeThumbnailUrl(videoId.value) : undefined)
 
 // Facade pattern: show thumbnail until user clicks to load iframe
 const isActivated = ref(false)

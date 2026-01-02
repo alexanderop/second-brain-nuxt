@@ -1,4 +1,6 @@
 import type { H3Event } from 'h3'
+import { getRequestURL } from 'h3'
+import { defineCachedEventHandler } from 'nitropack/runtime'
 import { queryCollection } from '@nuxt/content/server'
 
 interface ContentItem {

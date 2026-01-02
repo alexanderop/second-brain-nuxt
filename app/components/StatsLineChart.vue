@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue'
+import { useResizeObserver, useDebounceFn } from '@vueuse/core'
 import * as d3 from 'd3'
 
 interface DataPoint {

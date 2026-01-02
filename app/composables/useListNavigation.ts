@@ -1,3 +1,7 @@
+import type { Ref } from 'vue'
+import { ref, watch, readonly } from 'vue'
+import { defineShortcuts, navigateTo } from '#imports'
+
 interface NavigableItem {
   stem?: string
   path?: string

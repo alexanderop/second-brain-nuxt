@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { UIcon } from '#components'
+import ContentList from '~/components/ContentList.vue'
+
 const route = useRoute()
 const tag = computed(() => String(route.params.tag))
 

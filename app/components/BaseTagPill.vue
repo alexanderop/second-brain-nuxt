@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtLink, UBadge } from '#components'
+
 defineProps<{
   tag: string
 }>()

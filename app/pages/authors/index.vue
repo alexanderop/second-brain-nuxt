@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { NuxtLink, UIcon } from '#components'
+
 const { data: allContent } = await useAsyncData('all-content-authors', () => {
   return queryCollection('content').all()
 })

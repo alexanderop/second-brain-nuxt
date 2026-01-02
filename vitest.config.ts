@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
+import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig({
   test: {
@@ -34,6 +36,7 @@ export default defineConfig({
           alias: {
             '~': fileURLToPath(new URL('./app', import.meta.url)),
             '~~': fileURLToPath(new URL('./', import.meta.url)),
+            '#imports': fileURLToPath(new URL('./tests/mocks/imports.ts', import.meta.url)),
           },
         },
       },
@@ -59,6 +62,35 @@ export default defineConfig({
           environment: 'nuxt',
         },
       }),
+      // Browser tests - real browser with Playwright
+      {
+        plugins: [
+          vue(),
+          AutoImport({
+            imports: ['vue'],
+            dts: false,
+          }),
+        ],
+        test: {
+          name: 'browser',
+          include: ['tests/browser/**/*.test.ts'],
+          browser: {
+            enabled: true,
+            provider: 'playwright',
+            instances: [{ browser: 'chromium' }],
+          },
+        },
+        resolve: {
+          alias: {
+            '~': fileURLToPath(new URL('./app', import.meta.url)),
+            '~~': fileURLToPath(new URL('./', import.meta.url)),
+          },
+          dedupe: ['vue'],
+        },
+        optimizeDeps: {
+          include: ['vue', 'd3'],
+        },
+      },
     ],
   },
 })

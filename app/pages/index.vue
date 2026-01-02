@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useAsyncData, queryCollection } from '#imports'
+import ContentList from '~/components/ContentList.vue'
+import { useListNavigation } from '~/composables/useListNavigation'
+
 const { data: items } = await useAsyncData('recent-content', () => {
   return queryCollection('content')
     .order('date', 'DESC')

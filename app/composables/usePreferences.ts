@@ -1,3 +1,5 @@
+import { useLocalStorage } from '@vueuse/core'
+
 export function usePreferences() {
   const searchHistory = useLocalStorage<Array<string>>('sb-search-history', [])
   const graphSettings = useLocalStorage('sb-graph-settings', {

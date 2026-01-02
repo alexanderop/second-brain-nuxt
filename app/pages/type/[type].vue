@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
+import ContentList from '~/components/ContentList.vue'
+import { useListNavigation } from '~/composables/useListNavigation'
 import type { ContentType } from '~~/content.config'
 
 const route = useRoute()
@@ -27,7 +32,7 @@ function asContentType(value: string): ContentType | undefined {
 
 const validatedType = asContentType(typeParam.value)
 if (!validatedType) {
-  throw createError({ statusCode: 404, statusMessage: 'Invalid content type', fatal: true })
+  throw createError({ status: 404, statusText: 'Invalid content type' })
 }
 
 const type = computed<ContentType>(() => asContentType(typeParam.value) ?? validatedType)

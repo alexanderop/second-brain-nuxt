@@ -42,6 +42,11 @@ Phase 5: Quality Validation (BLOCKING GATE)
 Phase 6: Save Note
    ├─ Generate slug
    └─ Write to content/{slug}.md
+
+Phase 7: MOC Placement Suggestions (NON-BLOCKING)
+   ├─ Run cluster-notes.py --mode=for-note
+   ├─ IF matches found → present to user
+   └─ Apply MOC updates if requested
 ```
 
 ---
@@ -587,6 +592,69 @@ Report to user:
   - Tags: {tag-count} tags
   - Wiki-links: {link-count} connections
 ```
+
+---
+
+## Phase 7: MOC Placement Suggestions (Non-blocking)
+
+After saving the note, suggest which MOCs (Maps of Content) it should belong to.
+
+### 7.1 Run MOC Analysis
+
+Use the MOC curator script to find matching MOCs:
+
+```bash
+python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=for-note --note={slug}
+```
+
+This checks semantic similarity between the new note and existing MOC centroids.
+
+### 7.2 Present Suggestions (if any)
+
+**If matches found (score >= 0.7):**
+
+```markdown
+### MOC Placement Suggestions
+
+This note could belong in these Maps of Content:
+
+1. **[[ai-agents-roadmap]]** (score: 0.82)
+   - shares tags: ai-agents, llm
+
+2. **[[context-engineering-guide]]** (score: 0.74)
+   - semantic similarity to existing members
+
+Would you like me to add this note to any of these MOCs?
+- Reply with numbers (e.g., "1" or "1, 2") to add
+- Reply "skip" to skip MOC placement
+```
+
+**If no matches:** Skip this phase silently.
+
+### 7.3 Apply MOC Updates (if requested)
+
+For each selected MOC:
+
+1. Read the MOC file
+2. Look for a `## Suggested` section at the end
+3. If it doesn't exist, create it
+4. Append the new note link with a brief description
+
+```markdown
+## Suggested
+
+- [[new-note-slug]] - Brief description of the note's contribution
+```
+
+### 7.4 Confirmation
+
+```markdown
+✓ Added to MOC: [[moc-slug]]
+```
+
+**Note**: This phase is non-blocking. If the user doesn't respond or says "skip", the note is already saved from Phase 6. The MOC placement is optional enhancement.
+
+---
 
 ## Content Type Patterns
 

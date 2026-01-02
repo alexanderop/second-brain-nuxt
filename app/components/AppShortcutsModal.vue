@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { UModal, UButton, UKbd } from '#components'
 import { shortcutsList } from '~/composables/useShortcuts'
 
 const open = defineModel<boolean>('open', { default: false })

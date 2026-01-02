@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from '#components'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import type { ContentType } from '~~/content.config'
 
 interface GraphNode {

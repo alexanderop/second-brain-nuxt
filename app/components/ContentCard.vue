@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { NuxtLink } from '#components'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
+import BaseTagPill from '~/components/BaseTagPill.vue'
 import type { ContentItem } from '~/types/content'
 
 defineProps<{

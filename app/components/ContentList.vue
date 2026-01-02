@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ContentCard from '~/components/ContentCard.vue'
 import type { ContentItem } from '~/types/content'
 
 interface ContentListItem extends Omit<ContentItem, 'slug'> {

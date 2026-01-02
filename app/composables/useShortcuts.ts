@@ -1,3 +1,5 @@
+import { useState } from '#imports'
+
 export interface Shortcut {
   keys: string[]
   description: string

@@ -1,3 +1,6 @@
+import { computed } from 'vue'
+import { useAsyncData } from '#imports'
+
 interface MentionItem {
   slug: string
   title: string

@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useFetch, useSeoMeta } from '#imports'
+import { NuxtLink, UIcon, UProgress } from '#components'
+import StatCard from '~/components/StatCard.vue'
+import StatsBarChart from '~/components/StatsBarChart.vue'
+import StatsLineChart from '~/components/StatsLineChart.vue'
+
 interface HubNode {
   id: string
   title: string

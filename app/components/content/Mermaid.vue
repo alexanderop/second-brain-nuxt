@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { useColorMode, useNuxtApp } from '#imports'
+
 const colorMode = useColorMode()
 const { $mermaid } = useNuxtApp()
 const mermaidContainer = ref<HTMLDivElement | null>(null)

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useClipboard } from '@vueuse/core'
+import { NuxtLink, UButton } from '#components'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
+import BaseTagPill from '~/components/BaseTagPill.vue'
 import type { ContentItem } from '~/types/content'
 
 const props = defineProps<{

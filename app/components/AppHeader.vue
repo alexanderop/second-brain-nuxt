@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { NuxtLink, UButton, UKbd, USlideover } from '#components'
+
 const links = [
   { label: 'Home', to: '/', icon: 'i-lucide-home' },
   { label: 'Books', to: '/books', icon: 'i-lucide-book-open' },

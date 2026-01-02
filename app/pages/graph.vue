@@ -1,36 +1,22 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useMediaQuery, onKeyStroke } from '@vueuse/core'
+import { useAsyncData, useSeoMeta, definePageMeta } from '#imports'
+import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from '#components'
+import KnowledgeGraph from '~/components/KnowledgeGraph.vue'
+import GraphFilters from '~/components/GraphFilters.vue'
+import GraphNodePanel from '~/components/GraphNodePanel.vue'
+import { useGraphFilters } from '~/composables/useGraphFilters'
 import type { ContentType } from '~~/content.config'
+import type { FullGraphData, FullGraphNode, FullGraphEdge, UnifiedGraphNode } from '~/types/graph'
 
 // Use immersive graph layout (no header)
 definePageMeta({
   layout: 'graph',
 })
 
-interface GraphNode {
-  id: string
-  title: string
-  type: ContentType
-  tags: Array<string>
-  authors: Array<string>
-  summary?: string
-  connections?: number
-  maps?: Array<string>
-  isMap?: boolean
-}
-
-// Edge source/target can be string (from API) or object (after D3 processes it)
-interface GraphEdge {
-  source: string | GraphNode
-  target: string | GraphNode
-}
-
-interface GraphData {
-  nodes: Array<GraphNode>
-  edges: Array<GraphEdge>
-}
-
 // Helper to get ID from edge endpoint (handles both string and object)
-function getEdgeNodeId(endpoint: string | GraphNode): string {
+function getEdgeNodeId(endpoint: string | FullGraphNode): string {
   return typeof endpoint === 'string' ? endpoint : endpoint.id
 }
 
@@ -41,9 +27,9 @@ useSeoMeta({
 // Collapsible filter panel state
 const filtersExpanded = ref(true)
 
-const { data: graphData } = await useAsyncData<GraphData>('graph-data', () => $fetch<GraphData>('/api/graph'))
+const { data: graphData } = await useAsyncData<FullGraphData>('graph-data', () => $fetch<FullGraphData>('/api/graph'))
 
-const selectedNode = ref<GraphNode | null>(null)
+const selectedNode = ref<FullGraphNode | null>(null)
 
 // Template ref for KnowledgeGraph component (for zoom controls)
 const graphRef = ref<{ fitAll: () => void, zoomIn: () => void, zoomOut: () => void }>()
@@ -99,17 +85,17 @@ const connectedNodeIds = computed(() => {
 })
 
 // Filter helpers
-function passesTagFilter(node: GraphNode, selectedTags: string[]): boolean {
+function passesTagFilter(node: FullGraphNode, selectedTags: string[]): boolean {
   if (selectedTags.length === 0) return true
   return selectedTags.some(tag => node.tags.includes(tag))
 }
 
-function passesAuthorFilter(node: GraphNode, selectedAuthors: string[]): boolean {
+function passesAuthorFilter(node: FullGraphNode, selectedAuthors: string[]): boolean {
   if (selectedAuthors.length === 0) return true
   return selectedAuthors.some(author => (node.authors || []).includes(author))
 }
 
-function passesMapFilter(node: GraphNode, selectedMaps: string[]): boolean {
+function passesMapFilter(node: FullGraphNode, selectedMaps: string[]): boolean {
   if (selectedMaps.length === 0) return true
   const isSelectedMap = selectedMaps.includes(node.id)
   const belongsToSelectedMap = selectedMaps.some(mapId => (node.maps || []).includes(mapId))
@@ -147,7 +133,7 @@ const filteredEdges = computed(() => {
 })
 
 // Combined filtered graph data
-const filteredGraphData = computed<GraphData | null>(() => {
+const filteredGraphData = computed<FullGraphData | null>(() => {
   if (!graphData.value)
     return null
   return {
@@ -188,8 +174,12 @@ const backlinks = computed(() => {
   return graphData.value.nodes.filter(n => sourceIds.includes(n.id))
 })
 
-function handleSelectNode(node: GraphNode) {
-  selectedNode.value = node
+function handleSelectNode(node: UnifiedGraphNode) {
+  // Look up the full node from original data to get proper FullGraphNode type
+  const fullNode = graphData.value?.nodes.find(n => n.id === node.id)
+  if (fullNode) {
+    selectedNode.value = fullNode
+  }
 }
 
 function handleClosePanel() {

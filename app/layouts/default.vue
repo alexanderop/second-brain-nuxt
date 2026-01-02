@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { defineShortcuts, navigateTo } from '#imports'
+import { UApp, UContainer } from '#components'
+import AppHeader from '~/components/AppHeader.vue'
+import AppSearchModal from '~/components/AppSearchModal.vue'
+import AppShortcutsModal from '~/components/AppShortcutsModal.vue'
+import { useShortcutsModal } from '~/composables/useShortcuts'
+
 const searchOpen = ref(false)
 const shortcutsOpen = useShortcutsModal()
 

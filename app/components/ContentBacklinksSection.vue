@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtLink } from '#components'
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import type { ContentType } from '~~/content.config'
 
 interface Backlink {

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { NuxtLink } from '#components'
+
 const { data: allContent } = await useAsyncData('all-content-tags', () => {
   return queryCollection('content').all()
 })

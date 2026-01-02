@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { NuxtLink, UIcon, UButton, UAvatar } from '#components'
+import ContentList from '~/components/ContentList.vue'
+
 const route = useRoute()
 const authorSlug = computed(() => decodeURIComponent(String(route.params.name)))
 
