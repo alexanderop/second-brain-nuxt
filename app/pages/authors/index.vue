@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { useAsyncData, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon } from '#components'
 
 const { data: allContent } = await useAsyncData('all-content-authors', () => {
@@ -19,9 +20,7 @@ const authorCounts = computed(() => {
     .map(([author, count]) => ({ author, count }))
 })
 
-useSeoMeta({
-  title: 'Authors - Second Brain',
-})
+usePageTitle('Authors')
 </script>
 
 <template>

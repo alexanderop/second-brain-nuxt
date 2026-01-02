@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { ContentRenderer, UAvatar, UButton } from '#components'
 
 const { data: page } = await useAsyncData('about-page', () => {
@@ -21,8 +22,9 @@ const socialLinks = computed(() => {
   return links
 })
 
+usePageTitle(() => page.value?.title ?? 'About')
+
 useSeoMeta({
-  title: () => `${page.value?.title ?? 'About'} - Second Brain`,
   description: () => page.value?.description ?? '',
 })
 </script>

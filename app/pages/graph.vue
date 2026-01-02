@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useMediaQuery, onKeyStroke, useLocalStorage } from '@vueuse/core'
-import { useAsyncData, useSeoMeta, definePageMeta } from '#imports'
+import { useAsyncData, definePageMeta } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from '#components'
 import KnowledgeGraph from '~/components/KnowledgeGraph.vue'
 import GraphFilters from '~/components/GraphFilters.vue'
@@ -20,9 +21,7 @@ function getEdgeNodeId(endpoint: string | FullGraphNode): string {
   return typeof endpoint === 'string' ? endpoint : endpoint.id
 }
 
-useSeoMeta({
-  title: 'Graph - Second Brain',
-})
+usePageTitle('Graph')
 
 // Collapsible filter panel state (persisted in localStorage)
 const filtersExpanded = useLocalStorage('graph-filters-expanded', false)

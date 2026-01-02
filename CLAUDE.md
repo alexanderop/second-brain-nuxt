@@ -32,8 +32,39 @@ Always use `pnpm test:unit` for local development. E2E tests (`test:e2e`) run in
 
 - `app/` - Vue application (pages, components)
 - `content/` - Markdown files (flat, type via frontmatter)
+- `site.config.ts` - **Main template config** (branding, nav, shortcuts)
 - `content.config.ts` - Collection definitions
 - `specs.md` - Full project requirements
+
+## Template Configuration
+
+This project is designed as a **GitHub template**. All customizable values are centralized in `site.config.ts`:
+
+```typescript
+// site.config.ts
+export const siteConfig = {
+  name: 'Second Brain',           // Site name (header, page titles, PWA)
+  shortName: 'SecondBrain',       // PWA short name
+  description: '...',             // SEO description
+  themeColor: '#1a1a2e',          // Browser chrome color
+  allowIndexing: false,           // robots meta tag
+  nav: [...],                     // Navigation links
+  shortcuts: {...},               // Keyboard shortcuts
+}
+```
+
+### Customization Points
+
+| File | What to customize |
+|------|-------------------|
+| `site.config.ts` | Site name, navigation, shortcuts, theme color |
+| `app.config.ts` | UI theme (colors, icons, component defaults) |
+| `content/*.md` | Add any custom frontmatter fields (passthrough enabled) |
+
+### Key Composables
+
+- `useSiteConfig()` - Access site config in components
+- `usePageTitle('Page')` - Sets title as "Page - Site Name"
 
 ## Key Patterns
 

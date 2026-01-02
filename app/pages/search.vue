@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { watchDebounced } from '@vueuse/core'
-import { useAsyncData, useSeoMeta, defineShortcuts, navigateTo, queryCollection, queryCollectionSearchSections } from '#imports'
+import { useAsyncData, defineShortcuts, navigateTo, queryCollection, queryCollectionSearchSections } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UInput, UKbd } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
@@ -171,9 +172,7 @@ watch(debouncedSearch, () => {
   selectedIndex.value = -1
 })
 
-useSeoMeta({
-  title: 'Search - Second Brain',
-})
+usePageTitle('Search')
 </script>
 
 <template>

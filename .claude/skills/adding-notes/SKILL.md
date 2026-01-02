@@ -70,6 +70,7 @@ The script auto-detects type from URL patterns:
 - Amazon/Goodreads (books) → `book`
 - IMDB → `movie`
 - Udemy/Coursera/Skillshare → `course`
+- GitHub → `github`
 - Other URLs → `article`
 - No URL → `note`
 
@@ -268,7 +269,35 @@ prompt: "Check if author exists:
   Return: EXISTS with path, or NOT_FOUND"
 ```
 
-### 2.6 Collect Results
+### 2.6 GitHub Repositories
+
+Spawn **2 parallel agents**:
+
+```markdown
+**Agent A - Repo Metadata:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch GitHub repository metadata:
+  ```bash
+  .claude/skills/adding-notes/scripts/get-github-metadata.sh 'GITHUB_URL'
+  ```
+  Return: name, description, stars, language, owner, topics"
+
+**Agent B - Author Check:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check if repo owner exists as author:
+  ```bash
+  .claude/skills/adding-notes/scripts/check-author-exists.sh 'Owner Name'
+  ```
+  Return: EXISTS with path, or NOT_FOUND"
+```
+
+**GitHub-specific fields**:
+- `stars`: Repository star count (number)
+- `language`: Primary programming language (string)
+
+**GitHub Card Feature**: Notes with `type: github` and a valid `url` field automatically display a card showing the repository's language badge and star count below the header.
+
+### 2.7 Collect Results
 
 After spawning parallel agents, use `TaskOutput` (blocking) to collect all results:
 
@@ -795,6 +824,43 @@ See also [[related-note]].
 ## Related
 See also [[related-topic]].
 ```
+
+### GitHub Repositories
+```markdown
+---
+title: "Repository Name"
+type: github
+url: "https://github.com/owner/repo"
+stars: 7600
+language: "Go"
+tags:
+  - topic-1
+  - topic-2
+authors:
+  - owner-slug
+summary: "Brief description of what the repository does."
+date: 2026-01-02
+---
+
+## Overview
+[What the project does and why it exists]
+
+## Key Features
+- Feature 1
+- Feature 2
+
+## Technical Details
+[Architecture, tech stack, notable implementation choices]
+
+## Connections
+Related to [[other-tool]] or implements patterns from [[related-concept]].
+```
+
+**GitHub-specific fields**:
+- `stars`: Repository star count (number)
+- `language`: Primary programming language (string)
+
+**GitHub Card Feature**: Notes with `type: github` automatically display a card showing the repository's language badge and star count.
 
 ### Personal Notes
 ```markdown
