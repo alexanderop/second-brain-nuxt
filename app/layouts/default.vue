@@ -12,6 +12,9 @@ defineShortcuts({
   'g-h': () => {
     navigateTo('/')
   },
+  'g-b': () => {
+    navigateTo('/books')
+  },
   'g-g': () => {
     navigateTo('/graph')
   },

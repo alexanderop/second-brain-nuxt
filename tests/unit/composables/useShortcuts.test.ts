@@ -31,6 +31,11 @@ describe('shortcutsList', () => {
     // Should have go-to-home shortcut
     const homeShortcut = navShortcuts.find(s => s.description.toLowerCase().includes('home'))
     expect(homeShortcut).toBeDefined()
+
+    // Should have go-to-books shortcut
+    const booksShortcut = navShortcuts.find(s => s.description.toLowerCase().includes('books'))
+    expect(booksShortcut).toBeDefined()
+    expect(booksShortcut?.keys).toEqual(['G', 'B'])
   })
 
   it('contains expected general shortcuts', () => {

@@ -177,6 +177,43 @@ prompt: "Check if author exists:
 
 **Book Cover Feature**: Notes with `type: book` and a valid `cover` URL automatically display the book cover image at the top of the page.
 
+### 2.3.1 Reading Status Prompt (Books Only)
+
+After collecting Goodreads metadata and checking authors, **prompt the user** for their reading status:
+
+```markdown
+**Reading Status:**
+What's your reading status for this book?
+1. Want to read (haven't started)
+2. Currently reading
+3. Already finished
+
+Please reply with 1, 2, or 3.
+```
+
+**Based on user response:**
+
+- **1 (Want to read):**
+  - Set `readingStatus: want-to-read`
+  - No dates needed
+
+- **2 (Currently reading):**
+  - Set `readingStatus: reading`
+  - Ask: "When did you start reading? (YYYY-MM-DD or 'today')"
+  - Set `startedReading` from response
+
+- **3 (Already finished):**
+  - Set `readingStatus: finished`
+  - Ask: "When did you finish? (YYYY-MM-DD or 'today')"
+  - Set `finishedReading` from response
+  - Ask: "When did you start? (YYYY-MM-DD, 'today', or 'skip')"
+  - Set `startedReading` from response (if not 'skip')
+
+**Date handling:**
+- `today` → use current date in YYYY-MM-DD format
+- `skip` → leave field empty
+- Accept formats: YYYY-MM-DD, MM/DD/YYYY, "January 15, 2025" (normalize to YYYY-MM-DD)
+
 ### 2.4 Manga (Goodreads Series)
 
 Spawn **2 parallel agents**:
@@ -548,6 +585,9 @@ tags:
 authors:
   - author-slug
 summary: "One-sentence description of the book's core idea"
+readingStatus: finished
+startedReading: 2025-12-15
+finishedReading: 2026-01-01
 date: 2026-01-01
 ---
 
@@ -561,6 +601,11 @@ date: 2026-01-01
 ## Connections
 Related to [[other-book]] and [[related-concept]].
 ```
+
+**Reading tracking fields:**
+- `readingStatus`: `want-to-read` | `reading` | `finished`
+- `startedReading`: Date when started reading (YYYY-MM-DD)
+- `finishedReading`: Date when finished reading (YYYY-MM-DD)
 
 ### Manga
 
@@ -909,6 +954,7 @@ Phase 5 validates these automatically via parallel agents. Manual verification a
 - [ ] URL is valid (for YouTube: ensures video embed displays automatically)
 - [ ] **Cover added** (for books/manga): Goodreads cover URL in `cover` field
 - [ ] **Manga fields** (for manga): `volumes` (number) and `status` (ongoing/completed/hiatus) filled
+- [ ] **Reading status** (for books): `readingStatus` set with appropriate dates
 - [ ] 3-5 relevant tags
 - [ ] Summary captures the core idea in 1-2 sentences
 - [ ] Wiki-links added only for strong, direct connections

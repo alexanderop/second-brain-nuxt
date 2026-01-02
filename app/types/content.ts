@@ -1,4 +1,4 @@
-import type { ContentType } from '~~/content.config'
+import type { ContentType, ReadingStatus } from '~~/content.config'
 
 export interface ContentItem {
   slug: string
@@ -9,4 +9,8 @@ export interface ContentItem {
   authors?: Array<string>
   date?: Date | string
   summary?: string
+  // Book reading tracking
+  readingStatus?: ReadingStatus
+  startedReading?: string
+  finishedReading?: string
 }

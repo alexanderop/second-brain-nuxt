@@ -18,6 +18,10 @@ const externalContentTypes = [
 const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
 export type MangaStatus = typeof mangaStatusValues[number]
 
+// Book reading status values
+const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
+export type ReadingStatus = typeof readingStatusValues[number]
+
 // Personal content types have optional authors
 const personalContentTypes = [
   'quote',
@@ -52,6 +56,10 @@ export default defineContentConfig({
         // Manga-specific fields
         volumes: z.number().optional(),
         status: z.enum(mangaStatusValues).optional(),
+        // Book reading tracking
+        readingStatus: z.enum(readingStatusValues).optional(),
+        startedReading: z.string().optional(),
+        finishedReading: z.string().optional(),
       }).superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
