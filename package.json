@@ -65,7 +65,6 @@
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.6.2",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
-    "h3": "2.0.1-rc.7",
     "happy-dom": "^20.0.11",
     "nitropack": "^2.12.9",
     "oxlint": "^1.0.0",
