@@ -20,6 +20,11 @@ This map connects a complete Vue 3 development lifecycle guide - from project st
 
 - [[mastering-vue-3-composables-style-guide]] - Writing clean, reusable composables
 
+## Design Patterns
+
+- [[12-design-patterns-in-vue]] - Reusable patterns for Vue component architecture
+- [[13-vue-composables-tips]] - Practical tips for writing better composables
+
 ## Testing Strategy
 
 - [[vue3-testing-pyramid-vitest-browser-mode]] - The testing pyramid approach with Vitest

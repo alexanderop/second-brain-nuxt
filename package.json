@@ -11,6 +11,7 @@
     "node": "24.x"
   },
   "scripts": {
+    "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
@@ -41,6 +42,7 @@
     "d3": "^7.9.0",
     "eslint": "^9.39.2",
     "fuse.js": "^7.1.0",
+    "h3": "^1.15.4",
     "mermaid": "^11.12.2",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",
@@ -52,6 +54,7 @@
     "@nuxt/kit": "^4.2.2",
     "@nuxt/test-utils": "^3.21.0",
     "@playwright/test": "^1.57.0",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^25.0.3",
     "@typescript-eslint/parser": "^8.32.1",
     "@vite-pwa/assets-generator": "^1.0.2",
@@ -63,7 +66,6 @@
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.6.2",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
-    "h3": "2.0.1-rc.7",
     "happy-dom": "^20.0.11",
     "nitropack": "^2.12.9",
     "oxlint": "^1.0.0",

@@ -137,18 +137,25 @@ export function createSearchSectionsMock(data: unknown[] = searchSectionFixtures
 // Setup global mocks for Nitro auto-imports
 export function setupGlobalMocks() {
   vi.stubGlobal('defineEventHandler', (handler: Function) => handler)
-  vi.stubGlobal('getQuery', vi.fn(() => ({})))
+  vi.stubGlobal('getQuery', (event: { url: URL }) => {
+    const params: Record<string, string> = {}
+    event.url.searchParams.forEach((value, key) => {
+      params[key] = value
+    })
+    return params
+  })
 }
 
-// Create a mock H3 event
+// Create a mock H3 event with proper URL for getQuery to parse
 export function createMockEvent(options: {
   query?: Record<string, string>
 } = {}): Parameters<typeof import('../../server/api/graph.get').default>[0] {
-  // Update getQuery mock for this specific call
-  if (options.query) {
-    vi.mocked(globalThis.getQuery).mockReturnValue(options.query)
-  }
+  const queryString = options.query
+    ? '?' + new URLSearchParams(options.query).toString()
+    : ''
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Mock event object for testing
-  return {} as Parameters<typeof import('../../server/api/graph.get').default>[0]
+  return {
+    url: new URL(`http://localhost/api/test${queryString}`),
+  } as Parameters<typeof import('../../server/api/graph.get').default>[0]
 }

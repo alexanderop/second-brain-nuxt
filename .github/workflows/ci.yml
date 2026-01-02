@@ -87,6 +87,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prepare Nuxt
+        run: pnpm nuxt prepare
+
       - name: Run unit tests
         run: pnpm test:unit
 
@@ -110,6 +113,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxt prepare
 
       - name: Run integration tests
         run: pnpm test:integration
@@ -185,5 +191,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nuxt-build
-          path: .output
+          path: .output/
+          include-hidden-files: true
           retention-days: 7

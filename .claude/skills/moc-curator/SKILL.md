@@ -15,7 +15,10 @@ This skill uses semantic embeddings to suggest MOC (Map of Content) updates and 
 
 1. **Find MOC Gaps**: Notes that should be in existing MOCs but aren't linked
 2. **Discover Clusters**: Groups of orphan notes that could form new MOCs
-3. **Per-Note Suggestions**: Which MOCs a specific note should join
+3. **Detect Hub Notes**: Notes with many outgoing links that could become MOCs
+4. **Per-Note Suggestions**: Which MOCs a specific note should join
+
+Embeddings include title, summary, and first 500 characters of body content for improved semantic accuracy.
 
 ## Workflow
 
@@ -118,7 +121,7 @@ Description of what this map covers.
 ## Script Usage
 
 ```bash
-# Full analysis (MOC gaps + new clusters)
+# Full analysis (MOC gaps + new clusters + hub notes)
 python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=full
 
 # Only MOC gaps
@@ -127,11 +130,17 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=moc-gaps
 # Only orphan clusters
 python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=new-clusters
 
+# Only hub notes (potential MOCs)
+python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=hub-notes
+
 # Suggestions for a specific note (used by adding-notes hook)
 python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=for-note --note=slug-name
 
 # Adjust threshold (default: 0.7 - strict)
 python3 .claude/skills/moc-curator/scripts/cluster-notes.py --threshold=0.6
+
+# Adjust minimum links for hub detection (default: 5)
+python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=hub-notes --min-links=3
 ```
 
 ## JSON Output Format
@@ -155,6 +164,20 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --threshold=0.6
       "common_tags": ["tag1", "tag2"],
       "notes": [{"slug": "note", "title": "Title", "type": "article"}],
       "size": 3
+    }
+  ],
+  "orphan_stats": {
+    "total_orphans": 20,
+    "clustered": 8,
+    "unclustered": 12
+  },
+  "potential_mocs": [
+    {
+      "slug": "note-slug",
+      "title": "Note Title",
+      "type": "article",
+      "outgoing_links": 7,
+      "links": ["link-a", "link-b", "link-c"]
     }
   ],
   "for_note": [

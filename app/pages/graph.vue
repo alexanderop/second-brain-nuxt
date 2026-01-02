@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useMediaQuery, onKeyStroke } from '@vueuse/core'
+import { useMediaQuery, onKeyStroke, useLocalStorage } from '@vueuse/core'
 import { useAsyncData, useSeoMeta, definePageMeta } from '#imports'
 import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from '#components'
 import KnowledgeGraph from '~/components/KnowledgeGraph.vue'
@@ -24,8 +24,8 @@ useSeoMeta({
   title: 'Graph - Second Brain',
 })
 
-// Collapsible filter panel state
-const filtersExpanded = ref(true)
+// Collapsible filter panel state (persisted in localStorage)
+const filtersExpanded = useLocalStorage('graph-filters-expanded', false)
 
 const { data: graphData } = await useAsyncData<FullGraphData>('graph-data', () => $fetch<FullGraphData>('/api/graph'))
 

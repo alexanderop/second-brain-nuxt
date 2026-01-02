@@ -38,11 +38,16 @@ MODEL_NAME = "all-MiniLM-L6-v2"
 DEFAULT_THRESHOLD = 0.7  # Strict threshold for high confidence
 DEFAULT_MIN_CLUSTER_SIZE = 3
 DBSCAN_EPS = 0.3  # Distance threshold for DBSCAN (1 - similarity)
+BODY_EXCERPT_LENGTH = 500  # Characters to include from body for embeddings
+DEFAULT_MIN_LINKS = 5  # Minimum outgoing links to be a hub candidate
+BODY_EXCERPT_LENGTH = 500  # Characters to include from body for embeddings
+DEFAULT_MIN_LINKS = 5  # Minimum outgoing links to be a hub candidate
 
 
 # ============================================================================
 # Data Classes (from find-related-notes.py)
 # ============================================================================
+
 
 @dataclass
 class Note:
@@ -53,19 +58,42 @@ class Note:
     tags: list = field(default_factory=list)
     authors: list = field(default_factory=list)
     summary: str = ""
+    body_excerpt: str = ""
     mtime: float = 0.0
 
     def get_text_for_embedding(self) -> str:
-        """Combine title and summary for embedding."""
+        """Combine title, summary, and body excerpt for embedding."""
         parts = [self.title]
         if self.summary:
             parts.append(self.summary)
+        if self.body_excerpt:
+            parts.append(self.body_excerpt)
         return " ".join(parts)
+
+
+def clean_body_text(text: str) -> str:
+    """Strip markdown syntax for cleaner embeddings."""
+    # Remove wiki-links [[slug|text]] -> text, [[slug]] -> slug
+    text = re.sub(r"\[\[([^\]|]+)\|([^\]]+)\]\]", r"\2", text)
+    text = re.sub(r"\[\[([^\]]+)\]\]", r"\1", text)
+    # Remove markdown links [text](url) -> text
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    # Remove headers
+    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+    # Remove bold/italic
+    text = re.sub(r"\*{1,2}([^*]+)\*{1,2}", r"\1", text)
+    # Remove code blocks
+    text = re.sub(r"```[\s\S]*?```", "", text)
+    text = re.sub(r"`[^`]+`", "", text)
+    # Collapse whitespace
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 # ============================================================================
 # Frontmatter Parsing (from find-related-notes.py)
 # ============================================================================
+
 
 def parse_frontmatter(filepath: Path) -> Optional[Note]:
     """Parse YAML frontmatter from a markdown file."""
@@ -102,6 +130,14 @@ def parse_frontmatter(filepath: Path) -> Optional[Note]:
     if filepath.parent.name == "authors":
         return None
 
+    # Extract body content (after frontmatter)
+    body_start = match.end()
+    body_content = content[body_start:].strip()
+    body_excerpt = ""
+    if body_content:
+        cleaned = clean_body_text(body_content)
+        body_excerpt = cleaned[:BODY_EXCERPT_LENGTH]
+
     slug = filepath.stem
     return Note(
         slug=slug,
@@ -109,9 +145,12 @@ def parse_frontmatter(filepath: Path) -> Optional[Note]:
         title=data.get("title", slug),
         type=data.get("type", "note"),
         tags=data.get("tags", []) if isinstance(data.get("tags"), list) else [],
-        authors=data.get("authors", []) if isinstance(data.get("authors"), list) else [],
+        authors=data.get("authors", [])
+        if isinstance(data.get("authors"), list)
+        else [],
         summary=data.get("summary", ""),
-        mtime=filepath.stat().st_mtime
+        body_excerpt=body_excerpt,
+        mtime=filepath.stat().st_mtime,
     )
 
 
@@ -128,6 +167,7 @@ def get_all_notes() -> list[Note]:
 # ============================================================================
 # Embedding Manager (from find-related-notes.py)
 # ============================================================================
+
 
 class EmbeddingManager:
     """Manages embedding generation and caching."""
@@ -158,6 +198,7 @@ class EmbeddingManager:
         if self.model is None:
             try:
                 from sentence_transformers import SentenceTransformer
+
                 print(f"Loading embedding model ({MODEL_NAME})...", file=sys.stderr)
                 try:
                     self.model = SentenceTransformer(MODEL_NAME, backend="onnx")
@@ -182,11 +223,16 @@ class EmbeddingManager:
 
         if needs_update:
             if len(needs_update) > 5:
-                print(f"Generating embeddings for {len(needs_update)} notes...", file=sys.stderr)
+                print(
+                    f"Generating embeddings for {len(needs_update)} notes...",
+                    file=sys.stderr,
+                )
 
             model = self.get_model()
             texts = [n.get_text_for_embedding() for n in needs_update]
-            new_embeddings = model.encode(texts, normalize_embeddings=True, show_progress_bar=len(texts) > 10)
+            new_embeddings = model.encode(
+                texts, normalize_embeddings=True, show_progress_bar=len(texts) > 10
+            )
 
             for note, emb in zip(needs_update, new_embeddings):
                 self.cache[note.slug] = {"embedding": emb, "mtime": note.mtime}
@@ -201,6 +247,7 @@ class EmbeddingManager:
 # MOC Analysis
 # ============================================================================
 
+
 def extract_wiki_links(filepath: Path) -> list[str]:
     """Extract all wiki-links [[slug]] from a markdown file."""
     try:
@@ -208,8 +255,8 @@ def extract_wiki_links(filepath: Path) -> list[str]:
     except Exception:
         return []
 
-    # Find all [[slug]] patterns
-    matches = re.findall(r'\[\[([^\]]+)\]\]', content)
+    # Find all [[slug]] or [[slug|display]] patterns, extract just the slug
+    matches = re.findall(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]", content)
     return list(set(matches))
 
 
@@ -234,7 +281,7 @@ def find_moc_gaps(
     mocs: list[Note],
     all_notes: list[Note],
     embeddings: dict,
-    threshold: float = DEFAULT_THRESHOLD
+    threshold: float = DEFAULT_THRESHOLD,
 ) -> list[dict]:
     """Find notes that should be in MOCs but aren't linked."""
     results = []
@@ -275,23 +322,27 @@ def find_moc_gaps(
                 moc_tags = set(moc.tags)
                 shared_tags = list(set(note.tags) & moc_tags)
 
-                missing_notes.append({
-                    "slug": note.slug,
-                    "title": note.title,
-                    "score": round(similarity, 3),
-                    "shared_tags": shared_tags,
-                    "type": note.type
-                })
+                missing_notes.append(
+                    {
+                        "slug": note.slug,
+                        "title": note.title,
+                        "score": round(similarity, 3),
+                        "shared_tags": shared_tags,
+                        "type": note.type,
+                    }
+                )
 
         if missing_notes:
             # Sort by score descending
             missing_notes.sort(key=lambda x: x["score"], reverse=True)
-            results.append({
-                "moc": moc.slug,
-                "moc_title": moc.title,
-                "current_members": len(member_slugs),
-                "missing_notes": missing_notes
-            })
+            results.append(
+                {
+                    "moc": moc.slug,
+                    "moc_title": moc.title,
+                    "current_members": len(member_slugs),
+                    "missing_notes": missing_notes,
+                }
+            )
 
     return results
 
@@ -299,6 +350,7 @@ def find_moc_gaps(
 # ============================================================================
 # Orphan Clustering
 # ============================================================================
+
 
 def get_orphan_notes(all_notes: list[Note], mocs: list[Note]) -> list[Note]:
     """Find notes not linked from any MOC."""
@@ -308,10 +360,7 @@ def get_orphan_notes(all_notes: list[Note], mocs: list[Note]) -> list[Note]:
         linked_slugs.update(get_moc_members(moc))
 
     # Find orphans (excluding MOCs themselves)
-    orphans = [
-        n for n in all_notes
-        if n.slug not in linked_slugs and n.type != "map"
-    ]
+    orphans = [n for n in all_notes if n.slug not in linked_slugs and n.type != "map"]
     return orphans
 
 
@@ -319,37 +368,50 @@ def cluster_orphans(
     orphan_notes: list[Note],
     embeddings: dict,
     eps: float = DBSCAN_EPS,
-    min_samples: int = DEFAULT_MIN_CLUSTER_SIZE
-) -> list[dict]:
-    """Cluster orphan notes using DBSCAN."""
+    min_samples: int = DEFAULT_MIN_CLUSTER_SIZE,
+) -> tuple[list[dict], dict]:
+    """Cluster orphan notes using DBSCAN. Returns (clusters, stats)."""
+    empty_stats = {
+        "total_orphans": len(orphan_notes),
+        "clustered": 0,
+        "unclustered": len(orphan_notes),
+    }
+
     try:
         from sklearn.cluster import DBSCAN
     except ImportError:
-        print("Warning: sklearn not installed. Install with: pip install scikit-learn", file=sys.stderr)
-        return []
+        print(
+            "Warning: sklearn not installed. Install with: pip install scikit-learn",
+            file=sys.stderr,
+        )
+        return [], empty_stats
 
     if len(orphan_notes) < min_samples:
-        return []
+        return [], empty_stats
 
     # Build embedding matrix for orphans
     valid_notes = [n for n in orphan_notes if n.slug in embeddings]
     if len(valid_notes) < min_samples:
-        return []
+        return [], empty_stats
 
     embedding_matrix = np.array([embeddings[n.slug] for n in valid_notes])
 
     # DBSCAN uses distance, so convert similarity threshold to distance
     # Since embeddings are normalized, distance = 1 - cosine_similarity
-    clustering = DBSCAN(eps=eps, min_samples=min_samples, metric='cosine').fit(embedding_matrix)
+    clustering = DBSCAN(eps=eps, min_samples=min_samples, metric="cosine").fit(
+        embedding_matrix
+    )
 
     # Group notes by cluster label (-1 is noise)
     clusters = {}
+    clustered_count = 0
     for idx, label in enumerate(clustering.labels_):
         if label == -1:
             continue
         if label not in clusters:
             clusters[label] = []
         clusters[label].append(valid_notes[idx])
+        clustered_count += 1
 
     # Build cluster results
     results = []
@@ -361,27 +423,36 @@ def cluster_orphans(
 
         # Get tags that appear in majority of cluster notes
         common_tags = [
-            tag for tag, count in tag_counts.most_common(5)
+            tag
+            for tag, count in tag_counts.most_common(5)
             if count >= len(notes) * 0.4  # At least 40% of notes have this tag
         ]
 
         # Infer theme from titles and common tags
         theme = infer_theme(notes, common_tags)
 
-        results.append({
-            "cluster_id": int(label),
-            "theme": theme,
-            "common_tags": common_tags,
-            "notes": [
-                {"slug": n.slug, "title": n.title, "type": n.type}
-                for n in notes
-            ],
-            "size": len(notes)
-        })
+        results.append(
+            {
+                "cluster_id": int(label),
+                "theme": theme,
+                "common_tags": common_tags,
+                "notes": [
+                    {"slug": n.slug, "title": n.title, "type": n.type} for n in notes
+                ],
+                "size": len(notes),
+            }
+        )
 
     # Sort by cluster size descending
     results.sort(key=lambda x: x["size"], reverse=True)
-    return results
+
+    stats = {
+        "total_orphans": len(orphan_notes),
+        "clustered": clustered_count,
+        "unclustered": len(orphan_notes) - clustered_count,
+    }
+
+    return results, stats
 
 
 def infer_theme(notes: list[Note], common_tags: list[str]) -> str:
@@ -395,10 +466,25 @@ def infer_theme(notes: list[Note], common_tags: list[str]) -> str:
 
     # Fall back to looking for common words in titles
     words = Counter()
-    stop_words = {"the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "is", "are"}
+    stop_words = {
+        "the",
+        "a",
+        "an",
+        "and",
+        "or",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "of",
+        "with",
+        "is",
+        "are",
+    }
     for note in notes:
         for word in note.title.lower().split():
-            word = re.sub(r'[^\w]', '', word)
+            word = re.sub(r"[^\w]", "", word)
             if len(word) > 3 and word not in stop_words:
                 words[word] += 1
 
@@ -410,15 +496,50 @@ def infer_theme(notes: list[Note], common_tags: list[str]) -> str:
 
 
 # ============================================================================
+# Hub Notes Detection
+# ============================================================================
+
+
+def find_potential_mocs(
+    all_notes: list[Note], min_links: int = DEFAULT_MIN_LINKS
+) -> list[dict]:
+    """Find notes with many outgoing links that could become MOCs."""
+    results = []
+
+    for note in all_notes:
+        # Skip if already a MOC
+        if note.type == "map":
+            continue
+
+        outgoing_links = extract_wiki_links(note.path)
+
+        if len(outgoing_links) >= min_links:
+            results.append(
+                {
+                    "slug": note.slug,
+                    "title": note.title,
+                    "type": note.type,
+                    "outgoing_links": len(outgoing_links),
+                    "links": sorted(outgoing_links),
+                }
+            )
+
+    # Sort by link count descending
+    results.sort(key=lambda x: x["outgoing_links"], reverse=True)
+    return results
+
+
+# ============================================================================
 # Single Note Suggestions
 # ============================================================================
+
 
 def suggest_for_note(
     note_slug: str,
     mocs: list[Note],
     all_notes: list[Note],
     embeddings: dict,
-    threshold: float = DEFAULT_THRESHOLD
+    threshold: float = DEFAULT_THRESHOLD,
 ) -> list[dict]:
     """Suggest which MOCs a specific note should join."""
     if note_slug not in embeddings:
@@ -440,8 +561,7 @@ def suggest_for_note(
 
         # Get member embeddings
         member_embeddings = [
-            embeddings[slug] for slug in member_slugs
-            if slug in embeddings
+            embeddings[slug] for slug in member_slugs if slug in embeddings
         ]
 
         if not member_embeddings:
@@ -462,12 +582,14 @@ def suggest_for_note(
                 reasons.append(f"shares tags: {', '.join(shared_tags[:3])}")
             reasons.append(f"semantic similarity: {similarity:.0%}")
 
-            suggestions.append({
-                "moc": moc.slug,
-                "moc_title": moc.title,
-                "score": round(similarity, 3),
-                "reason": "; ".join(reasons)
-            })
+            suggestions.append(
+                {
+                    "moc": moc.slug,
+                    "moc_title": moc.title,
+                    "score": round(similarity, 3),
+                    "reason": "; ".join(reasons),
+                }
+            )
 
     # Sort by score descending
     suggestions.sort(key=lambda x: x["score"], reverse=True)
@@ -478,33 +600,39 @@ def suggest_for_note(
 # Main
 # ============================================================================
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Cluster notes for MOC curation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
     )
     parser.add_argument(
-        "--mode", "-m",
-        choices=["moc-gaps", "new-clusters", "full", "for-note"],
+        "--mode",
+        "-m",
+        choices=["moc-gaps", "new-clusters", "hub-notes", "full", "for-note"],
         default="full",
-        help="Analysis mode (default: full)"
+        help="Analysis mode (default: full)",
     )
+    parser.add_argument("--note", "-n", help="Note slug for --mode=for-note")
     parser.add_argument(
-        "--note", "-n",
-        help="Note slug for --mode=for-note"
-    )
-    parser.add_argument(
-        "--threshold", "-t",
+        "--threshold",
+        "-t",
         type=float,
         default=DEFAULT_THRESHOLD,
-        help=f"Similarity threshold (default: {DEFAULT_THRESHOLD})"
+        help=f"Similarity threshold (default: {DEFAULT_THRESHOLD})",
     )
     parser.add_argument(
         "--min-cluster-size",
         type=int,
         default=DEFAULT_MIN_CLUSTER_SIZE,
-        help=f"Minimum cluster size (default: {DEFAULT_MIN_CLUSTER_SIZE})"
+        help=f"Minimum cluster size (default: {DEFAULT_MIN_CLUSTER_SIZE})",
+    )
+    parser.add_argument(
+        "--min-links",
+        type=int,
+        default=DEFAULT_MIN_LINKS,
+        help=f"Minimum outgoing links to suggest as MOC (default: {DEFAULT_MIN_LINKS})",
     )
     args = parser.parse_args()
 
@@ -530,14 +658,20 @@ def main():
     output = {}
 
     if args.mode in ("moc-gaps", "full"):
-        output["moc_updates"] = find_moc_gaps(mocs, all_notes, embeddings, args.threshold)
+        output["moc_updates"] = find_moc_gaps(
+            mocs, all_notes, embeddings, args.threshold
+        )
 
     if args.mode in ("new-clusters", "full"):
         orphans = get_orphan_notes(all_notes, mocs)
-        output["new_clusters"] = cluster_orphans(
-            orphans, embeddings,
-            min_samples=args.min_cluster_size
+        clusters, orphan_stats = cluster_orphans(
+            orphans, embeddings, min_samples=args.min_cluster_size
         )
+        output["new_clusters"] = clusters
+        output["orphan_stats"] = orphan_stats
+
+    if args.mode in ("hub-notes", "full"):
+        output["potential_mocs"] = find_potential_mocs(all_notes, args.min_links)
 
     if args.mode == "for-note":
         output["for_note"] = suggest_for_note(

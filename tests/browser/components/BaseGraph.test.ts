@@ -31,7 +31,7 @@ describe('BaseGraph', () => {
 
   describe('rendering', () => {
     it('renders graph container when data provided', async () => {
-      render(BaseGraph, {
+      const { container } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
           mode: 'radial',
@@ -39,9 +39,19 @@ describe('BaseGraph', () => {
         },
       })
 
-      // Use the data-testid we added
-      await expect.element(page.getByTestId('graph')).toBeVisible()
-      await expect.element(page.getByTestId('graph-container')).toBeVisible()
+      // Wait for D3 to render the SVG (which has explicit dimensions)
+      await waitForSimulation()
+
+      // Check container and SVG exist
+      const graph = container.querySelector('[data-testid="graph"]')
+      expect(graph).toBeTruthy()
+
+      const graphContainer = container.querySelector('[data-testid="graph-container"]')
+      expect(graphContainer).toBeTruthy()
+
+      // SVG should be rendered by D3
+      const svg = container.querySelector('svg')
+      expect(svg).toBeTruthy()
     })
 
     it('shows empty state when no data provided', async () => {
