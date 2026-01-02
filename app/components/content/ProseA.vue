@@ -11,7 +11,10 @@ const props = defineProps<{
 }>()
 
 const isWikiLink = computed(() => props.class?.includes('wiki-link'))
-const slug = computed(() => props.href?.replace(/^\//, '') || '')
+const slug = computed(() => {
+  const path = props.href?.replace(/^\//, '') || ''
+  return path.split('#')[0] // Strip hash for content query
+})
 
 // Fetch preview data for wiki-links
 const { data: linkData } = await useAsyncData(

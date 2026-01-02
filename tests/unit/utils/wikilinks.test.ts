@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  normalizeHeading,
   normalizeSlug,
   transformWikiLink,
   transformWikiLinks,
@@ -17,6 +18,18 @@ describe('wikiLinkRegex', () => {
     const match = '[[slug|Display Text]]'.match(wikiLinkRegex)
     expect(match).toHaveLength(1)
     expect(match?.[0]).toBe('[[slug|Display Text]]')
+  })
+
+  it('matches wiki-link with heading', () => {
+    const match = '[[slug#heading]]'.match(wikiLinkRegex)
+    expect(match).toHaveLength(1)
+    expect(match?.[0]).toBe('[[slug#heading]]')
+  })
+
+  it('matches wiki-link with heading and display text', () => {
+    const match = '[[slug#heading|Display Text]]'.match(wikiLinkRegex)
+    expect(match).toHaveLength(1)
+    expect(match?.[0]).toBe('[[slug#heading|Display Text]]')
   })
 
   it('matches multiple wiki-links', () => {
@@ -65,13 +78,31 @@ describe('normalizeSlug', () => {
   })
 })
 
+describe('normalizeHeading', () => {
+  it('converts to lowercase', () => {
+    expect(normalizeHeading('Key Insights')).toBe('key-insights')
+  })
+
+  it('trims whitespace', () => {
+    expect(normalizeHeading('  heading  ')).toBe('heading')
+  })
+
+  it('replaces spaces with hyphens', () => {
+    expect(normalizeHeading('my heading title')).toBe('my-heading-title')
+  })
+
+  it('replaces multiple spaces with single hyphen', () => {
+    expect(normalizeHeading('my   heading')).toBe('my-heading')
+  })
+})
+
 describe('transformWikiLink', () => {
   it('transforms simple slug', () => {
     expect(transformWikiLink('slug')).toBe('[slug](/slug){.wiki-link}')
   })
 
   it('transforms slug with display text', () => {
-    expect(transformWikiLink('slug', 'Display Text')).toBe('[Display Text](/slug){.wiki-link}')
+    expect(transformWikiLink('slug', undefined, 'Display Text')).toBe('[Display Text](/slug){.wiki-link}')
   })
 
   it('normalizes slug in URL', () => {
@@ -83,11 +114,23 @@ describe('transformWikiLink', () => {
   })
 
   it('trims display text', () => {
-    expect(transformWikiLink('slug', '  Spaced  ')).toBe('[Spaced](/slug){.wiki-link}')
+    expect(transformWikiLink('slug', undefined, '  Spaced  ')).toBe('[Spaced](/slug){.wiki-link}')
   })
 
   it('handles slug with multiple words and custom display', () => {
-    expect(transformWikiLink('Local First Software', 'local-first')).toBe('[local-first](/local-first-software){.wiki-link}')
+    expect(transformWikiLink('Local First Software', undefined, 'local-first')).toBe('[local-first](/local-first-software){.wiki-link}')
+  })
+
+  it('transforms slug with heading', () => {
+    expect(transformWikiLink('slug', 'Key Insights')).toBe('[slug#Key Insights](/slug#key-insights){.wiki-link}')
+  })
+
+  it('transforms slug with heading and display text', () => {
+    expect(transformWikiLink('slug', 'heading', 'Custom Text')).toBe('[Custom Text](/slug#heading){.wiki-link}')
+  })
+
+  it('normalizes heading in URL but preserves in display', () => {
+    expect(transformWikiLink('atomic-habits', 'Key Insights')).toBe('[atomic-habits#Key Insights](/atomic-habits#key-insights){.wiki-link}')
   })
 })
 
@@ -150,5 +193,25 @@ Regular [markdown](http://example.com) links stay intact.`
   it('handles wiki-link at end of text', () => {
     expect(transformWikiLinks('See [[note]]'))
       .toBe('See [note](/note){.wiki-link}')
+  })
+
+  it('transforms wiki-link with heading', () => {
+    expect(transformWikiLinks('See [[note#section]]'))
+      .toBe('See [note#section](/note#section){.wiki-link}')
+  })
+
+  it('transforms wiki-link with heading and display text', () => {
+    expect(transformWikiLinks('See [[note#section|the section]]'))
+      .toBe('See [the section](/note#section){.wiki-link}')
+  })
+
+  it('transforms wiki-link with heading containing spaces', () => {
+    expect(transformWikiLinks('See [[atomic-habits#Key Insights]]'))
+      .toBe('See [atomic-habits#Key Insights](/atomic-habits#key-insights){.wiki-link}')
+  })
+
+  it('handles mixed wiki-links with and without headings', () => {
+    expect(transformWikiLinks('See [[foo]] and [[bar#section]]'))
+      .toBe('See [foo](/foo){.wiki-link} and [bar#section](/bar#section){.wiki-link}')
   })
 })
