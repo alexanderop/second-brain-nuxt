@@ -187,6 +187,14 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Debug - List output directory
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Contents of current directory:"
+          ls -la
+          echo "Contents of .output (if exists):"
+          ls -la .output || echo ".output does not exist"
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
