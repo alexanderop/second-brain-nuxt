@@ -2,6 +2,8 @@
 
 A personal knowledge base for capturing and connecting content using Zettelkasten-style wiki-links.
 
+bla
+
 ## Features
 
 - **Content Library**: Store articles, podcasts, books, videos, and notes
