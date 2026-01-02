@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { useAsyncData, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import ContentList from '~/components/ContentList.vue'
 
@@ -38,9 +39,7 @@ const byYear = computed(() => {
     .map(year => ({ year, books: grouped[year] }))
 })
 
-useSeoMeta({
-  title: 'Books - Second Brain',
-})
+usePageTitle('Books')
 </script>
 
 <template>

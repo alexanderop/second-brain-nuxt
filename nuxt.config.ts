@@ -1,3 +1,5 @@
+import { siteConfig } from './site.config'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks', '@vite-pwa/nuxt'],
@@ -61,11 +63,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Second Brain',
+      title: siteConfig.name,
       meta: [
-        { name: 'description', content: 'Personal knowledge base with connected notes' },
-        { name: 'robots', content: 'noindex, nofollow' },
-        { name: 'theme-color', content: '#1a1a2e' },
+        { name: 'description', content: siteConfig.description },
+        { name: 'robots', content: siteConfig.allowIndexing ? 'index, follow' : 'noindex, nofollow' },
+        { name: 'theme-color', content: siteConfig.themeColor },
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
@@ -78,11 +80,11 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'Second Brain',
-      short_name: 'SecondBrain',
-      description: 'Personal knowledge base with connected notes',
-      theme_color: '#1a1a2e',
-      background_color: '#1a1a2e',
+      name: siteConfig.name,
+      short_name: siteConfig.shortName,
+      description: siteConfig.description,
+      theme_color: siteConfig.themeColor,
+      background_color: siteConfig.themeColor,
       display: 'standalone',
       icons: [
         {

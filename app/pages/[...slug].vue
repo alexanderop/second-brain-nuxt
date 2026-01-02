@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { ContentRenderer } from '#components'
 import ContentHeader from '~/components/ContentHeader.vue'
 import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue'
@@ -36,8 +37,9 @@ function navigateToNote(targetSlug: string) {
   router.push(`/${targetSlug}`)
 }
 
+usePageTitle(() => page.value?.title ?? '')
+
 useSeoMeta({
-  title: () => page.value?.title ?? 'Second Brain',
   description: () => page.value?.summary ?? '',
 })
 </script>

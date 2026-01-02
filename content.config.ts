@@ -43,6 +43,7 @@ export default defineContentConfig({
     content: defineCollection({
       type: 'page',
       source: { include: '**/*.md', exclude: ['authors/**', 'pages/**'] },
+      // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),
         type: contentTypes,
@@ -60,7 +61,7 @@ export default defineContentConfig({
         readingStatus: z.enum(readingStatusValues).optional(),
         startedReading: z.string().optional(),
         finishedReading: z.string().optional(),
-      }).superRefine((data, ctx) => {
+      }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
         if (external.includes(data.type) && data.authors.length === 0) {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
+import { useRoute, useAsyncData, createError, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import ContentList from '~/components/ContentList.vue'
 import { useListNavigation } from '~/composables/useListNavigation'
@@ -46,9 +47,7 @@ const { data: items } = await useAsyncData(`type-${type.value}`, () => {
 
 const { selectedIndex } = useListNavigation(items)
 
-useSeoMeta({
-  title: () => `${type.value.charAt(0).toUpperCase() + type.value.slice(1)}s - Second Brain`,
-})
+usePageTitle(() => `${type.value.charAt(0).toUpperCase() + type.value.slice(1)}s`)
 </script>
 
 <template>

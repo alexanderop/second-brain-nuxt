@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { NuxtLink, UButton, UKbd, USlideover } from '#components'
+import { useSiteConfig } from '~/composables/useSiteConfig'
 
-const links = [
-  { label: 'Home', to: '/', icon: 'i-lucide-home' },
-  { label: 'Books', to: '/books', icon: 'i-lucide-book-open' },
-  { label: 'Graph', to: '/graph', icon: 'i-lucide-network' },
-  { label: 'Stats', to: '/stats', icon: 'i-lucide-bar-chart-2' },
-  { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
-  { label: 'Authors', to: '/authors', icon: 'i-lucide-users' },
-  { label: 'About', to: '/about', icon: 'i-lucide-user' },
-]
+const { name: siteName, nav: links } = useSiteConfig()
 
 const searchOpen = defineModel<boolean>('searchOpen', { default: false })
 const shortcutsOpen = defineModel<boolean>('shortcutsOpen', { default: false })
@@ -22,7 +15,7 @@ const mobileMenuOpen = ref(false)
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-8">
         <NuxtLink to="/" class="text-xl font-semibold">
-          Second Brain
+          {{ siteName }}
         </NuxtLink>
         <nav class="hidden md:flex items-center gap-1">
           <UButton

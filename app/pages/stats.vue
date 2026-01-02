@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useFetch, useSeoMeta } from '#imports'
+import { useFetch } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon, UProgress } from '#components'
 import StatCard from '~/components/StatCard.vue'
 import StatsBarChart from '~/components/StatsBarChart.vue'
@@ -74,9 +75,7 @@ const qualityMetrics = computed(() => {
   ]
 })
 
-useSeoMeta({
-  title: 'Stats - Second Brain',
-})
+usePageTitle('Stats')
 </script>
 
 <template>

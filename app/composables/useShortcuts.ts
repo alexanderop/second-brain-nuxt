@@ -1,24 +1,21 @@
 import { useState } from '#imports'
+import { siteConfig } from '~~/site.config'
 
 export interface Shortcut {
-  keys: string[]
+  keys: readonly string[]
   description: string
   category: 'navigation' | 'actions' | 'general'
 }
 
-// Shortcuts data for help modal display
+// Derive shortcuts list from site config
+type GeneralShortcut = (typeof siteConfig.shortcuts.general)[number]
+type NavigationShortcut = (typeof siteConfig.shortcuts.navigation)[number]
+type ActionShortcut = (typeof siteConfig.shortcuts.actions)[number]
+
 export const shortcutsList: Shortcut[] = [
-  { keys: ['?'], description: 'Show keyboard shortcuts', category: 'general' },
-  { keys: ['meta', 'K'], description: 'Open search', category: 'general' },
-  { keys: ['G', 'H'], description: 'Go to home', category: 'navigation' },
-  { keys: ['G', 'B'], description: 'Go to books', category: 'navigation' },
-  { keys: ['G', 'G'], description: 'Go to graph', category: 'navigation' },
-  { keys: ['G', 'T'], description: 'Go to tags', category: 'navigation' },
-  { keys: ['G', 'A'], description: 'Go to authors', category: 'navigation' },
-  { keys: ['J'], description: 'Next item', category: 'actions' },
-  { keys: ['K'], description: 'Previous item', category: 'actions' },
-  { keys: ['Enter'], description: 'Open selected', category: 'actions' },
-  { keys: ['Esc'], description: 'Close modal / go back', category: 'general' },
+  ...siteConfig.shortcuts.general.map((s: GeneralShortcut) => ({ ...s, category: 'general' as const })),
+  ...siteConfig.shortcuts.navigation.map((s: NavigationShortcut) => ({ ...s, category: 'navigation' as const })),
+  ...siteConfig.shortcuts.actions.map((s: ActionShortcut) => ({ ...s, category: 'actions' as const })),
 ]
 
 // Shared modal state

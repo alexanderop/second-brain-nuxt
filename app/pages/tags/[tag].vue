@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { useRoute, useAsyncData, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import ContentList from '~/components/ContentList.vue'
 
@@ -14,9 +15,7 @@ const { data: items } = await useAsyncData(`tag-${tag.value}`, () => {
     .all()
 })
 
-useSeoMeta({
-  title: () => `#${tag.value} - Second Brain`,
-})
+usePageTitle(() => `#${tag.value}`)
 </script>
 
 <template>

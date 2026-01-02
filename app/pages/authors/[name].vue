@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useAsyncData, useSeoMeta, queryCollection } from '#imports'
+import { useRoute, useAsyncData, queryCollection } from '#imports'
+import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon, UButton, UAvatar } from '#components'
 import ContentList from '~/components/ContentList.vue'
 
@@ -22,9 +23,7 @@ const { data: items } = await useAsyncData(`author-${authorSlug.value}`, () => {
 
 const authorName = computed(() => authorData.value?.name ?? authorSlug.value)
 
-useSeoMeta({
-  title: () => `${authorName.value} - Second Brain`,
-})
+usePageTitle(() => authorName.value)
 
 const socialLinks = computed(() => {
   if (!authorData.value?.socials) return []
