@@ -7,6 +7,7 @@ import ContentHeader from '~/components/ContentHeader.vue'
 import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue'
 import YouTubePlayer from '~/components/YouTubePlayer.vue'
 import BookCover from '~/components/BookCover.vue'
+import GitHubRepoCard from '~/components/GitHubRepoCard.vue'
 import NoteGraph from '~/components/NoteGraph.vue'
 import { useBacklinks } from '~/composables/useBacklinks'
 import { useMentions } from '~/composables/useMentions'
@@ -59,6 +60,13 @@ useSeoMeta({
       v-if="(page.type === 'book' || page.type === 'manga') && page.cover"
       :cover="page.cover"
       :title="page.title"
+    />
+
+    <GitHubRepoCard
+      v-if="page.type === 'github' && page.url"
+      :url="page.url"
+      :stars="(page.stars as number | undefined)"
+      :language="(page.language as string | undefined)"
     />
 
     <div v-if="page.summary" class="mb-8 p-5 bg-[var(--ui-bg-elevated)] rounded-xl border border-[var(--ui-border)]">

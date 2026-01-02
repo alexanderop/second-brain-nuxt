@@ -1,7 +1,9 @@
 ---
 title: "Beads"
-type: article
+type: github
 url: "https://github.com/steveyegge/beads"
+stars: 7600
+language: "Go"
 tags:
   - ai-agents
   - developer-tools

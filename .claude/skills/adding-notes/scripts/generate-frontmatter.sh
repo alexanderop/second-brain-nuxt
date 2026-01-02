@@ -20,6 +20,7 @@ if [[ -n "$URL" && "$TYPE" == "note" ]]; then
     *amazon.com*|*goodreads.com*) TYPE="book" ;;
     *imdb.com*) TYPE="movie" ;;
     *udemy.com*|*coursera.org*|*skillshare.com*) TYPE="course" ;;
+    *github.com*) TYPE="github" ;;
     *) TYPE="article" ;;
   esac
 fi
@@ -49,6 +50,21 @@ title: ""
 type: $TYPE
 url: "$URL"
 cover: ""
+tags: []
+authors: []
+summary: ""
+notes: ""
+date: $DATE
+---
+EOF
+elif [[ "$TYPE" == "github" ]]; then
+  cat << EOF
+---
+title: ""
+type: github
+url: "$URL"
+stars:
+language: ""
 tags: []
 authors: []
 summary: ""

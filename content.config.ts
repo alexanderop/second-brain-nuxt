@@ -12,6 +12,7 @@ const externalContentTypes = [
   'tweet',
   'course',
   'reddit',
+  'github',
 ] as const
 
 // Manga status values

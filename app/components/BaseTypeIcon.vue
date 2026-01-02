@@ -22,6 +22,7 @@ const iconMap: Record<ContentType, string> = {
   evergreen: 'i-lucide-leaf',
   map: 'i-lucide-hexagon',
   reddit: 'i-lucide-message-square',
+  github: 'i-lucide-github',
 }
 
 const sizeClasses = {
