@@ -1,16 +1,53 @@
 ---
 name: adding-notes
 description: Add new notes to the Second Brain knowledge base. Use when the user provides a resource (URL, book, podcast, article) and asks to "add a note", "create a note", "save this", or "add to my notes".
-allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep
+allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep, Task, TaskOutput, WebSearch
 ---
 
 # Adding Notes to Second Brain
 
-This skill helps add new content to the knowledge base with proper frontmatter, tags, summaries, and wiki-links.
+This skill helps add new content to the knowledge base with proper frontmatter, tags, summaries, and wiki-links. It uses **subagent delegation** for parallel processing and quality validation.
 
-## Workflow
+## Workflow Overview
 
-### 1. Generate Frontmatter Template
+```
+Phase 1: Type Detection & Background Dispatch
+   ├─ Detect content type from URL
+   ├─ Spawn background agent for semantic analysis (runs while other work happens)
+   └─ Continue immediately to Phase 2
+
+Phase 2: Parallel Metadata Collection
+   ├─ Spawn parallel agents based on content type
+   ├─ YouTube: metadata + transcript agents
+   ├─ Book/Manga: goodreads + author-check agents
+   └─ Collect all results via TaskOutput
+
+Phase 3: Parallel Author Creation
+   ├─ For each missing author, spawn WebSearch agent
+   ├─ All authors processed in parallel
+   └─ Profiles created automatically
+
+Phase 4: Content Generation
+   ├─ Collect semantic analysis from Phase 1
+   ├─ Combine metadata + authors + related notes
+   └─ Generate markdown body
+
+Phase 5: Quality Validation (BLOCKING GATE)
+   ├─ Spawn 3 parallel validation agents
+   ├─ Check: wiki-links, duplicates, tags
+   ├─ IF issues found → present to user, BLOCK until confirmed
+   └─ ELSE → proceed to save
+
+Phase 6: Save Note
+   ├─ Generate slug
+   └─ Write to content/{slug}.md
+```
+
+---
+
+## Phase 1: Type Detection & Background Dispatch
+
+### 1.1 Generate Frontmatter Template
 
 Run the script to get a dated template with auto-detected type:
 
@@ -36,182 +73,299 @@ The script auto-detects type from URL patterns:
 - `tv` - For TV series (IMDB shows auto-detect as `movie`, override if needed)
 - `map` - For Maps of Content (MOCs) that curate and cluster related notes
 
-### 2. Fetch Resource Details
+### 1.2 Start Background Semantic Analysis
 
-#### For YouTube Videos (WebFetch doesn't work on YouTube)
+**Immediately after detecting type**, spawn a background agent to find related notes. This runs while other phases execute, so results are ready by Phase 4.
 
-Use these dedicated scripts instead:
+```markdown
+Use Task tool with:
+- subagent_type: "general-purpose"
+- run_in_background: true
+- prompt: "Run the semantic analysis script for the new note:
 
-```bash
-# Get title and channel (requires jq)
-.claude/skills/adding-notes/scripts/get-youtube-metadata.sh "URL"
+  ```bash
+  python3 .claude/skills/adding-notes/scripts/find-related-notes.py content/TEMP_NOTE.md --limit 10
+  ```
 
-# Get full transcript for content analysis
-python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py "URL"
+  If the note file doesn't exist yet, create a temporary stub with just the title and tags, run the analysis, then delete the stub.
+
+  Return the list of related notes with their scores and reasons."
 ```
+
+**Save the agent ID** - you'll retrieve results in Phase 4 using `TaskOutput`.
+
+---
+
+## Phase 2: Parallel Metadata Collection
+
+Based on the detected content type, spawn **parallel agents** to fetch metadata and check authors simultaneously.
+
+### 2.1 YouTube Videos
+
+Spawn **2 parallel agents** in a single message:
+
+```markdown
+**Agent A - Metadata:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch YouTube metadata:
+  ```bash
+  .claude/skills/adding-notes/scripts/get-youtube-metadata.sh 'URL'
+  ```
+  Return: title, channel name"
+
+**Agent B - Transcript:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch YouTube transcript:
+  ```bash
+  python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py 'URL'
+  ```
+  Return: full transcript text"
+```
+
+Collect both results via `TaskOutput` (blocking).
 
 Use the transcript to:
 - Extract accurate key takeaways
 - Find notable quotes (exact wording)
 - Understand the full context of the video
 
-#### For Reddit Threads (WebFetch doesn't work on Reddit)
+### 2.2 Reddit Threads
 
-Use the dedicated script:
+Spawn **2 parallel agents**:
 
-```bash
-# Get thread metadata and top comments
-python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py "URL"
+```markdown
+**Agent A - Thread Content:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch Reddit thread:
+  ```bash
+  python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py 'URL' --comments 10
+  ```
+  Return: OP post, top comments, metadata"
 
-# Optionally limit comments or filter by score
-python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py "URL" --comments 5 --min-score 10
+**Agent B - Author Check:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check if Reddit author exists:
+  ```bash
+  .claude/skills/adding-notes/scripts/check-author-exists.sh 'u/username'
+  ```
+  Return: EXISTS with path, or NOT_FOUND"
 ```
-
-Use the output to:
-- Extract the OP's main argument or question
-- Identify the most insightful responses
-- Note any consensus or counterpoints in the discussion
 
 Author should be the OP's username with `u/` prefix (e.g., `u/mario_candela`).
 
-#### For Books (Goodreads)
+### 2.3 Books (Goodreads)
 
-Use the dedicated script to fetch book metadata including cover image:
+Spawn **2 parallel agents**:
 
-```bash
-# Get title, author, and cover image URL
-.claude/skills/adding-notes/scripts/get-goodreads-metadata.sh "URL"
+```markdown
+**Agent A - Book Metadata:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch Goodreads metadata:
+  ```bash
+  .claude/skills/adding-notes/scripts/get-goodreads-metadata.sh 'URL'
+  ```
+  Return: title, author, cover URL"
+
+**Agent B - Author Check:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check if author exists:
+  ```bash
+  .claude/skills/adding-notes/scripts/check-author-exists.sh 'Author Name'
+  ```
+  Return: EXISTS with path, or NOT_FOUND"
 ```
 
-Use the output to populate:
-- **title**: The book title
-- **authors**: The author name (create profile if needed)
-- **cover**: The high-resolution cover image URL (displays on book detail page)
+**Book Cover Feature**: Notes with `type: book` and a valid `cover` URL automatically display the book cover image at the top of the page.
 
-**Book Cover Feature**: Notes with `type: book` and a valid `cover` URL automatically display the book cover image at the top of the page, below the header. No additional markup needed.
+### 2.4 Manga (Goodreads Series)
 
-#### For Manga (Goodreads Series URLs)
+Spawn **2 parallel agents**:
 
-When adding a manga, use the series metadata script with the **series URL** (not a volume URL):
+```markdown
+**Agent A - Manga Metadata:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch manga series metadata:
+  ```bash
+  .claude/skills/adding-notes/scripts/get-manga-metadata.sh 'SERIES_URL'
+  ```
+  Return: title, author, cover, volumes, status"
 
-```bash
-# Fetch manga series metadata
-.claude/skills/adding-notes/scripts/get-manga-metadata.sh "https://www.goodreads.com/series/57513-slam-dunk"
+**Agent B - Author Check:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check if mangaka exists:
+  ```bash
+  .claude/skills/adding-notes/scripts/check-author-exists.sh 'Mangaka Name'
+  ```
+  Return: EXISTS with path, or NOT_FOUND"
 ```
 
-**Output**:
-```text
-Title: Slam Dunk           # Series name (may be in Japanese - use WebFetch to get English title if needed)
-Author: Takehiko Inoue     # Mangaka
-Cover: https://...         # First volume cover
-Volumes: 31                # Total volume count
-Status: completed          # ongoing | completed | hiatus
+**Manga-specific fields**:
+- `volumes`: Total volume count (number)
+- `status`: Series status — `ongoing`, `completed`, or `hiatus`
+
+Create ONE note per manga series, not per volume.
+
+### 2.5 Articles and Other URLs
+
+Spawn **2 parallel agents**:
+
+```markdown
+**Agent A - Content Fetch:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Fetch article content using WebFetch:
+  URL: 'ARTICLE_URL'
+  Extract: title, description, key points, author if mentioned"
+
+**Agent B - Author Check (if known):**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check if author exists:
+  ```bash
+  .claude/skills/adding-notes/scripts/check-author-exists.sh 'Author Name'
+  ```
+  Return: EXISTS with path, or NOT_FOUND"
 ```
 
-**Manga workflow**:
-1. Pass `type="manga"` to `generate-frontmatter.sh` or set manually
-2. Run `get-manga-metadata.sh` with the **series URL**
-3. Use the series URL as the note's `url` field
-4. Fill in `volumes` and `status` from script output
-5. If title is in Japanese, use WebFetch to get the English title
-6. Create ONE note for the entire series
+### 2.6 Collect Results
 
-#### For Other URLs
+After spawning parallel agents, use `TaskOutput` (blocking) to collect all results:
 
-Use WebFetch to extract:
-- **Title**: The main heading or page title
-- **Description**: Meta description or first paragraph
-- **Key content**: Main points, quotes, or takeaways
+```markdown
+TaskOutput tool with:
+- task_id: [agent A ID]
+- block: true
 
-### 3. Handle Authors
+TaskOutput tool with:
+- task_id: [agent B ID]
+- block: true
+```
+
+Combine the results: metadata from Agent A, author status from Agent B.
+
+---
+
+## Phase 3: Parallel Author Creation
 
 For external content types (youtube, podcast, article, book, movie, tv, tweet, course, reddit), authors are **required** in the frontmatter.
 
-#### Check for Existing Authors
+Based on Phase 2 author checks, spawn **parallel agents** for each missing author.
 
-```bash
-# Check if author exists
-.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
+### 3.1 Spawn Author Creation Agents
 
-# List all existing authors for reference
-.claude/skills/adding-notes/scripts/list-existing-authors.sh
+For each author marked as `NOT_FOUND` in Phase 2, spawn a dedicated agent:
 
-# Search for similar names (disambiguation)
-.claude/skills/adding-notes/scripts/list-existing-authors.sh "partial-name"
+```markdown
+**For each missing author, spawn in parallel:**
+
+Task tool with subagent_type: "general-purpose"
+prompt: "Create author profile for 'Author Name':
+
+1. Use WebSearch to find: '[Author Name] official site bio'
+2. Extract:
+   - bio: 1-2 sentence professional description
+   - avatar: Profile image URL (prefer GitHub, Twitter, official headshots)
+   - website: Personal/official website
+   - socials: twitter, github, linkedin, youtube handles (not full URLs)
+
+3. Generate frontmatter:
+   ```bash
+   .claude/skills/adding-notes/scripts/generate-author-frontmatter.sh 'Author Name' \
+       --bio 'Description' \
+       --avatar 'URL' \
+       --website 'URL' \
+       --twitter 'handle' \
+       --github 'handle'
+   ```
+
+4. Save to content/authors/{slug}.md where slug is kebab-case of name.
+
+Return: author slug for frontmatter reference"
 ```
 
-#### Create Missing Authors
-
-For each author referenced in the note that does not exist:
-
-1. **Use WebSearch** to find the author's official presence:
-   - Search for: `"Author Name" official site`
-   - Look for: personal website, Wikipedia, LinkedIn, Twitter/X, GitHub, YouTube channel
-
-2. **Extract author information:**
-   - **bio**: 1-2 sentence professional description
-   - **avatar**: Profile image URL (prefer official headshots, GitHub avatars)
-   - **website**: Personal/official website
-   - **socials**: Extract handles (not full URLs) for twitter, github, linkedin, youtube
-
-3. **Generate the author profile:**
-
-```bash
-# Generate frontmatter with extracted info
-.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Author Name" \
-    --bio "Description here" \
-    --avatar "https://example.com/avatar.jpg" \
-    --website "https://author.com" \
-    --twitter "handle" \
-    --github "handle" \
-    --linkedin "handle" \
-    --youtube "handle"
+**Example - 3 authors in parallel:**
+```markdown
+# Single message with 3 Task tool calls:
+Agent 1: Create profile for "Simon Sinek"
+Agent 2: Create profile for "Adam Grant"
+Agent 3: Create profile for "Brené Brown"
 ```
 
-4. **Save silently** to `content/authors/{slug}.md` without user confirmation.
+### 3.2 Collect Author Results
 
-Generate the slug (kebab-case filename) from the author name:
-- "Simon Sinek" → `simon-sinek.md`
-- "Andrew Huberman" → `andrew-huberman.md`
+Use `TaskOutput` (blocking) to collect all author agent results:
 
-#### Multiple Authors
+```markdown
+TaskOutput for each author agent:
+- task_id: [agent ID]
+- block: true
 
-When content has multiple authors (e.g., co-authored books, academic papers):
+Collect: author slugs for note frontmatter
+```
 
-1. Check each author separately using `check-author-exists.sh`
-2. For each missing author, **prompt the user**:
-   - "Author 'X' not found. Should I create a profile? (yes/no/skip)"
-3. If yes, proceed with web search and creation
-4. If skip, omit that author from the note's `authors` array
-
-#### Special Cases
+### 3.3 Special Cases
 
 **Reddit Authors:**
 - Use `u/username` format (e.g., `u/mario_candela`)
 - Filename: `u-username.md` (e.g., `u-mario-candela.md`)
-- Skip WebSearch for Reddit users (pseudonymous, no reliable public profiles)
-- Create minimal profile: name and slug only, leave other fields empty
+- **Skip WebSearch** - create minimal profile (pseudonymous users)
+- Minimal profile: name and slug only
 
 **Author Not Found Online:**
-- Create a minimal profile with just `name` and `slug`
-- Leave `bio`, `avatar`, `website`, and `socials` empty
+- If WebSearch yields no results, create minimal profile
+- Log: "Created minimal profile for [Author] - bio not found"
 
 **Organizations as Authors:**
 - Treat like regular authors (e.g., "HumanLayer Team")
 - Avatar can be company logo
 - Socials are company accounts
 
-### 4. Generate Content
+### 3.4 Reference Scripts
 
-Fill in the frontmatter:
+```bash
+# Check if author exists
+.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
+
+# List all existing authors
+.claude/skills/adding-notes/scripts/list-existing-authors.sh
+
+# Search for similar names
+.claude/skills/adding-notes/scripts/list-existing-authors.sh "partial-name"
+
+# Generate author frontmatter
+.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Name" \
+    --bio "..." --avatar "..." --website "..." \
+    --twitter "..." --github "..." --linkedin "..." --youtube "..."
+```
+
+---
+
+## Phase 4: Content Generation
+
+Now combine all the data collected from previous phases.
+
+### 4.1 Collect Background Semantic Analysis
+
+Retrieve the results from the background agent spawned in Phase 1:
+
+```markdown
+TaskOutput tool with:
+- task_id: [semantic analysis agent ID from Phase 1]
+- block: true
+
+Returns: list of related notes with scores and reasons
+```
+
+### 4.2 Compile Frontmatter
+
+Using metadata from Phase 2 and author slugs from Phase 3:
 
 **Title**: Use the actual resource title, cleaned up
 - Remove site names (e.g., "- YouTube")
 - Keep episode numbers for podcasts
 
+**Authors**: Use slugs from Phase 3 author creation
+
 **Tags**: Generate 3-5 relevant tags
 - Use lowercase, hyphenated format: `productivity`, `habit-formation`, `mental-models`
-- Include topic tags and format tags where relevant
 - Check existing tags for consistency:
 
 ```bash
@@ -226,35 +380,13 @@ Fill in the frontmatter:
 **Notes** (optional): Personal context for your future self
 - Why you saved this resource
 - Who recommended it
-- When to revisit (e.g., "after finishing project X")
 - Leave empty if no personal context needed
 
-### 5. Discover Related Notes
+### 4.3 Generate Body with Wiki-Links
 
-After saving the note, use the AI-powered related notes finder to discover connections:
+Using the semantic analysis results from 4.1, add wiki-links for **strong connections only**.
 
-```bash
-# Find semantically related notes using AI embeddings
-.claude/skills/adding-notes/scripts/find-related-notes.py content/my-note.md
-
-# Options:
-#   --limit 10       Max suggestions (default: 10)
-#   --min-score 5    Minimum score threshold (default: 5)
-#   --no-mentions    Skip mentions API if dev server not running
-```
-
-**First run**: Downloads the embedding model (~22MB) and builds cache for all notes (~2-5 seconds).
-**Subsequent runs**: Uses cached embeddings, runs in <1 second.
-
-**Dependencies**: `pip install sentence-transformers numpy`
-
-The script uses a hybrid scoring approach:
-- **Semantic similarity** (50 points max) - AI embeddings capture meaning
-- **Tag overlap** (weighted by rarity) - Rare shared tags score higher
-- **Same author** (15 points) - Strong creator connection
-- **Mentions** - Unlinked text references from mentions API
-
-Review the suggestions and **be selective with connections.** Only add wiki-links when there is a strong, direct relationship:
+**Be selective with connections.** Only add wiki-links when there is a strong, direct relationship:
 
 ✅ **Link when:**
 - Same author or creator
@@ -267,13 +399,112 @@ Review the suggestions and **be selective with connections.** Only add wiki-link
 - Only a vague thematic overlap (e.g., "both mention AI" or "both are about productivity")
 - The connection requires multiple hops of reasoning
 - The link would feel forced or add no value to the reader
-- Topics are tangentially related but not the main focus of either note
 
-**When in doubt, leave it out.** A note with no wiki-links is better than one with weak connections. Links should help readers discover genuinely related content.
+**When in doubt, leave it out.** A note with no wiki-links is better than one with weak connections.
 
 Add wiki-links using `[[slug]]` syntax in the body content.
 
-### 6. Generate Slug and Save
+### 4.4 Semantic Analysis Reference
+
+The `find-related-notes.py` script uses a hybrid scoring approach:
+- **Semantic similarity** (50 points max) - AI embeddings capture meaning
+- **Tag overlap** (weighted by rarity) - Rare shared tags score higher
+- **Same author** (15 points) - Strong creator connection
+- **Mentions** - Unlinked text references from mentions API
+
+**First run**: Downloads embedding model (~22MB), builds cache (~2-5 seconds).
+**Subsequent runs**: Uses cached embeddings (<1 second).
+
+---
+
+## Phase 5: Quality Validation (BLOCKING GATE)
+
+Before saving, spawn **3 parallel validation agents** to check for issues.
+
+### 5.1 Spawn Validation Agents
+
+In a single message, spawn all 3 validators:
+
+```markdown
+**Agent 1 - Wiki-Link Validator:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Validate wiki-links in the generated content:
+
+For each [[link]] found:
+1. Check if content/{link}.md exists using Glob
+2. Report any missing targets
+
+Return: list of broken links (or 'All links valid')"
+
+**Agent 2 - Duplicate Detector:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Check for duplicate notes:
+
+1. Search for the title in content/*.md using Grep
+2. Check for similar titles (>80% match)
+3. Check if the URL already exists in any note
+
+Return: list of potential duplicates (or 'No duplicates found')"
+
+**Agent 3 - Tag Validator:**
+Task tool with subagent_type: "general-purpose"
+prompt: "Validate tags:
+
+1. Run: .claude/skills/adding-notes/scripts/list-existing-tags.sh
+2. Compare note's tags against existing tags
+3. Identify new tags (not errors, just info)
+4. Suggest related existing tags if any new tags are close matches
+
+Return: tag validation report"
+```
+
+### 5.2 Collect Validation Results
+
+Use `TaskOutput` (blocking) to collect all validation results:
+
+```markdown
+TaskOutput for each validation agent:
+- task_id: [agent ID]
+- block: true
+```
+
+### 5.3 Handle Validation Issues
+
+**IF any validation agent reports issues:**
+
+Present issues to user in a formatted list:
+
+```markdown
+## Quality Validation Issues Found
+
+**Wiki-Links:**
+- ❌ [[missing-note]] - target does not exist
+
+**Duplicates:**
+- ⚠️ Similar note exists: "Existing Note Title" (content/existing-note.md)
+
+**Tags:**
+- ℹ️ New tag: "new-tag" (consider using existing "similar-tag" instead)
+```
+
+**BLOCK and ask user:**
+```markdown
+Quality issues found. Please choose:
+a) Proceed anyway - save with issues noted above
+b) Fix issues - I'll help resolve the problems
+c) Cancel - abort note creation
+```
+
+**Wait for user confirmation** before proceeding to Phase 6.
+
+**IF no issues found:**
+Log "✓ Quality validation passed" and proceed to Phase 6.
+
+---
+
+## Phase 6: Save Note
+
+### 6.1 Generate Slug
 
 Use the slug generator to create a kebab-case filename:
 
@@ -287,7 +518,20 @@ Examples:
 - "Atomic Habits" → `atomic-habits`
 - "Lex Fridman Podcast #404" → `lex-fridman-podcast-404`
 
+### 6.2 Write Note File
+
 Save to: `content/{slug}.md`
+
+### 6.3 Confirmation
+
+Report to user:
+```markdown
+✓ Note saved: content/{slug}.md
+  - Type: {type}
+  - Authors: {author-slugs}
+  - Tags: {tag-count} tags
+  - Wiki-links: {link-count} connections
+```
 
 ## Content Type Patterns
 
@@ -593,33 +837,57 @@ flowchart LR
 
 ## Error Recovery
 
-### YouTube Metadata Fails
+### Subagent Failures
+
+**Metadata Agent Fails (Phase 2):**
+- If transcript agent fails, continue without transcript (degrade gracefully)
+- If metadata agent fails completely, prompt user for manual entry
+- Log the failure and proceed with available data
+
+**Author Agent Fails (Phase 3):**
+- If WebSearch yields no results, create minimal profile (name only)
+- Notify user: "Created minimal profile for [Author] - bio not found"
+- Continue with note creation using the minimal author
+
+**Semantic Analysis Agent Fails (Phase 1 background):**
+- If background agent times out or crashes, proceed without related notes
+- Log: "Semantic analysis unavailable - skipping wiki-link suggestions"
+- User can manually add wiki-links later
+
+**Validation Agent Fails (Phase 5):**
+- If any validator crashes, warn user and proceed with caution
+- Log specific validator that failed
+- Recommend manual verification of the failed check
+
+### Script-Level Errors
+
+**YouTube Metadata Fails:**
 If `get-youtube-metadata.sh` fails (private video, age-restricted, unavailable):
 1. Open the video in a browser to verify it's accessible
 2. Manually copy the title and channel from the page
 3. Continue with the workflow using manual data
 
-### YouTube Transcript Unavailable
+**YouTube Transcript Unavailable:**
 Some videos don't have transcripts (auto-captions disabled, live streams):
 1. Check if the video has CC enabled
 2. If no transcript: summarize based on watching/listening
 3. Note in the body: "No transcript available - summarized from viewing"
 
-### Reddit Thread Unavailable
+**Reddit Thread Unavailable:**
 If `get-reddit-thread.py` fails:
 1. Check if the thread is deleted, private, or in a quarantined subreddit
 2. If rate-limited (429 error), wait 60 seconds and retry
 3. For quarantined subreddits, the JSON API may require authentication
 4. Fallback: manually copy key content from the browser
 
-### Goodreads Metadata Fails
+**Goodreads Metadata Fails:**
 If `get-goodreads-metadata.sh` fails or returns incomplete data:
 1. Open the book page in a browser to verify it's accessible
 2. Use WebFetch to extract title, author, and cover from the page
 3. The cover URL is typically in the `og:image` meta tag
 4. Fallback: manually copy the cover image URL from the page source
 
-### Network Errors
+**Network Errors:**
 If scripts fail due to network issues:
 1. Verify internet connectivity
 2. Retry the command after a few seconds
@@ -627,18 +895,23 @@ If scripts fail due to network issues:
 
 ## Quality Checklist
 
-Before saving, verify:
-- [ ] **No duplicate**: URL doesn't already exist in `content/*.md`
-- [ ] **Slug available**: No existing file at `content/{slug}.md`
+Phase 5 validates these automatically via parallel agents. Manual verification as backup:
+
+**Validated by Phase 5 Agents:**
+- [x] **No duplicate**: URL doesn't already exist (Duplicate Detector agent)
+- [x] **Wiki-links valid**: All [[links]] resolve to existing notes (Wiki-Link Validator agent)
+- [x] **Tags consistent**: Uses existing tags where possible (Tag Validator agent)
+
+**Manual Verification (always check):**
 - [ ] Title is clean and descriptive
 - [ ] Type matches the content format
 - [ ] **Authors exist**: All authors in `authors` array have profiles in `content/authors/`
 - [ ] URL is valid (for YouTube: ensures video embed displays automatically)
 - [ ] **Cover added** (for books/manga): Goodreads cover URL in `cover` field
 - [ ] **Manga fields** (for manga): `volumes` (number) and `status` (ongoing/completed/hiatus) filled
-- [ ] 3-5 relevant tags (check existing tags with `grep -h "^  - " content/*.md | sort | uniq -c | sort -rn`)
+- [ ] 3-5 relevant tags
 - [ ] Summary captures the core idea in 1-2 sentences
-- [ ] Wiki-links added only for strong, direct connections (or none if no strong matches)
-- [ ] **Diagram added** if content has a clear visual framework (or skipped if not)
+- [ ] Wiki-links added only for strong, direct connections
+- [ ] **Diagram added** if content has a clear visual framework
 - [ ] Slug is kebab-case
 - [ ] Date is today's date
