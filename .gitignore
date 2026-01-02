@@ -31,3 +31,8 @@ coverage/
 # PWA
 sw.*
 dev-dist/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

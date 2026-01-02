@@ -90,8 +90,8 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
-  test-e2e:
-    name: E2E Tests
+  test-integration:
+    name: Integration Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -111,8 +111,51 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Run integration tests
+        run: pnpm test:integration
+
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nuxt-build
+          path: .output
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
       - name: Run E2E tests
         run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
   build:
     name: Build

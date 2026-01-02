@@ -28,9 +28,10 @@ Phase 3: Parallel Author Creation
    └─ Profiles created automatically
 
 Phase 4: Content Generation
+   ├─ Load writing-style skill (REQUIRED)
    ├─ Collect semantic analysis from Phase 1
    ├─ Combine metadata + authors + related notes
-   └─ Generate markdown body
+   └─ Generate markdown body (applying style rules)
 
 Phase 5: Quality Validation (BLOCKING GATE)
    ├─ Spawn 3 parallel validation agents
@@ -378,6 +379,23 @@ Collect: author slugs for note frontmatter
 ## Phase 4: Content Generation
 
 Now combine all the data collected from previous phases.
+
+### 4.0 Load Writing Style Guidelines (REQUIRED)
+
+**Before writing any content**, read the writing style skill:
+
+```bash
+Read .claude/skills/writing-style/SKILL.md
+```
+
+Apply these rules to all generated text (summary, body, connections):
+- Use active voice
+- No filler phrases ("This note explores...")
+- End sentences with the main point
+- Everyday words over jargon
+- One point per paragraph
+
+**This step is mandatory.** Do not skip it.
 
 ### 4.1 Collect Background Semantic Analysis
 
@@ -948,6 +966,7 @@ Phase 5 validates these automatically via parallel agents. Manual verification a
 - [x] **Tags consistent**: Uses existing tags where possible (Tag Validator agent)
 
 **Manual Verification (always check):**
+- [ ] **Writing style applied**: Read `writing-style/SKILL.md` before generating content
 - [ ] Title is clean and descriptive
 - [ ] Type matches the content format
 - [ ] **Authors exist**: All authors in `authors` array have profiles in `content/authors/`
