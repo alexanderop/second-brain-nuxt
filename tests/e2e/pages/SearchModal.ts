@@ -11,7 +11,7 @@ export class SearchModal {
   constructor(page: Page) {
     this.page = page
     this.modal = page.locator('[role="dialog"]')
-    this.searchInput = page.getByLabel('Search content')
+    this.searchInput = page.getByLabel('Search')
     this.results = page.locator('[data-search-result]')
     this.firstResult = page.locator('[data-search-result]').first()
     this.noResultsMessage = page.getByText('No results found')
