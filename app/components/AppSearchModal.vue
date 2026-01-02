@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { watchDebounced } from '@vueuse/core'
-import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections } from '#imports'
-import { UModal, UIcon, UKbd } from '#components'
+import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections, queryCollection } from '#imports'
+import { UModal, UIcon, UKbd, UAvatar } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
 
@@ -14,13 +14,39 @@ interface SearchSection {
   level: number
 }
 
+interface Author {
+  name: string
+  slug: string
+  avatar?: string
+}
+
+interface SearchableItem {
+  type: 'content' | 'author'
+  // Content fields
+  id?: string
+  title?: string
+  content?: string
+  titles?: string[]
+  level?: number
+  // Author fields
+  name?: string
+  slug?: string
+  avatar?: string
+}
+
 interface SearchResultItem {
   id: string
-  section: SearchSection
-  breadcrumb: string
-  snippet: string
-  highlightedBreadcrumb: string
-  highlightedSnippet: string
+  type: 'content' | 'author'
+  // Content fields
+  section?: SearchSection
+  breadcrumb?: string
+  snippet?: string
+  highlightedBreadcrumb?: string
+  highlightedSnippet?: string
+  // Author fields
+  author?: Author
+  highlightedName?: string
+  // Common
   to: string
 }
 
@@ -34,6 +60,12 @@ const route = useRoute()
 const { data: searchSections } = await useAsyncData(
   'search-modal-sections',
   () => queryCollectionSearchSections('content'),
+)
+
+// Fetch authors for search
+const { data: authors } = await useAsyncData(
+  'search-modal-authors',
+  () => queryCollection('authors').select('name', 'slug', 'avatar').all(),
 )
 
 // Close modal when route changes
@@ -59,11 +91,33 @@ watchDebounced(
   { debounce: 200 },
 )
 
-// Create Fuse instance for full-text search
+// Create Fuse instance for full-text search (content + authors)
 const fuse = computed(() => {
-  if (!searchSections.value) return null
-  return new Fuse(searchSections.value, {
-    keys: ['title', 'content', 'titles'],
+  const items: SearchableItem[] = []
+
+  // Add content sections
+  if (searchSections.value) {
+    for (const section of searchSections.value) {
+      items.push({ type: 'content', ...section })
+    }
+  }
+
+  // Add authors
+  if (authors.value) {
+    for (const author of authors.value) {
+      items.push({ type: 'author', ...author })
+    }
+  }
+
+  if (items.length === 0) return null
+
+  return new Fuse(items, {
+    keys: [
+      { name: 'title', weight: 1 },
+      { name: 'content', weight: 0.7 },
+      { name: 'titles', weight: 0.8 },
+      { name: 'name', weight: 1 }, // Author name
+    ],
     includeMatches: true,
     threshold: 0.3,
     ignoreLocation: true,
@@ -103,29 +157,60 @@ function highlightMatch(text: string, term: string): string {
   return text.replace(regex, '<mark class="bg-[var(--ui-primary)]/20 text-[var(--ui-primary)] rounded px-0.5">$1</mark>')
 }
 
+// Create author search result
+function createAuthorResult(item: SearchableItem, searchTerm: string): SearchResultItem {
+  const authorSlug = item.slug ?? ''
+  const authorName = item.name ?? ''
+  return {
+    id: `author:${authorSlug}`,
+    type: 'author',
+    author: { name: authorName, slug: authorSlug, avatar: item.avatar },
+    highlightedName: highlightMatch(authorName, searchTerm),
+    to: `/authors/${encodeURIComponent(authorSlug)}`,
+  }
+}
+
+// Create content search result
+function createContentResult(item: SearchableItem, searchTerm: string): SearchResultItem {
+  const sectionId = item.id ?? ''
+  const section: SearchSection = {
+    id: sectionId,
+    title: item.title ?? '',
+    titles: item.titles ?? [],
+    content: item.content ?? '',
+    level: item.level ?? 0,
+  }
+  const breadcrumb = buildBreadcrumb(section)
+  const snippet = getSnippet(section.content, searchTerm)
+  return {
+    id: sectionId,
+    type: 'content',
+    section,
+    breadcrumb,
+    snippet,
+    highlightedBreadcrumb: highlightMatch(breadcrumb, searchTerm),
+    highlightedSnippet: highlightMatch(snippet, searchTerm),
+    to: sectionId,
+  }
+}
+
 // Process Fuse results into items
-function processResults(fuseResults: FuseResult<SearchSection>[]): SearchResultItem[] {
+function processResults(fuseResults: FuseResult<SearchableItem>[]): SearchResultItem[] {
   const seen = new Set<string>()
   const items: SearchResultItem[] = []
 
   for (const result of fuseResults) {
-    const section = result.item
-    // Use full section id to avoid duplicates (includes anchor)
-    if (seen.has(section.id)) continue
-    seen.add(section.id)
+    const item = result.item
+    const isAuthor = item.type === 'author'
+    const key = isAuthor ? `author:${item.slug ?? ''}` : (item.id ?? '')
 
-    const breadcrumb = buildBreadcrumb(section)
-    const snippet = getSnippet(section.content, debouncedSearch.value)
+    if (seen.has(key)) continue
+    seen.add(key)
 
-    items.push({
-      id: section.id,
-      section,
-      breadcrumb,
-      snippet,
-      highlightedBreadcrumb: highlightMatch(breadcrumb, debouncedSearch.value),
-      highlightedSnippet: highlightMatch(snippet, debouncedSearch.value),
-      to: section.id, // Already includes hash anchor like /atomic-habits#key-ideas
-    })
+    const resultItem = isAuthor
+      ? createAuthorResult(item, debouncedSearch.value)
+      : createContentResult(item, debouncedSearch.value)
+    items.push(resultItem)
 
     if (items.length >= 15) break
   }
@@ -157,6 +242,7 @@ const defaultItems = computed(() => {
     const snippetText = section.content?.slice(0, 100) || ''
     items.push({
       id: section.id,
+      type: 'content',
       section,
       breadcrumb,
       snippet: snippetText,
@@ -193,8 +279,8 @@ function onSelect(item: SearchResultItem) {
             ref="searchInputRef"
             v-model="searchTerm"
             type="text"
-            placeholder="Search content..."
-            aria-label="Search content"
+            placeholder="Search..."
+            aria-label="Search"
             class="flex-1 bg-transparent outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]"
           >
           <UKbd>Esc</UKbd>
@@ -210,20 +296,42 @@ function onSelect(item: SearchResultItem) {
               @click="onSelect(item)"
             >
               <div class="flex items-start gap-2">
-                <UIcon name="i-lucide-hash" class="mt-1 text-[var(--ui-text-muted)] shrink-0" />
-                <div class="min-w-0 flex-1">
-                  <div
-                    data-breadcrumb
-                    class="text-sm font-medium text-[var(--ui-text)] truncate"
-                    v-html="item.highlightedBreadcrumb"
+                <!-- Author result -->
+                <template v-if="item.type === 'author'">
+                  <UAvatar
+                    :src="item.author?.avatar"
+                    :alt="item.author?.name"
+                    size="xs"
+                    class="mt-0.5 shrink-0"
                   />
-                  <div
-                    v-if="item.snippet"
-                    data-search-snippet
-                    class="text-xs text-[var(--ui-text-muted)] mt-1 line-clamp-2"
-                    v-html="item.highlightedSnippet"
-                  />
-                </div>
+                  <div class="min-w-0 flex-1">
+                    <div
+                      class="text-sm font-medium text-[var(--ui-text)] truncate"
+                      v-html="item.highlightedName"
+                    />
+                    <div class="text-xs text-[var(--ui-text-muted)]">
+                      Author
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Content result -->
+                <template v-else>
+                  <UIcon name="i-lucide-hash" class="mt-1 text-[var(--ui-text-muted)] shrink-0" />
+                  <div class="min-w-0 flex-1">
+                    <div
+                      data-breadcrumb
+                      class="text-sm font-medium text-[var(--ui-text)] truncate"
+                      v-html="item.highlightedBreadcrumb"
+                    />
+                    <div
+                      v-if="item.snippet"
+                      data-search-snippet
+                      class="text-xs text-[var(--ui-text-muted)] mt-1 line-clamp-2"
+                      v-html="item.highlightedSnippet"
+                    />
+                  </div>
+                </template>
               </div>
             </button>
           </div>

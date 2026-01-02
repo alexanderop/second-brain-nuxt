@@ -2,7 +2,7 @@
 name: "Carl Assmann"
 slug: "carl-assmann"
 bio: "Fullstack developer building software with TypeScript and Go for the German Airforce, and organizer of the Munich TypeScript meetup."
-avatar: ""
+avatar: "https://avatars.githubusercontent.com/ccssmnn"
 website: "https://carlassmann.com"
 socials:
   twitter: "ccssmnn"

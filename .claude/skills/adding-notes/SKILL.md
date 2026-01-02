@@ -309,7 +309,11 @@ prompt: "Create author profile for 'Author Name':
    - website: Personal/official website
    - socials: twitter, github, linkedin, youtube handles (not full URLs)
 
-3. Generate frontmatter:
+3. **Avatar fallback to GitHub**: If no avatar found from website/socials, but GitHub handle is known:
+   - Use: `https://avatars.githubusercontent.com/[github-handle]`
+   - Example: github handle 'ccssmnn' → `https://avatars.githubusercontent.com/ccssmnn`
+
+4. Generate frontmatter:
    ```bash
    .claude/skills/adding-notes/scripts/generate-author-frontmatter.sh 'Author Name' \
        --bio 'Description' \
@@ -355,6 +359,7 @@ Collect: author slugs for note frontmatter
 **Author Not Found Online:**
 - If WebSearch yields no results, create minimal profile
 - Log: "Created minimal profile for [Author] - bio not found"
+- **Always try GitHub avatar**: If GitHub handle is known, use `https://avatars.githubusercontent.com/[handle]` even when other info is missing
 
 **Organizations as Authors:**
 - Treat like regular authors (e.g., "HumanLayer Team")
