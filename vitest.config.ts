@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig({
@@ -66,6 +67,7 @@ export default defineConfig({
       {
         plugins: [
           vue(),
+          tailwindcss(),
           AutoImport({
             imports: ['vue'],
             dts: false,
@@ -74,6 +76,7 @@ export default defineConfig({
         test: {
           name: 'browser',
           include: ['tests/browser/**/*.test.ts'],
+          setupFiles: ['./tests/browser/setup.ts'],
           browser: {
             enabled: true,
             provider: 'playwright',
