@@ -5,6 +5,7 @@ import { useRequestURL } from '#imports'
 import { NuxtLink, UButton, UDropdownMenu } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
+import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
 import type { ContentItem } from '~/types/content'
 
 const props = defineProps<{
@@ -70,6 +71,7 @@ function formatDate(date?: Date | string) {
     </div>
     <div class="flex flex-wrap items-center gap-2">
       <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
+      <BaseRatingDisplay v-if="content.rating" :rating="content.rating" />
       <UDropdownMenu :items="copyItems" class="ml-2">
         <UButton
           variant="ghost"

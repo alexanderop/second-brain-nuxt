@@ -2,6 +2,7 @@
 import { NuxtLink } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
+import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
 import type { ContentItem } from '~/types/content'
 
 defineProps<{
@@ -43,8 +44,9 @@ function formatDate(date?: Date | string) {
         </div>
       </div>
     </NuxtLink>
-    <div v-if="content.tags?.length || content.date" class="mt-2 ml-8 flex flex-wrap items-center gap-2">
+    <div v-if="content.tags?.length || content.date || content.rating" class="mt-2 ml-8 flex flex-wrap items-center gap-2">
       <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
+      <BaseRatingDisplay v-if="content.rating" :rating="content.rating" />
       <span v-if="content.date" class="text-xs text-[var(--ui-text-muted)]">
         {{ formatDate(content.date) }}
       </span>

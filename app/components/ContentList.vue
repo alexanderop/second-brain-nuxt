@@ -4,6 +4,7 @@ import type { ContentItem } from '~/types/content'
 
 interface ContentListItem extends Omit<ContentItem, 'slug'> {
   stem: string
+  rating?: number
 }
 
 defineProps<{
@@ -17,7 +18,7 @@ defineProps<{
     <ContentCard
       v-for="(item, index) in items"
       :key="item.stem"
-      :content="{ slug: item.stem, title: item.title, type: item.type, tags: item.tags, authors: item.authors, date: item.date, summary: item.summary }"
+      :content="{ slug: item.stem, title: item.title, type: item.type, tags: item.tags, authors: item.authors, date: item.date, summary: item.summary, rating: item.rating }"
       :selected="index === selectedIndex"
     />
   </div>

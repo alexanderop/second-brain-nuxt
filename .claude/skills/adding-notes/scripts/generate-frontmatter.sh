@@ -53,7 +53,7 @@ cover: ""
 tags: []
 authors: []
 summary: ""
-notes: ""
+readingStatus:
 date: $DATE
 ---
 EOF

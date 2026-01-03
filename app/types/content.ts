@@ -9,6 +9,7 @@ export interface ContentItem {
   authors?: Array<string>
   date?: Date | string
   summary?: string
+  rating?: number
   // Book reading tracking
   readingStatus?: ReadingStatus
   startedReading?: string

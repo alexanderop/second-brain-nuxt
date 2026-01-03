@@ -1,39 +1,37 @@
 ---
-title: "Evergreen Notes"
-type: evergreen
-url: "https://notes.andymatuschak.org/Evergreen_notes"
+title: "Evergreen notes"
+type: article
+url: "https://stephango.com/evergreen-notes"
 tags:
-  - productivity
-  - learning
   - knowledge-management
+  - note-taking
+  - thinking
 authors:
-  - andy-matuschak
-summary: "A note-taking methodology where notes are written to evolve and accumulate insight over time, emphasizing atomic structure, concept orientation, and dense linking."
-notes: ""
-date: 2026-01-01
+  - steph-ango
+summary: "Evergreen notes decompose complex ideas into atomic, titled concepts that become objects you can manipulate, combine, and stack—without holding them all in your head."
+date: 2026-01-03
 ---
 
-Evergreen notes are written and organized to evolve, contribute, and accumulate over time across projects. Unlike transient notes, they're designed to develop lasting insight rather than merely capture information.
+Evergreen notes transform ideas into discrete objects. Each note captures one concept with a concise, memorable title: "A company is a superorganism," "All input is error," "Writing is telepathy."
 
-## Key Principles
+## The Core Insight
 
-1. **Atomic** — Each note covers a single concept, making it self-contained and reusable
-2. **Concept-oriented** — Organize by idea rather than by source (author, book, project)
-3. **Densely linked** — Create rich connections between related notes
-4. **Associative over hierarchical** — Prefer emergent structure through links rather than rigid taxonomies
-5. **Write for yourself** — Disregard external audience; focus on personal understanding
+By turning ideas into objects you can manipulate them, combine them, stack them. You don't need to hold them all in your head at the same time.
 
-## Why It Matters
+This reframing matters. Notes become building blocks rather than archives. The note "Creativity is combinatory uniqueness" can derive from "Everything is a remix"—ideas compound through connection.
 
-Better note-taking means better thinking. The practice moves beyond passive collection toward active knowledge synthesis. Notes become a thinking environment, not just storage.
+## What Makes a Note Evergreen
 
-## Implementation
+**Atomic scope.** One idea per note. The title alone should convey the concept.
 
-- **Reading inbox** — Capture references for later processing
-- **Writing inbox** — Hold transient thoughts until they mature
-- **Progressive refinement** — Notes evolve from rough to polished over time
-- **Executable strategy** — Write about what you read to internalize it deeply
+**Concept-oriented.** Notes capture ideas you find interesting, not necessarily ones you endorse. They're objects for thinking with, not positions to defend.
 
-## Related Concepts
+**Accumulating value.** Unlike fleeting captures, evergreen notes grow richer as you link them to new contexts and refine their expression.
 
-The methodology draws heavily from Niklas Luhmann's **Zettelkasten** (slip-box) system and integrates ideas from spaced repetition for memory retention.
+## Origins
+
+[[andy-matuschak]] coined the term "evergreen notes" to describe this style of knowledge work. The approach shares DNA with the Zettelkasten method detailed in [[how-to-take-smart-notes]].
+
+## Related
+
+This philosophy underpins [[how-i-use-obsidian]], where Steph Ango applies these principles to his personal note-taking system. Both emphasize emergent structure through linking over imposed hierarchies—ideas explored further in [[building-a-second-brain-and-zettelkasten]].

@@ -72,6 +72,21 @@ export const siteConfig = {
 - Query content via `queryCollection('content')`
 - Catch-all route at `app/pages/[...slug].vue`
 
+## Tag Naming Conventions
+
+- **Format:** lowercase, kebab-case
+- **Number:** singular nouns (not plural)
+- **Specificity:** prefer precise tags (`ai-agents` over `ai`)
+- **Examples:**
+  - `productivity`, `habit`, `prompt-engineering`, `local-first`
+  - `ai-agents`, `developer-experience`, `knowledge-management`
+
+## Rating System
+
+- **Scale:** 1-7 (optional field for external content)
+- **Meaning:** 1 = poor, 4 = average, 7 = exceptional
+- **Usage:** Add `rating: 5` to frontmatter for books, articles, podcasts, etc.
+
 ## Nuxt Content v3 Gotchas
 
 - **Minimark format**: Body content uses array-based minimark `[tag, props, ...children]`, NOT object AST `{ tag, props, children }`

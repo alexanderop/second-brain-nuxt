@@ -62,20 +62,20 @@ usePageTitle('Books')
       <ContentList :items="currentlyReading" />
     </section>
 
-    <!-- Books by Year -->
-    <section v-for="{ year, books: yearBooks } in byYear" :key="year" class="mb-8">
-      <h2 class="text-lg font-medium mb-4">
-        {{ year }}
-      </h2>
-      <ContentList :items="yearBooks ?? []" />
-    </section>
-
     <!-- Want to Read -->
     <section v-if="wantToRead.length" class="mb-8">
       <h2 class="text-lg font-medium mb-4 text-[var(--ui-text-muted)]">
         Want to Read
       </h2>
       <ContentList :items="wantToRead" />
+    </section>
+
+    <!-- Books by Year -->
+    <section v-for="{ year, books: yearBooks } in byYear" :key="year" class="mb-8">
+      <h2 class="text-lg font-medium mb-4">
+        {{ year }}
+      </h2>
+      <ContentList :items="yearBooks ?? []" />
     </section>
 
     <!-- No Status (legacy books without tracking) -->

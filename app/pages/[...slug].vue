@@ -41,6 +41,7 @@ const headerContent = computed(() => ({
   tags: page.value?.tags,
   authors: page.value?.authors,
   date: page.value?.date,
+  rating: page.value?.rating,
 }))
 
 // Fetch note graph data for mini-graph visualization

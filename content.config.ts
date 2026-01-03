@@ -65,6 +65,8 @@ export default defineContentConfig({
         // GitHub-specific fields
         stars: z.number().optional(),
         language: z.string().optional(),
+        // Rating (1-7 scale, for external content)
+        rating: z.number().min(1).max(7).optional(),
       }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
