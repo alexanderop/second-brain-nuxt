@@ -86,6 +86,7 @@ https://avatars.githubusercontent.com/ccssmnn
 ```yaml
 ---
 name: "Author Name"
+slug: "author-name"
 avatar: "https://..."
 bio: "1-2 sentence description"
 website: "https://..."

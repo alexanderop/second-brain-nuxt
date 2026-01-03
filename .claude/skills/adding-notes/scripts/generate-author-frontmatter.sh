@@ -50,10 +50,13 @@ done
 # Escape double quotes in bio
 BIO_ESCAPED=$(echo "$BIO" | sed 's/"/\\"/g')
 
+# Convert name to kebab-case slug
+SLUG=$(echo "$NAME" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g' | sed 's/[^a-z0-9-]//g')
+
 cat << EOF
 ---
 name: "$NAME"
-slug: "$NAME"
+slug: "$SLUG"
 bio: "$BIO_ESCAPED"
 avatar: "$AVATAR"
 website: "$WEBSITE"

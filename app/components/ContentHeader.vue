@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { DropdownMenuItem } from '@nuxt/ui'
 import { useClipboard } from '@vueuse/core'
-import { NuxtLink, UButton } from '#components'
+import { useRequestURL } from '#imports'
+import { NuxtLink, UButton, UDropdownMenu } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
 import type { ContentItem } from '~/types/content'
@@ -10,10 +12,28 @@ const props = defineProps<{
 }>()
 
 const { copy, copied } = useClipboard()
+const requestUrl = useRequestURL()
 
-function copyWikiLink() {
-  copy(`[[${props.content.slug}]]`)
-}
+const copyItems: DropdownMenuItem[] = [
+  {
+    label: 'Copy Wiki',
+    icon: 'i-lucide-link',
+    onSelect: () => copy(`[[${props.content.slug}]]`),
+  },
+  {
+    label: 'Copy URL',
+    icon: 'i-lucide-globe',
+    onSelect: () => copy(`${requestUrl.origin}/${props.content.slug}`),
+  },
+  {
+    label: 'Copy Markdown',
+    icon: 'i-lucide-file-text',
+    onSelect: async () => {
+      const { raw } = await $fetch<{ raw: string }>(`/api/raw-content/${props.content.slug}`)
+      copy(raw)
+    },
+  },
+]
 
 function formatDate(date?: Date | string) {
   if (!date)
@@ -50,16 +70,14 @@ function formatDate(date?: Date | string) {
     </div>
     <div class="flex flex-wrap items-center gap-2">
       <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
-      <UButton
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        :icon="copied ? 'i-lucide-check' : 'i-lucide-link'"
-        class="ml-2"
-        @click="copyWikiLink"
-      >
-        {{ copied ? 'Copied!' : 'Copy link' }}
-      </UButton>
+      <UDropdownMenu :items="copyItems" class="ml-2">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+        />
+      </UDropdownMenu>
       <UButton
         v-if="content.url"
         :to="content.url"

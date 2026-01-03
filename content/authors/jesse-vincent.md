@@ -1,4 +1,5 @@
 ---
+slug: "jesse-vincent"
 name: "Jesse Vincent"
 type: author
 avatar: "https://avatars.githubusercontent.com/u/45416?v=4"

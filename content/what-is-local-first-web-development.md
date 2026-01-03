@@ -4,7 +4,7 @@ type: article
 url: "https://alexop.dev/posts/what-is-local-first-web-development/"
 tags: [local-first, web-development, pwa, offline-first, vue]
 authors:
-  - Alex
+  - alexander-opalic
 summary: "An introduction to local-first web development, a paradigm shift that prioritizes storing data on users' devices first, enabling offline functionality, instant access, and greater user control over their data."
 date: 2026-01-01
 ---

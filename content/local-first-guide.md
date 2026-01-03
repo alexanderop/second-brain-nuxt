@@ -16,6 +16,10 @@ This map connects resources on the local-first software paradigm - shifting from
 
 - [[local-first-software]] - The original Ink & Switch essay defining local-first principles
 
+## Challenges & Trade-offs
+
+- [[why-local-first-apps-havent-become-popular]] - Why syncing across devices remains the hard problem
+
 ## Practical Implementation
 
 - [[what-is-local-first-web-development]] - How to build local-first web applications
