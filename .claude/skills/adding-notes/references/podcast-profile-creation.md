@@ -7,13 +7,13 @@ When adding a podcast episode and the show profile doesn't exist, create it firs
 Spawn parallel agents:
 
 **Agent A - Show Info:**
-```
+```text
 WebSearch: "[Show Name]" podcast official site
 ```
 Extract: description, website, RSS feed
 
 **Agent B - Artwork:**
-```
+```text
 WebSearch: "[Show Name]" podcast artwork cover
 ```
 Find high-resolution cover art URL

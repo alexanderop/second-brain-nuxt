@@ -10,7 +10,7 @@ This skill transforms basic book notes into Blinkist-style summaries with Key In
 
 ## Workflow Overview
 
-```
+```text
 Phase 1: Book Identification
    └─ Find and validate book note
 
@@ -43,7 +43,7 @@ Accept a book slug, title, or partial name as argument:
 
 1. **Try exact slug match first**: Check if `content/{slug}.md` exists (convert spaces to hyphens, lowercase)
 2. **If no exact match**: Use Grep to search for the title in book notes:
-   ```
+   ```text
    Grep pattern: "title:.*{search term}" with glob: "content/*.md"
    ```
 3. **Filter to books only**: Read matching files and verify `type: book` in frontmatter

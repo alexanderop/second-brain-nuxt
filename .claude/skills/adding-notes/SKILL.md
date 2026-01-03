@@ -14,29 +14,29 @@ Detect type from URL, then load the appropriate reference file.
 
 | URL Pattern | Type | Reference |
 |-------------|------|-----------|
-| youtube.com | See [YouTube Classification](#youtube-classification) | `content-types/youtube.md` or `talk.md` or `podcast.md` |
-| reddit.com | reddit | `content-types/reddit.md` |
-| github.com | github | `content-types/github.md` |
-| goodreads.com/series/ | manga | `content-types/manga.md` |
-| goodreads.com, amazon.com (books) | book | `content-types/book.md` |
-| spotify.com/episode, podcasts.apple.com | podcast | `content-types/podcast.md` |
-| udemy.com, coursera.org, skillshare.com | course | `content-types/course.md` |
-| Other URLs | article | `content-types/article.md` |
-| No URL | note | `content-types/note.md` |
-| Manual: `quote` | quote | `content-types/quote.md` |
-| Manual: `evergreen` | evergreen | `content-types/evergreen.md` |
-| Manual: `map` | map | `content-types/map.md` |
+| youtube.com | See [YouTube Classification](#youtube-classification) | `references/content-types/youtube.md` or `talk.md` or `podcast.md` |
+| reddit.com | reddit | `references/content-types/reddit.md` |
+| github.com | github | `references/content-types/github.md` |
+| goodreads.com/series/ | manga | `references/content-types/manga.md` |
+| goodreads.com, amazon.com (books) | book | `references/content-types/book.md` |
+| spotify.com/episode, podcasts.apple.com | podcast | `references/content-types/podcast.md` |
+| udemy.com, coursera.org, skillshare.com | course | `references/content-types/course.md` |
+| Other URLs | article | `references/content-types/article.md` |
+| No URL | note | `references/content-types/note.md` |
+| Manual: `quote` | quote | `references/content-types/quote.md` |
+| Manual: `evergreen` | evergreen | `references/content-types/evergreen.md` |
+| Manual: `map` | map | `references/content-types/map.md` |
 
 ### YouTube Classification
 
 YouTube URLs require sub-classification before processing:
 
-1. **Known podcast channel?** → `content-types/podcast.md`
-2. **Known talk channel OR conference title?** → `content-types/talk.md`
-3. **Tutorial signals?** → `content-types/youtube.md` with `isTechnical: true`
-4. **Default** → `content-types/youtube.md`
+1. **Known podcast channel?** → `references/content-types/podcast.md`
+2. **Known talk channel OR conference title?** → `references/content-types/talk.md`
+3. **Tutorial signals?** → `references/content-types/youtube.md` with `isTechnical: true`
+4. **Default** → `references/content-types/youtube.md`
 
-See `content-types/youtube.md` for full classification logic and channel lists.
+See `references/content-types/youtube.md` for full classification logic and channel lists.
 
 ---
 
@@ -52,7 +52,7 @@ See `content-types/youtube.md` for full classification logic and channel lists.
 | `get-goodreads-metadata.sh URL` | Fetch book title, author, cover |
 | `get-manga-metadata.sh URL` | Fetch series metadata |
 | `get-github-metadata.sh URL` | Fetch repo name, stars, language |
-| `check-author-exists.sh NAME` | Check if author profile exists |
+| `check-author-exists.sh NAME` | Check author (returns EXISTS, POSSIBLE_MATCH, or NOT_FOUND) |
 | `generate-author-frontmatter.sh NAME` | Generate author profile |
 | `list-existing-tags.sh [filter]` | List tags by frequency |
 | `generate-slug.sh "Title"` | Generate kebab-case filename |
@@ -62,7 +62,7 @@ See `content-types/youtube.md` for full classification logic and channel lists.
 
 ## Workflow Phases
 
-```
+```text
 Phase 1: Type Detection → Route to content-type file
 Phase 2: Parallel Metadata Collection → Per-type agents
 Phase 3: Author Creation → See references/author-creation.md
@@ -77,7 +77,7 @@ Phase 7: MOC Placement → Suggest placements (non-blocking)
 1. Run `generate-frontmatter.sh "[URL]"` to auto-detect type
 2. **Load the content-type reference file** for detailed handling
 3. Start background semantic analysis agent:
-   ```
+   ```text
    Task: "Run python3 scripts/find-related-notes.py content/TEMP.md --limit 10"
    run_in_background: true
    ```
@@ -94,13 +94,23 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 
 ### Phase 3: Author Creation
 
-For external content types, authors are **required**. For each missing author, see `references/author-creation.md`.
+For external content types, authors are **required**. Run `check-author-exists.sh` for each author.
 
-Quick flow:
+**Handle by result:**
+
+| Result | Action |
+|--------|--------|
+| `EXISTS: path` | Use the existing author's slug |
+| `POSSIBLE_MATCH: paths` | **STOP** - Read matched files, verify if same person. If yes, use existing slug. If no, proceed with creation. |
+| `NOT_FOUND` | Create new author (see `references/author-creation.md`) |
+
+Quick creation flow:
 1. WebSearch: `[Author Name] official site bio`
 2. Extract: bio, avatar, website, socials
 3. Generate with `generate-author-frontmatter.sh`
 4. Save to `content/authors/{slug}.md`
+
+**Tip:** Add `aliases` field to authors who go by multiple names (e.g., "DHH" → aliases: ["David Heinemeier Hansson"]).
 
 ### Phase 4: Content Generation
 
@@ -136,7 +146,7 @@ Spawn 4 parallel validators:
 ```
 
 Save to `content/{slug}.md`. Confirm:
-```
+```text
 ✓ Note saved: content/{slug}.md
   - Type: {type}
   - Authors: {author-slugs}

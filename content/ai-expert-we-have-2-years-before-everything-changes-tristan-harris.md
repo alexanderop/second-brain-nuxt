@@ -13,6 +13,8 @@ tags:
   - llm
   - ai-agents
   - philosophy
+authors:
+  - steven-bartlett
 guests:
   - tristan-harris
 summary: "Tristan Harris warns that AI companies are racing to build a 'digital god' that could automate all human cognitive labor, with insiders believing this will happen within 2-10 years while publicly downplaying the risks."

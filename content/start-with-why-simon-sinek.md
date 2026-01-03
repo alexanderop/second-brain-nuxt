@@ -9,7 +9,7 @@ tags:
   - purpose
   - communication
 authors:
-  - Simon Sinek
+  - simon-sinek
 summary: "Simon Sinek introduces the Golden Circle framework, explaining how great leaders and organizations inspire action by starting with 'why' rather than 'what' - because people don't buy what you do, they buy why you do it."
 notes: ""
 date: 2026-01-01

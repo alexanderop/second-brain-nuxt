@@ -31,15 +31,22 @@ const { data: tweets } = await useAsyncData(`author-tweets-${authorSlug.value}`,
     .all()
 })
 
-const typedTweets = computed(() => {
+const typedTweets = computed<TweetItem[]>(() => {
   if (!tweets.value) return []
   // Transform collection items to include slug derived from path
   return tweets.value
     .filter(t => t.tweetId && t.tweetText && t.author)
-    .map(t => ({
-      ...t,
+    .map((t): TweetItem => ({
       slug: t.path?.replace(/^\/tweets\//, '') ?? `tweet-${t.tweetId}`,
-    })) as TweetItem[]
+      type: 'tweet',
+      title: t.title ?? '',
+      tweetId: t.tweetId,
+      tweetUrl: t.tweetUrl ?? '',
+      tweetText: t.tweetText,
+      author: t.author,
+      tweetedAt: t.tweetedAt ?? new Date(),
+      tags: t.tags,
+    }))
 })
 
 // Author info for TweetCard

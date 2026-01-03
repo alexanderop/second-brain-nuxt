@@ -17,7 +17,7 @@ Add tweets with author linking, tags, and personal annotations.
 
 ## Workflow
 
-```
+```text
 Phase 1: Parse URL → Extract tweet ID and author handle
 Phase 2: Scrape Content → Try nitter, fallback to manual
 Phase 3: Author Resolution → Check/create author profile
@@ -41,10 +41,16 @@ authorHandle="naval"
 
 Run the scrape script:
 ```bash
-python3 scripts/scrape-tweet.py "https://x.com/naval/status/1234567890"
+python3 .claude/skills/adding-tweets/scripts/scrape-tweet.py "https://x.com/naval/status/1234567890"
 ```
 
-If scraping fails, prompt user for:
+If scraping fails (returns JSON with `error` field), try WebFetch fallback:
+```text
+WebFetch: https://nitter.poast.org/{authorHandle}/status/{tweetId}
+Prompt: Extract the tweet text content, author display name, and the date it was posted.
+```
+
+If WebFetch also fails, prompt user for:
 - Tweet text (required)
 - Posted date (required)
 - Author display name (optional, use handle if not provided)
@@ -95,7 +101,7 @@ tags:
 
 After saving, inform user:
 - File location
-- Suggest adding tags (use `list-existing-tags.sh` for suggestions)
+- Suggest adding tags (use `.claude/skills/adding-notes/scripts/list-existing-tags.sh` for suggestions)
 - Suggest adding personal annotations in the body
 - Suggest wiki-links to related notes
 
@@ -103,7 +109,7 @@ After saving, inform user:
 
 Based on tweet content, suggest from existing tags:
 ```bash
-../adding-notes/scripts/list-existing-tags.sh
+.claude/skills/adding-notes/scripts/list-existing-tags.sh
 ```
 
 Common tweet themes → tags:

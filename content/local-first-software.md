@@ -4,10 +4,10 @@ type: article
 url: "https://www.inkandswitch.com/essay/local-first/"
 tags: [local-first, crdt, data-ownership, offline-first, collaboration]
 authors:
-  - Martin Kleppmann
-  - Adam Wiggins
-  - Peter van Hardenberg
-  - Mark McGranaghan
+  - martin-kleppmann
+  - adam-wiggins
+  - peter-van-hardenberg
+  - mark-mcgranaghan
 summary: "A foundational essay proposing that data ownership and real-time collaboration are not mutually exclusive, introducing CRDTs as the enabling technology for local-first software."
 date: 2026-01-01
 rating: 7

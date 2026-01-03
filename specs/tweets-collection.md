@@ -88,7 +88,7 @@ const tweets = defineCollection({
 
 ## File Structure
 
-```
+```text
 content/
 ├── tweets/
 │   ├── tweet-1789234567890.md
@@ -128,7 +128,7 @@ interface TweetCardProps {
 ```
 
 **Visual:**
-```
+```text
 ┌─────────────────────────────────────────┐
 │ [Avatar]  Author Name                   │
 │           @handle                       │
@@ -157,7 +157,7 @@ Header for individual tweet page (similar to ContentHeader).
 
 Author pages display two distinct sections:
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │ [Avatar]  Naval Ravikant                │
 │ Bio text...                             │
@@ -199,7 +199,7 @@ const notes = await queryCollection('content')
 
 ### Usage
 
-```
+```text
 /add-tweet https://x.com/naval/status/1234567890
 ```
 
@@ -290,7 +290,7 @@ Rendered as a link to the tweet page, showing tweet preview on hover (if impleme
 
 ### New Files
 
-```
+```text
 app/
 ├── components/
 │   ├── TweetCard.vue

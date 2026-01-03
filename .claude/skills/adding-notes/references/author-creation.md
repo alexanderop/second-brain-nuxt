@@ -38,7 +38,7 @@ For each author marked `NOT_FOUND` in Phase 2:
 3. GitHub avatar: `https://avatars.githubusercontent.com/[github-handle]`
 
 If GitHub handle is known but no other avatar found:
-```
+```text
 https://avatars.githubusercontent.com/ccssmnn
 ```
 
@@ -87,6 +87,9 @@ https://avatars.githubusercontent.com/ccssmnn
 ---
 name: "Author Name"
 slug: "author-name"
+aliases:                    # Optional: alternate names for lookup
+  - "Full Legal Name"
+  - "Common Nickname"
 avatar: "https://..."
 bio: "1-2 sentence description"
 website: "https://..."
@@ -97,3 +100,14 @@ socials:
   youtube: "handle"
 ---
 ```
+
+## Handling POSSIBLE_MATCH
+
+When `check-author-exists.sh` returns `POSSIBLE_MATCH`:
+
+1. **Review the candidates** - Read the matched files to verify
+2. **If it's the same person** - Use the existing slug, don't create duplicate
+3. **If truly different** - Proceed with creation
+4. **Add aliases** - If the existing author lacks the alternate name, add it to their `aliases` field
+
+Example: "David Heinemeier Hansson" → matches `dhh.md` via initials. Check `dhh.md`, confirm it's the same person, use `dhh` as the author slug.

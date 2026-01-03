@@ -3,6 +3,7 @@ import vueParser from 'vue-eslint-parser'
 import vuePlugin from 'eslint-plugin-vue'
 import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 import markdown from '@eslint/markdown'
+import frontmatter from './eslint-plugin-frontmatter/index.ts'
 
 // Minimal ESLint config for rules oxlint doesn't support
 // Main linting is done by oxlint (faster)
@@ -127,8 +128,36 @@ export default tseslint.config(
   },
   {
     // Markdown linting for content files
-    files: ['**/*.md'],
-    plugins: { markdown },
+    files: ['content/**/*.md'],
+    ignores: ['content/authors/**/*.md', 'content/pages/**/*.md', 'content/podcasts/**/*.md'],
+    plugins: { markdown, frontmatter },
+    language: 'markdown/gfm',
+    languageOptions: {
+      frontmatter: 'yaml',
+    },
+    rules: {
+      // @eslint/markdown rules
+      'markdown/fenced-code-language': 'warn',
+      'markdown/heading-increment': 'error',
+      'markdown/no-empty-links': 'error',
+      // Disabled: [[wikilinks]] are transformed by modules/wikilinks.ts
+      'markdown/no-missing-label-refs': 'off',
+      'markdown/require-alt-text': 'warn',
+      // Frontmatter validation rules
+      'frontmatter/valid-url': 'error',
+      'frontmatter/valid-author-refs': 'error',
+      'frontmatter/valid-wiki-links': 'warn',
+      'frontmatter/valid-tag-format': 'warn',
+      'frontmatter/required-fields': 'error',
+      'frontmatter/no-duplicate-tags': 'warn',
+      'frontmatter/valid-rating': 'error',
+      'frontmatter/no-placeholder-urls': 'error',
+    },
+  },
+  {
+    // Author profiles - skip author validation (they define authors, not reference them)
+    files: ['content/authors/**/*.md'],
+    plugins: { markdown, frontmatter },
     language: 'markdown/gfm',
     languageOptions: {
       frontmatter: 'yaml',
@@ -137,8 +166,21 @@ export default tseslint.config(
       'markdown/fenced-code-language': 'warn',
       'markdown/heading-increment': 'error',
       'markdown/no-empty-links': 'error',
-      // Disabled: [[wikilinks]] are transformed by modules/wikilinks.ts
       'markdown/no-missing-label-refs': 'off',
+      'frontmatter/valid-url': 'error',
+      'frontmatter/no-placeholder-urls': 'error',
+    },
+  },
+  {
+    // Other markdown files (README, etc.)
+    files: ['**/*.md'],
+    ignores: ['content/**/*.md'],
+    plugins: { markdown },
+    language: 'markdown/gfm',
+    rules: {
+      'markdown/fenced-code-language': 'warn',
+      'markdown/heading-increment': 'error',
+      'markdown/no-empty-links': 'error',
       'markdown/require-alt-text': 'warn',
     },
   },

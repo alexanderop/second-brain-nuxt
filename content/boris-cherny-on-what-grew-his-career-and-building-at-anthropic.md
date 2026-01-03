@@ -67,6 +67,24 @@ His core principle: type signatures matter more than the code itself. Get the ty
 
 Boris came into Meta underleveled and considers it lucky. Lower expectations gave him space to explore and build cool stuff without the pressure of checking promotion boxes. The momentum from exceeding expectations built his reputation.
 
+### How Boris Actually Uses Claude Code
+
+In January 2026, Boris shared his personal workflow on X. Developers expected elaborate tooling—what they got was "surprisingly vanilla" but profoundly effective.
+
+**Parallel Sessions Strategy**: Boris runs 5 Claude instances in numbered terminal tabs (1-5) using iTerm 2's system notifications to alert when any session needs input. On top of that, he runs 5-10 additional sessions on claude.ai/code. That's 15+ parallel Claude sessions working simultaneously.
+
+He frequently teleports sessions between web and terminal using `claude --teleport <session-id>`, and kicks off morning sessions from his iPhone via the Claude iOS app.
+
+**Opus 4.5 with Thinking Mode for Everything**: Boris's model choice is counterintuitive—he uses Opus 4.5 (the slowest model) for *everything*. His reasoning: "even though it's bigger and slower than Sonnet, since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end."
+
+The math: Sonnet might take 5 fast iterations (5 min total), while Opus takes 1 iteration (2 min total). The bottleneck is human steering time, not AI processing.
+
+**Shared CLAUDE.md Philosophy**: The Claude Code team maintains a single CLAUDE.md checked into git. Every team member contributes multiple times per week. When Claude makes a mistake, they add the pattern to CLAUDE.md. Next session, Claude avoids it. This creates compounding knowledge—every mistake becomes a permanent lesson.
+
+**GitHub Actions for Continuous Learning**: During code review, Boris tags `@claude` on coworkers' PRs to add learnings to CLAUDE.md as part of the PR. The learning loop extends into the review process itself.
+
+His core philosophy: "There is no one correct way to use Claude Code. Each person on the Claude Code team uses it very differently."
+
 ## Timestamps
 
 - 0:00 - Intro and senior engineer promotion at Meta

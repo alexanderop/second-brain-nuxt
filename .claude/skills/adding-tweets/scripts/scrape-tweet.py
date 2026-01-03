@@ -20,6 +20,7 @@ import re
 import json
 from urllib.parse import urlparse
 from datetime import datetime
+from typing import Optional
 
 # Nitter instances to try (privacy-friendly Twitter frontends)
 NITTER_INSTANCES = [
@@ -45,7 +46,7 @@ def extract_tweet_info(url: str) -> dict:
     }
 
 
-def try_nitter_scrape(tweet_id: str, author_handle: str) -> dict | None:
+def try_nitter_scrape(tweet_id: str, author_handle: str) -> Optional[dict]:
     """Attempt to scrape tweet from nitter instances."""
     try:
         import requests
@@ -98,8 +99,23 @@ def try_nitter_scrape(tweet_id: str, author_handle: str) -> dict | None:
     return None
 
 
+def is_interactive() -> bool:
+    """Check if running in an interactive terminal."""
+    return sys.stdin.isatty()
+
+
 def prompt_manual_entry(tweet_id: str, author_handle: str) -> dict:
     """Prompt user for manual tweet entry."""
+    if not is_interactive():
+        # Non-interactive mode - output error JSON
+        print(json.dumps({
+            "error": "scraping_failed",
+            "message": f"Could not scrape tweet {tweet_id} automatically. Manual input required.",
+            "tweetId": tweet_id,
+            "authorHandle": author_handle
+        }))
+        sys.exit(1)
+
     print(f"\nCould not scrape tweet {tweet_id} automatically.", file=sys.stderr)
     print("Please provide the following information:\n", file=sys.stderr)
 

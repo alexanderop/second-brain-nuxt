@@ -10,7 +10,7 @@ This skill fills in missing author profile fields (bio, avatar, website, socials
 
 ## Workflow Overview
 
-```
+```text
 Phase 1: Author Identification
    └─ Find and validate author file
 
@@ -36,7 +36,7 @@ Accept an author slug, name, or partial name as argument:
 
 1. **Try exact slug match first**: Check if `content/authors/{slug}.md` exists (convert spaces to hyphens, lowercase)
 2. **If no exact match**: Use Grep to search for the name in author files:
-   ```
+   ```text
    Grep pattern: "name:.*{search term}" with glob: "content/authors/*.md"
    ```
 

@@ -23,7 +23,7 @@ Books from Goodreads or Amazon.
 
 After collecting metadata, prompt user:
 
-```
+```text
 What's your reading status for this book?
 1. Want to read (haven't started)
 2. Currently reading

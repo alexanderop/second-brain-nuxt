@@ -1,0 +1,200 @@
+
+ * ▐▛███▜▌ *   Claude Code v2.0.76
+* ▝▜█████▛▘ *  Opus 4.5 · Claude Max
+ *  ▘▘ ▝▝  *   ~/Projects/nuxt/secondBrain
+
+> add a new note https://www.youtube.com/watch?v=3qHkcs3kG44&t=260s 
+
+⏺ /adding-notes
+
+⏺ Bash(.claude/skills/adding-notes/scripts/get-youtube-metadata.sh
+      "https://www.youtube.com/watch?v=3qHkcs3kG44")
+  ⎿  Title: Joe Rogan Experience #1309 - Naval Ravikant
+     Channel: PowerfulJRE
+
+⏺ Bash(.claude/skills/adding-notes/scripts/generate-frontmatter.sh
+      "https://www.youtube.com/watch?v=3qHkcs3kG44")
+  ⎿  ---                          
+     title: ""
+     type: youtube
+     … +7 lines (ctrl+o to expand)
+
+⏺ This is the Joe Rogan Experience #1309 - Naval Ravikant on the PowerfulJRE channel. This is a podcast episode, so I'll route to podcast handling.
+
+⏺ Read(.claude/skills/adding-notes/references/content-types/podcast.md)
+  ⎿  Read 194 lines
+
+⏺ Bash(python3 .claude/skills/adding-notes/scripts/get-youtube-tra  timeout: 1m 
+      nscript.py "https://www.youtube.com/watch?v=3qHkcs3kG44"      0s
+      2>/dev/null | head -500)
+
+  ⎿ two one boom all right we're live thank you very much for doing this ma
+    n i really appreciate it i've been absorbing your information and liste
+    ning to you talk for uh quite a while now so it's uh it's great to actu
+    … +422 lines (ctrl+o to expand)
+
+
+
+
+⏺ Bash(.claude/skills/adding-notes/scripts/check-author-exists.sh "Naval
+      Ravikant")
+  ⎿  Error: Exit code 1
+     NOT_FOUND
+
+⏺ Bash(.claude/skills/adding-notes/scripts/check-author-exists.sh "Joe Rogan")
+  ⎿  Error: Exit code 1
+     NOT_FOUND
+
+⏺ Search(pattern: "joe-rogan-experience", path: "content")
+  ⎿  Found 0 files 
+
+⏺ I have the transcript. I need to create:
+  1. Podcast profile for Joe Rogan Experience
+  2. Author profiles for Naval Ravikant and Joe Rogan
+
+  Let me set up a todo list and work through this.
+
+⏺ Read(.claude/skills/writing-style/SKILL.md)
+  ⎿  Read 55 lines
+
+⏺ Bash(ls /Users/alex/Projects/nuxt/secondBrain/content/podcasts/ 2>/dev/null ||
+       echo "No podcasts directory")
+  ⎿  diary-of-a-ceo.md            
+     doppelgaenger.md
+     dwarkesh-podcast.md
+     … +4 lines (ctrl+o to expand)
+
+⏺ Web Search("Joe Rogan bio official podcast host comedian")
+  ⎿  Did 1 search in 23s                                                   
+
+⏺ Web Search("Naval Ravikant bio investor AngelList founder")
+  ⎿  Did 1 search in 27s                                                   
+
+⏺ Bash(.claude/skills/adding-notes/scripts/list-existing-tags.sh | head -30)
+  ⎿  All tags (by frequency):      
+       33 developer-experience
+       25 ai-agents
+     … +27 lines (ctrl+o to expand)
+
+⏺ I have the research. Let me create the author profiles and podcast profile.
+
+⏺ Bash(.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Joe
+      Rogan")
+  ⎿  ---                          
+     name: "Joe Rogan"
+     slug: "joe-rogan"
+     … +9 lines (ctrl+o to expand)
+
+⏺ Bash(.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Naval
+       Ravikant")
+  ⎿  ---                          
+     name: "Naval Ravikant"
+     slug: "naval-ravikant"
+     … +9 lines (ctrl+o to expand)
+
+⏺ Read(content/podcasts/lex-fridman-podcast.md)
+  ⎿  Read 14 lines
+
+⏺ Write(content/authors/joe-rogan.md)
+  ⎿  Wrote 11 lines to content/authors/joe-rogan.md                      
+       1 ---
+       2 name: "Joe Rogan"
+       3 slug: "joe-rogan"
+       4 bio: "Podcaster, UFC color commentator, comedian, and host of Th
+         e Joe Rogan Experience—one of the world's most popular podcasts 
+         with over 2000 episodes."
+       5 avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/
+         09/Joe_Rogan_%28cropped%29.jpg/440px-Joe_Rogan_%28cropped%29.jpg
+         "
+       6 website: "https://www.joerogan.com"
+       7 socials:
+       8   twitter: "joerogan"
+       9   youtube: "@joerogan"
+      10 ---
+     … +1 line (ctrl+o to expand)
+
+⏺ Write(content/authors/naval-ravikant.md)
+  ⎿  Wrote 10 lines to content/authors/naval-ravikant.md                 
+      1 ---
+      2 name: "Naval Ravikant"
+      3 slug: "naval-ravikant"
+      4 bio: "Entrepreneur, angel investor, and co-founder of AngelList. 
+        Known for his writings on wealth, happiness, and philosophy. Earl
+        y investor in Uber, Twitter, and 200+ startups."
+      5 avatar: "https://pbs.twimg.com/profile_images/1256841238298292232
+        /ycqwaMI2_400x400.jpg"
+      6 website: "https://nav.al"
+      7 socials:
+      8   twitter: "naval"
+      9 ---
+
+⏺ Write(content/podcasts/joe-rogan-experience.md)
+  ⎿  Wrote 14 lines to content/podcasts/joe-rogan-experience.md          
+       1 ---
+       2 name: "The Joe Rogan Experience"
+       3 slug: "joe-rogan-experience"
+       4 description: "Long-form conversations with a wide range of guest
+         s including comedians, athletes, authors, artists, scientists, a
+         nd thinkers"
+       5 artwork: "https://i.scdn.co/image/9af79fd06e34dea3cd27c4e1cd6ec7
+         343ce20af4"
+       6 website: "https://www.joerogan.com"
+       7 hosts:
+       8   - joe-rogan
+       9 platforms:
+      10   spotify: "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk
+         "
+     … +4 lines (ctrl+o to expand)
+
+⏺ Now let me generate the episode note. Based on the transcript, this covers wealth, happiness, reading, work, and philosophy.
+
+⏺ Bash(.claude/skills/adding-notes/scripts/generate-slug.sh "Naval Ravikant on
+      Wealth and Happiness")
+  ⎿  naval-ravikant-on-wealth-and-happiness
+
+⏺ Write(content/naval-ravikant-on-wealth-and-happiness.md)
+  ⎿  Wrote 65 lines to content/naval-ravikant-on-wealth-and-happiness.md 
+       1 ---
+       2 title: "Naval Ravikant on Wealth and Happiness"
+       3 type: podcast
+       4 podcast: joe-rogan-experience
+       5 url: "https://www.youtube.com/watch?v=3qHkcs3kG44"
+       6 urls:
+       7   - platform: youtube
+       8     url: "https://www.youtube.com/watch?v=3qHkcs3kG44"
+       9   - platform: spotify
+      10     url: "https://open.spotify.com/episode/4w61jzCy11CCwxNBCe53h
+         g"
+     … +55 lines (ctrl+o to expand)
+
+⏺ Bash(ls /Users/alex/Projects/nuxt/secondBrain/content/podcasts/joe-rogan-exper
+      ience.md && ls
+      /Users/alex/Projects/nuxt/secondBrain/content/authors/naval-ravikant.md…)
+  ⎿ /Users/alex/Projects/nuxt/secondBrain/content/podcasts/joe-rogan-experi
+    ence.md
+    /Users/alex/Projects/nuxt/secondBrain/content/authors/naval-ravikant.md
+    /Users/alex/Projects/nuxt/secondBrain/content/authors/joe-rogan.md
+
+
+
+⏺ Search(pattern: "Naval Ravikant|3qHkcs3kG44", path: "content", glob: "*.md")
+  ⎿  Found 2 files (ctrl+o to expand)
+
+⏺ Done! Created 4 files:
+
+  Episode Note
+  - content/naval-ravikant-on-wealth-and-happiness.md
+    - Type: podcast
+    - Guest: naval-ravikant
+    - Tags: self-improvement, philosophy, productivity, career, learning
+    - 5 key arguments extracted from transcript
+
+  New Profiles
+  - content/authors/joe-rogan.md — podcast host
+  - content/authors/naval-ravikant.md — guest/investor
+  - content/podcasts/joe-rogan-experience.md — show profile
+
+  Key topics covered: wealth creation through ownership, happiness as a skill, non-linear reading, working in sprints, and the future of gig economy work.
+
+
+

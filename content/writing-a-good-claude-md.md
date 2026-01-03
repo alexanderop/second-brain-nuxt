@@ -9,7 +9,7 @@ tags:
   - productivity
   - llm
 authors:
-  - HumanLayer Team
+  - humanlayer-team
 summary: "Guidelines for crafting an effective CLAUDE.md file, emphasizing brevity, universal applicability, and progressive disclosure to maximize Claude Code's instruction-following capacity."
 notes: ""
 date: 2026-01-01

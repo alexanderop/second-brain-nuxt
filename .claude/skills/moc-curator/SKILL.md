@@ -73,7 +73,7 @@ Notes in this cluster:
 
 Ask the user which suggestions to apply:
 
-```
+```text
 Which suggestions would you like me to apply?
 
 a) Apply all MOC updates

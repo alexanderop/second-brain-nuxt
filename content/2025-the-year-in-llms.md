@@ -9,7 +9,7 @@ tags:
   - ai-tools
   - developer-experience
 authors:
-  - Simon Willison
+  - simon-willison
 summary: "Simon Willison's comprehensive year-in-review analyzing how reasoning models, autonomous agents, and Chinese AI competition fundamentally reshaped the landscape in 2025."
 notes: ""
 date: 2026-01-01

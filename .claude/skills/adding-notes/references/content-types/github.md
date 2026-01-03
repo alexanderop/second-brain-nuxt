@@ -51,7 +51,7 @@ date: 2026-01-02
 
 ## Body Template
 
-```markdown
+````markdown
 ## Overview
 
 [What the project does and why it exists]
@@ -87,7 +87,7 @@ result, err := client.Process(data)
 ## Connections
 
 Related to [[other-tool]] or implements patterns from [[related-concept]].
-```
+````
 
 ## Code Snippet Rules
 

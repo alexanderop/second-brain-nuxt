@@ -49,7 +49,7 @@ export function transformWikiLink(
 ```
 
 ### Test Cases
-```
+```text
 [[note#section]]           → [note](/note#section){.wiki-link}
 [[note#section|Display]]   → [Display](/note#section){.wiki-link}
 [[My Note#Key Ideas]]      → [My Note](/my-note#key-ideas){.wiki-link}
@@ -215,7 +215,7 @@ Then `[[habits]]` resolves to `/atomic-habits`.
 ## Architecture Notes
 
 ### Wiki-link Pipeline
-```
+```text
 Markdown → server/plugins/wikilinks.ts → Regex Transform → ProseA.vue
 ```
 

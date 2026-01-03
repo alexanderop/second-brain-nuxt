@@ -40,12 +40,12 @@ Search for episode on multiple platforms:
 | 4 | Description only | Spotify/Apple metadata | Low |
 
 **Step 1:** Search for YouTube version
-```
+```text
 WebSearch: "{episode_title}" "{show_name}" site:youtube.com
 ```
 
 **Step 2:** Fetch show notes from podcast website
-```
+```text
 WebFetch: {podcast.website}/{episode-slug}/
 ```
 Extract: timestamps, links/resources, sponsors

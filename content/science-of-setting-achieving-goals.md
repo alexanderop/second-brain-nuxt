@@ -9,7 +9,7 @@ tags:
   - productivity
   - learning
 authors:
-  - Andrew Huberman
+  - andrew-huberman
 summary: "Andrew Huberman explains the neuroscience behind goal setting and achievement, revealing that one neural circuit governs all goal pursuit and providing four science-based protocols for effective goal execution."
 notes: ""
 date: 2026-01-01

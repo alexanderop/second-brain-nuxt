@@ -12,6 +12,9 @@ tags:
   - psychology
   - germany
   - future
+authors:
+  - markus-lanz
+  - richard-david-precht
 guests:
   - florence-gaub
 summary: "Futurist Florence Gaub argues that difficult times create space for utopian thinking, while examining why Germans seem culturally predisposed to pessimism despite positive personal outlooks."

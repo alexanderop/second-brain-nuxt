@@ -198,7 +198,7 @@ No build-time validation - keep data flexible.
 ### PodcastCard
 
 Display podcast show in grid:
-```
+```text
 ┌─────────────────────────┐
 │  ┌─────┐                │
 │  │ Art │  Podcast Name  │  ← Artwork is clickable link
@@ -214,7 +214,7 @@ Display podcast show in grid:
 ### PodcastHeader
 
 Profile page header:
-```
+```text
 ┌─────────────────────────────────────────┐
 │  ┌─────────┐                            │
 │  │         │  Huberman Lab              │
@@ -229,7 +229,7 @@ Profile page header:
 ### Episode Content Card Enhancement
 
 When `podcast` field is present on content, show podcast name as clickable link:
-```
+```text
 ┌─────────────────────────────────────────┐
 │ 🎙 How to Build Habits That Stick      │
 │    Huberman Lab • Jan 15, 2025          │  ← "Huberman Lab" links to profile
@@ -397,7 +397,7 @@ At skill-time, warn if:
 
 Initial profiles to create:
 
-```
+```text
 content/podcasts/
 ├── huberman-lab.md
 ├── lex-fridman-podcast.md

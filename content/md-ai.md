@@ -22,7 +22,7 @@ md-ai addresses a friction point with existing LLM chat interfaces: web UIs offe
 
 Conversations serialize to markdown after each AI response. User and assistant messages become headings. Tool calls and results get stored in specially-marked code blocks with JSON payloads. This format parses back into messages before sending to the AI, letting you edit conversation history directly.
 
-```markdown
+````markdown
 ## User
 
 call the tool for me
@@ -48,7 +48,7 @@ will do!
   "result": { "response": "hello agent" }
 }
 ```
-```
+````
 
 ## Built-in Tools
 

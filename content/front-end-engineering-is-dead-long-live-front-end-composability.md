@@ -9,7 +9,7 @@ tags:
   - developer-experience
   - ux-design
 authors:
-  - Nate B Jones
+  - nate-b-jones
 summary: "Traditional front-end engineering (hand-coding pages from Figma designs) is being replaced by composability—designing primitives, schemas, and contracts that let AI, PMs, and designers ship dynamic interfaces without reinventing the wheel."
 notes: ""
 date: 2026-01-01

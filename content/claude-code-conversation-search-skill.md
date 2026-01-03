@@ -8,7 +8,7 @@ tags:
   - python
   - skills
 authors:
-  - Alex Colvin
+  - alex-colvin
 summary: "How to build a skill that searches past Claude Code conversations to find solutions to previously solved problems, leveraging the JSONL conversation history stored locally."
 notes: "Created from my own experience - I faced an issue but forgot the fix. The conversation history had the answer."
 date: 2026-01-02

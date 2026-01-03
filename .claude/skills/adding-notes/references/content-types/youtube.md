@@ -8,7 +8,7 @@ Standard YouTube content: essays, reviews, vlogs, tutorials.
 
 YouTube videos fall into distinct categories. **Always classify before proceeding.**
 
-```
+```text
 YouTube URL detected
     │
     ├─ Known PODCAST channel? ──────────► See podcast.md
@@ -144,7 +144,7 @@ Discusses ideas from [[referenced-book]] or [[related-concept]].
 
 ### Tutorial Videos (isTechnical: true)
 
-```markdown
+````markdown
 ## Key Takeaways
 
 - What you'll learn
@@ -170,7 +170,7 @@ const example = "code here"
 ## References
 
 Builds on [[prerequisite-topic]].
-```
+````
 
 See `references/code-extraction.md` for code snippet guidelines.
 

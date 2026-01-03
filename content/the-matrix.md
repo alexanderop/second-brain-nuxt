@@ -31,4 +31,4 @@ The film's influence extends beyond cinema into philosophy, technology discussio
 
 ## Connections
 
-Explores themes similar to [[platos-cave]] and influences discussions in [[simulation-hypothesis]].
+Explores themes similar to Plato's Cave allegory and influences discussions around simulation theory.

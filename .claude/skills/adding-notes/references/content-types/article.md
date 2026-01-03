@@ -82,7 +82,7 @@ date: 2026-01-01
 
 ### Technical Body Template
 
-```markdown
+````markdown
 ## Summary
 
 [What the article teaches]
@@ -124,7 +124,7 @@ try {
 ## Related
 
 See also [[related-library]] and [[error-handling-patterns]].
-```
+````
 
 ### Code Snippet Guidelines
 

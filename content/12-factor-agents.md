@@ -9,7 +9,7 @@ tags:
   - claude-code
   - developer-experience
 authors:
-  - HumanLayer Team
+  - humanlayer-team
 summary: "A manifesto for building production-grade LLM agents, arguing that effective agents combine mostly deterministic software with strategic LLM decision-making rather than naive 'loop until solved' patterns."
 notes: ""
 date: 2026-01-01

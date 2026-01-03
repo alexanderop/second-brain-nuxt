@@ -2,7 +2,8 @@
 title: "Awesome list of Claude Code tips, tricks, gotchas"
 type: reddit
 url: "https://www.reddit.com/r/ClaudeCode/comments/1q193fr/awesome_list_of_claude_code_tips_tricks_gotchas/"
-author: "u/Prize-Individual4729"
+authors:
+  - prize-individual4729
 tags:
   - claude-code
   - developer-experience

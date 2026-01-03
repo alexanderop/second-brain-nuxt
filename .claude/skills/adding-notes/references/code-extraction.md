@@ -19,7 +19,7 @@ Content triggers code extraction if `isTechnical: true`. Set this flag when ANY:
 
 Spawn code extraction agent in parallel with other Phase 2 agents:
 
-```
+```text
 Task: "Extract practical code snippets from [SOURCE].
 
 Source-specific strategy:
@@ -138,7 +138,7 @@ Brief explanation of what this demonstrates (1 sentence).
 ```language
 // the actual code
 ```
-```
+```text
 
 ### Rules
 
