@@ -43,7 +43,7 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**'] },
+      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**'] },
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),
@@ -67,6 +67,13 @@ export default defineContentConfig({
         language: z.string().optional(),
         // Rating (1-7 scale, for external content)
         rating: z.number().min(1).max(7).optional(),
+        // Podcast episode fields
+        podcast: z.string().optional(),
+        guests: z.array(z.string()).optional(),
+        urls: z.array(z.object({
+          platform: z.string(),
+          url: z.string().url(),
+        })).optional(),
       }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
@@ -112,6 +119,36 @@ export default defineContentConfig({
           linkedin: z.string().optional(),
           youtube: z.string().optional(),
         }).optional(),
+      }),
+    }),
+
+    podcasts: defineCollection({
+      type: 'data',
+      source: 'podcasts/**/*.md',
+      schema: z.object({
+        name: z.string(),
+        slug: z.string(),
+        description: z.string().optional(),
+        artwork: z.string().url().optional(),
+        website: z.string().url().optional(),
+        hosts: z.array(z.string()).min(1),
+        feed: z.string().url().optional(),
+        platforms: z.record(z.string(), z.string().url()).optional(),
+      }),
+    }),
+
+    tweets: defineCollection({
+      type: 'page',
+      source: 'tweets/**/*.md',
+      schema: z.object({
+        type: z.literal('tweet'),
+        title: z.string(),
+        tweetId: z.string(),
+        tweetUrl: z.string().url(),
+        tweetText: z.string(),
+        author: z.string(), // Author slug (singular for tweets)
+        tweetedAt: z.coerce.date(),
+        tags: z.array(z.string()).optional(),
       }),
     }),
 

@@ -11,14 +11,10 @@
             "id": "7b4f8d8c29ecad93",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "boris-cherny-on-what-grew-his-career-and-building-at-anthropic"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for boris-cherny-on-what-grew-his-career-and-building-at-anthropic"
+              "title": "Backlinks"
             }
           },
           {
@@ -113,12 +108,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from boris-cherny-on-what-grew-his-career-and-building-at-anthropic"
+              "title": "Outgoing links"
             }
           },
           {
@@ -156,13 +150,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of boris-cherny-on-what-grew-his-career-and-building-at-anthropic"
+              "title": "Outline"
             }
           }
         ]
@@ -185,31 +178,32 @@
   },
   "active": "7b4f8d8c29ecad93",
   "lastOpenFiles": [
-    "the-optimism-bias.md",
-    "authors/tali-sharot.md",
-    "building-evolutionary-architectures-book.md",
-    "authors/rebecca-parsons.md",
-    "authors/patrick-kua.md",
-    "building-evolutionary-architectures.md",
-    "authors/neal-ford.md",
-    "TEMP_NOTE.md",
-    "evergreen-notes.md",
-    "temp-evergreen-test.md",
-    "how-i-use-obsidian.md",
-    "authors/steph-ango.md",
-    "economic-possibilities-for-our-grandchildren.md",
-    "authors/john-maynard-keynes.md",
-    "refactoring-improving-the-design-of-existing-code.md",
-    "authors/martin-fowler.md",
-    "the-context-window-problem.md",
-    "authors/varin-nair.md",
-    "temp-refactoring-book.md",
-    "product-engineers.md",
-    "product-engineers-temp.md",
-    "tidy-first.md",
-    "intl-typesafe-i18n-library.md",
-    "md-ai.md",
-    "TEMP_md-ai.md",
-    "why-local-first-apps-havent-become-popular.md"
+    "tweets",
+    "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
+    "the-matrix.md",
+    "authors/lilly-wachowski.md",
+    "authors/lana-wachowski.md",
+    "vom-hoersaal-in-die-arbeitslosigkeit.md",
+    "authors/zdfheute-nachrichten.md",
+    "ai-expert-we-have-2-years-before-everything-changes-tristan-harris.md",
+    "authors/tristan-harris.md",
+    "lanz-precht-226-florence-gaub-zukunft-pessimismus.md",
+    "podcasts/lanz-and-precht.md",
+    "authors/florence-gaub.md",
+    "authors/richard-david-precht.md",
+    "authors/markus-lanz.md",
+    "gloecklers-predictions-2026-ceo-scams.md",
+    "authors/philipp-kloeckner.md",
+    "authors/philipp-gloeckler.md",
+    "podcasts/doppelgaenger.md",
+    "ralph-wiggum-loop-honest-reviews.md",
+    "authors/upro-vi.md",
+    "podcasts/dwarkesh-podcast.md",
+    "podcasts/jocko-podcast.md",
+    "podcasts/diary-of-a-ceo.md",
+    "podcasts/lex-fridman-podcast.md",
+    "podcasts/huberman-lab.md",
+    "podcasts",
+    "the-optimism-bias.md"
   ]
 }

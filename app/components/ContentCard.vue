@@ -8,6 +8,7 @@ import type { ContentItem } from '~/types/content'
 defineProps<{
   content: ContentItem
   selected?: boolean
+  podcastName?: string
 }>()
 
 function formatDate(date?: Date | string) {
@@ -35,7 +36,17 @@ function formatDate(date?: Date | string) {
           <h2 class="font-medium group-hover:underline">
             {{ content.title }}
           </h2>
-          <p v-if="content.authors?.length" class="text-sm text-[var(--ui-text-muted)]">
+          <p v-if="content.podcast && podcastName" class="text-sm text-[var(--ui-text-muted)]">
+            <NuxtLink
+              :to="`/podcasts/${content.podcast}`"
+              class="hover:underline text-[var(--ui-text)]"
+              @click.stop
+            >{{ podcastName }}</NuxtLink>
+            <template v-if="content.guests?.length">
+              <span> &bull; Guest: {{ content.guests.join(', ') }}</span>
+            </template>
+          </p>
+          <p v-else-if="content.authors?.length" class="text-sm text-[var(--ui-text-muted)]">
             by {{ content.authors.join(', ') }}
           </p>
           <p v-if="content.summary" class="mt-1 text-sm text-[var(--ui-text-muted)] line-clamp-2">

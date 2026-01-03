@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
-import { ContentRenderer } from '#components'
-import ContentToc from '~/components/ContentToc.vue'
+import { ContentRenderer, UContentToc } from '#components'
 import ContentHeader from '~/components/ContentHeader.vue'
 import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue'
 import YouTubePlayer from '~/components/YouTubePlayer.vue'
@@ -12,6 +11,20 @@ import GitHubRepoCard from '~/components/GitHubRepoCard.vue'
 import NoteGraph from '~/components/NoteGraph.vue'
 import { useBacklinks } from '~/composables/useBacklinks'
 import { useMentions } from '~/composables/useMentions'
+import type { PodcastItem } from '~/types/content'
+
+interface PageWithPodcast {
+  podcast?: string
+  guests?: string[]
+}
+
+function isPodcastItem(p: unknown): p is PodcastItem {
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
+}
+
+function hasPagePodcastFields(p: unknown): p is PageWithPodcast {
+  return typeof p === 'object' && p !== null
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -31,17 +44,60 @@ const slug = computed(() => route.path.replace(/^\//, ''))
 const { backlinks } = useBacklinks(slug.value)
 const { mentions } = useMentions(slug.value, page.value?.title ?? '')
 
+// Fetch podcast data if this is a podcast episode
+const podcastSlug = computed(() => {
+  if (hasPagePodcastFields(page.value)) return page.value.podcast
+  return undefined
+})
+
+const { data: podcast } = await useAsyncData(
+  `page-podcast-${podcastSlug.value ?? 'none'}`,
+  async () => {
+    if (!podcastSlug.value) return null
+    return queryCollection('podcasts')
+      .where('slug', '=', podcastSlug.value)
+      .first()
+  },
+)
+
+const typedPodcast = computed(() => {
+  if (isPodcastItem(podcast.value)) return podcast.value
+  return null
+})
+
+async function fetchHostAuthor(hostSlug: string) {
+  const author = await queryCollection('authors')
+    .where('slug', '=', hostSlug)
+    .first()
+  return author
+    ? { slug: hostSlug, name: author.name }
+    : { slug: hostSlug, name: hostSlug }
+}
+
+const { data: podcastHosts } = await useAsyncData(
+  `page-podcast-hosts-${podcastSlug.value ?? 'none'}`,
+  async () => {
+    const hosts = typedPodcast.value?.hosts
+    if (!hosts?.length) return []
+    return Promise.all(hosts.map(fetchHostAuthor))
+  },
+)
+
+function getPageGuests(p: typeof page.value): string[] | undefined {
+  return hasPagePodcastFields(p) ? p.guests : undefined
+}
+
 // Content header data (extracted to avoid inline object creation on each render)
-// Non-null assertions are safe here since this is only used inside v-if="page"
 const headerContent = computed(() => ({
   slug: slug.value,
-  title: page.value!.title,
-  type: page.value!.type,
+  title: page.value?.title ?? '',
+  type: page.value?.type ?? 'note',
   url: page.value?.url,
   tags: page.value?.tags,
   authors: page.value?.authors,
   date: page.value?.date,
   rating: page.value?.rating,
+  guests: getPageGuests(page.value),
 }))
 
 // Fetch note graph data for mini-graph visualization
@@ -65,7 +121,7 @@ useSeoMeta({
   <div v-if="page" class="lg:grid lg:grid-cols-12 lg:gap-8">
     <!-- Main content -->
     <article class="lg:col-span-8 xl:col-span-9">
-      <ContentHeader :content="headerContent" />
+      <ContentHeader :content="headerContent" :podcast="typedPodcast ?? undefined" :hosts="podcastHosts ?? undefined" />
 
       <YouTubePlayer
         v-if="page.type === 'youtube' && page.url"
@@ -116,8 +172,11 @@ useSeoMeta({
     <!-- TOC Sidebar (hidden on mobile) -->
     <aside v-if="tocLinks.length > 0" class="hidden lg:block lg:col-span-4 xl:col-span-3">
       <div class="sticky top-20">
-        <ContentToc
+        <UContentToc
           :links="tocLinks"
+          highlight 
+          color="neutral"
+          highlight-color="neutral"
           title="On this page"
         />
       </div>

@@ -4,6 +4,8 @@ import { useRoute, useAsyncData, queryCollection } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon, UButton, UAvatar } from '#components'
 import ContentList from '~/components/ContentList.vue'
+import TweetCard from '~/components/TweetCard.vue'
+import type { TweetItem } from '~/types/content'
 
 const route = useRoute()
 const authorSlug = computed(() => decodeURIComponent(String(route.params.name)))
@@ -19,6 +21,48 @@ const { data: items } = await useAsyncData(`author-${authorSlug.value}`, () => {
     .where('authors', 'LIKE', `%${authorSlug.value}%`)
     .order('date', 'DESC')
     .all()
+})
+
+// Fetch tweets by this author
+const { data: tweets } = await useAsyncData(`author-tweets-${authorSlug.value}`, () => {
+  return queryCollection('tweets')
+    .where('author', '=', authorSlug.value)
+    .order('tweetedAt', 'DESC')
+    .all()
+})
+
+const typedTweets = computed(() => {
+  if (!tweets.value) return []
+  // Transform collection items to include slug derived from path
+  return tweets.value
+    .filter(t => t.tweetId && t.tweetText && t.author)
+    .map(t => ({
+      ...t,
+      slug: t.path?.replace(/^\/tweets\//, '') ?? `tweet-${t.tweetId}`,
+    })) as TweetItem[]
+})
+
+// Author info for TweetCard
+const authorInfo = computed(() => {
+  if (!authorData.value) {
+    return {
+      name: authorSlug.value,
+      slug: authorSlug.value,
+      avatar: undefined,
+      twitterHandle: undefined,
+    }
+  }
+  let twitterHandle: string | undefined
+  if (authorData.value.socials?.twitter) {
+    const twitterUrl = authorData.value.socials.twitter
+    twitterHandle = twitterUrl.includes('/') ? twitterUrl.split('/').pop() : twitterUrl
+  }
+  return {
+    name: authorData.value.name,
+    slug: authorData.value.slug,
+    avatar: authorData.value.avatar,
+    twitterHandle,
+  }
 })
 
 const authorName = computed(() => authorData.value?.name ?? authorSlug.value)
@@ -55,7 +99,7 @@ const socialLinks = computed(() => {
           {{ authorName }}
         </h1>
         <span class="text-[var(--ui-text-muted)]">
-          ({{ items?.length ?? 0 }})
+          ({{ (items?.length ?? 0) + typedTweets.length }})
         </span>
       </div>
 
@@ -88,6 +132,27 @@ const socialLinks = computed(() => {
       </div>
     </div>
 
-    <ContentList :items="items ?? []" />
+    <!-- Notes section -->
+    <section v-if="items?.length" class="mb-8">
+      <h2 class="text-lg font-semibold mb-4">
+        Notes ({{ items.length }})
+      </h2>
+      <ContentList :items="items" />
+    </section>
+
+    <!-- Tweets section -->
+    <section v-if="typedTweets.length">
+      <h2 class="text-lg font-semibold mb-4">
+        Tweets ({{ typedTweets.length }})
+      </h2>
+      <div class="space-y-4">
+        <TweetCard
+          v-for="tweet in typedTweets"
+          :key="tweet.tweetId"
+          :tweet="tweet"
+          :author="authorInfo"
+        />
+      </div>
+    </section>
   </div>
 </template>

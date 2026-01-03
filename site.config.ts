@@ -40,6 +40,7 @@ export const siteConfig = {
   nav: [
     { label: 'Home', to: '/', icon: 'i-lucide-home' },
     { label: 'Books', to: '/books', icon: 'i-lucide-book-open' },
+    { label: 'Podcasts', to: '/podcasts', icon: 'i-lucide-podcast' },
     { label: 'Graph', to: '/graph', icon: 'i-lucide-network' },
     { label: 'Stats', to: '/stats', icon: 'i-lucide-bar-chart-2' },
     { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
@@ -56,6 +57,7 @@ export const siteConfig = {
     navigation: [
       { keys: ['G', 'H'], to: '/', description: 'Go to home' },
       { keys: ['G', 'B'], to: '/books', description: 'Go to books' },
+      { keys: ['G', 'P'], to: '/podcasts', description: 'Go to podcasts' },
       { keys: ['G', 'G'], to: '/graph', description: 'Go to graph' },
       { keys: ['G', 'T'], to: '/tags', description: 'Go to tags' },
       { keys: ['G', 'A'], to: '/authors', description: 'Go to authors' },
