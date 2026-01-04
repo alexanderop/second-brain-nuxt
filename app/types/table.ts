@@ -19,7 +19,6 @@ export interface TableContentItem {
   authors: TableAuthor[]
   tags: string[]
   date?: string // Date consumed (ISO string)
-  datePublished?: string // ISO string
   rating?: number // 1-7 scale
   url?: string
   cover?: string
@@ -31,13 +30,12 @@ export interface FilterState {
   tags?: string[]
   authors?: string[] // Author slugs
   dateConsumedRange?: [string, string] // ISO date strings
-  datePublishedRange?: [string, string] // ISO date strings
   ratingRange?: [number, number]
 }
 
 // Sort state for the table
 export interface SortState {
-  column: 'title' | 'type' | 'dateConsumed' | 'datePublished' | 'rating'
+  column: 'title' | 'type' | 'dateConsumed' | 'rating'
   direction: 'asc' | 'desc'
 }
 
@@ -49,12 +47,10 @@ export const tableParamsSchema = z.object({
   authors: z.array(z.string()).optional(),
   dateConsumedFrom: z.string().optional(),
   dateConsumedTo: z.string().optional(),
-  datePublishedFrom: z.string().optional(),
-  datePublishedTo: z.string().optional(),
   ratingMin: z.coerce.number().min(1).max(7).optional(),
   ratingMax: z.coerce.number().min(1).max(7).optional(),
   // Sort params
-  sort: z.enum(['title', 'type', 'dateConsumed', 'datePublished', 'rating']).optional(),
+  sort: z.enum(['title', 'type', 'dateConsumed', 'rating']).optional(),
   dir: z.enum(['asc', 'desc']).optional(),
   // Pagination
   page: z.coerce.number().min(1).optional(),

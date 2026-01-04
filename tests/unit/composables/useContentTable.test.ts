@@ -119,8 +119,6 @@ describe('useContentTable', () => {
         authors: ['author-1'],
         dateConsumedFrom: '2024-01-01',
         dateConsumedTo: '2024-12-31',
-        datePublishedFrom: '2023-01-01',
-        datePublishedTo: '2023-12-31',
         ratingMin: 3,
         ratingMax: 7,
       })
@@ -130,7 +128,6 @@ describe('useContentTable', () => {
         tags: ['tech', 'ai'],
         authors: ['author-1'],
         dateConsumedRange: ['2024-01-01', '2024-12-31'],
-        datePublishedRange: ['2023-01-01', '2023-12-31'],
         ratingRange: [3, 7],
       })
     })
@@ -146,7 +143,6 @@ describe('useContentTable', () => {
         tags: undefined,
         authors: undefined,
         dateConsumedRange: undefined,
-        datePublishedRange: undefined,
         ratingRange: undefined,
       })
     })
@@ -159,7 +155,6 @@ describe('useContentTable', () => {
         tags: undefined,
         authors: undefined,
         dateConsumedRange: undefined,
-        datePublishedRange: undefined,
         ratingRange: undefined,
       })
     })
@@ -327,7 +322,6 @@ describe('useContentTable', () => {
       authors: [],
       tags: [],
       date: '2024-06-15',
-      datePublished: '2024-01-01',
       rating: 5,
     }
 
@@ -345,10 +339,6 @@ describe('useContentTable', () => {
 
     it('returns rating for rating column', () => {
       expect(getSortValue(item, 'rating')).toBe(5)
-    })
-
-    it('returns datePublished for datePublished column', () => {
-      expect(getSortValue(item, 'datePublished')).toBe('2024-01-01')
     })
 
     it('returns undefined for missing values', () => {

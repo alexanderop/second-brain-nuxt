@@ -72,7 +72,7 @@ describe('tableParamsSchema', () => {
 
   describe('sort validation', () => {
     it('accepts valid sort columns', () => {
-      const validColumns = ['title', 'type', 'dateConsumed', 'datePublished', 'rating']
+      const validColumns = ['title', 'type', 'dateConsumed', 'rating']
       for (const column of validColumns) {
         const result = tableParamsSchema.parse({ sort: column })
         expect(result.sort).toBe(column)
@@ -142,15 +142,6 @@ describe('tableParamsSchema', () => {
       })
       expect(result.dateConsumedFrom).toBe('2024-01-01')
       expect(result.dateConsumedTo).toBe('2024-12-31')
-    })
-
-    it('accepts date published range', () => {
-      const result = tableParamsSchema.parse({
-        datePublishedFrom: '2023-01-01',
-        datePublishedTo: '2023-12-31',
-      })
-      expect(result.datePublishedFrom).toBe('2023-01-01')
-      expect(result.datePublishedTo).toBe('2023-12-31')
     })
   })
 

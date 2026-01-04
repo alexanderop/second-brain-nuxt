@@ -76,8 +76,6 @@ export function buildFilterState(data: {
   authors?: string[]
   dateConsumedFrom?: string
   dateConsumedTo?: string
-  datePublishedFrom?: string
-  datePublishedTo?: string
   ratingMin?: number
   ratingMax?: number
 }): FilterState {
@@ -86,7 +84,6 @@ export function buildFilterState(data: {
     tags: nonEmptyArray(data.tags),
     authors: nonEmptyArray(data.authors),
     dateConsumedRange: buildDateRange(data.dateConsumedFrom, data.dateConsumedTo),
-    datePublishedRange: buildDateRange(data.datePublishedFrom, data.datePublishedTo),
     ratingRange: buildRatingRange(data.ratingMin, data.ratingMax),
   }
 }
@@ -127,7 +124,6 @@ export function getSortValue(item: TableContentItem, column: SortState['column']
   if (column === 'title') return item.title
   if (column === 'type') return item.type
   if (column === 'rating') return item.rating
-  if (column === 'datePublished') return item.datePublished
   return undefined
 }
 
@@ -138,8 +134,6 @@ export function useContentTable() {
   const authorsParam = useRouteQuery<string | null>('authors')
   const dateConsumedFromParam = useRouteQuery<string | null>('dateConsumedFrom')
   const dateConsumedToParam = useRouteQuery<string | null>('dateConsumedTo')
-  const datePublishedFromParam = useRouteQuery<string | null>('datePublishedFrom')
-  const datePublishedToParam = useRouteQuery<string | null>('datePublishedTo')
   const ratingMinParam = useRouteQuery<string | null>('ratingMin')
   const ratingMaxParam = useRouteQuery<string | null>('ratingMax')
   const sortParam = useRouteQuery<string | null>('sort', 'dateConsumed')
@@ -154,8 +148,6 @@ export function useContentTable() {
       authors: parseArrayParam(authorsParam.value),
       dateConsumedFrom: dateConsumedFromParam.value || undefined,
       dateConsumedTo: dateConsumedToParam.value || undefined,
-      datePublishedFrom: datePublishedFromParam.value || undefined,
-      datePublishedTo: datePublishedToParam.value || undefined,
       ratingMin: ratingMinParam.value ? Number(ratingMinParam.value) : undefined,
       ratingMax: ratingMaxParam.value ? Number(ratingMaxParam.value) : undefined,
     }
@@ -167,7 +159,7 @@ export function useContentTable() {
   })
 
   // Type guards for sort state
-  const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'datePublished', 'rating']
+  const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating']
   function isValidColumn(value: string | null): value is SortState['column'] {
     return value !== null && validColumns.includes(value)
   }
@@ -286,9 +278,6 @@ export function useContentTable() {
       })
     }
 
-    // Date published range (not in schema, skip for now)
-    // if (f.datePublishedRange) { ... }
-
     // Rating range
     if (f.ratingRange) {
       const [min, max] = f.ratingRange
@@ -360,12 +349,6 @@ export function useContentTable() {
     pageParam.value = '1'
   }
 
-  const setDatePublishedRange = (range: [string, string] | null) => {
-    datePublishedFromParam.value = range?.[0] ?? null
-    datePublishedToParam.value = range?.[1] ?? null
-    pageParam.value = '1'
-  }
-
   const setRatingRange = (range: [number, number] | null) => {
     ratingMinParam.value = range?.[0]?.toString() ?? null
     ratingMaxParam.value = range?.[1]?.toString() ?? null
@@ -383,8 +366,6 @@ export function useContentTable() {
     authorsParam.value = null
     dateConsumedFromParam.value = null
     dateConsumedToParam.value = null
-    datePublishedFromParam.value = null
-    datePublishedToParam.value = null
     ratingMinParam.value = null
     ratingMaxParam.value = null
     pageParam.value = '1'
@@ -397,7 +378,6 @@ export function useContentTable() {
       || f.tags?.length
       || f.authors?.length
       || f.dateConsumedRange
-      || f.datePublishedRange
       || f.ratingRange
     )
   })
@@ -434,7 +414,6 @@ export function useContentTable() {
     setTagsFilter,
     setAuthorsFilter,
     setDateConsumedRange,
-    setDatePublishedRange,
     setRatingRange,
     setSort,
     clearFilters,
