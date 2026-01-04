@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { USelectMenu, UIcon } from '#components'
 import { useGraphFilters } from '~/composables/useGraphFilters'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 const props = defineProps<{
   availableTags: Array<string>
@@ -22,12 +22,8 @@ const {
   clearFilters,
 } = useGraphFilters()
 
-// Filter to only show types that exist in content
-const visibleTypes = computed(() =>
-  props.availableTypes.filter(type =>
-    ['book', 'manga', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit', 'github', 'newsletter'].includes(type),
-  ),
-)
+// Pass through available types - filtering is handled by the parent
+const visibleTypes = computed(() => props.availableTypes)
 
 // Type display names
 const typeLabels: Record<ContentType, string> = {
@@ -58,7 +54,7 @@ const typeItems = computed(() =>
 )
 
 // Type-specific colors matching the graph nodes (softer pastels)
-const typeColors: Record<string, string> = {
+const typeColors: Record<ContentType, string> = {
   book: '#fcd34d',
   manga: '#fb7185',
   podcast: '#c4b5fd',
@@ -73,6 +69,8 @@ const typeColors: Record<string, string> = {
   evergreen: '#86efac',
   map: '#f472b6',
   reddit: '#ff6b35',
+  github: '#a78bfa',
+  newsletter: '#4ade80',
 }
 
 // Build map items for USelectMenu
@@ -83,8 +81,8 @@ const mapItems = computed(() =>
   })),
 )
 
-function getTypeColor(type: string): string {
-  return typeColors[type] || '#64748b'
+function getTypeColor(type: ContentType): string {
+  return typeColors[type]
 }
 </script>
 

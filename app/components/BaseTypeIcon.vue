@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UIcon } from '#components'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 defineProps<{
   type: ContentType

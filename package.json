@@ -16,10 +16,11 @@
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
-    "lint": "oxlint && eslint .",
-    "lint:fix": "oxlint --fix && eslint . --fix",
+    "lint": "oxlint && eslint . && markdownlint-cli2 'content/**/*.md'",
+    "lint:fix": "oxlint --fix && eslint . --fix && markdownlint-cli2 --fix 'content/**/*.md'",
     "lint:ox": "oxlint",
     "lint:es": "eslint .",
+    "lint:md": "markdownlint-cli2 'content/**/*.md'",
     "preview": "nuxt preview",
     "test:unit": "vitest run --project unit --project api-unit",
     "test:unit:cov": "vitest run --project unit --project api-unit --coverage",
@@ -28,7 +29,6 @@
     "test:component:ui": "vitest --project component --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "lhci": "lhci",
     "prepare": "husky"
   },
   "dependencies": {
@@ -48,12 +48,12 @@
     "mermaid": "^11.12.2",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@eslint/markdown": "^7.5.1",
     "@iconify-json/lucide": "^1.2.82",
-    "@lhci/cli": "^0.14.0",
     "@nuxt/kit": "^4.2.2",
     "@nuxt/test-utils": "^3.21.0",
     "@playwright/test": "^1.57.0",
@@ -78,6 +78,7 @@
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
     "happy-dom": "^20.0.11",
     "husky": "^9.1.7",
+    "markdownlint-cli2": "^0.20.0",
     "nitropack": "^2.12.9",
     "oxlint": "^1.0.0",
     "playwright": "^1.57.0",

@@ -86,6 +86,40 @@ graph LR
 </pre>
 ::
 
+## Highlights
+
+> Your outcomes are a lagging measure of your habits. Your net worth is a lagging measure of your financial habits. Your weight is a lagging measure of your eating habits. Your knowledge is a lagging measure of your learning habits. Your clutter is a lagging measure of your cleaning habits. You get what you repeat.
+
+> The purpose of setting goals is to win the game. The purpose of building systems is to continue playing the game.
+
+> The ultimate form of intrinsic motivation is when a habit becomes part of your identity. It's one thing to say I'm the type of person who wants this. It's something very different to say I'm the type of person who is this.
+
+> True behavior change is identity change.
+
+> Every goal is doomed to fail if it goes against the grain of human nature.
+
+> Until you make the unconscious conscious, it will direct your life and you will call it fate.
+
+> Environment is the invisible hand that shapes human behavior.
+
+> You don't have to be the victim of your environment. You can also be the architect of it.
+
+> When scientists analyze people who appear to have tremendous self-control, it turns out those individuals aren't all that different from those who are struggling. Instead, "disciplined" people are better at structuring their lives in a way that does not require heroic willpower and self-control.
+
+> You feel bad, so you eat junk food. Because you eat junk food, you feel bad. Watching television makes you feel sluggish, so you watch more television because you don't have the energy to do anything else.
+
+> Self-control is a short-term strategy, not a long-term one. You may be able to resist temptation once or twice, but it's unlikely you can muster the willpower to override your desires every time.
+
+> Desire is the engine that drives behavior.
+
+> Your culture sets your expectation for what is "normal." Surround yourself with people who have the habits you want to have yourself. You'll rise together.
+
+> A craving is just a specific manifestation of a deeper underlying motive.
+
+> Life feels reactive, but it is actually predictive.
+
+> If you want to master a habit, the key is to start with repetition, not perfection.
+
 ## Connections
 
 The science behind habit formation connects to [[science-of-setting-achieving-goals]] — both emphasize how dopamine drives motivation and how small consistent actions create lasting change.

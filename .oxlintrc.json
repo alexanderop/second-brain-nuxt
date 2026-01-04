@@ -50,6 +50,7 @@
     ".output",
     "dist",
     "playwright-report",
-    "test-results"
+    "test-results",
+    "content/.obsidian"
   ]
 }

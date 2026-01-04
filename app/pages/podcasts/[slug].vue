@@ -6,6 +6,7 @@ import { UIcon } from '#components'
 import PodcastHeader from '~/components/PodcastHeader.vue'
 import ContentList from '~/components/ContentList.vue'
 import type { PodcastItem } from '~/types/content'
+import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
@@ -59,7 +60,7 @@ interface ContentWithBody {
   stem?: string
   slug: string
   title: string
-  type: 'youtube' | 'podcast' | 'article' | 'book' | 'manga' | 'movie' | 'tv' | 'tweet' | 'course' | 'reddit' | 'github' | 'quote' | 'note' | 'evergreen' | 'map'
+  type: ContentType
   date?: string
   authors?: string[]
   tags?: string[]

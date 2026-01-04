@@ -1,8 +1,13 @@
 // Shared color palette for knowledge graph visualizations
 // Softer pastel palette for Obsidian-like feel
 
-export const typeColors: Record<string, { fill: string, glow: string }> = {
+import type { ContentType } from '~/constants/contentTypes'
+
+type ColorConfig = { fill: string, glow: string }
+
+export const typeColors: Record<ContentType, ColorConfig> = {
   book: { fill: '#fcd34d', glow: 'rgba(252, 211, 77, 0.4)' }, // Softer amber
+  manga: { fill: '#fb7185', glow: 'rgba(251, 113, 133, 0.4)' }, // Rose
   podcast: { fill: '#c4b5fd', glow: 'rgba(196, 181, 253, 0.4)' }, // Softer violet
   article: { fill: '#67e8f9', glow: 'rgba(103, 232, 249, 0.4)' }, // Softer cyan
   note: { fill: '#6ee7b7', glow: 'rgba(110, 231, 183, 0.4)' }, // Softer emerald
@@ -15,13 +20,18 @@ export const typeColors: Record<string, { fill: string, glow: string }> = {
   evergreen: { fill: '#86efac', glow: 'rgba(134, 239, 172, 0.4)' }, // Softer green
   map: { fill: '#f472b6', glow: 'rgba(244, 114, 182, 0.4)' }, // Pink for Maps of Content
   reddit: { fill: '#ff6b35', glow: 'rgba(255, 107, 53, 0.4)' }, // Reddit orange
-  default: { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }, // Softer slate
+  github: { fill: '#a78bfa', glow: 'rgba(167, 139, 250, 0.4)' }, // GitHub purple
+  newsletter: { fill: '#4ade80', glow: 'rgba(74, 222, 128, 0.4)' }, // Newsletter green
 }
 
-export const defaultColor = { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }
+export const defaultColor: ColorConfig = { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }
 
-export function getNodeColor(type: string): { fill: string, glow: string } {
-  return typeColors[type] ?? defaultColor
+// String-indexed lookup for runtime flexibility
+const colorLookup: Record<string, ColorConfig> = typeColors
+
+// Accept string for flexibility with runtime types, returns default for unknown types
+export function getNodeColor(type: string): ColorConfig {
+  return colorLookup[type] ?? defaultColor
 }
 
 export function getGlowFilter(type: string): string {

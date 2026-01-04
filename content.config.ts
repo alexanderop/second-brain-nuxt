@@ -16,18 +16,6 @@ const externalContentTypes = [
   'newsletter',
 ] as const
 
-// Newsletter platform values
-const newsletterPlatformValues = ['substack', 'beehiiv', 'ghost', 'convertkit', 'buttondown', 'revue', 'mailchimp', 'other'] as const
-export type NewsletterPlatform = typeof newsletterPlatformValues[number]
-
-// Manga status values
-const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
-export type MangaStatus = typeof mangaStatusValues[number]
-
-// Book reading status values
-const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
-export type ReadingStatus = typeof readingStatusValues[number]
-
 // Personal content types have optional authors
 const personalContentTypes = [
   'quote',
@@ -36,23 +24,31 @@ const personalContentTypes = [
   'map',
 ] as const
 
-const contentTypeValues = [...externalContentTypes, ...personalContentTypes] as const
+// Combined content types - this Zod enum is the SINGLE SOURCE OF TRUTH
+// Nuxt Content generates ContentCollectionItem['type'] from this schema
+const contentTypesSchema = z.enum([...externalContentTypes, ...personalContentTypes])
 
-export type ContentType = typeof contentTypeValues[number]
-export type ExternalContentType = typeof externalContentTypes[number]
-export type PersonalContentType = typeof personalContentTypes[number]
+// Newsletter platform values
+const newsletterPlatformValues = ['substack', 'beehiiv', 'ghost', 'convertkit', 'buttondown', 'revue', 'mailchimp', 'other'] as const
 
-const contentTypes = z.enum(contentTypeValues)
+// Manga status values
+const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
+
+// Book reading status values
+const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
+
+// NOTE: Types are derived from @nuxt/content generated types in app/constants/contentTypes.ts
+// Do not export types here - import from ~/constants/contentTypes instead
 
 export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**', 'newsletters/**'] },
+      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**', 'newsletters/**', 'Readwise/**'] },
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),
-        type: contentTypes,
+        type: contentTypesSchema,
         url: z.string().url().optional(),
         cover: z.string().url().optional(),
         tags: z.array(z.string()).default([]),

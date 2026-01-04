@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 interface GraphNode {
   id: string

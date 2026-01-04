@@ -49,7 +49,9 @@ describe('ALL_CONTENT_TYPES', () => {
 
   it('has expected length', async () => {
     const { ALL_CONTENT_TYPES } = await import('../../../app/composables/useGraphFilters')
-    expect(ALL_CONTENT_TYPES.length).toBe(12)
+    const { contentTypeValues } = await import('../../../app/constants/contentTypes')
+    // Should match the source of truth
+    expect(ALL_CONTENT_TYPES.length).toBe(contentTypeValues.length)
   })
 })
 

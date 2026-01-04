@@ -7,6 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['html'], ['github']] : 'html',
+  maxFailures: 1, // Stop on first failure
 
   use: {
     baseURL: 'http://localhost:3000',

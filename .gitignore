@@ -36,3 +36,9 @@ dev-dist/
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Readwise synced content
+content/Readwise/
+
+# Obsidian
+content/.obsidian/

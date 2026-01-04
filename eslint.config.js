@@ -26,6 +26,9 @@ export default tseslint.config(
       '.nuxt/**',
       '.output/**',
       'dist/**',
+      'content/.obsidian/**',
+      'content/Readwise/**',
+      'specs/**',
     ],
   },
   {
@@ -78,6 +81,8 @@ export default tseslint.config(
       'vuejs-accessibility': vuejsAccessibility,
     },
     rules: {
+      // Limit component file length for maintainability
+      'max-lines': ['warn', { max: 600, skipBlankLines: true, skipComments: true }],
       // Limit template nesting depth for maintainability
       'vue/max-template-depth': ['error', { maxDepth: 10 }],
       // Limit props count - use objects for complex prop sets

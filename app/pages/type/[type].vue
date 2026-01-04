@@ -5,26 +5,12 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import ContentList from '~/components/ContentList.vue'
 import { useListNavigation } from '~/composables/useListNavigation'
-import type { ContentType } from '~~/content.config'
+import { contentTypeValues, type ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
 const typeParam = computed(() => String(route.params.type))
 
-const validTypes: readonly ContentType[] = [
-  'youtube',
-  'podcast',
-  'article',
-  'book',
-  'movie',
-  'tv',
-  'tweet',
-  'quote',
-  'course',
-  'note',
-  'evergreen',
-  'map',
-  'reddit',
-]
+const validTypes = contentTypeValues
 
 function asContentType(value: string): ContentType | undefined {
   const found = validTypes.find(t => t === value)
