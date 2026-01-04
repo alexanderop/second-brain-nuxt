@@ -27,6 +27,8 @@ export default tseslint.config(
       '.output/**',
       'dist/**',
       'content/.obsidian/**',
+      'content/Readwise/**',
+      'specs/**',
     ],
   },
   {
