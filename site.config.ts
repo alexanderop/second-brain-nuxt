@@ -39,6 +39,7 @@ export const siteConfig = {
    */
   nav: [
     { label: 'Home', to: '/', icon: 'i-lucide-home' },
+    { label: 'Table', to: '/table', icon: 'i-lucide-table-2' },
     { label: 'Books', to: '/books', icon: 'i-lucide-book-open' },
     { label: 'Podcasts', to: '/podcasts', icon: 'i-lucide-podcast' },
     { label: 'Newsletters', to: '/newsletters', icon: 'i-lucide-newspaper' },

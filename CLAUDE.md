@@ -47,15 +47,9 @@ All customizable values are in `site.config.ts`. Key composables:
 - Query content via `queryCollection('content')`
 - Catch-all route at `app/pages/[...slug].vue`
 
-## Nuxt Content v3 Gotchas
-
-- **Minimark format**: Body content uses `[tag, props, ...children]`, NOT `{ tag, props, children }`
-- **Querying body**: Must explicitly `.select('body')` - not included by default
-- **Search section IDs**: Returns IDs with leading slash (`/slug#section`). Don't add another.
-
 ## Further Reading
 
-- `specs.md` - Full requirements
+- `docs/nuxt-content-gotchas.md` - Nuxt Content v3 pitfalls and non-obvious behaviors
 - `docs/SYSTEM_KNOWLEDGE_MAP.md` - Architecture, business rules, content conventions
 - `docs/testing-strategy.md` - Test layers, when to use each, writing new tests
 - `docs/nuxt-ui.md` - Nuxt UI conventions, component usage, theming patterns

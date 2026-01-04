@@ -19,7 +19,7 @@ importers:
         version: 0.12.1(db0@0.3.4(better-sqlite3@12.5.0))(ioredis@5.8.2)(magicast@0.5.1)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
       '@nuxt/ui':
         specifier: 4.3.0
-        version: 4.3.0(202c598a5f38cae21bdd618d5ae3c3c8)
+        version: 4.3.0(24572517b81da627148098fdb73ad1e1)
       '@portaljs/remark-wiki-link':
         specifier: ^1.2.0
         version: 1.2.0
@@ -59,6 +59,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      zod:
+        specifier: ^4.3.5
+        version: 4.3.5
     devDependencies:
       '@eslint/markdown':
         specifier: ^7.5.1
@@ -8739,6 +8742,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.3.5:
+    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
 
@@ -10568,7 +10574,7 @@ snapshots:
       - magicast
       - typescript
 
-  '@nuxt/ui@4.3.0(202c598a5f38cae21bdd618d5ae3c3c8)':
+  '@nuxt/ui@4.3.0(24572517b81da627148098fdb73ad1e1)':
     dependencies:
       '@iconify/vue': 5.0.0(vue@3.5.26(typescript@5.9.3))
       '@internationalized/date': 3.10.1
@@ -10632,7 +10638,7 @@ snapshots:
     optionalDependencies:
       '@nuxt/content': 3.10.0(better-sqlite3@12.5.0)(magicast@0.5.1)
       vue-router: 4.6.4(vue@3.5.26(typescript@5.9.3))
-      zod: 3.25.76
+      zod: 4.3.5
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -19124,6 +19130,8 @@ snapshots:
   zod@3.23.8: {}
 
   zod@3.25.76: {}
+
+  zod@4.3.5: {}
 
   zwitch@1.0.5: {}
 
