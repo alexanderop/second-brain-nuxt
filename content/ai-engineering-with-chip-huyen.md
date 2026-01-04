@@ -1,6 +1,6 @@
 ---
 title: "AI Engineering with Chip Huyen"
-type: youtube
+type: podcast
 url: "https://www.youtube.com/watch?v=98o_L3jlixw"
 tags:
   - ai
@@ -10,6 +10,7 @@ tags:
 authors:
   - gergely-orosz
   - chip-huyen
+podcast: pragmatic-engineer-podcast
 summary: "Chip Huyen explains how AI engineering differs from ML engineering, walking through the practical developmental path from prompts to RAG to fine-tuning."
 date: 2026-01-04
 ---

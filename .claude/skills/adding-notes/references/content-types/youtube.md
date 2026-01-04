@@ -41,6 +41,7 @@ If channel matches, route to `podcast.md`:
 | The Knowledge Project | knowledge-project |
 | Doppelgänger Tech Talk | doppelgaenger |
 | Lanz & Precht | lanz-und-precht |
+| The Pragmatic Engineer | pragmatic-engineer-podcast |
 
 ### Known Talk Channels
 
