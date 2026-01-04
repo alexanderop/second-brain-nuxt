@@ -23,3 +23,7 @@ This map connects essential resources for building and understanding modern AI a
 ## Year in Review
 
 - [[2025-the-year-in-llms]] - Looking back at the evolution of LLMs
+
+## Suggested
+
+- [[no-vibes-allowed-solving-hard-problems-in-complex-codebases]] - Systematic approaches to AI-assisted problem solving in complex code

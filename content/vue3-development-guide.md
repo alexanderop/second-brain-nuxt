@@ -28,3 +28,7 @@ This map connects a complete Vue 3 development lifecycle guide - from project st
 ## Testing Strategy
 
 - [[vue3-testing-pyramid-vitest-browser-mode]] - The testing pyramid approach with Vitest
+
+## Suggested
+
+- [[6-levels-of-reusability]] - Framework for thinking about component and composable reusability

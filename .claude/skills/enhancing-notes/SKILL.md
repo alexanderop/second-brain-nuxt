@@ -208,14 +208,21 @@ Display the four generated sections in a formatted preview:
 
 ### 4.2 Request Approval
 
-Ask the user:
+Use the `AskUserQuestion` tool:
 
-```markdown
-Does this enhancement look good?
-a) **Save** - Add these sections to the book note
-b) **Regenerate** - Try again with different focus
-c) **Edit** - Tell me what to change
-d) **Cancel** - Don't modify the note
+```yaml
+question: "Does this enhancement look good?"
+header: "Review"
+multiSelect: false
+options:
+  - label: "Save"
+    description: "Add these sections to the book note"
+  - label: "Regenerate"
+    description: "Try again with different focus"
+  - label: "Edit"
+    description: "Tell me what to change"
+  - label: "Cancel"
+    description: "Don't modify the note"
 ```
 
 ### 4.3 Handle Response

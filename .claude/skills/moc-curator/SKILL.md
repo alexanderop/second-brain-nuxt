@@ -71,15 +71,21 @@ Notes in this cluster:
 
 ### Phase 4: User Selection (Blocking Gate)
 
-Ask the user which suggestions to apply:
+Use the `AskUserQuestion` tool to ask which suggestions to apply:
 
-```text
-Which suggestions would you like me to apply?
-
-a) Apply all MOC updates
-b) Apply all new MOC creations
-c) Select specific suggestions
-d) Skip all
+```yaml
+question: "Which MOC suggestions would you like me to apply?"
+header: "MOC Updates"
+multiSelect: false
+options:
+  - label: "Apply all MOC updates"
+    description: "Add suggested notes to existing MOCs"
+  - label: "Apply all new MOC creations"
+    description: "Create new MOCs from discovered clusters"
+  - label: "Select specific suggestions"
+    description: "Choose individual suggestions to apply"
+  - label: "Skip all"
+    description: "Don't make any changes"
 ```
 
 **Wait for explicit approval before making any changes.**
@@ -98,7 +104,9 @@ d) Skip all
 ```
 
 **For New MOCs:**
-1. Read the writing-style skill before generating content
+1. Read the writing-style skill for prose guidelines:
+   - Use the Read tool on `.claude/skills/writing-style/SKILL.md`
+   - Apply its 10 rules when writing MOC descriptions
 2. Create a new map note following the pattern:
 
 ```yaml

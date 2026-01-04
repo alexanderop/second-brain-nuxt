@@ -130,13 +130,19 @@ Display proposed updates as a comparison table:
 
 ### 3.2 Request Approval
 
-Ask the user:
+Use the `AskUserQuestion` tool:
 
-```markdown
-Save these changes to the author profile?
-a) **Save** - Update the author file with these values
-b) **Edit** - Tell me what to change
-c) **Cancel** - Don't modify the file
+```yaml
+question: "Save these changes to the author profile?"
+header: "Review"
+multiSelect: false
+options:
+  - label: "Save"
+    description: "Update the author file with these values"
+  - label: "Edit"
+    description: "Tell me what to change"
+  - label: "Cancel"
+    description: "Don't modify the file"
 ```
 
 ### 3.3 Handle Response

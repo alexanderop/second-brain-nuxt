@@ -1,7 +1,7 @@
 ---
 name: adding-tweets
 description: Add tweets to the Second Brain. Use when the user provides a Twitter/X URL and pasted tweet content, asking to "add a tweet", "save this tweet", or "capture this tweet".
-allowed-tools: Read, Write, Bash, Glob, Grep, Task, TaskOutput, WebSearch
+allowed-tools: Read, Write, Bash, Glob, Grep, Task, TaskOutput, WebSearch, AskUserQuestion
 ---
 
 # Adding Tweets to Second Brain
@@ -54,9 +54,18 @@ From the pasted text:
 - **tweetedAt**: If date is visible in paste, use it. Otherwise use today's date.
 - **authorName**: If visible (e.g., "Naval Ravikant"), use it. Otherwise use handle.
 
-If critical info is missing, ask the user:
-- Tweet text (required if not clear from paste)
-- Posted date (optional, default to today)
+If critical info is missing, use the `AskUserQuestion` tool to gather it:
+
+```yaml
+question: "I need some missing tweet info. What is the tweet text?"
+header: "Tweet Info"
+multiSelect: false
+options:
+  - label: "I'll provide it"
+    description: "Let me paste the tweet content"
+```
+
+For optional fields like date, ask separately if needed.
 
 ### Phase 3: Author Resolution
 

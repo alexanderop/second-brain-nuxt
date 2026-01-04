@@ -23,3 +23,7 @@ This map connects resources on the local-first software paradigm - shifting from
 ## Practical Implementation
 
 - [[what-is-local-first-web-development]] - How to build local-first web applications
+
+## Suggested
+
+- [[the-past-present-and-future-of-local-first]] - Evolution of the local-first movement and where it's heading

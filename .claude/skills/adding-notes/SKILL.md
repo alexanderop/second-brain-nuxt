@@ -1,7 +1,7 @@
 ---
 name: adding-notes
 description: Add new notes to the Second Brain knowledge base. Use when the user provides a resource (URL, book, podcast, article, GitHub repo, Reddit thread) and asks to "add a note", "create a note", "save this", "add to my notes", "take notes on", or "capture this".
-allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep, Task, TaskOutput, WebSearch
+allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep, Task, TaskOutput, WebSearch, AskUserQuestion
 ---
 
 # Adding Notes to Second Brain
@@ -103,8 +103,21 @@ For external content types, authors are **required**. Run `check-author-exists.s
 | Result | Action |
 |--------|--------|
 | `EXISTS: path` | Use the existing author's slug |
-| `POSSIBLE_MATCH: paths` | **STOP** - Read matched files, verify if same person. If yes, use existing slug. If no, proceed with creation. |
+| `POSSIBLE_MATCH: paths` | Read matched files, then use `AskUserQuestion` to verify (see below) |
 | `NOT_FOUND` | Create new author (see `references/author-creation.md`) |
+
+**For POSSIBLE_MATCH**, use the `AskUserQuestion` tool:
+
+```yaml
+question: "Is [Author Name] the same person as this existing author?"
+header: "Author Match"
+multiSelect: false
+options:
+  - label: "Yes, use existing"
+    description: "Use the existing author profile"
+  - label: "No, create new"
+    description: "Create a new author profile"
+```
 
 Quick creation flow:
 1. WebSearch: `[Author Name] official site bio`
@@ -138,7 +151,21 @@ Spawn 4 parallel validators:
 | Tag | Tags match or similar to existing |
 | Type-specific | E.g., podcast: profile exists, guest not in hosts |
 
-**IF issues found:** Present to user, BLOCK until confirmed.
+**IF issues found:** Use the `AskUserQuestion` tool:
+
+```yaml
+question: "Validation found issues. How should I proceed?"
+header: "Validation"
+multiSelect: false
+options:
+  - label: "Fix issues"
+    description: "Let me fix the issues before saving"
+  - label: "Save anyway"
+    description: "Proceed despite validation warnings"
+  - label: "Cancel"
+    description: "Don't save the note"
+```
+
 **IF no issues:** Log "✓ Validation passed" and proceed.
 
 ### Phase 6: Save Note
