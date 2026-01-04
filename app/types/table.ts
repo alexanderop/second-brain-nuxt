@@ -1,25 +1,8 @@
 import { z } from 'zod'
-import type { ContentType } from '~~/content.config'
+import { contentTypeValues, type ContentType } from '~/constants/contentTypes'
 
-// Content types array for filtering
-export const CONTENT_TYPES = [
-  'youtube',
-  'podcast',
-  'article',
-  'book',
-  'manga',
-  'movie',
-  'tv',
-  'tweet',
-  'course',
-  'reddit',
-  'github',
-  'newsletter',
-  'quote',
-  'note',
-  'evergreen',
-  'map',
-] as const
+// Content types array for filtering - derived from constants/contentTypes.ts (single source of truth)
+export const CONTENT_TYPES = contentTypeValues
 
 // Author with enriched data (joined from authors collection)
 export interface TableAuthor {

@@ -35,3 +35,30 @@ queryCollection('content').select('stem', 'title', ...).all()
 ```
 
 Note: `data`-type collections (like `authors`) can define `slug` in their schema and query it normally.
+
+## Deriving Types from Generated Collection Types
+
+Nuxt Content generates TypeScript interfaces from your Zod schemas (e.g., `ContentCollectionItem` from the `content` collection). Import these from `@nuxt/content` to derive types rather than duplicating them:
+
+```typescript
+import type { ContentCollectionItem, NewslettersCollectionItem } from '@nuxt/content'
+
+// Derive types from generated collection types
+export type ContentType = ContentCollectionItem['type']
+export type ReadingStatus = NonNullable<ContentCollectionItem['readingStatus']>
+export type NewsletterPlatform = NonNullable<NewslettersCollectionItem['platform']>
+```
+
+**Why this matters**: The Zod schema in `content.config.ts` is the single source of truth. Deriving types from the generated interfaces ensures they stay in sync automatically.
+
+**Gotcha**: Don't import directly from `content.config.ts` in tests—it triggers Nuxt Content module initialization and fails. Instead, create a constants file that imports from `@nuxt/content`.
+
+**Validating runtime arrays**: Use `satisfies` to catch drift between arrays and the schema:
+
+```typescript
+export const contentTypeValues = [
+  'youtube', 'podcast', 'article', ...
+] as const satisfies readonly ContentType[]
+```
+
+If the array contains a value not in the Zod schema, TypeScript will error.

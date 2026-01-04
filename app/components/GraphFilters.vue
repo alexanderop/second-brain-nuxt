@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { USelectMenu, UIcon } from '#components'
 import { useGraphFilters } from '~/composables/useGraphFilters'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 const props = defineProps<{
   availableTags: Array<string>

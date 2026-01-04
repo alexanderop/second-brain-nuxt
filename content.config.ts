@@ -16,6 +16,18 @@ const externalContentTypes = [
   'newsletter',
 ] as const
 
+// Personal content types have optional authors
+const personalContentTypes = [
+  'quote',
+  'note',
+  'evergreen',
+  'map',
+] as const
+
+// Combined content types - this Zod enum is the SINGLE SOURCE OF TRUTH
+// Nuxt Content generates ContentCollectionItem['type'] from this schema
+const contentTypesSchema = z.enum([...externalContentTypes, ...personalContentTypes])
+
 // Newsletter platform values
 const newsletterPlatformValues = ['substack', 'beehiiv', 'ghost', 'convertkit', 'buttondown', 'revue', 'mailchimp', 'other'] as const
 export type NewsletterPlatform = typeof newsletterPlatformValues[number]
@@ -28,22 +40,6 @@ export type MangaStatus = typeof mangaStatusValues[number]
 const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
 export type ReadingStatus = typeof readingStatusValues[number]
 
-// Personal content types have optional authors
-const personalContentTypes = [
-  'quote',
-  'note',
-  'evergreen',
-  'map',
-] as const
-
-const contentTypeValues = [...externalContentTypes, ...personalContentTypes] as const
-
-export type ContentType = typeof contentTypeValues[number]
-export type ExternalContentType = typeof externalContentTypes[number]
-export type PersonalContentType = typeof personalContentTypes[number]
-
-const contentTypes = z.enum(contentTypeValues)
-
 export default defineContentConfig({
   collections: {
     content: defineCollection({
@@ -52,7 +48,7 @@ export default defineContentConfig({
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),
-        type: contentTypes,
+        type: contentTypesSchema,
         url: z.string().url().optional(),
         cover: z.string().url().optional(),
         tags: z.array(z.string()).default([]),

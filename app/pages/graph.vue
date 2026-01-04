@@ -8,7 +8,7 @@ import KnowledgeGraph from '~/components/KnowledgeGraph.vue'
 import GraphFilters from '~/components/GraphFilters.vue'
 import GraphNodePanel from '~/components/GraphNodePanel.vue'
 import { useGraphFilters } from '~/composables/useGraphFilters'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 import type { FullGraphData, FullGraphNode, FullGraphEdge, UnifiedGraphNode } from '~/types/graph'
 
 // Use immersive graph layout (no header)

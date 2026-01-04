@@ -5,7 +5,7 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import ContentList from '~/components/ContentList.vue'
 import { useListNavigation } from '~/composables/useListNavigation'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
 const typeParam = computed(() => String(route.params.type))

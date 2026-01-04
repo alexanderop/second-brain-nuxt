@@ -2,9 +2,9 @@
 import { h, resolveComponent, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TableColumn } from '@nuxt/ui'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 import type { FilterState, SortState, TableAuthor, TableContentItem } from '~/types/table'
-import { CONTENT_TYPES } from '~/types/table'
+import { useTableFilterMenus, CONTENT_TYPE_ICONS } from '~/composables/useTableFilterMenus'
 
 const router = useRouter()
 
@@ -45,25 +45,25 @@ const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UAvatar = resolveComponent('UAvatar')
 
-// Icon map for content types
-const iconMap: Record<ContentType, string> = {
-  youtube: 'i-lucide-play',
-  podcast: 'i-lucide-mic',
-  article: 'i-lucide-file-text',
-  book: 'i-lucide-book-open',
-  manga: 'i-lucide-book-image',
-  movie: 'i-lucide-clapperboard',
-  tv: 'i-lucide-tv',
-  tweet: 'i-lucide-message-circle',
-  quote: 'i-lucide-quote',
-  course: 'i-lucide-graduation-cap',
-  note: 'i-lucide-pencil',
-  evergreen: 'i-lucide-leaf',
-  map: 'i-lucide-hexagon',
-  reddit: 'i-lucide-message-square',
-  github: 'i-lucide-github',
-  newsletter: 'i-lucide-newspaper',
-}
+// Use composable for filter menu items
+const {
+  typeFilterItems,
+  tagsFilterItems,
+  dateConsumedFilterItems,
+  ratingFilterItems,
+  titleSortItems,
+  authorSelectItems,
+} = useTableFilterMenus({
+  filters,
+  sort,
+  availableTags,
+  availableAuthors,
+  callbacks: {
+    onSetTypeFilter: types => emit('set-type-filter', types),
+    onSetTagsFilter: tags => emit('set-tags-filter', tags),
+    onSetSort: (column, direction) => emit('set-sort', column, direction),
+  },
+})
 
 // Format date for display
 function formatDate(date?: string): string {
@@ -89,153 +89,9 @@ const selectedAuthors = computed({
   set: (v: string[]) => emit('set-authors-filter', v),
 })
 
-// Transform authors for USelectMenu items format
-const authorSelectItems = computed(() =>
-  availableAuthors.value.map(a => ({
-    label: a.name,
-    value: a.slug,
-    avatar: a.avatar ? { src: a.avatar } : undefined,
-  })),
-)
-
-// Type filter items for dropdown
-const typeFilterItems = computed(() => [
-  [
-    { type: 'label' as const, label: 'Sort' },
-    {
-      label: 'Ascending',
-      icon: 'i-lucide-arrow-up',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'type' && sort.value.direction === 'asc',
-      onSelect: () => emit('set-sort', 'type', 'asc'),
-    },
-    {
-      label: 'Descending',
-      icon: 'i-lucide-arrow-down',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'type' && sort.value.direction === 'desc',
-      onSelect: () => emit('set-sort', 'type', 'desc'),
-    },
-  ],
-  [
-    { type: 'label' as const, label: 'Filter by Type' },
-    ...CONTENT_TYPES.map(t => ({
-      type: 'checkbox' as const,
-      label: t,
-      icon: iconMap[t],
-      checked: filters.value.type?.includes(t) ?? false,
-      onUpdateChecked: (checked: boolean) => {
-        const current = filters.value.type ?? []
-        const next = checked
-          ? [...current, t]
-          : current.filter(x => x !== t)
-        emit('set-type-filter', next)
-      },
-    })),
-  ],
-  [
-    {
-      label: 'Clear filter',
-      icon: 'i-lucide-x',
-      disabled: !filters.value.type?.length,
-      onSelect: () => emit('set-type-filter', []),
-    },
-  ],
-])
-
-// Tags filter items
-const tagsFilterItems = computed(() => [
-  [
-    { type: 'label' as const, label: 'Filter by Tags' },
-    ...availableTags.value.slice(0, 15).map(t => ({
-      type: 'checkbox' as const,
-      label: t,
-      checked: filters.value.tags?.includes(t) ?? false,
-      onUpdateChecked: (checked: boolean) => {
-        const current = filters.value.tags ?? []
-        const next = checked
-          ? [...current, t]
-          : current.filter(x => x !== t)
-        emit('set-tags-filter', next)
-      },
-    })),
-  ],
-  [
-    {
-      label: 'Clear filter',
-      icon: 'i-lucide-x',
-      disabled: !filters.value.tags?.length,
-      onSelect: () => emit('set-tags-filter', []),
-    },
-  ],
-])
-
-// Date consumed filter items
-const dateConsumedFilterItems = computed(() => [
-  [
-    { type: 'label' as const, label: 'Sort' },
-    {
-      label: 'Newest first',
-      icon: 'i-lucide-arrow-down',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'dateConsumed' && sort.value.direction === 'desc',
-      onSelect: () => emit('set-sort', 'dateConsumed', 'desc'),
-    },
-    {
-      label: 'Oldest first',
-      icon: 'i-lucide-arrow-up',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'dateConsumed' && sort.value.direction === 'asc',
-      onSelect: () => emit('set-sort', 'dateConsumed', 'asc'),
-    },
-  ],
-])
-
-// Rating filter items
-const ratingFilterItems = computed(() => [
-  [
-    { type: 'label' as const, label: 'Sort' },
-    {
-      label: 'Highest first',
-      icon: 'i-lucide-arrow-down',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'rating' && sort.value.direction === 'desc',
-      onSelect: () => emit('set-sort', 'rating', 'desc'),
-    },
-    {
-      label: 'Lowest first',
-      icon: 'i-lucide-arrow-up',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'rating' && sort.value.direction === 'asc',
-      onSelect: () => emit('set-sort', 'rating', 'asc'),
-    },
-  ],
-])
-
-// Title sort items
-const titleSortItems = computed(() => [
-  [
-    { type: 'label' as const, label: 'Sort' },
-    {
-      label: 'A to Z',
-      icon: 'i-lucide-arrow-up',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'title' && sort.value.direction === 'asc',
-      onSelect: () => emit('set-sort', 'title', 'asc'),
-    },
-    {
-      label: 'Z to A',
-      icon: 'i-lucide-arrow-down',
-      type: 'checkbox' as const,
-      checked: sort.value.column === 'title' && sort.value.direction === 'desc',
-      onSelect: () => emit('set-sort', 'title', 'desc'),
-    },
-  ],
-])
-
 // Type guard for ContentType
 function isContentType(value: unknown): value is ContentType {
-  return typeof value === 'string' && value in iconMap
+  return typeof value === 'string' && value in CONTENT_TYPE_ICONS
 }
 
 // Type guard for TableAuthor array
@@ -301,7 +157,7 @@ const columns: TableColumn<TableContentItem>[] = [
       return h(UBadge, {
         variant: 'subtle',
         color: 'neutral',
-        icon: iconMap[type],
+        icon: CONTENT_TYPE_ICONS[type],
         class: 'capitalize',
       }, () => type)
     },
@@ -431,68 +287,16 @@ function removeAuthorFilter(author: string) {
 
 <template>
   <!-- Active Filters Bar -->
-  <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mb-4">
-    <!-- Type chips -->
-    <UBadge
-      v-for="type in filters.type"
-      :key="type"
-      variant="soft"
-      color="neutral"
-      class="cursor-pointer"
-      @click="removeTypeFilter(type)"
-    >
-      {{ type }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
-
-    <!-- Tags chips -->
-    <UBadge
-      v-for="tag in filters.tags"
-      :key="tag"
-      variant="soft"
-      color="primary"
-      class="cursor-pointer"
-      @click="removeTagFilter(tag)"
-    >
-      {{ tag }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
-
-    <!-- Authors chips -->
-    <UBadge
-      v-for="authorSlug in filters.authors"
-      :key="authorSlug"
-      variant="soft"
-      color="secondary"
-      class="cursor-pointer"
-      @click="removeAuthorFilter(authorSlug)"
-    >
-      {{ availableAuthors.find(a => a.slug === authorSlug)?.name ?? authorSlug }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
-
-    <!-- Rating range chip -->
-    <UBadge
-      v-if="filters.ratingRange"
-      variant="soft"
-      color="warning"
-      class="cursor-pointer"
-      @click="clearRatingFilter"
-    >
-      Rating: {{ filters.ratingRange[0] }}-{{ filters.ratingRange[1] }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
-
-    <!-- Clear all button -->
-    <UButton
-      variant="ghost"
-      color="neutral"
-      size="xs"
-      @click="emit('clear-filters')"
-    >
-      Clear all
-    </UButton>
-  </div>
+  <ContentTableFiltersBar
+    v-if="hasActiveFilters"
+    :filters="filters"
+    :available-authors="availableAuthors"
+    @remove-type="removeTypeFilter"
+    @remove-tag="removeTagFilter"
+    @remove-author="removeAuthorFilter"
+    @remove-rating-range="clearRatingFilter"
+    @clear-all="emit('clear-filters')"
+  />
 
   <!-- Table -->
   <UTable

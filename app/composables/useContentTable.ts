@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { useSessionStorage } from '@vueuse/core'
 import { useAsyncData, queryCollection } from '#imports'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 import type { FilterState, SortState, TableAuthor, TableContentItem } from '~/types/table'
 import { CONTENT_TYPES, tableParamsSchema } from '~/types/table'
 

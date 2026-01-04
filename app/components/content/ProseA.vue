@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useAsyncData, queryCollection } from '#imports'
 import { NuxtLink, UPopover, UBadge } from '#components'
-import type { ContentType } from '~~/content.config'
+import type { ContentType } from '~/constants/contentTypes'
 
 const props = defineProps<{
   href?: string

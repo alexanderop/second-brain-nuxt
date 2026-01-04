@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import type { ContentType } from '~~/content.config'
+import { contentTypeValues, type ContentType } from '~/constants/contentTypes'
 import { useRouteQuery } from '@vueuse/router'
 
 export interface GraphFilterState {
@@ -10,21 +10,8 @@ export interface GraphFilterState {
   showOrphans: boolean
 }
 
-// All available content types from config
-export const ALL_CONTENT_TYPES: Array<ContentType> = [
-  'youtube',
-  'podcast',
-  'article',
-  'book',
-  'movie',
-  'tv',
-  'tweet',
-  'quote',
-  'course',
-  'note',
-  'evergreen',
-  'map',
-]
+// All available content types - derived from content.config.ts (single source of truth)
+export const ALL_CONTENT_TYPES: readonly ContentType[] = contentTypeValues
 
 export function useGraphFilters() {
   // Parse array query param (handles single value or array)

@@ -1,4 +1,4 @@
-import type { ContentType, NewsletterPlatform, ReadingStatus } from '~~/content.config'
+import type { ContentType, NewsletterPlatform, ReadingStatus } from '~/constants/contentTypes'
 
 export interface ContentItem {
   slug: string
