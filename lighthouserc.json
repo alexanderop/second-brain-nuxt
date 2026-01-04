@@ -13,7 +13,9 @@
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
-        "chromeFlags": "--headless=new --no-sandbox"
+        "chromeFlags": "--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage",
+        "disableStorageReset": true,
+        "maxWaitForLoad": 60000
       }
     },
     "assert": {
