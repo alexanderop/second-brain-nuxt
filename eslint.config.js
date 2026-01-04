@@ -26,6 +26,7 @@ export default tseslint.config(
       '.nuxt/**',
       '.output/**',
       'dist/**',
+      'content/.obsidian/**',
     ],
   },
   {

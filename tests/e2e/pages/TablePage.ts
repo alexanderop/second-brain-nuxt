@@ -12,6 +12,7 @@ export class TablePage {
   readonly emptyState: Locator
   readonly activeFilterChips: Locator
   readonly clearAllFiltersButton: Locator
+  readonly paginationInfo: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -25,6 +26,7 @@ export class TablePage {
     this.emptyState = page.getByText('No content matches your filters')
     this.activeFilterChips = page.locator('.cursor-pointer').filter({ has: page.locator('svg') })
     this.clearAllFiltersButton = page.getByRole('button', { name: 'Clear all' })
+    this.paginationInfo = page.getByText(/Showing \d+-\d+ of \d+ items/)
   }
 
   async goto() {
@@ -63,5 +65,14 @@ export class TablePage {
 
   getTypeBadge(type: string): Locator {
     return this.page.locator('table').getByText(type, { exact: true })
+  }
+
+  async getFirstRowText(): Promise<string> {
+    return this.firstTableRow.innerText()
+  }
+
+  async goToNextPage() {
+    await this.page.getByRole('button', { name: 'Next Page' }).click()
+    await this.waitForTableLoad()
   }
 }
