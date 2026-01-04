@@ -47,6 +47,12 @@ function buildContentMap(allContent: ContentItem[]): Map<string, ContentMeta> {
   return contentMap
 }
 
+// Helper: Extract slug from section ID (handles both "/slug#section" and "slug#section")
+function extractSlugFromSectionId(sectionId: string): string {
+  const rawPath = sectionId.split('#')[0] || ''
+  return rawPath.startsWith('/') ? rawPath.slice(1) : rawPath
+}
+
 // Helper: Check if section should be included as a mention
 function shouldIncludeSection(
   section: SearchSection,
@@ -54,7 +60,7 @@ function shouldIncludeSection(
   contentMap: Map<string, ContentMeta>,
   titleRegex: RegExp,
 ): boolean {
-  const path = section.id.split('#')[0]?.slice(1) || ''
+  const path = extractSlugFromSectionId(section.id)
   if (path === targetSlug) return false
 
   const contentMeta = contentMap.get(path)
@@ -73,7 +79,7 @@ function buildMentionsMap(
   const mentionsByPath = new Map<string, { content: string, sectionTitle: string }>()
 
   for (const section of searchSections) {
-    const path = section.id.split('#')[0]?.slice(1) || ''
+    const path = extractSlugFromSectionId(section.id)
     if (mentionsByPath.has(path)) continue
     if (!shouldIncludeSection(section, targetSlug, contentMap, titleRegex)) continue
 
