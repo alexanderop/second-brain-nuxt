@@ -38,9 +38,13 @@ export class TablePage {
   }
 
   async waitForTableLoad() {
-    // Wait for loading to finish and at least one row to appear
+    // Wait for loading to finish and content to be loaded (not empty state)
     await this.page.waitForLoadState('networkidle')
-    await this.firstTableRow.waitFor({ state: 'visible', timeout: 10000 })
+    // Wait for item count to show non-zero value, indicating actual content loaded
+    await this.itemCount.filter({ hasNotText: '(0)' }).waitFor({
+      state: 'visible',
+      timeout: 15000,
+    })
   }
 
   async getRowCount(): Promise<number> {
@@ -72,7 +76,7 @@ export class TablePage {
   }
 
   async goToNextPage() {
-    await this.page.locator('[data-slot="next"] button').click()
+    await this.page.locator('[data-testid="pagination-next"]').click()
     await this.waitForTableLoad()
   }
 }

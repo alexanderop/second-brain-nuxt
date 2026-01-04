@@ -2,7 +2,6 @@ import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
 import type { ContentType } from '~/constants/contentTypes'
 import type { FilterState, SortState, TableAuthor } from '~/types/table'
-import { CONTENT_TYPES } from '~/types/table'
 
 // Icon map for content types
 export const CONTENT_TYPE_ICONS: Record<ContentType, string> = {
@@ -35,11 +34,12 @@ interface UseTableFilterMenusOptions {
   sort: ComputedRef<SortState>
   availableTags: ComputedRef<string[]>
   availableAuthors: ComputedRef<TableAuthor[]>
+  availableTypes: ComputedRef<ContentType[]>
   callbacks: FilterMenuCallbacks
 }
 
 export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
-  const { filters, sort, availableTags, availableAuthors, callbacks } = options
+  const { filters, sort, availableTags, availableAuthors, availableTypes, callbacks } = options
 
   // Type filter items for dropdown
   const typeFilterItems = computed(() => [
@@ -62,7 +62,7 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
     ],
     [
       { type: 'label' as const, label: 'Filter by Type' },
-      ...CONTENT_TYPES.map(t => ({
+      ...availableTypes.value.map(t => ({
         type: 'checkbox' as const,
         label: t,
         icon: CONTENT_TYPE_ICONS[t],

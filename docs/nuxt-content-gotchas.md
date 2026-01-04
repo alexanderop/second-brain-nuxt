@@ -62,3 +62,25 @@ export const contentTypeValues = [
 ```
 
 If the array contains a value not in the Zod schema, TypeScript will error.
+
+## Excluding Directories from Collections
+
+To exclude entire directories from a collection (e.g., local-only synced content like Readwise), add glob patterns to the `source.exclude` array in `content.config.ts`:
+
+```typescript
+// content.config.ts
+const content = defineCollection({
+  source: {
+    include: '**/*.md',
+    exclude: ['authors/**', 'pages/**', 'Readwise/**']
+  },
+  // ...
+})
+```
+
+This prevents excluded content from being:
+- Queried via `queryCollection()`
+- Indexed for search
+- Appearing in any collection-based views
+
+**When to use**: Prefer collection-level exclusion over query-level filtering when you never want the content in that collection. It's cleaner and more performant.

@@ -17,6 +17,7 @@ const {
   hasActiveFilters,
   availableTags,
   availableAuthors,
+  availableTypes,
   sort,
   page,
   pageSize,
@@ -36,6 +37,7 @@ const tableState = computed<ContentTableState>(() => ({
   sort: sort.value,
   availableTags: availableTags.value,
   availableAuthors: availableAuthors.value,
+  availableTypes: availableTypes.value,
   hasActiveFilters: hasActiveFilters.value,
 }))
 
@@ -101,7 +103,26 @@ watch(filters, () => {
         :total="totalItems"
         :sibling-count="1"
         show-edges
-      />
+      >
+        <template #prev>
+          <UButton
+            data-testid="pagination-prev"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            icon="i-lucide-chevron-left"
+          />
+        </template>
+        <template #next>
+          <UButton
+            data-testid="pagination-next"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            icon="i-lucide-chevron-right"
+          />
+        </template>
+      </UPagination>
     </div>
   </div>
 </template>

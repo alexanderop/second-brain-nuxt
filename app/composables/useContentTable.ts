@@ -4,7 +4,7 @@ import { useSessionStorage } from '@vueuse/core'
 import { useAsyncData, queryCollection } from '#imports'
 import type { ContentType } from '~/constants/contentTypes'
 import type { FilterState, SortState, TableAuthor, TableContentItem } from '~/types/table'
-import { CONTENT_TYPES, tableParamsSchema } from '~/types/table'
+import { tableParamsSchema } from '~/types/table'
 
 const PAGE_SIZE = 25
 
@@ -327,6 +327,11 @@ export function useContentTable() {
     return uniqueBySlug.sort((a, b) => a.name.localeCompare(b.name))
   })
 
+  const availableTypes = computed(() => {
+    const itemsWithoutTypeFilter = applyFiltersExcept(allContent.value, filters.value, 'type')
+    return [...new Set(itemsWithoutTypeFilter.map(i => i.type))].sort()
+  })
+
   // Filter setters (reset page to 1)
   const setTypeFilter = (types: ContentType[]) => {
     typeParam.value = types.length ? types.join(',') : null
@@ -421,7 +426,7 @@ export function useContentTable() {
     // Scroll restoration
     scrollPosition,
 
-    // Constants
-    allTypes: CONTENT_TYPES,
+    // Dynamic filter options
+    availableTypes,
   }
 }

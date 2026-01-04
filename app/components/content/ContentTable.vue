@@ -14,6 +14,7 @@ export interface ContentTableState {
   sort: SortState
   availableTags: string[]
   availableAuthors: TableAuthor[]
+  availableTypes: ContentType[]
   hasActiveFilters: boolean
 }
 
@@ -38,6 +39,7 @@ const filters = computed(() => props.state.filters)
 const sort = computed(() => props.state.sort)
 const availableTags = computed(() => props.state.availableTags)
 const availableAuthors = computed(() => props.state.availableAuthors)
+const availableTypes = computed(() => props.state.availableTypes)
 const hasActiveFilters = computed(() => props.state.hasActiveFilters)
 
 // Resolve components for render functions
@@ -58,6 +60,7 @@ const {
   sort,
   availableTags,
   availableAuthors,
+  availableTypes,
   callbacks: {
     onSetTypeFilter: types => emit('set-type-filter', types),
     onSetTagsFilter: tags => emit('set-tags-filter', tags),
@@ -147,6 +150,20 @@ const columns: TableColumn<TableContentItem>[] = [
     accessorKey: 'title',
     header: 'Title',
     size: 250,
+    minSize: 200,
+    maxSize: 400,
+    meta: {
+      class: {
+        th: 'max-w-[400px]',
+        td: 'max-w-[400px]',
+      },
+    },
+    cell: ({ row }) => {
+      const title = row.original.title
+      return h('span', {
+        class: 'text-[var(--ui-primary)] hover:underline cursor-pointer truncate block',
+      }, title)
+    },
   },
   {
     accessorKey: 'type',
@@ -201,7 +218,7 @@ const columns: TableColumn<TableContentItem>[] = [
       const tags = getRowTags(row)
       if (!tags.length) return h('span', { class: 'text-[var(--ui-text-muted)]' }, '—')
 
-      return h('div', { class: 'flex gap-1 overflow-x-auto max-w-[180px]' },
+      return h('div', { class: 'flex gap-1 flex-wrap max-w-[180px]' },
         tags.slice(0, 3).map(t =>
           h(UBadge, {
             key: t,
@@ -216,7 +233,7 @@ const columns: TableColumn<TableContentItem>[] = [
   {
     accessorKey: 'date',
     header: 'Consumed',
-    size: 110,
+    size: 130,
     cell: ({ row }) => {
       const date = getRowDate(row)
       return h('span', { class: date ? '' : 'text-[var(--ui-text-muted)]' }, formatDate(date))
