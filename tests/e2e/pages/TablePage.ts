@@ -72,7 +72,7 @@ export class TablePage {
   }
 
   async goToNextPage() {
-    await this.page.getByRole('button', { name: 'Next Page' }).click()
+    await this.page.locator('[data-slot="next"] button').click()
     await this.waitForTableLoad()
   }
 }

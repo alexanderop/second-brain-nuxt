@@ -96,8 +96,8 @@ watch(filters, () => {
         Showing {{ (page - 1) * pageSize + 1 }}-{{ Math.min(page * pageSize, totalItems) }} of {{ totalItems }} items
       </div>
       <UPagination
-        v-model="page"
-        :page-count="pageSize"
+        v-model:page="page"
+        :items-per-page="pageSize"
         :total="totalItems"
         :sibling-count="1"
         show-edges
