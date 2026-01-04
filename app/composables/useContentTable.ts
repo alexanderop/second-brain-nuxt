@@ -167,8 +167,8 @@ export function useContentTable() {
   })
 
   // Type guards for sort state
+  const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'datePublished', 'rating']
   function isValidColumn(value: string | null): value is SortState['column'] {
-    const validColumns = ['title', 'type', 'dateConsumed', 'datePublished', 'rating']
     return value !== null && validColumns.includes(value)
   }
 

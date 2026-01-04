@@ -31,7 +31,7 @@ export const personalContentTypes = [
   'map',
 ] as const satisfies readonly ContentType[]
 
-export const contentTypeValues = [...externalContentTypes, ...personalContentTypes] as const
+export const contentTypeValues = [...externalContentTypes, ...personalContentTypes] as const satisfies readonly ContentType[]
 
 // Derived types from the arrays (validated against ContentType)
 export type ExternalContentType = typeof externalContentTypes[number]

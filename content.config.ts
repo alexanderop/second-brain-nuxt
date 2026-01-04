@@ -30,15 +30,15 @@ const contentTypesSchema = z.enum([...externalContentTypes, ...personalContentTy
 
 // Newsletter platform values
 const newsletterPlatformValues = ['substack', 'beehiiv', 'ghost', 'convertkit', 'buttondown', 'revue', 'mailchimp', 'other'] as const
-export type NewsletterPlatform = typeof newsletterPlatformValues[number]
 
 // Manga status values
 const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
-export type MangaStatus = typeof mangaStatusValues[number]
 
 // Book reading status values
 const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
-export type ReadingStatus = typeof readingStatusValues[number]
+
+// NOTE: Types are derived from @nuxt/content generated types in app/constants/contentTypes.ts
+// Do not export types here - import from ~/constants/contentTypes instead
 
 export default defineContentConfig({
   collections: {
