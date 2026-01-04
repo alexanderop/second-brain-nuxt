@@ -5,6 +5,18 @@ import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 import markdown from '@eslint/markdown'
 import frontmatter from './eslint-plugin-frontmatter/index.ts'
 
+// Content type directories (profiles/meta content, not notes)
+const PROFILE_DIRS = ['authors', 'newsletters', 'pages', 'podcasts', 'tweets']
+const profileIgnores = PROFILE_DIRS.map(d => `content/${d}/**/*.md`)
+
+// Shared markdown rules
+const baseMarkdownRules = {
+  'markdown/fenced-code-language': 'warn',
+  'markdown/heading-increment': 'error',
+  'markdown/no-empty-links': 'error',
+  'markdown/no-missing-label-refs': 'off',
+}
+
 // Minimal ESLint config for rules oxlint doesn't support
 // Main linting is done by oxlint (faster)
 export default tseslint.config(
@@ -127,21 +139,16 @@ export default tseslint.config(
     },
   },
   {
-    // Markdown linting for content files
+    // Markdown linting for content notes (not profiles)
     files: ['content/**/*.md'],
-    ignores: ['content/authors/**/*.md', 'content/pages/**/*.md', 'content/podcasts/**/*.md'],
+    ignores: profileIgnores,
     plugins: { markdown, frontmatter },
     language: 'markdown/gfm',
     languageOptions: {
       frontmatter: 'yaml',
     },
     rules: {
-      // @eslint/markdown rules
-      'markdown/fenced-code-language': 'warn',
-      'markdown/heading-increment': 'error',
-      'markdown/no-empty-links': 'error',
-      // Disabled: [[wikilinks]] are transformed by modules/wikilinks.ts
-      'markdown/no-missing-label-refs': 'off',
+      ...baseMarkdownRules,
       'markdown/require-alt-text': 'warn',
       // Frontmatter validation rules
       'frontmatter/valid-url': 'error',
@@ -155,20 +162,24 @@ export default tseslint.config(
     },
   },
   {
-    // Author profiles - skip author validation (they define authors, not reference them)
-    files: ['content/authors/**/*.md'],
+    // Profile directories - minimal validation (authors, newsletters, pages, podcasts, tweets)
+    files: profileIgnores,
     plugins: { markdown, frontmatter },
     language: 'markdown/gfm',
     languageOptions: {
       frontmatter: 'yaml',
     },
     rules: {
-      'markdown/fenced-code-language': 'warn',
-      'markdown/heading-increment': 'error',
-      'markdown/no-empty-links': 'error',
-      'markdown/no-missing-label-refs': 'off',
+      ...baseMarkdownRules,
       'frontmatter/valid-url': 'error',
       'frontmatter/no-placeholder-urls': 'error',
+    },
+  },
+  {
+    // Profiles that reference authors need validation
+    files: ['content/newsletters/**/*.md', 'content/podcasts/**/*.md', 'content/tweets/**/*.md'],
+    rules: {
+      'frontmatter/valid-author-refs': 'error',
     },
   },
   {
@@ -178,9 +189,7 @@ export default tseslint.config(
     plugins: { markdown },
     language: 'markdown/gfm',
     rules: {
-      'markdown/fenced-code-language': 'warn',
-      'markdown/heading-increment': 'error',
-      'markdown/no-empty-links': 'error',
+      ...baseMarkdownRules,
       'markdown/require-alt-text': 'warn',
     },
   },

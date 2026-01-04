@@ -63,7 +63,7 @@ export default defineConfig({
           environment: 'nuxt',
         },
       }),
-      // Browser tests - real browser with Playwright
+      // Component tests - isolated components in real browser
       {
         plugins: [
           vue(),
@@ -74,9 +74,9 @@ export default defineConfig({
           }),
         ],
         test: {
-          name: 'browser',
-          include: ['tests/browser/**/*.test.ts'],
-          setupFiles: ['./tests/browser/setup.ts'],
+          name: 'component',
+          include: ['tests/component/**/*.test.ts'],
+          setupFiles: ['./tests/component/setup.ts'],
           browser: {
             enabled: true,
             provider: 'playwright',

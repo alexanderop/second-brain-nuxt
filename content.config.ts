@@ -13,7 +13,12 @@ const externalContentTypes = [
   'course',
   'reddit',
   'github',
+  'newsletter',
 ] as const
+
+// Newsletter platform values
+const newsletterPlatformValues = ['substack', 'beehiiv', 'ghost', 'convertkit', 'buttondown', 'revue', 'mailchimp', 'other'] as const
+export type NewsletterPlatform = typeof newsletterPlatformValues[number]
 
 // Manga status values
 const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
@@ -43,7 +48,7 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**'] },
+      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**', 'newsletters/**'] },
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),
@@ -74,6 +79,10 @@ export default defineContentConfig({
           platform: z.string(),
           url: z.string().url(),
         })).optional(),
+        // Newsletter article fields
+        newsletter: z.string().optional(),
+        issueNumber: z.number().optional(),
+        guest_author: z.string().optional(),
       }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes
@@ -134,6 +143,21 @@ export default defineContentConfig({
         hosts: z.array(z.string()).min(1),
         feed: z.string().url().optional(),
         platforms: z.record(z.string(), z.string().url()).optional(),
+      }),
+    }),
+
+    newsletters: defineCollection({
+      type: 'data',
+      source: 'newsletters/**/*.md',
+      schema: z.object({
+        name: z.string(),
+        slug: z.string(),
+        description: z.string().optional(),
+        logo: z.string().url().optional(),
+        website: z.string().url().optional(),
+        authors: z.array(z.string()).min(1),
+        platform: z.enum(newsletterPlatformValues).optional(),
+        topics: z.array(z.string()).optional(),
       }),
     }),
 

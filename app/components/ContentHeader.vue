@@ -6,11 +6,12 @@ import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
 import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
-import type { ContentItem, PodcastItem } from '~/types/content'
+import type { ContentItem, NewsletterItem, PodcastItem } from '~/types/content'
 
 const props = defineProps<{
   content: ContentItem
   podcast?: PodcastItem
+  newsletter?: NewsletterItem
   hosts?: Array<{ slug: string, name: string }>
 }>()
 
@@ -78,6 +79,27 @@ function formatDate(date?: Date | string) {
           </div>
         </div>
         <span class="font-medium">{{ podcast.name }}</span>
+      </NuxtLink>
+    </div>
+
+    <!-- Newsletter badge for newsletter articles -->
+    <div v-if="newsletter" class="mb-4">
+      <NuxtLink
+        :to="`/newsletters/${newsletter.slug}`"
+        class="inline-flex items-center gap-3 p-2 rounded-lg border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors"
+      >
+        <div class="shrink-0 size-10 rounded-lg overflow-hidden bg-[var(--ui-bg-muted)]">
+          <img
+            v-if="newsletter.logo"
+            :src="newsletter.logo"
+            :alt="newsletter.name"
+            class="size-full object-cover"
+          >
+          <div v-else class="size-full flex items-center justify-center text-[var(--ui-text-muted)]">
+            <UIcon name="i-lucide-newspaper" class="size-5" />
+          </div>
+        </div>
+        <span class="font-medium">{{ newsletter.name }}</span>
       </NuxtLink>
     </div>
 

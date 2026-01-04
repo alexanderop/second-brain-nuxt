@@ -11,9 +11,11 @@ export class SearchModal {
   constructor(page: Page) {
     this.page = page
     this.modal = page.locator('[role="dialog"]')
-    this.searchInput = page.getByLabel('Search')
-    this.results = page.locator('[data-search-result]')
-    this.firstResult = page.locator('[data-search-result]').first()
+    // UCommandPalette uses an input with placeholder - use placeholder selector for reliability
+    this.searchInput = page.getByPlaceholder(/search/i)
+    // UCommandPalette renders results as options in a listbox
+    this.results = page.getByRole('option')
+    this.firstResult = page.getByRole('option').first()
     this.noResultsMessage = page.getByText('No results found')
   }
 
@@ -27,7 +29,7 @@ export class SearchModal {
 
   async search(query: string) {
     await this.searchInput.fill(query)
-    // Wait for debounced search (200ms) + some buffer
+    // Wait for Fuse.js filtering
     await this.page.waitForTimeout(300)
   }
 

@@ -19,6 +19,12 @@ const { data: authors } = await useAsyncData(
   () => queryCollection('authors').select('name', 'slug', 'avatar').all(),
 )
 
+// Fetch newsletters for search
+const { data: newsletters } = await useAsyncData(
+  'search-modal-newsletters',
+  () => queryCollection('newsletters').select('name', 'slug', 'logo').all(),
+)
+
 // Close modal when route changes
 watch(() => route.fullPath, () => {
   open.value = false
@@ -67,6 +73,21 @@ const authorItems = computed<CommandPaletteItem[]>(() => {
   }))
 })
 
+// Build newsletter items for CommandPalette
+const newsletterItems = computed<CommandPaletteItem[]>(() => {
+  if (!newsletters.value) return []
+
+  return newsletters.value.map(newsletter => ({
+    id: `newsletter:${newsletter.slug}`,
+    label: newsletter.name,
+    description: 'Newsletter',
+    avatar: newsletter.logo ? { src: newsletter.logo, alt: newsletter.name } : undefined,
+    icon: newsletter.logo ? undefined : 'i-lucide-newspaper',
+    to: `/newsletters/${newsletter.slug}`,
+    slot: 'newsletter',
+  }))
+})
+
 // Combined groups for CommandPalette
 const groups = computed<CommandPaletteGroup[]>(() => {
   const result: CommandPaletteGroup[] = []
@@ -84,6 +105,14 @@ const groups = computed<CommandPaletteGroup[]>(() => {
       id: 'authors',
       label: 'Authors',
       items: authorItems.value,
+    })
+  }
+
+  if (newsletterItems.value.length) {
+    result.push({
+      id: 'newsletters',
+      label: 'Newsletters',
+      items: newsletterItems.value,
     })
   }
 
@@ -113,7 +142,7 @@ function onSelect(item: CommandPaletteItem) {
       <UCommandPalette
         :groups="groups"
         :fuse="fuseOptions"
-        placeholder="Search notes and authors..."
+        placeholder="Search notes, authors, newsletters..."
         class="h-96"
         :close="{ icon: 'i-lucide-x', color: 'neutral', variant: 'ghost' }"
         @update:model-value="onSelect"
@@ -127,6 +156,16 @@ function onSelect(item: CommandPaletteItem) {
             size="2xs"
           />
           <span v-else class="i-lucide-user size-5 text-[var(--ui-text-muted)]" />
+        </template>
+
+        <template #newsletter-leading="{ item }">
+          <UAvatar
+            v-if="item.avatar"
+            :src="item.avatar.src"
+            :alt="item.avatar.alt"
+            size="2xs"
+          />
+          <span v-else class="i-lucide-newspaper size-5 text-[var(--ui-text-muted)]" />
         </template>
 
         <template #empty>

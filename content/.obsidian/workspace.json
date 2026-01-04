@@ -11,10 +11,14 @@
             "id": "7b4f8d8c29ecad93",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "podcasts/joe-rogan-experience.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "joe-rogan-experience"
             }
           }
         ]
@@ -90,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "podcasts/joe-rogan-experience.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks"
+              "title": "Backlinks for joe-rogan-experience"
             }
           },
           {
@@ -108,11 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "podcasts/joe-rogan-experience.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links"
+              "title": "Outgoing links from joe-rogan-experience"
             }
           },
           {
@@ -150,12 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "podcasts/joe-rogan-experience.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of joe-rogan-experience"
             }
           }
         ]
@@ -178,33 +185,35 @@
   },
   "active": "7b4f8d8c29ecad93",
   "lastOpenFiles": [
-    "authors/prize-individual4729.md",
-    "authors/microsoft.md",
-    "authors/alex-colvin.md",
-    "dhh-on-programming-rails-ai-and-productivity.md",
-    "authors/lex-fridman.md",
-    "authors/david-heinemeier-hansson.md",
-    "tweets/tweet-2007512760733831575.md",
-    "authors/dhh.md",
-    "tweets/tweet-1942102738265161834.md",
-    "tweets/tweet-1991910395720925418.md",
-    "tweets/tweet-2007179832300581177.md",
-    "authors/bcherny.md",
-    "no-one-watches-youtube-to-learn-anymore.md",
-    "authors/melkey.md",
-    "claude-code-skills.md",
-    "authors/anthropic.md",
-    "naval-ravikant-on-wealth-and-happiness.md",
+    "the-state-of-vitest.md",
+    "authors/vladimir-sheremet.md",
+    "Untitled.base",
+    "vitest-browser-mode.md",
+    "authors/jessica-sachs.md",
+    "things-that-arent-doing-the-thing.md",
+    "authors/strangest-loop.md",
+    "Untitled.md",
+    "90-of-my-skills-are-now-worth-0.md",
+    "newsletters/tidy-first.md",
+    "what-silicon-valley-gets-wrong-about-ai.md",
+    "authors/gergely-orosz.md",
+    "newsletters/pragmatic-engineer.md",
+    "newsletters",
+    "alkalye.md",
+    "tweets/tweet-2005315275026260309.md",
+    "authors/trq212.md",
+    "spec-driven-development-with-ai.md",
+    "authors/den-delimarsky.md",
+    "a-practical-guide-to-writing-technical-specs.md",
+    "authors/zara-cooper.md",
+    "advent-of-claude-31-days-of-claude-code.md",
+    "authors/ado-kukic.md",
     "podcasts/joe-rogan-experience.md",
-    "authors/naval-ravikant.md",
-    "authors/joe-rogan.md",
+    "tweets/tweet-1942102738265161834.md",
+    "tweets/tweet-2007512760733831575.md",
+    "tweets/tweet-2007179832300581177.md",
+    "tweets/tweet-1991910395720925418.md",
     "tweets",
-    "boris-cherny-on-what-grew-his-career-and-building-at-anthropic.md",
-    "the-matrix.md",
-    "authors/lilly-wachowski.md",
-    "authors/lana-wachowski.md",
-    "vom-hoersaal-in-die-arbeitslosigkeit.md",
-    "authors/zdfheute-nachrichten.md",
     "podcasts"
   ]
 }

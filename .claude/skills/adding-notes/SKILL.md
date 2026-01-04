@@ -21,6 +21,7 @@ Detect type from URL, then load the appropriate reference file.
 | goodreads.com, amazon.com (books) | book | `references/content-types/book.md` |
 | spotify.com/episode, podcasts.apple.com | podcast | `references/content-types/podcast.md` |
 | udemy.com, coursera.org, skillshare.com | course | `references/content-types/course.md` |
+| *.substack.com/p/*, *.beehiiv.com/p/*, buttondown.email/* | newsletter | `references/content-types/newsletter.md` |
 | Other URLs | article | `references/content-types/article.md` |
 | No URL | note | `references/content-types/note.md` |
 | Manual: `quote` | quote | `references/content-types/quote.md` |
@@ -185,4 +186,5 @@ If suggestions score >= 0.7, present to user. Apply selections to MOC's `## Sugg
 | `references/diagrams-guide.md` | When/how to add mermaid diagrams |
 | `references/code-extraction.md` | Technical content code snippets |
 | `references/podcast-profile-creation.md` | Creating podcast show profiles |
+| `references/newsletter-profile-creation.md` | Creating newsletter publication profiles |
 | `references/content-types/*.md` | Type-specific templates and handling |

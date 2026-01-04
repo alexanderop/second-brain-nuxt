@@ -1,4 +1,4 @@
-import type { ContentType, ReadingStatus } from '~~/content.config'
+import type { ContentType, NewsletterPlatform, ReadingStatus } from '~~/content.config'
 
 export interface ContentItem {
   slug: string
@@ -18,6 +18,10 @@ export interface ContentItem {
   podcast?: string
   guests?: Array<string>
   urls?: Array<{ platform: string, url: string }>
+  // Newsletter article fields
+  newsletter?: string
+  issueNumber?: number
+  guest_author?: string
 }
 
 export interface PodcastItem {
@@ -29,6 +33,17 @@ export interface PodcastItem {
   hosts: Array<string>
   feed?: string
   platforms?: Record<string, string>
+}
+
+export interface NewsletterItem {
+  name: string
+  slug: string
+  description?: string
+  logo?: string
+  website?: string
+  authors: Array<string>
+  platform?: NewsletterPlatform
+  topics?: Array<string>
 }
 
 export interface TweetItem {

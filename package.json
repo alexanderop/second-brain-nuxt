@@ -24,8 +24,8 @@
     "test:unit": "vitest run --project unit --project api-unit",
     "test:unit:cov": "vitest run --project unit --project api-unit --coverage",
     "test:integration": "vitest run --project nuxt",
-    "test:browser": "vitest run --project browser",
-    "test:browser:ui": "vitest --project browser --ui",
+    "test:component": "vitest run --project component",
+    "test:component:ui": "vitest --project component --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

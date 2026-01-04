@@ -25,7 +25,7 @@ const {
 // Filter to only show types that exist in content
 const visibleTypes = computed(() =>
   props.availableTypes.filter(type =>
-    ['book', 'manga', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit', 'github'].includes(type),
+    ['book', 'manga', 'podcast', 'article', 'note', 'youtube', 'course', 'quote', 'movie', 'tv', 'tweet', 'evergreen', 'map', 'reddit', 'github', 'newsletter'].includes(type),
   ),
 )
 
@@ -46,6 +46,7 @@ const typeLabels: Record<ContentType, string> = {
   map: 'Maps',
   reddit: 'Reddit',
   github: 'GitHub',
+  newsletter: 'Newsletters',
 }
 
 // Build checkbox items for UCheckboxGroup

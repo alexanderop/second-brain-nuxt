@@ -11,18 +11,30 @@ import GitHubRepoCard from '~/components/GitHubRepoCard.vue'
 import NoteGraph from '~/components/NoteGraph.vue'
 import { useBacklinks } from '~/composables/useBacklinks'
 import { useMentions } from '~/composables/useMentions'
-import type { PodcastItem } from '~/types/content'
+import type { NewsletterItem, PodcastItem } from '~/types/content'
 
 interface PageWithPodcast {
   podcast?: string
   guests?: string[]
 }
 
+interface PageWithNewsletter {
+  newsletter?: string
+}
+
 function isPodcastItem(p: unknown): p is PodcastItem {
   return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
 }
 
+function isNewsletterItem(n: unknown): n is NewsletterItem {
+  return typeof n === 'object' && n !== null && 'slug' in n && 'name' in n && 'authors' in n
+}
+
 function hasPagePodcastFields(p: unknown): p is PageWithPodcast {
+  return typeof p === 'object' && p !== null
+}
+
+function hasPageNewsletterFields(p: unknown): p is PageWithNewsletter {
   return typeof p === 'object' && p !== null
 }
 
@@ -87,6 +99,27 @@ function getPageGuests(p: typeof page.value): string[] | undefined {
   return hasPagePodcastFields(p) ? p.guests : undefined
 }
 
+// Fetch newsletter data if this is a newsletter article
+const newsletterSlug = computed(() => {
+  if (hasPageNewsletterFields(page.value)) return page.value.newsletter
+  return undefined
+})
+
+const { data: newsletter } = await useAsyncData(
+  `page-newsletter-${newsletterSlug.value ?? 'none'}`,
+  async () => {
+    if (!newsletterSlug.value) return null
+    return queryCollection('newsletters')
+      .where('slug', '=', newsletterSlug.value)
+      .first()
+  },
+)
+
+const typedNewsletter = computed(() => {
+  if (isNewsletterItem(newsletter.value)) return newsletter.value
+  return null
+})
+
 // Content header data (extracted to avoid inline object creation on each render)
 const headerContent = computed(() => ({
   slug: slug.value,
@@ -121,7 +154,7 @@ useSeoMeta({
   <div v-if="page" class="lg:grid lg:grid-cols-12 lg:gap-8">
     <!-- Main content -->
     <article class="lg:col-span-8 xl:col-span-9">
-      <ContentHeader :content="headerContent" :podcast="typedPodcast ?? undefined" :hosts="podcastHosts ?? undefined" />
+      <ContentHeader :content="headerContent" :podcast="typedPodcast ?? undefined" :newsletter="typedNewsletter ?? undefined" :hosts="podcastHosts ?? undefined" />
 
       <YouTubePlayer
         v-if="page.type === 'youtube' && page.url"

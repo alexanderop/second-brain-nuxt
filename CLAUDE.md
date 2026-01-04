@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Second Brain is a personal knowledge base for capturing and connecting content (podcasts, articles, books, etc.) using Zettelkasten-style wiki-links. See `specs.md` for detailed requirements.
+Second Brain is a personal knowledge base for capturing and connecting content (podcasts, articles, books, etc.) using Zettelkasten-style wiki-links.
 
 ## Commands
 
@@ -20,7 +20,7 @@ pnpm test:unit    # Fast tests for local dev (~500ms)
 pnpm test:e2e     # E2E tests - CI only (~30s)
 ```
 
-Always use `pnpm test:unit` for local development. E2E tests (`test:e2e`) run in CI pipeline only.
+Always use `pnpm test:unit` for local development.
 
 ## Stack
 
@@ -30,39 +30,14 @@ Always use `pnpm test:unit` for local development. E2E tests (`test:e2e`) run in
 
 ## Structure
 
-- `app/` - Vue application (pages, components)
-- `content/` - Markdown files (flat, type via frontmatter)
-- `site.config.ts` - **Main template config** (branding, nav, shortcuts)
-- `content.config.ts` - Collection definitions
-- `specs.md` - Full project requirements
+- `app/` - Vue application (pages, components, composables)
+- `content/` - Markdown files (flat structure, type via frontmatter)
+- `site.config.ts` - Site customization (name, nav, shortcuts)
+- `content.config.ts` - Collection schema definitions
 
-## Template Configuration
+## Configuration
 
-This project is designed as a **GitHub template**. All customizable values are centralized in `site.config.ts`:
-
-```typescript
-// site.config.ts
-export const siteConfig = {
-  name: 'Second Brain',           // Site name (header, page titles, PWA)
-  shortName: 'SecondBrain',       // PWA short name
-  description: '...',             // SEO description
-  themeColor: '#1a1a2e',          // Browser chrome color
-  allowIndexing: false,           // robots meta tag
-  nav: [...],                     // Navigation links
-  shortcuts: {...},               // Keyboard shortcuts
-}
-```
-
-### Customization Points
-
-| File | What to customize |
-|------|-------------------|
-| `site.config.ts` | Site name, navigation, shortcuts, theme color |
-| `app.config.ts` | UI theme (colors, icons, component defaults) |
-| `content/*.md` | Add any custom frontmatter fields (passthrough enabled) |
-
-### Key Composables
-
+All customizable values are in `site.config.ts`. Key composables:
 - `useSiteConfig()` - Access site config in components
 - `usePageTitle('Page')` - Sets title as "Page - Site Name"
 
@@ -72,25 +47,15 @@ export const siteConfig = {
 - Query content via `queryCollection('content')`
 - Catch-all route at `app/pages/[...slug].vue`
 
-## Tag Naming Conventions
-
-- **Format:** lowercase, kebab-case
-- **Number:** singular nouns (not plural)
-- **Specificity:** prefer precise tags (`ai-agents` over `ai`)
-- **Examples:**
-  - `productivity`, `habit`, `prompt-engineering`, `local-first`
-  - `ai-agents`, `developer-experience`, `knowledge-management`
-
-## Rating System
-
-- **Scale:** 1-7 (optional field for external content)
-- **Meaning:** 1 = poor, 4 = average, 7 = exceptional
-- **Usage:** Add `rating: 5` to frontmatter for books, articles, podcasts, etc.
-
 ## Nuxt Content v3 Gotchas
 
-- **Minimark format**: Body content uses array-based minimark `[tag, props, ...children]`, NOT object AST `{ tag, props, children }`
-- **Querying body**: Must explicitly `.select('body')` - not included by default in `.all()`
-- **Body structure**: `{ type: 'minimark', value: [...nodes] }`
-- **Search section IDs**: `queryCollectionSearchSections` returns IDs with leading slash (`/slug#section`). Don't add another slash when building routes or `//slug` becomes a protocol-relative URL to hostname "slug"
+- **Minimark format**: Body content uses `[tag, props, ...children]`, NOT `{ tag, props, children }`
+- **Querying body**: Must explicitly `.select('body')` - not included by default
+- **Search section IDs**: Returns IDs with leading slash (`/slug#section`). Don't add another.
 
+## Further Reading
+
+- `specs.md` - Full requirements
+- `docs/SYSTEM_KNOWLEDGE_MAP.md` - Architecture, business rules, content conventions
+- `docs/testing-strategy.md` - Test layers, when to use each, writing new tests
+- `docs/nuxt-ui.md` - Nuxt UI conventions, component usage, theming patterns
