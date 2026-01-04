@@ -31,6 +31,7 @@ Phase 2: Parse Content → Extract text, date, author name from paste
 Phase 3: Author Resolution → Check/create author profile
 Phase 4: Generate Tweet File → Write to content/tweets/
 Phase 5: Suggest Editing → Tags, annotations, wiki-links
+Phase 6: Quality Check → Run pnpm lint:fix && pnpm typecheck
 ```
 
 ### Phase 1: Parse URL
@@ -128,3 +129,15 @@ Before saving, verify:
 2. Author profile exists or was created
 3. `tweetedAt` is valid date format
 4. `tweetText` is not empty
+
+---
+
+## Phase 6: Quality Check
+
+Run linter and type check to catch any issues:
+
+```bash
+pnpm lint:fix && pnpm typecheck
+```
+
+If errors are found, fix them before completing the task.

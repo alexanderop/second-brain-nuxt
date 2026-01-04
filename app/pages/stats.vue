@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useFetch } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon, UProgress } from '#components'
 import StatCard from '~/components/StatCard.vue'
-import StatsBarChart from '~/components/StatsBarChart.vue'
-import StatsLineChart from '~/components/StatsLineChart.vue'
+
+// Lazy-load chart components to reduce initial bundle size
+const StatsBarChart = defineAsyncComponent(() => import('~/components/StatsBarChart.vue'))
+const StatsLineChart = defineAsyncComponent(() => import('~/components/StatsLineChart.vue'))
 
 interface HubNode {
   id: string

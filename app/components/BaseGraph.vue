@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch, shallowRef, onMounted, onUnmounted } from 'vue'
 import { useResizeObserver, useDebounceFn } from '@vueuse/core'
-import * as d3 from 'd3'
+import { select } from 'd3-selection'
+import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom'
+import { drag } from 'd3-drag'
+import { scalePow, scaleLinear } from 'd3-scale'
+import { extent } from 'd3-array'
+import type { Simulation, ZoomBehavior, Selection, ZoomTransform } from 'd3'
 import type { NoteGraphData, FullGraphData, UnifiedGraphNode, UnifiedGraphEdge } from '~/types/graph'
 import { normalizeGraphData } from '~/utils/graphNormalize'
 import { createRadialSimulation, createFreeformSimulation } from '~/utils/graphForces'
@@ -76,15 +81,15 @@ const simulationSettled = ref(false)
 const isMiddleMousePanning = ref(false)
 const panStartPos = ref({ x: 0, y: 0 })
 const breathingIntervalRef = ref<ReturnType<typeof setInterval> | null>(null)
-const simulationRef = shallowRef<d3.Simulation<UnifiedGraphNode, UnifiedGraphEdge> | null>(null)
-const svgRef = shallowRef<d3.Selection<SVGSVGElement, unknown, null, undefined>>()
-const zoomRef = shallowRef<d3.ZoomBehavior<SVGSVGElement, unknown>>()
+const simulationRef = shallowRef<Simulation<UnifiedGraphNode, UnifiedGraphEdge> | null>(null)
+const svgRef = shallowRef<Selection<SVGSVGElement, unknown, null, undefined>>()
+const zoomRef = shallowRef<ZoomBehavior<SVGSVGElement, unknown>>()
 const currentNodes = shallowRef<UnifiedGraphNode[]>([])
 const widthRef = ref(0)
 const heightRef = ref(0)
 
 // Zoom persistence
-function saveZoomTransform(transform: d3.ZoomTransform) {
+function saveZoomTransform(transform: ZoomTransform) {
   if (!effectivePersistZoom.value) return
   sessionStorage.setItem(effectiveZoomStorageKey.value, JSON.stringify({
     k: transform.k,
@@ -93,13 +98,13 @@ function saveZoomTransform(transform: d3.ZoomTransform) {
   }))
 }
 
-function loadZoomTransform(): d3.ZoomTransform | null {
+function loadZoomTransform(): ZoomTransform | null {
   if (!effectivePersistZoom.value) return null
   const stored = sessionStorage.getItem(effectiveZoomStorageKey.value)
   if (!stored) return null
   try {
     const { k, x, y } = JSON.parse(stored)
-    return d3.zoomIdentity.translate(x, y).scale(k)
+    return zoomIdentity.translate(x, y).scale(k)
   }
   catch {
     return null
@@ -126,7 +131,7 @@ function getNodeRadius(node: UnifiedGraphNode, maxConnections: number): number {
     return node.level === 2 ? RADIAL_SIZES.level2 : RADIAL_SIZES.level1
   }
   // connections sizing
-  const scale = d3.scalePow()
+  const scale = scalePow()
     .exponent(0.7)
     .domain([0, Math.max(1, maxConnections)])
     .range(FREEFORM_SIZE_RANGE)
@@ -170,8 +175,8 @@ function getEdgeY(endpoint: string | UnifiedGraphNode): number {
 
 // Zoom controls
 function calculateFitTransform(nodes: UnifiedGraphNode[], width: number, height: number, padding: number) {
-  const xExtent = d3.extent(nodes, d => d.x)
-  const yExtent = d3.extent(nodes, d => d.y)
+  const xExtent = extent(nodes, d => d.x)
+  const yExtent = extent(nodes, d => d.y)
   const [xMin, xMax] = [xExtent[0] ?? 0, xExtent[1] ?? 0]
   const [yMin, yMax] = [yExtent[0] ?? 0, yExtent[1] ?? 0]
   const boundsWidth = (xMax - xMin) || 1
@@ -187,7 +192,7 @@ function zoomToFit(padding = 60) {
   const { scale, translateX, translateY } = calculateFitTransform(currentNodes.value, widthRef.value, heightRef.value, padding)
   svgRef.value.transition().duration(500).call(
     zoomRef.value.transform,
-    d3.zoomIdentity.translate(translateX, translateY).scale(scale),
+    zoomIdentity.translate(translateX, translateY).scale(scale),
   )
 }
 
@@ -221,7 +226,7 @@ function handleMiddleMouseMove(event: MouseEvent) {
   const svgNode = svgRef.value.node()
   if (!svgNode) return
 
-  const currentTransform = d3.zoomTransform(svgNode)
+  const currentTransform = zoomTransform(svgNode)
   const newTransform = currentTransform.translate(dx / currentTransform.k, dy / currentTransform.k)
   svgRef.value.call(zoomRef.value.transform, newTransform)
 }
@@ -298,7 +303,7 @@ function initGraph() {
   widthRef.value = width
   heightRef.value = height
 
-  d3.select(container.value).select('svg').remove()
+  select(container.value).select('svg').remove()
 
   const nodes: UnifiedGraphNode[] = normalizedData.value.nodes.map(n => ({ ...n }))
   const edges: UnifiedGraphEdge[] = normalizedData.value.edges.map(e => ({ ...e }))
@@ -307,7 +312,7 @@ function initGraph() {
   const maxConnections = Math.max(1, ...nodes.map(n => n.connections ?? 0))
   const radiusScale = (node: UnifiedGraphNode) => getNodeRadius(node, maxConnections)
 
-  const svg = d3.select(container.value)
+  const svg = select(container.value)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -333,7 +338,7 @@ function initGraph() {
 
   // Zoom
   const zoomExtent = effectiveZoomExtent.value
-  const zoom = d3.zoom<SVGSVGElement, unknown>()
+  const zoomBehavior = zoom<SVGSVGElement, unknown>()
     .scaleExtent([zoomExtent[0], zoomExtent[1]])
     .on('zoom', (event) => {
       g.attr('transform', event.transform)
@@ -341,8 +346,8 @@ function initGraph() {
       emit('zoomChange', event.transform.k)
       saveZoomTransform(event.transform)
     })
-  zoomRef.value = zoom
-  svg.call(zoom)
+  zoomRef.value = zoomBehavior
+  svg.call(zoomBehavior)
   svg.on('dblclick.zoom', null)
   if (!isRadial.value) svg.on('dblclick', () => zoomToFit())
 
@@ -368,7 +373,7 @@ function initGraph() {
     .attr('cursor', 'pointer')
 
   // Drag
-  const dragBehavior = d3.drag<SVGGElement, UnifiedGraphNode>()
+  const dragBehavior = drag<SVGGElement, UnifiedGraphNode>()
     .on('start', (event) => {
       isDragging.value = true
       stopBreathing()
@@ -400,12 +405,12 @@ function initGraph() {
     })
     .on('mouseenter', function (_, d) {
       hoveredId.value = d.id
-      d3.select(this).select('.node-shape').transition().duration(100).attr('transform', 'scale(1.15)')
+      select(this).select('.node-shape').transition().duration(100).attr('transform', 'scale(1.15)')
       if (!props.selectedId) applyHighlight(d.id)
     })
     .on('mouseleave', function () {
       hoveredId.value = null
-      d3.select(this).select('.node-shape').transition().duration(100).attr('transform', 'scale(1)')
+      select(this).select('.node-shape').transition().duration(100).attr('transform', 'scale(1)')
       applyHighlight(props.selectedId ?? null)
     })
 
@@ -421,7 +426,7 @@ function initGraph() {
 
   // Node shapes
   node.each(function (d) {
-    const nodeGroup = d3.select(this)
+    const nodeGroup = select(this)
     const radius = radiusScale(d)
     const style = getNodeStyle(d)
 
@@ -447,7 +452,7 @@ function initGraph() {
   })
 
   // Labels
-  const fontScale = d3.scaleLinear().domain(FREEFORM_SIZE_RANGE).range([10, 16])
+  const fontScale = scaleLinear().domain(FREEFORM_SIZE_RANGE).range([10, 16])
   node.append('text')
     .text(d => d.title)
     .attr('x', d => radiusScale(d) + (isRadial.value ? 5 : 4))
@@ -561,7 +566,7 @@ watch(() => props.selectedId, (newId) => {
   const connectedIds = getConnectedIds(newId ?? null, edges)
   const isActive = (id: string) => id === newId || connectedIds.has(id)
 
-  d3.select(container.value)
+  select(container.value)
     .selectAll<SVGElement, UnifiedGraphNode>('.node-shape')
     .transition().duration(100)
     .attr('opacity', d => newId ? (isActive(d.id) ? 1 : 0.1) : (isRadial.value && d.level === 2 ? LEVEL2_OPACITY : 1))

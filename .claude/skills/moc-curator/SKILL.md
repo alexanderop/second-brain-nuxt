@@ -118,6 +118,16 @@ Description of what this map covers.
 - [[note-b]] - What this note contributes
 ```
 
+### Phase 6: Quality Check
+
+Run linter and type check to catch any issues:
+
+```bash
+pnpm lint:fix && pnpm typecheck
+```
+
+If errors are found, fix them before completing the task.
+
 ## Script Usage
 
 ```bash

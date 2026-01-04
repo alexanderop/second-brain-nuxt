@@ -71,6 +71,7 @@ Phase 4: Content Generation → Apply writing-style, generate body
 Phase 5: Quality Validation → 4 parallel validators (BLOCKING)
 Phase 6: Save Note → Write to content/{slug}.md
 Phase 7: MOC Placement → Suggest placements (non-blocking)
+Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 ```
 
 ### Phase 1: Type Detection & Dispatch
@@ -162,6 +163,16 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=for-note --no
 ```
 
 If suggestions score >= 0.7, present to user. Apply selections to MOC's `## Suggested` section.
+
+### Phase 8: Quality Check
+
+Run linter and type check to catch any issues:
+
+```bash
+pnpm lint:fix && pnpm typecheck
+```
+
+If errors are found, fix them before completing the task.
 
 ---
 

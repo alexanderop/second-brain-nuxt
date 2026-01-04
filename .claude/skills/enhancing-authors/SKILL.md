@@ -24,6 +24,9 @@ Phase 3: User Review (BLOCKING GATE)
 
 Phase 4: Save Enhanced Author
    └─ Update frontmatter fields
+
+Phase 5: Quality Check
+   └─ Run pnpm lint:fix && pnpm typecheck
 ```
 
 ---
@@ -202,6 +205,18 @@ Updated: content/authors/{slug}.md
   - socials.twitter: added
   - socials.github: added
 ```
+
+---
+
+## Phase 5: Quality Check
+
+Run linter and type check to catch any issues:
+
+```bash
+pnpm lint:fix && pnpm typecheck
+```
+
+If errors are found, fix them before completing the task.
 
 ---
 

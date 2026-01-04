@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useResizeObserver, useDebounceFn } from '@vueuse/core'
-import * as d3 from 'd3'
+import { select } from 'd3-selection'
+import { scaleBand, scaleLinear } from 'd3-scale'
+import { max } from 'd3-array'
 
 interface DataItem {
   label: string
@@ -55,7 +57,7 @@ function drawChart() {
   const height = chartHeight.value
 
   // Clear existing
-  d3.select(container.value).select('svg').remove()
+  select(container.value).select('svg').remove()
 
   const margin = props.horizontal
     ? { top: 10, right: 40, bottom: 10, left: 80 }
@@ -64,7 +66,7 @@ function drawChart() {
   const innerWidth = width - margin.left - margin.right
   const innerHeight = height - margin.top - margin.bottom
 
-  const svg = d3.select(container.value)
+  const svg = select(container.value)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -96,13 +98,13 @@ function drawChart() {
 
   if (props.horizontal) {
     // Horizontal bar chart
-    const y = d3.scaleBand()
+    const y = scaleBand()
       .domain(props.data.map(d => d.label))
       .range([0, innerHeight])
       .padding(0.3)
 
-    const x = d3.scaleLinear()
-      .domain([0, d3.max(props.data, d => d.value) ?? 0])
+    const x = scaleLinear()
+      .domain([0, max(props.data, d => d.value) ?? 0])
       .range([0, innerWidth])
 
     // Faint grid lines
@@ -132,10 +134,10 @@ function drawChart() {
       .attr('rx', 4)
       .style('transition', 'opacity 150ms ease-out')
       .on('mouseenter', function () {
-        d3.select(this).attr('opacity', 0.85)
+        select(this).attr('opacity', 0.85)
       })
       .on('mouseleave', function () {
-        d3.select(this).attr('opacity', 1)
+        select(this).attr('opacity', 1)
       })
 
     // Labels (left side)
@@ -166,13 +168,13 @@ function drawChart() {
     return
   }
   // Vertical bar chart
-  const x = d3.scaleBand()
+  const x = scaleBand()
     .domain(props.data.map(d => d.label))
     .range([0, innerWidth])
     .padding(0.3)
 
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(props.data, d => d.value) ?? 0])
+  const y = scaleLinear()
+    .domain([0, max(props.data, d => d.value) ?? 0])
     .range([innerHeight, 0])
 
   // Faint grid lines
@@ -202,10 +204,10 @@ function drawChart() {
     .attr('rx', 4)
     .style('transition', 'opacity 150ms ease-out')
     .on('mouseenter', function () {
-      d3.select(this).attr('opacity', 0.85)
+      select(this).attr('opacity', 0.85)
     })
     .on('mouseleave', function () {
-      d3.select(this).attr('opacity', 1)
+      select(this).attr('opacity', 1)
     })
 
   // X-axis labels

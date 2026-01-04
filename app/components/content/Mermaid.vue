@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
-import { useColorMode, useNuxtApp } from '#imports'
+import { useColorMode } from '#imports'
+import type { Mermaid } from 'mermaid'
 
 const colorMode = useColorMode()
-const { $mermaid } = useNuxtApp()
 const mermaidContainer = ref<HTMLDivElement | null>(null)
 const hasRenderedOnce = ref(false)
+const mermaidInstance = ref<Mermaid | null>(null)
 let mermaidDefinition = ''
 let observer: IntersectionObserver | null = null
 
@@ -13,17 +14,25 @@ const mermaidTheme = computed(() => {
   return colorMode.value === 'dark' ? 'dark' : 'default'
 })
 
+async function loadMermaid(): Promise<Mermaid> {
+  if (mermaidInstance.value) return mermaidInstance.value
+  const { default: mermaid } = await import('mermaid')
+  mermaidInstance.value = mermaid
+  return mermaid
+}
+
 async function renderMermaid() {
   if (!mermaidContainer.value || !mermaidDefinition)
     return
 
   try {
+    const mermaid = await loadMermaid()
     mermaidContainer.value.removeAttribute('data-processed')
     mermaidContainer.value.textContent = mermaidDefinition
     await nextTick()
 
-    $mermaid().initialize({ startOnLoad: false, theme: mermaidTheme.value })
-    await $mermaid().run({
+    mermaid.initialize({ startOnLoad: false, theme: mermaidTheme.value })
+    await mermaid.run({
       nodes: [mermaidContainer.value],
     })
     hasRenderedOnce.value = true

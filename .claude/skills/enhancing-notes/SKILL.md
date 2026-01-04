@@ -31,6 +31,9 @@ Phase 4: User Review (BLOCKING GATE)
 
 Phase 5: Save Enhanced Note
    └─ Insert sections, preserve original
+
+Phase 6: Quality Check
+   └─ Run pnpm lint:fix && pnpm typecheck
 ```
 
 ---
@@ -294,6 +297,18 @@ Report to user:
   - Who Should Read: added
   - Original content: preserved
 ```
+
+---
+
+## Phase 6: Quality Check
+
+Run linter and type check to catch any issues:
+
+```bash
+pnpm lint:fix && pnpm typecheck
+```
+
+If errors are found, fix them before completing the task.
 
 ---
 

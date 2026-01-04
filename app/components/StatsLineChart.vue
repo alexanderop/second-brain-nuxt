@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useResizeObserver, useDebounceFn } from '@vueuse/core'
-import * as d3 from 'd3'
+import { select } from 'd3-selection'
+import { scalePoint, scaleLinear } from 'd3-scale'
+import { max } from 'd3-array'
+import { area, line, curveMonotoneX } from 'd3-shape'
 
 interface DataPoint {
   label: string
@@ -23,13 +26,13 @@ function drawChart() {
   const height = chartHeight.value
 
   // Clear existing
-  d3.select(container.value).select('svg').remove()
+  select(container.value).select('svg').remove()
 
   const margin = { top: 20, right: 20, bottom: 30, left: 40 }
   const innerWidth = width - margin.left - margin.right
   const innerHeight = height - margin.top - margin.bottom
 
-  const svg = d3.select(container.value)
+  const svg = select(container.value)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -38,12 +41,12 @@ function drawChart() {
     .attr('transform', `translate(${margin.left},${margin.top})`)
 
   // Scales
-  const x = d3.scalePoint()
+  const x = scalePoint()
     .domain(props.data.map(d => d.label))
     .range([0, innerWidth])
 
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(props.data, d => d.value) ?? 0])
+  const y = scaleLinear()
+    .domain([0, max(props.data, d => d.value) ?? 0])
     .range([innerHeight, 0])
     .nice()
 
@@ -67,29 +70,29 @@ function drawChart() {
     .attr('stop-opacity', 0)
 
   // Area
-  const area = d3.area<DataPoint>()
+  const areaGenerator = area<DataPoint>()
     .x(d => x(d.label) ?? 0)
     .y0(innerHeight)
     .y1(d => y(d.value))
-    .curve(d3.curveMonotoneX)
+    .curve(curveMonotoneX)
 
   g.append('path')
     .datum(props.data)
     .attr('fill', 'url(#area-gradient)')
-    .attr('d', area)
+    .attr('d', areaGenerator)
 
   // Line
-  const line = d3.line<DataPoint>()
+  const lineGenerator = line<DataPoint>()
     .x(d => x(d.label) ?? 0)
     .y(d => y(d.value))
-    .curve(d3.curveMonotoneX)
+    .curve(curveMonotoneX)
 
   g.append('path')
     .datum(props.data)
     .attr('fill', 'none')
     .attr('stroke', '#6ee7b7')
     .attr('stroke-width', 2)
-    .attr('d', line)
+    .attr('d', lineGenerator)
 
   // Data points
   g.selectAll('circle')
