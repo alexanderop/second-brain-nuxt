@@ -51,4 +51,32 @@ test.describe('Table Feature', () => {
     const rowCount = await tablePage.getRowCount()
     expect(rowCount).toBeGreaterThan(0)
   })
+
+  test('pagination updates URL and content', async ({ page }) => {
+    const tablePage = new TablePage(page)
+
+    await tablePage.goto()
+    await tablePage.waitForTableLoad()
+
+    // Skip if not enough items for pagination (< 26 items)
+    const paginationVisible = await tablePage.paginationInfo.isVisible()
+    if (!paginationVisible) {
+      test.skip()
+      return
+    }
+
+    // Capture initial state (content-agnostic)
+    const initialFirstRowText = await tablePage.getFirstRowText()
+    expect(page.url()).not.toContain('page=')
+
+    // Navigate to page 2
+    await tablePage.goToNextPage()
+
+    // Verify URL changed
+    await expect(page).toHaveURL(/[?&]page=2/)
+
+    // Verify content changed (first row different)
+    const newFirstRowText = await tablePage.getFirstRowText()
+    expect(newFirstRowText).not.toBe(initialFirstRowText)
+  })
 })

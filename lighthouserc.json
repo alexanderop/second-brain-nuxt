@@ -2,7 +2,8 @@
   "ci": {
     "collect": {
       "startServerCommand": "pnpm preview",
-      "startServerReadyPattern": "Local:",
+      "startServerReadyPattern": "Listening",
+      "startServerReadyTimeout": 30000,
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/atomic-habits",
@@ -11,7 +12,8 @@
       ],
       "numberOfRuns": 3,
       "settings": {
-        "preset": "desktop"
+        "preset": "desktop",
+        "chromeFlags": "--headless=new --no-sandbox"
       }
     },
     "assert": {
