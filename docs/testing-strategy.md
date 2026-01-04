@@ -105,10 +105,11 @@ Run: `pnpm test:unit:cov`
 
 ```yaml
 # Tests run in order of speed
-1. pnpm test:unit        # ~500ms
-2. pnpm test:integration # ~5s
-3. pnpm test:component   # ~10s
-4. pnpm test:e2e         # ~30s (after build)
+1. pnpm typecheck        # ~20s - catches app/server context violations
+2. pnpm test:unit        # ~500ms
+3. pnpm test:integration # ~5s
+4. pnpm test:component   # ~10s
+5. pnpm test:e2e         # ~30s (after build)
 ```
 
 ## E2E Debugging Tips
