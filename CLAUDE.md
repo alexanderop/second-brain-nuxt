@@ -92,4 +92,5 @@ export const siteConfig = {
 - **Minimark format**: Body content uses array-based minimark `[tag, props, ...children]`, NOT object AST `{ tag, props, children }`
 - **Querying body**: Must explicitly `.select('body')` - not included by default in `.all()`
 - **Body structure**: `{ type: 'minimark', value: [...nodes] }`
+- **Search section IDs**: `queryCollectionSearchSections` returns IDs with leading slash (`/slug#section`). Don't add another slash when building routes or `//slug` becomes a protocol-relative URL to hostname "slug"
 

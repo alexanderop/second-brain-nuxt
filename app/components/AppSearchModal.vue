@@ -45,7 +45,7 @@ const contentItems = computed<CommandPaletteItem[]>(() => {
       label: breadcrumb,
       description: snippet,
       icon: 'i-lucide-file-text',
-      to: `/${path}`,
+      to: path,
     })
   }
 
