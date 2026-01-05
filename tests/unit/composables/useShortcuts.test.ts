@@ -61,6 +61,16 @@ describe('shortcutsList', () => {
 
     const prevShortcut = actionShortcuts.find(s => s.description.toLowerCase().includes('previous'))
     expect(prevShortcut).toBeDefined()
+
+    // Should have open resource link shortcut
+    const openLinkShortcut = actionShortcuts.find(s => s.keys.includes('O'))
+    expect(openLinkShortcut).toBeDefined()
+    expect(openLinkShortcut?.description.toLowerCase()).toContain('resource')
+
+    // Should have open author page shortcut
+    const openAuthorShortcut = actionShortcuts.find(s => s.keys.includes('A'))
+    expect(openAuthorShortcut).toBeDefined()
+    expect(openAuthorShortcut?.description.toLowerCase()).toContain('author')
   })
 
   it('has unique key combinations', () => {

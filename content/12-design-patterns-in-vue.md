@@ -19,6 +19,41 @@ date: 2026-01-02
 
 A practical guide to 12 design patterns specifically for Vue development, addressing problems that basically every app has.
 
+## Hey there!
+
+<!-- Personal intro, what you've been up to -->
+
+
+
+---
+
+## New Posts
+
+<!-- Your recent articles/content -->
+
+- **[Title](link)** - *TIL/Deep Dive* - Brief description
+
+- **[Title](link)** - *TIL/Deep Dive* - Brief description
+
+---
+
+## Curated Links
+
+<!-- 3 external resources worth sharing -->
+
+1. **[Title](link)** - Why it's interesting
+
+2. **[Title](link)** - Why it's interesting
+
+3. **[Title](link)** - Why it's interesting
+
+---
+
+Best,
+Alex
+
+![[12-design-patterns-in-vue 2026-01-05 10.00.50.excalidraw]]
+
 ## The 12 Patterns
 
 ### 1. Data Store Pattern

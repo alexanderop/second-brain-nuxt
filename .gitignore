@@ -42,3 +42,6 @@ content/Readwise/
 
 # Obsidian
 content/.obsidian/
+
+# Generated Excalidraw SVGs
+public/excalidraw/

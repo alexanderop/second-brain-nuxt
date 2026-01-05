@@ -6,6 +6,14 @@ Common pitfalls and non-obvious behaviors when working with @nuxt/content v3.
 
 Body content uses array format `[tag, props, ...children]`, NOT object format `{ tag, props, children }`.
 
+**Body wrapper structure**: When querying body content, it returns:
+
+```typescript
+{ type: 'root', children: [...nodes] }
+```
+
+Note: Some older code/docs reference `{ type: 'minimark', value: [...] }` - this is outdated. Always check for `children` first when extracting links from body content.
+
 ## Querying Body Content
 
 Must explicitly `.select('body')` - body is not included by default in queries.

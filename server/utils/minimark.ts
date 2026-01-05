@@ -41,27 +41,34 @@ export function extractLinksFromMinimark(node: unknown): string[] {
 }
 
 /**
- * Extract links from a body object which contains minimark value array.
- * Body format: { type: 'minimark', value: [...nodes] }
+ * Extract links from a body object.
+ * Supports two formats:
+ * - Nuxt Content v3: { type: 'root', children: [...nodes] }
+ * - Legacy minimark: { type: 'minimark', value: [...nodes] }
  */
-interface MinimarkBody {
-  type?: string
-  value?: unknown[]
+
+// Type guard: check if body has children array (Nuxt Content v3 format)
+function hasChildren(body: object): body is { children: unknown[] } {
+  return 'children' in body && Array.isArray(body.children)
+}
+
+// Type guard: check if body has minimark format
+function isMinimarkBody(body: object): body is { type: 'minimark', value: unknown[] } {
+  return 'type' in body && body.type === 'minimark' && 'value' in body && Array.isArray(body.value)
 }
 
 export function extractLinksFromBody(body: unknown): string[] {
-  const links: string[] = []
+  if (!body || typeof body !== 'object') return []
 
-  if (!body || typeof body !== 'object') return links
-
-  const b: MinimarkBody = body
-
-  // Handle minimark format: { type: 'minimark', value: [...nodes] }
-  if (b.type === 'minimark' && Array.isArray(b.value)) {
-    for (const node of b.value) {
-      links.push(...extractLinksFromMinimark(node))
-    }
+  // Handle Nuxt Content v3 format: { type: '...', children: [...] }
+  if (hasChildren(body)) {
+    return body.children.flatMap(node => extractLinksFromMinimark(node))
   }
 
-  return links
+  // Handle legacy minimark format: { type: 'minimark', value: [...] }
+  if (isMinimarkBody(body)) {
+    return body.value.flatMap(node => extractLinksFromMinimark(node))
+  }
+
+  return []
 }

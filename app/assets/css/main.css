@@ -94,3 +94,18 @@ samp {
   width: 100%;
   height: calc(100vh - 4rem);
 }
+
+/* Excalidraw diagram styling */
+.excalidraw-diagram {
+  max-height: 70vh;
+  object-fit: contain;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.5rem;
+}
+
+/* Invert colors in dark mode for Excalidraw diagrams */
+.dark .excalidraw-diagram {
+  filter: invert(1) hue-rotate(180deg);
+}

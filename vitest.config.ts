@@ -94,6 +94,35 @@ export default defineConfig({
           include: ['vue', 'd3'],
         },
       },
+      // BDD tests - full app mount with Happy DOM, mocked data layer
+      {
+        plugins: [
+          vue(),
+          tailwindcss(),
+          AutoImport({
+            imports: ['vue'],
+            dts: false,
+          }),
+        ],
+        test: {
+          name: 'bdd',
+          include: ['tests/bdd/**/*.test.ts'],
+          environment: 'happy-dom',
+          setupFiles: ['./tests/bdd/setup.ts'],
+        },
+        resolve: {
+          alias: {
+            '~': fileURLToPath(new URL('./app', import.meta.url)),
+            '~~': fileURLToPath(new URL('./', import.meta.url)),
+            '#imports': fileURLToPath(new URL('./tests/bdd/mocks/imports.ts', import.meta.url)),
+            '#components': fileURLToPath(new URL('./tests/bdd/mocks/components.ts', import.meta.url)),
+          },
+          dedupe: ['vue'],
+        },
+        optimizeDeps: {
+          include: ['vue', 'vue-router', '@nuxt/ui'],
+        },
+      },
     ],
   },
 })

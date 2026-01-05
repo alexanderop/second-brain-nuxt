@@ -124,4 +124,35 @@ describe('extractLinksFromBody', () => {
     const body = { type: 'minimark', value: 'not-array' }
     expect(extractLinksFromBody(body)).toEqual([])
   })
+
+  // Nuxt Content v3 format tests (uses 'children' instead of 'value')
+  it('extracts links from Nuxt Content v3 body format with children', () => {
+    const body = {
+      type: 'root',
+      children: [
+        ['p', {}, ['a', { href: '/test-link' }, 'Test']],
+      ],
+    }
+    expect(extractLinksFromBody(body)).toEqual(['test-link'])
+  })
+
+  it('extracts multiple links from Nuxt Content v3 body', () => {
+    const body = {
+      type: 'root',
+      children: [
+        ['p', {}, ['a', { href: '/link-one' }, 'One']],
+        ['p', {}, ['a', { href: '/link-two' }, 'Two']],
+      ],
+    }
+    expect(extractLinksFromBody(body)).toEqual(['link-one', 'link-two'])
+  })
+
+  it('prioritizes children over value when both exist', () => {
+    const body = {
+      type: 'root',
+      children: [['p', {}, ['a', { href: '/from-children' }, 'Children']]],
+      value: [['p', {}, ['a', { href: '/from-value' }, 'Value']]],
+    }
+    expect(extractLinksFromBody(body)).toEqual(['from-children'])
+  })
 })

@@ -16,6 +16,12 @@ interface HubNode {
   connections: number
 }
 
+interface OrphanNode {
+  id: string
+  title: string
+  type: string
+}
+
 interface StatsData {
   total: number
   byType: Array<{ type: string, count: number }>
@@ -33,6 +39,7 @@ interface StatsData {
     orphanCount: number
     orphanPercent: number
     hubs: HubNode[]
+    orphans: OrphanNode[]
   }
   thisWeek: number
 }
@@ -161,8 +168,8 @@ usePageTitle('Stats')
         <StatsLineChart :data="growthChartData" :height="180" />
       </div>
 
-      <!-- Bottom Row: Hubs & Quality -->
-      <div class="grid md:grid-cols-2 gap-8">
+      <!-- Bottom Row: Hubs, Orphans & Quality -->
+      <div class="grid md:grid-cols-3 gap-8">
         <!-- Hub Notes -->
         <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
           <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
@@ -187,6 +194,34 @@ usePageTitle('Stats')
             <UIcon name="i-heroicons-link" class="size-8 mb-2 opacity-50" />
             <p class="text-sm mb-1">No connected notes yet</p>
             <p class="text-xs opacity-70">Add [[wiki-links]] to build your knowledge graph</p>
+          </div>
+        </div>
+
+        <!-- Orphan Notes -->
+        <div class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
+            Orphan Notes
+            <span class="font-normal normal-case tracking-normal">(no connections)</span>
+          </h2>
+          <div v-if="stats.connections.orphans.length" class="space-y-1">
+            <NuxtLink
+              v-for="orphan in stats.connections.orphans"
+              :key="orphan.id"
+              :to="`/${orphan.id}`"
+              class="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-lg hover:bg-[var(--ui-bg-elevated)] transition-all duration-150"
+            >
+              <span class="flex-1 truncate">{{ orphan.title }}</span>
+              <span class="text-xs font-mono text-[var(--ui-text-muted)] bg-[var(--ui-bg-muted)] px-2 py-0.5 rounded-md">
+                {{ orphan.type }}
+              </span>
+            </NuxtLink>
+            <p v-if="stats.connections.orphanCount > 5" class="text-xs text-[var(--ui-text-muted)] pt-2">
+              +{{ stats.connections.orphanCount - 5 }} more orphans
+            </p>
+          </div>
+          <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+            <UIcon name="i-heroicons-check-circle" class="size-8 mb-2 opacity-50" />
+            <p class="text-sm">All notes are connected!</p>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection } from '#imports'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection, defineShortcuts } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { ContentRenderer, UContentToc } from '#components'
 import ContentHeader from '~/components/ContentHeader.vue'
@@ -9,8 +9,12 @@ import YouTubePlayer from '~/components/YouTubePlayer.vue'
 import BookCover from '~/components/BookCover.vue'
 import GitHubRepoCard from '~/components/GitHubRepoCard.vue'
 import NoteGraph from '~/components/NoteGraph.vue'
+import AuthorPickerModal from '~/components/AuthorPickerModal.vue'
 import { useBacklinks } from '~/composables/useBacklinks'
 import { useMentions } from '~/composables/useMentions'
+import { useFocusMode } from '~/composables/useFocusMode'
+import { useTocVisibility } from '~/composables/useTocVisibility'
+import { useAuthorShortcut } from '~/composables/useAuthorShortcut'
 import type { NewsletterItem, PodcastItem } from '~/types/content'
 
 interface PageWithPodcast {
@@ -40,6 +44,14 @@ function hasPageNewsletterFields(p: unknown): p is PageWithNewsletter {
 
 const route = useRoute()
 const router = useRouter()
+const { isFocusMode } = useFocusMode()
+const { isTocVisible, toggle: toggleToc } = useTocVisibility()
+const authorPickerOpen = ref(false)
+const authorPickerAuthors = ref<string[]>([])
+
+function isYouTubeUrl(url: string): boolean {
+  return url.includes('youtube.com') || url.includes('youtu.be')
+}
 
 const { data: page } = await useAsyncData(`page-${route.path}`, () => {
   return queryCollection('content').path(route.path).first()
@@ -133,6 +145,10 @@ const headerContent = computed(() => ({
   guests: getPageGuests(page.value),
 }))
 
+// Authors for the shortcut
+const pageAuthors = computed(() => page.value?.authors)
+const { handleShortcut: handleAuthorShortcut } = useAuthorShortcut(pageAuthors)
+
 // Fetch note graph data for mini-graph visualization
 const { data: noteGraph } = await useAsyncData(
   `note-graph-${slug.value}`,
@@ -148,6 +164,32 @@ usePageTitle(() => page.value?.title ?? '')
 useSeoMeta({
   description: () => page.value?.summary ?? '',
 })
+
+defineShortcuts({
+  'o': () => {
+    if (page.value?.url) {
+      window.open(page.value.url, '_blank')
+    }
+  },
+  ']': () => {
+    toggleToc()
+  },
+  'a': () => {
+    const action = handleAuthorShortcut()
+    if (action.type === 'multiple') {
+      authorPickerAuthors.value = action.authors
+      authorPickerOpen.value = true
+    }
+  },
+  'shift_l': () => {
+    navigator.clipboard.writeText(`[[${slug.value}]]`)
+  },
+  'shift_c': () => {
+    if (page.value?.url) {
+      navigator.clipboard.writeText(page.value.url)
+    }
+  },
+})
 </script>
 
 <template>
@@ -157,7 +199,7 @@ useSeoMeta({
       <ContentHeader :content="headerContent" :podcast="typedPodcast ?? undefined" :newsletter="typedNewsletter ?? undefined" :hosts="podcastHosts ?? undefined" />
 
       <YouTubePlayer
-        v-if="page.type === 'youtube' && page.url"
+        v-if="page.url && isYouTubeUrl(page.url)"
         :url="page.url"
       />
 
@@ -202,17 +244,23 @@ useSeoMeta({
       />
     </article>
 
-    <!-- TOC Sidebar (hidden on mobile) -->
-    <aside v-if="tocLinks.length > 0" class="hidden lg:block lg:col-span-4 xl:col-span-3">
+    <!-- TOC Sidebar (hidden on mobile, in focus mode, or when toggled off) -->
+    <aside v-if="tocLinks.length > 0 && !isFocusMode && isTocVisible" class="hidden lg:block lg:col-span-4 xl:col-span-3">
       <div class="sticky top-20">
         <UContentToc
           :links="tocLinks"
-          highlight 
+          highlight
           color="neutral"
           highlight-color="neutral"
           title="On this page"
         />
       </div>
     </aside>
+
+    <!-- Author Picker Modal -->
+    <AuthorPickerModal
+      v-model:open="authorPickerOpen"
+      :authors="authorPickerAuthors"
+    />
   </div>
 </template>

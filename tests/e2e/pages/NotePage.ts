@@ -8,6 +8,7 @@ export class NotePage {
   readonly prose: Locator
   readonly wikiLinks: Locator
   readonly backlinksSection: Locator
+  readonly authorPickerModal: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -17,6 +18,7 @@ export class NotePage {
     this.prose = page.locator('.prose')
     this.wikiLinks = page.locator('a.wiki-link')
     this.backlinksSection = page.locator('text=Backlinks').first()
+    this.authorPickerModal = page.getByRole('dialog').filter({ hasText: /author/i })
   }
 
   async goto(slug: string) {
@@ -29,5 +31,9 @@ export class NotePage {
 
   getWikiLinkByText(text: string): Locator {
     return this.page.locator('a.wiki-link').filter({ hasText: text })
+  }
+
+  async pressAuthorShortcut() {
+    await this.page.keyboard.press('a')
   }
 }

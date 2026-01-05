@@ -2,6 +2,10 @@
 
 Second Brain is a personal knowledge base for capturing and connecting content (podcasts, articles, books, etc.) using Zettelkasten-style wiki-links.
 
+## Owner
+
+This Second Brain belongs to **Alexander Opalic**. When creating personal notes, TILs, or blog posts, use `authors: [alexander-opalic]` in frontmatter.
+
 ## Commands
 
 ```bash

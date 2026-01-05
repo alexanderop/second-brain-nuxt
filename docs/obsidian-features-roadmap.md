@@ -198,6 +198,38 @@ Then `[[habits]]` resolves to `/atomic-habits`.
 
 ---
 
+## Excalidraw Diagrams (Implemented)
+
+### How It Works
+
+Obsidian's Excalidraw plugin stores diagrams as `.excalidraw.md` files with LZ-String compressed JSON. With **auto-export enabled**, it also creates `.svg` files alongside them.
+
+**Pipeline:**
+```text
+content/Excalidraw/*.svg → build:excalidraw → public/excalidraw/*.svg
+![[file.excalidraw]] → modules/wikilinks.ts → <img src="/excalidraw/slug.svg">
+```
+
+### Key Files
+- `scripts/build-excalidraw.ts` - Copies & processes SVGs at build time
+- `modules/wikilinks.ts` - Transforms `![[*.excalidraw]]` embeds to img tags
+- `app/assets/css/main.css` - `.excalidraw-diagram` styling
+
+### SVG Theming Gotcha
+
+Excalidraw SVGs have **hardcoded colors** (`#ffffff` background, `#1e1e1e` strokes). Since `<img>` tags load SVGs as static images, CSS `currentColor` won't work.
+
+**Solution:**
+1. Build script removes white background rect via regex
+2. CSS uses `filter: invert(1) hue-rotate(180deg)` for dark mode
+
+### Obsidian Setup Required
+
+In Excalidraw plugin settings, enable:
+- **Auto-export SVG** - Creates `.svg` alongside `.excalidraw.md`
+
+---
+
 ## Current State (What Exists)
 
 | Feature | Status |
@@ -209,6 +241,7 @@ Then `[[habits]]` resolves to `/atomic-habits`.
 | Tags | ✅ Implemented |
 | Full-text Search | ✅ Implemented |
 | Unlinked Mentions | ✅ Implemented |
+| Excalidraw diagrams | ✅ Implemented |
 
 ---
 

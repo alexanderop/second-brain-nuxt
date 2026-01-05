@@ -43,9 +43,10 @@ See `references/content-types/youtube.md` for full classification logic and chan
 
 ## Scripts Reference
 
+Only use scripts that fetch external data or perform complex processing:
+
 | Script | Purpose |
 |--------|---------|
-| `generate-frontmatter.sh URL [type]` | Create dated template with auto-detected type |
 | `get-youtube-metadata.sh URL` | Fetch video title, channel |
 | `get-youtube-transcript.py URL` | Fetch video transcript |
 | `get-podcast-transcript.py [opts]` | Multi-source podcast transcript |
@@ -53,11 +54,13 @@ See `references/content-types/youtube.md` for full classification logic and chan
 | `get-goodreads-metadata.sh URL` | Fetch book title, author, cover |
 | `get-manga-metadata.sh URL` | Fetch series metadata |
 | `get-github-metadata.sh URL` | Fetch repo name, stars, language |
-| `check-author-exists.sh NAME` | Check author (returns EXISTS, POSSIBLE_MATCH, or NOT_FOUND) |
-| `generate-author-frontmatter.sh NAME` | Generate author profile |
-| `list-existing-tags.sh [filter]` | List tags by frequency |
-| `generate-slug.sh "Title"` | Generate kebab-case filename |
 | `find-related-notes.py FILE --limit N` | Find semantically related notes |
+
+**Do NOT use scripts for these trivial operations — do them inline:**
+- Slug generation: `"My Title Here"` → `my-title-here` (lowercase, spaces to hyphens)
+- Author check: Use `Glob` tool with `content/authors/*{lastname}*.md`
+- Frontmatter templates: Write YAML directly
+- Tag lookup: Use `Grep` tool or rely on knowledge from prior notes
 
 ---
 
@@ -76,14 +79,9 @@ Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 
 ### Phase 1: Type Detection & Dispatch
 
-1. Run `generate-frontmatter.sh "[URL]"` to auto-detect type
+1. **Detect type from URL** using the Content Type Routing table above (no script needed)
 2. **Load the content-type reference file** for detailed handling
-3. Start background semantic analysis agent:
-   ```text
-   Task: "Run python3 scripts/find-related-notes.py content/TEMP.md --limit 10"
-   run_in_background: true
-   ```
-4. Detect `isTechnical` flag (see content-type file for criteria)
+3. Detect `isTechnical` flag (see content-type file for criteria)
 
 ### Phase 2: Metadata Collection
 
@@ -96,17 +94,21 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 
 ### Phase 3: Author Creation
 
-For external content types, authors are **required**. Run `check-author-exists.sh` for each author.
+For external content types, authors are **required**. Check existence with Glob (no script needed):
+
+```text
+Glob: content/authors/*{lastname}*.md
+```
 
 **Handle by result:**
 
 | Result | Action |
 |--------|--------|
-| `EXISTS: path` | Use the existing author's slug |
-| `POSSIBLE_MATCH: paths` | Read matched files, then use `AskUserQuestion` to verify (see below) |
-| `NOT_FOUND` | Create new author (see `references/author-creation.md`) |
+| Exact match found | Use the existing author's slug |
+| Partial match | Read matched files, use `AskUserQuestion` to verify |
+| No matches | Create new author (see below) |
 
-**For POSSIBLE_MATCH**, use the `AskUserQuestion` tool:
+**For partial matches**, use the `AskUserQuestion` tool:
 
 ```yaml
 question: "Is [Author Name] the same person as this existing author?"
@@ -119,24 +121,40 @@ options:
     description: "Create a new author profile"
 ```
 
-Quick creation flow:
+**Quick creation flow:**
 1. WebSearch: `[Author Name] official site bio`
 2. Extract: bio, avatar, website, socials
-3. Generate with `generate-author-frontmatter.sh`
-4. Save to `content/authors/{slug}.md`
+3. Write author file directly (no script):
+
+```yaml
+---
+name: "Author Name"
+slug: "author-name"
+bio: "1-2 sentence description"
+avatar: ""
+website: ""
+socials:
+  twitter: ""
+  github: ""
+  linkedin: ""
+  youtube: ""
+---
+```
+
+4. Save to `content/authors/{slug}.md` (slug = lowercase name, spaces to hyphens)
 
 **Tip:** Add `aliases` field to authors who go by multiple names (e.g., "DHH" → aliases: ["David Heinemeier Hansson"]).
 
 ### Phase 4: Content Generation
 
 1. **Load writing-style skill** (REQUIRED): `Read .claude/skills/writing-style/SKILL.md`
-2. Collect semantic analysis results from Phase 1
-3. If `isTechnical`: collect code snippets from Phase 2
-4. **Compile frontmatter** using template from content-type file
-5. **Generate body** with wiki-links for strong connections only
-6. Add diagrams if applicable (see `references/diagrams-guide.md`)
+2. If `isTechnical`: collect code snippets from Phase 2
+3. **Compile frontmatter** using template from content-type file
+4. **Generate body** with wiki-links for strong connections only
+5. Add diagrams if applicable (see `references/diagrams-guide.md`)
+6. **Find related notes** (optional): `Grep` for key terms to discover wiki-link candidates
 
-**Tags:** 3-5 relevant tags, check existing: `list-existing-tags.sh`
+**Tags:** 3-5 relevant tags. Use tags you've seen in prior notes or `Grep` for similar content to find existing tags.
 
 **Wiki-links:** Link only when same author, explicit reference, same core topic, or same series. When in doubt, leave it out.
 
@@ -146,10 +164,12 @@ Spawn 4 parallel validators:
 
 | Validator | Checks |
 |-----------|--------|
-| Wiki-link | Each `[[link]]` exists in `content/` |
+| Wiki-link | Each `[[link]]` exists in `content/` (excluding Readwise) |
 | Duplicate | Title/URL doesn't already exist |
 | Tag | Tags match or similar to existing |
 | Type-specific | E.g., podcast: profile exists, guest not in hosts |
+
+**Wiki-link note:** Readwise highlights (`content/readwise/`) are excluded from Nuxt Content and won't resolve as valid wiki-links. Use plain text or italics for books/articles that only exist in Readwise.
 
 **IF issues found:** Use the `AskUserQuestion` tool:
 
@@ -170,9 +190,8 @@ options:
 
 ### Phase 6: Save Note
 
-```bash
-.claude/skills/adding-notes/scripts/generate-slug.sh "Title"
-```
+Generate slug inline: lowercase title, replace spaces with hyphens, remove special characters.
+Example: `"Superhuman Is Built for Speed"` → `superhuman-is-built-for-speed`
 
 Save to `content/{slug}.md`. Confirm:
 ```text

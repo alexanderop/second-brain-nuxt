@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Fetch YouTube video transcript with automatic language detection."""
+"""Fetch YouTube video transcript with automatic language detection and timestamp support."""
 import sys
 import re
+import json
 import argparse
 from youtube_transcript_api import YouTubeTranscriptApi
 
@@ -19,6 +20,34 @@ def extract_video_id(url):
         if match:
             return match.group(1)
     return None
+
+
+def format_timestamp(seconds):
+    """Convert seconds to [MM:SS] or [HH:MM:SS] format."""
+    seconds = int(seconds)
+    if seconds >= 3600:
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+        return f"[{hours}:{minutes:02d}:{secs:02d}]"
+    else:
+        minutes = seconds // 60
+        secs = seconds % 60
+        return f"[{minutes:02d}:{secs:02d}]"
+
+
+def format_timestamp_short(seconds):
+    """Convert seconds to MM:SS or HH:MM:SS format (without brackets)."""
+    seconds = int(seconds)
+    if seconds >= 3600:
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+        return f"{hours}:{minutes:02d}:{secs:02d}"
+    else:
+        minutes = seconds // 60
+        secs = seconds % 60
+        return f"{minutes}:{secs:02d}"
 
 
 def find_best_transcript(transcript_list, preferred_lang=None):
@@ -63,11 +92,119 @@ def find_best_transcript(transcript_list, preferred_lang=None):
     return None
 
 
+def merge_segments(segments, max_gap=2.0, target_duration=30.0):
+    """Merge short segments into longer chunks for readability.
+
+    Args:
+        segments: List of transcript segments with start, duration, text
+        max_gap: Maximum gap (seconds) between segments to merge
+        target_duration: Target duration for merged segments
+
+    Returns:
+        List of merged segments
+    """
+    if not segments:
+        return []
+
+    merged = []
+    current = {
+        'start': segments[0].start,
+        'duration': segments[0].duration,
+        'text': segments[0].text.strip()
+    }
+
+    for seg in segments[1:]:
+        gap = seg.start - (current['start'] + current['duration'])
+        current_end = current['start'] + current['duration']
+
+        # Merge if gap is small and we haven't exceeded target duration
+        if gap <= max_gap and (current_end - current['start']) < target_duration:
+            current['duration'] = (seg.start + seg.duration) - current['start']
+            current['text'] += ' ' + seg.text.strip()
+        else:
+            merged.append(current)
+            current = {
+                'start': seg.start,
+                'duration': seg.duration,
+                'text': seg.text.strip()
+            }
+
+    merged.append(current)
+    return merged
+
+
+def output_plain(transcript):
+    """Output transcript as plain text (original behavior)."""
+    full_text = ' '.join([snippet.text for snippet in transcript])
+    print(full_text)
+
+
+def output_timestamped(transcript, merge=True):
+    """Output transcript with [MM:SS] timestamps."""
+    if merge:
+        segments = merge_segments(transcript)
+        for seg in segments:
+            ts = format_timestamp(seg['start'])
+            print(f"{ts} {seg['text']}")
+    else:
+        for snippet in transcript:
+            ts = format_timestamp(snippet.start)
+            print(f"{ts} {snippet.text}")
+
+
+def output_json(transcript, video_id, language, is_generated, merge=True):
+    """Output transcript as JSON with full metadata."""
+    if merge:
+        segments = merge_segments(transcript)
+        seg_data = [
+            {
+                'start': seg['start'],
+                'timestamp': format_timestamp_short(seg['start']),
+                'duration': seg['duration'],
+                'text': seg['text']
+            }
+            for seg in segments
+        ]
+    else:
+        seg_data = [
+            {
+                'start': snippet.start,
+                'timestamp': format_timestamp_short(snippet.start),
+                'duration': snippet.duration,
+                'text': snippet.text
+            }
+            for snippet in transcript
+        ]
+
+    # Calculate total duration from last segment
+    if seg_data:
+        last = seg_data[-1]
+        total_duration = last['start'] + last['duration']
+    else:
+        total_duration = 0
+
+    output = {
+        'video_id': video_id,
+        'language': language,
+        'is_generated': is_generated,
+        'total_duration': total_duration,
+        'total_duration_formatted': format_timestamp_short(total_duration),
+        'segment_count': len(seg_data),
+        'segments': seg_data
+    }
+
+    print(json.dumps(output, indent=2))
+
+
 def main():
     parser = argparse.ArgumentParser(description='Fetch YouTube transcript')
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--lang', '-l', help='Preferred language code (e.g., de, en, fr)')
     parser.add_argument('--list', '-L', action='store_true', help='List available transcripts')
+    parser.add_argument('--format', '-f', choices=['plain', 'timestamped', 'json'],
+                        default='plain', help='Output format (default: plain)')
+    parser.add_argument('--no-merge', action='store_true',
+                        help='Do not merge short segments (for timestamped/json formats)')
     args = parser.parse_args()
 
     video_id = extract_video_id(args.url)
@@ -98,8 +235,15 @@ def main():
         print(f"Using {best.language} ({best.language_code}, {kind}) transcript", file=sys.stderr)
 
         transcript = best.fetch()
-        full_text = ' '.join([snippet.text for snippet in transcript])
-        print(full_text)
+
+        # Output based on format
+        if args.format == 'plain':
+            output_plain(transcript)
+        elif args.format == 'timestamped':
+            output_timestamped(transcript, merge=not args.no_merge)
+        elif args.format == 'json':
+            output_json(transcript, video_id, best.language_code,
+                       best.is_generated, merge=not args.no_merge)
 
     except Exception as e:
         print(f"Error fetching transcript: {e}", file=sys.stderr)

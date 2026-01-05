@@ -3,6 +3,7 @@ import { computed, watch } from 'vue'
 import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections, queryCollection } from '#imports'
 import { UModal, UCommandPalette, UAvatar } from '#components'
 import type { CommandPaletteItem, CommandPaletteGroup } from '@nuxt/ui'
+import { transformPodcastToSearchItem } from '~/utils/searchHelpers'
 
 const open = defineModel<boolean>('open', { default: false })
 const route = useRoute()
@@ -23,6 +24,12 @@ const { data: authors } = await useAsyncData(
 const { data: newsletters } = await useAsyncData(
   'search-modal-newsletters',
   () => queryCollection('newsletters').select('name', 'slug', 'logo').all(),
+)
+
+// Fetch podcasts for search
+const { data: podcasts } = await useAsyncData(
+  'search-modal-podcasts',
+  () => queryCollection('podcasts').select('name', 'slug', 'artwork').all(),
 )
 
 // Close modal when route changes
@@ -88,6 +95,12 @@ const newsletterItems = computed<CommandPaletteItem[]>(() => {
   }))
 })
 
+// Build podcast items for CommandPalette
+const podcastItems = computed<CommandPaletteItem[]>(() => {
+  if (!podcasts.value) return []
+  return podcasts.value.map(transformPodcastToSearchItem)
+})
+
 // Combined groups for CommandPalette
 const groups = computed<CommandPaletteGroup[]>(() => {
   const result: CommandPaletteGroup[] = []
@@ -113,6 +126,14 @@ const groups = computed<CommandPaletteGroup[]>(() => {
       id: 'newsletters',
       label: 'Newsletters',
       items: newsletterItems.value,
+    })
+  }
+
+  if (podcastItems.value.length) {
+    result.push({
+      id: 'podcasts',
+      label: 'Podcasts',
+      items: podcastItems.value,
     })
   }
 
@@ -142,7 +163,7 @@ function onSelect(item: CommandPaletteItem) {
       <UCommandPalette
         :groups="groups"
         :fuse="fuseOptions"
-        placeholder="Search notes, authors, newsletters..."
+        placeholder="Search notes, authors, newsletters, podcasts..."
         class="h-96"
         :close="{ icon: 'i-lucide-x', color: 'neutral', variant: 'ghost' }"
         @update:model-value="onSelect"
@@ -166,6 +187,16 @@ function onSelect(item: CommandPaletteItem) {
             size="2xs"
           />
           <span v-else class="i-lucide-newspaper size-5 text-[var(--ui-text-muted)]" />
+        </template>
+
+        <template #podcast-leading="{ item }">
+          <UAvatar
+            v-if="item.avatar"
+            :src="item.avatar.src"
+            :alt="item.avatar.alt"
+            size="2xs"
+          />
+          <span v-else class="i-lucide-podcast size-5 text-[var(--ui-text-muted)]" />
         </template>
 
         <template #empty>

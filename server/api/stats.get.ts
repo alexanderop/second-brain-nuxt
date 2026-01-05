@@ -1,5 +1,4 @@
 import type { H3Event } from 'h3'
-import { getRequestURL } from 'h3'
 import { defineCachedEventHandler } from 'nitropack/runtime'
 import { queryCollection } from '@nuxt/content/server'
 
@@ -51,6 +50,12 @@ interface HubNode {
   connections: number
 }
 
+interface OrphanNode {
+  id: string
+  title: string
+  type: string
+}
+
 interface StatsData {
   total: number
   byType: TypeCount[]
@@ -68,6 +73,7 @@ interface StatsData {
     orphanCount: number
     orphanPercent: number
     hubs: HubNode[]
+    orphans: OrphanNode[]
   }
   thisWeek: number
 }
@@ -131,14 +137,13 @@ function countThisWeek(items: ContentItem[]): number {
   }).length
 }
 
-async function fetchGraphData(event: H3Event): Promise<GraphData> {
-  // Fetch from internal API endpoint
-  const baseUrl = getRequestURL(event).origin
+async function fetchGraphData(_event: H3Event): Promise<GraphData> {
+  // Fetch from internal API endpoint using relative path
   try {
-    return await $fetch<GraphData>(`${baseUrl}/api/graph`)
+    return await $fetch<GraphData>('/api/graph')
   }
-  catch {
-    // Fallback: return empty data if graph endpoint fails
+  catch (error) {
+    console.error('Error fetching graph data:', error)
     return { nodes: [], edges: [] }
   }
 }
@@ -170,6 +175,16 @@ export default defineCachedEventHandler(async (event): Promise<StatsData> => {
       connections: n.connections,
     }))
 
+  // Get orphan notes (no connections)
+  const orphans = graphData.nodes
+    .filter(n => n.connections === 0)
+    .slice(0, 5)
+    .map(n => ({
+      id: n.id,
+      title: n.title,
+      type: n.type,
+    }))
+
   return {
     total: allContent.length,
     byType: aggregateByType(allContent),
@@ -189,6 +204,7 @@ export default defineCachedEventHandler(async (event): Promise<StatsData> => {
       orphanCount,
       orphanPercent,
       hubs,
+      orphans,
     },
     thisWeek: countThisWeek(allContent),
   }

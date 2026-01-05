@@ -12,7 +12,8 @@
   },
   "scripts": {
     "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
-    "build": "nuxt build",
+    "build:excalidraw": "npx tsx scripts/build-excalidraw.ts",
+    "build": "pnpm build:excalidraw && nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
@@ -27,6 +28,7 @@
     "test:integration": "vitest run --project nuxt",
     "test:component": "vitest run --project component",
     "test:component:ui": "vitest --project component --ui",
+    "test:bdd": "vitest run --project bdd",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "prepare": "husky"
@@ -88,6 +90,7 @@
     "vitest-browser-vue": "^1.1.0",
     "vue": "^3.5.26",
     "vue-eslint-parser": "^10.1.3",
+    "vue-router": "^4.6.4",
     "yaml": "^2.8.2"
   }
 }

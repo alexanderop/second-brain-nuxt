@@ -9,7 +9,7 @@ External content types require authors in frontmatter:
 
 ## Author Creation Workflow
 
-For each author marked `NOT_FOUND` in Phase 2:
+For each author not found via Glob search:
 
 1. **WebSearch**: `[Author Name] official site bio`
 2. **Extract**:
@@ -18,17 +18,24 @@ For each author marked `NOT_FOUND` in Phase 2:
    - `website`: Personal/official website
    - `socials`: twitter, github, linkedin, youtube handles (not full URLs)
 
-3. **Generate frontmatter**:
-   ```bash
-   .claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Name" \
-       --bio "Description" \
-       --avatar "URL" \
-       --website "URL" \
-       --twitter "handle" \
-       --github "handle"
+3. **Write frontmatter directly** (no script needed):
+   ```yaml
+   ---
+   name: "Author Name"
+   slug: "author-name"
+   bio: "1-2 sentence description"
+   avatar: "https://..."
+   website: "https://..."
+   socials:
+     twitter: "handle"
+     github: "handle"
+     linkedin: "handle"
+     youtube: "handle"
+   ---
    ```
 
-4. **Save**: `content/authors/{slug}.md` where slug is kebab-case of name
+4. **Save**: `content/authors/{slug}.md`
+   - Slug = lowercase name, spaces to hyphens (e.g., "Christina Marfice" → "christina-marfice")
 
 ## Avatar Fallbacks
 
@@ -63,23 +70,19 @@ https://avatars.githubusercontent.com/ccssmnn
 - Avatar can be company logo
 - Socials are company accounts
 
-## Scripts Reference
+## Author Lookup (No Scripts)
 
-```bash
+Use Glob tool instead of scripts:
+
+```text
 # Check if author exists
-.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
+Glob: content/authors/*{lastname}*.md
 
-# List all existing authors
-.claude/skills/adding-notes/scripts/list-existing-authors.sh
-
-# Search for similar names
-.claude/skills/adding-notes/scripts/list-existing-authors.sh "partial-name"
-
-# Generate author frontmatter
-.claude/skills/adding-notes/scripts/generate-author-frontmatter.sh "Name" \
-    --bio "..." --avatar "..." --website "..." \
-    --twitter "..." --github "..." --linkedin "..." --youtube "..."
+# Example: checking for "Christina Marfice"
+Glob: content/authors/*marfice*.md
 ```
+
+If partial matches found, read the files to verify identity before reusing or creating new.
 
 ## Frontmatter Template
 
@@ -101,13 +104,13 @@ socials:
 ---
 ```
 
-## Handling POSSIBLE_MATCH
+## Handling Partial Matches
 
-When `check-author-exists.sh` returns `POSSIBLE_MATCH`:
+When Glob returns potential matches:
 
 1. **Review the candidates** - Read the matched files to verify
 2. **If it's the same person** - Use the existing slug, don't create duplicate
 3. **If truly different** - Proceed with creation
 4. **Add aliases** - If the existing author lacks the alternate name, add it to their `aliases` field
 
-Example: "David Heinemeier Hansson" → matches `dhh.md` via initials. Check `dhh.md`, confirm it's the same person, use `dhh` as the author slug.
+Example: "David Heinemeier Hansson" → Glob finds `dhh.md`. Read it, confirm it's the same person, use `dhh` as the author slug.
