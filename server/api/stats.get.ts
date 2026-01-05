@@ -178,7 +178,6 @@ export default defineCachedEventHandler(async (event): Promise<StatsData> => {
   // Get orphan notes (no connections)
   const orphans = graphData.nodes
     .filter(n => n.connections === 0)
-    .slice(0, 5)
     .map(n => ({
       id: n.id,
       title: n.title,

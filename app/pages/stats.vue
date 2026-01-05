@@ -1,9 +1,37 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { useFetch } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
-import { NuxtLink, UIcon, UProgress } from '#components'
+import { NuxtLink, UIcon, UInput, UModal, UPagination, UProgress } from '#components'
 import StatCard from '~/components/StatCard.vue'
+
+const orphanModalOpen = ref(false)
+const orphanPage = ref(1)
+const orphanPageSize = 10
+const orphanFilter = ref('')
+const orphanSort = ref<{ column: 'title' | 'type', direction: 'asc' | 'desc' }>({ column: 'title', direction: 'asc' })
+
+function openOrphanModal() {
+  orphanPage.value = 1
+  orphanFilter.value = ''
+  orphanSort.value = { column: 'title', direction: 'asc' }
+  orphanModalOpen.value = true
+}
+
+function toggleOrphanSort(column: 'title' | 'type') {
+  if (orphanSort.value.column === column) {
+    orphanSort.value.direction = orphanSort.value.direction === 'asc' ? 'desc' : 'asc'
+    orphanPage.value = 1
+    return
+  }
+  orphanSort.value = { column, direction: 'asc' }
+  orphanPage.value = 1
+}
+
+function getSortIndicator(column: 'title' | 'type') {
+  if (orphanSort.value.column !== column) return '↕'
+  return orphanSort.value.direction === 'asc' ? '↑' : '↓'
+}
 
 // Lazy-load chart components to reduce initial bundle size
 const StatsBarChart = defineAsyncComponent(() => import('~/components/StatsBarChart.vue'))
@@ -82,6 +110,41 @@ const qualityMetrics = computed(() => {
       percent: Math.round((q.withNotes / q.total) * 100),
     },
   ]
+})
+
+const filteredOrphans = computed(() => {
+  let orphans = stats.value?.connections.orphans ?? []
+
+  // Filter
+  if (orphanFilter.value) {
+    const query = orphanFilter.value.toLowerCase()
+    orphans = orphans.filter(o =>
+      o.title.toLowerCase().includes(query) || o.type.toLowerCase().includes(query),
+    )
+  }
+
+  // Sort
+  const { column, direction } = orphanSort.value
+  orphans = [...orphans].sort((a, b) => {
+    const aVal = a[column].toLowerCase()
+    const bVal = b[column].toLowerCase()
+    const cmp = aVal.localeCompare(bVal)
+    return direction === 'asc' ? cmp : -cmp
+  })
+
+  return orphans
+})
+
+const paginatedOrphans = computed(() => {
+  const start = (orphanPage.value - 1) * orphanPageSize
+  return filteredOrphans.value.slice(start, start + orphanPageSize)
+})
+
+const orphanTotal = computed(() => filteredOrphans.value.length)
+
+// Reset page when filter changes
+watch(orphanFilter, () => {
+  orphanPage.value = 1
 })
 
 usePageTitle('Stats')
@@ -205,7 +268,7 @@ usePageTitle('Stats')
           </h2>
           <div v-if="stats.connections.orphans.length" class="space-y-1">
             <NuxtLink
-              v-for="orphan in stats.connections.orphans"
+              v-for="orphan in stats.connections.orphans.slice(0, 5)"
               :key="orphan.id"
               :to="`/${orphan.id}`"
               class="flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-lg hover:bg-[var(--ui-bg-elevated)] transition-all duration-150"
@@ -215,9 +278,13 @@ usePageTitle('Stats')
                 {{ orphan.type }}
               </span>
             </NuxtLink>
-            <p v-if="stats.connections.orphanCount > 5" class="text-xs text-[var(--ui-text-muted)] pt-2">
+            <button
+              v-if="stats.connections.orphanCount > 5"
+              class="text-xs text-[var(--ui-text-muted)] pt-2 hover:text-[var(--ui-text)] hover:underline cursor-pointer"
+              @click="openOrphanModal"
+            >
               +{{ stats.connections.orphanCount - 5 }} more orphans
-            </p>
+            </button>
           </div>
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
             <UIcon name="i-heroicons-check-circle" class="size-8 mb-2 opacity-50" />
@@ -279,6 +346,90 @@ usePageTitle('Stats')
         </div>
       </div>
     </div>
+
+    <!-- Orphan Notes Modal (outside stats div to reduce nesting) -->
+    <UModal v-model:open="orphanModalOpen" :ui="{ content: 'w-full max-w-2xl' }">
+      <template #content>
+        <div class="p-6 flex flex-col max-h-[70vh]">
+          <!-- Header (fixed) -->
+          <div class="flex items-center justify-between mb-4 flex-shrink-0">
+            <h2 class="text-lg font-semibold">
+              Orphan Notes
+              <span class="text-sm font-normal text-[var(--ui-text-muted)]">({{ stats?.connections.orphanCount }})</span>
+            </h2>
+            <button
+              aria-label="Close modal"
+              class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] p-1"
+              @click="orphanModalOpen = false"
+            >
+              <UIcon name="i-heroicons-x-mark" class="size-5" />
+            </button>
+          </div>
+
+          <!-- Filter (fixed) -->
+          <UInput
+            v-model="orphanFilter"
+            placeholder="Filter by title or type..."
+            icon="i-heroicons-magnifying-glass"
+            size="sm"
+            class="mb-4 flex-shrink-0"
+          />
+
+          <!-- Table (fixed height via row count) -->
+          <table class="w-full min-h-[360px]">
+            <thead class="sticky top-0 bg-[var(--ui-bg)] z-10">
+              <tr class="text-left text-xs text-[var(--ui-text-muted)] uppercase tracking-wider border-b border-[var(--ui-border)]">
+                <th class="pb-2 cursor-pointer hover:text-[var(--ui-text)]" @click="toggleOrphanSort('title')">
+                  Title {{ getSortIndicator('title') }}
+                </th>
+                <th class="pb-2 text-right cursor-pointer hover:text-[var(--ui-text)]" @click="toggleOrphanSort('type')">
+                  Type {{ getSortIndicator('type') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="orphan in paginatedOrphans"
+                :key="orphan.id"
+                class="border-b border-[var(--ui-border)] last:border-0 h-10"
+              >
+                <td class="py-2.5">
+                  <NuxtLink
+                    :to="`/${orphan.id}`"
+                    class="hover:text-[var(--ui-primary)] hover:underline"
+                    @click="orphanModalOpen = false"
+                  >
+                    {{ orphan.title }}
+                  </NuxtLink>
+                </td>
+                <td class="py-2.5 text-right">
+                  <span class="text-xs font-mono text-[var(--ui-text-muted)] bg-[var(--ui-bg-muted)] px-2 py-0.5 rounded-md">
+                    {{ orphan.type }}
+                  </span>
+                </td>
+              </tr>
+              <tr v-if="paginatedOrphans.length === 0">
+                <td colspan="2" class="py-8 text-center text-[var(--ui-text-muted)]">
+                  No orphans match your filter
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination (fixed at bottom) -->
+          <div v-if="orphanTotal > orphanPageSize" class="flex-shrink-0 mt-4 pt-4 border-t border-[var(--ui-border)] flex justify-center">
+            <UPagination
+              v-model:page="orphanPage"
+              :total="orphanTotal"
+              :items-per-page="orphanPageSize"
+              :sibling-count="1"
+              show-edges
+              size="sm"
+            />
+          </div>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
