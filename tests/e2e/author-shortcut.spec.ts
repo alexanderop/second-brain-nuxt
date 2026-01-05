@@ -25,8 +25,8 @@ test.describe('Author Shortcut', () => {
 
   test('a key does nothing when note has no authors', async ({ page, context }) => {
     const notePage = new NotePage(page)
-    // Personal note that may not have external authors - using an evergreen note
-    await notePage.goto('about')
+    // Evergreen note without authors field
+    await notePage.goto('second-brain-system')
 
     await expect(notePage.title).toBeVisible()
 
