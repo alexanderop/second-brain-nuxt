@@ -73,8 +73,8 @@ importers:
         specifier: ^4.2.2
         version: 4.2.2(magicast@0.5.1)
       '@nuxt/test-utils':
-        specifier: ^3.21.0
-        version: 3.21.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)
+        specifier: ^3.22.0
+        version: 3.22.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)
       '@playwright/test':
         specifier: ^1.57.0
         version: 1.57.0
@@ -1548,8 +1548,8 @@ packages:
     engines: {node: '>=18.12.0'}
     hasBin: true
 
-  '@nuxt/test-utils@3.21.0':
-    resolution: {integrity: sha512-A6XExfgHq88+XuXAU4MMr5QBHS2mWA5qRVSvsMPP2U+YSsnk+Vt7P7dxbvJPE4+n6LHbC1IM0QjTVteo+VCxOA==}
+  '@nuxt/test-utils@3.22.0':
+    resolution: {integrity: sha512-Qo2+FKrslfOp5S0z7hrajPATIVRLokMhlVTIuhOgnowE7WdgMdLGTkDQim+p8e6COw3loLabisLG85THdLp3vQ==}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
       '@cucumber/cucumber': ^10.3.1 || >=11.0.0
@@ -9956,7 +9956,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxt/test-utils@3.21.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)':
+  '@nuxt/test-utils@3.22.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)':
     dependencies:
       '@nuxt/kit': 3.20.2(magicast@0.5.1)
       c12: 3.3.3(magicast@0.5.1)
@@ -17461,7 +17461,7 @@ snapshots:
 
   vitest-environment-nuxt@1.0.1(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4):
     dependencies:
-      '@nuxt/test-utils': 3.21.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)
+      '@nuxt/test-utils': 3.22.0(@playwright/test@1.57.0)(@vue/test-utils@2.4.6)(happy-dom@20.0.11)(jsdom@24.1.3)(magicast@0.5.1)(playwright-core@1.57.0)(typescript@5.9.3)(vitest@3.2.4)
     transitivePeerDependencies:
       - '@cucumber/cucumber'
       - '@jest/globals'
