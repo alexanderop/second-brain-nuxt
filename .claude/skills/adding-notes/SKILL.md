@@ -71,9 +71,10 @@ Phase 1: Type Detection → Route to content-type file
 Phase 2: Parallel Metadata Collection → Per-type agents
 Phase 3: Author Creation → See references/author-creation.md
 Phase 4: Content Generation → Apply writing-style, generate body
-Phase 5: Quality Validation → 4 parallel validators (BLOCKING)
-Phase 6: Save Note → Write to content/{slug}.md
-Phase 7: MOC Placement → Suggest placements (non-blocking)
+Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any exist)
+Phase 5: Quality Validation → Parallel validators
+Phase 6: Save Note → Write to content/{slug}.md with link density report
+Phase 7: MOC Placement → Suggest placements + check MOC threshold
 Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 ```
 
@@ -148,23 +149,50 @@ socials:
 ### Phase 4: Content Generation
 
 1. **Load writing-style skill** (REQUIRED): `Read .claude/skills/writing-style/SKILL.md`
-2. If `isTechnical`: collect code snippets from Phase 2
-3. **Compile frontmatter** using template from content-type file
-4. **Generate body** with wiki-links for strong connections only
-5. Add diagrams if applicable (see `references/diagrams-guide.md`)
-6. **Find related notes** (optional): `Grep` for key terms to discover wiki-link candidates
+2. **Load linking philosophy** (REQUIRED): `Read .claude/skills/adding-notes/references/linking-philosophy.md`
+3. If `isTechnical`: collect code snippets from Phase 2
+4. **Compile frontmatter** using template from content-type file
+5. **Generate body** with wiki-links (see Phase 4.5 for connection discovery)
+6. Add diagrams if applicable (see `references/diagrams-guide.md`)
 
 **Tags:** 3-5 relevant tags. Use tags you've seen in prior notes or `Grep` for similar content to find existing tags.
 
-**Wiki-links:** Link only when same author, explicit reference, same core topic, or same series. When in doubt, leave it out.
+**Summary:** Frame as a core argument, not a description. What claim does this content make?
 
-### Phase 5: Quality Validation (BLOCKING)
+### Phase 4.5: Connection Discovery
 
-Spawn 4 parallel validators:
+Before finalizing content, search for genuinely related notes. **Only add connections that organically make sense.**
+
+1. **Same author check** (highest priority): If author exists, find their other works:
+   ```text
+   Grep pattern: "authors:.*{author-slug}" glob: "content/*.md"
+   ```
+
+2. **Tag-based discovery:** For each tag, find notes with that tag:
+   ```text
+   Grep pattern: "tags:.*{tag}" glob: "content/*.md" limit: 5
+   ```
+
+3. **Evaluate candidates:** For each potential connection, ask: "Would I naturally reference this when discussing the topic?" If the answer is no, don't force the link.
+
+**Connection quality over quantity:**
+- Add links only when the relationship is genuine and useful
+- If no notes genuinely relate, save as an orphan—that's fine
+- Forced connections create noise and reduce trust in the link graph
+- A well-explained single link beats two tenuous ones
+
+**When adding links**, explain the relationship:
+- `[[note]] - Same author explores this from a different angle`
+- `[[note]] - Provides the theoretical foundation for these ideas`
+
+### Phase 5: Quality Validation
+
+Spawn parallel validators:
 
 | Validator | Checks |
 |-----------|--------|
-| Wiki-link | Each `[[link]]` exists in `content/` (excluding Readwise) |
+| Wiki-link exists | Each `[[link]]` exists in `content/` (excluding Readwise) |
+| Link context | Each link has adjacent explanation (not bare "See also") |
 | Duplicate | Title/URL doesn't already exist |
 | Tag | Tags match or similar to existing |
 | Type-specific | E.g., podcast: profile exists, guest not in hosts |
@@ -193,22 +221,56 @@ options:
 Generate slug inline: lowercase title, replace spaces with hyphens, remove special characters.
 Example: `"Superhuman Is Built for Speed"` → `superhuman-is-built-for-speed`
 
-Save to `content/{slug}.md`. Confirm:
+Save to `content/{slug}.md`. Confirm with link density status:
+
 ```text
 ✓ Note saved: content/{slug}.md
   - Type: {type}
   - Authors: {author-slugs}
   - Tags: {tag-count} tags
-  - Wiki-links: {link-count} connections
+  - Wiki-links: {link-count} connections ({status})
+    - [[link-1]] (why: {context})
+    - [[link-2]] (why: {context})
 ```
 
+**Link density status:**
+- `{link-count} >= 3`: "well-connected"
+- `{link-count} = 1-2`: "connected"
+- `{link-count} = 0`: "standalone" (fine when no genuine connections exist)
+
 ### Phase 7: MOC Placement (Non-blocking)
+
+#### 7.1 Suggest Existing MOC Placement
 
 ```bash
 python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=for-note --note={slug}
 ```
 
 If suggestions score >= 0.7, present to user. Apply selections to MOC's `## Suggested` section.
+
+#### 7.2 Check MOC Creation Threshold
+
+After saving, check if any of the note's tags exceed the threshold:
+
+```bash
+# For each tag on the new note, count notes with that tag
+Grep pattern: "tags:.*{tag}" glob: "content/*.md" output_mode: "count"
+```
+
+**IF tag count >= 15 AND no existing MOC for that tag:**
+
+```yaml
+question: "The tag '{tag}' now has {count} notes. Would you like to create a MOC?"
+header: "MOC Opportunity"
+multiSelect: false
+options:
+  - label: "Create MOC"
+    description: "Generate a '{tag}' guide/roadmap to organize these notes"
+  - label: "Skip for now"
+    description: "Don't create a MOC yet"
+```
+
+If "Create MOC" selected: Invoke moc-curator skill with `--mode=new-clusters --tag={tag}`.
 
 ### Phase 8: Quality Check
 

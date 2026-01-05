@@ -47,7 +47,7 @@ grep -l "specific concept" content/*.md
 
 ### 3. Evaluate Connection Strength
 
-**Only suggest links when there is a strong, direct relationship:**
+**Aim for connection, not perfection.** Every note benefits from 2-3 meaningful links. An orphan note is harder to discover than an over-connected one.
 
 ✅ **Link when:**
 - Same author or creator
@@ -56,14 +56,15 @@ grep -l "specific concept" content/*.md
 - Covers the same core topic (e.g., two notes about "habit formation")
 - Part of the same series or project
 - Should be grouped together in a **Map Note** (MOC)
+- Offers a contrasting perspective on the same idea
+- Applies theory from one note to practice in another
 
-❌ **Do NOT link when:**
+❌ **Avoid linking when:**
 - Only a vague thematic overlap (e.g., "both mention AI")
 - The connection requires multiple hops of reasoning
-- The link would feel forced or add no value
-- Topics are tangentially related but not the main focus
+- You haven't read the target note and can't explain the relationship
 
-**When in doubt, leave it out.** A note with no wiki-links is better than one with weak connections.
+**Every link needs context.** Don't just link - explain WHY the connection exists in 1 sentence.
 
 ### 4. Present Suggestions
 

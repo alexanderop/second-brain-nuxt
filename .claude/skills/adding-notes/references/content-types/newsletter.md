@@ -92,7 +92,7 @@ tags:
 authors:
   - author-slug
 guest_author: guest-author-slug    # Optional - for one-off contributors
-summary: "Auto-generated core message"
+summary: "Core argument: What claim does this article make? (assertion, not description)"
 date: 2024-03-20
 ---
 ```
@@ -126,9 +126,12 @@ Include frameworks, mental models, or actionable advice.]
 - [Resource Name](url) — context for why it's relevant
 - [[wiki-linked-note]] — connection to existing knowledge
 
-## References
+## Connections
 
-Builds on ideas from [[related-concept]] and [[referenced-book]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-concept]] - [1-sentence explanation of the relationship]
+- [[referenced-book]] - [1-sentence explanation of the relationship]
 ```
 
 ---

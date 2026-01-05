@@ -29,7 +29,7 @@ tags:
   - topic-2
 authors:
   - author-slug
-summary: "Core thesis of the article"
+summary: "Core argument: What claim does this article make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -46,9 +46,12 @@ date: 2026-01-01
 - Point 1
 - Point 2
 
-## Related
+## Connections
 
-See also [[related-note]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-note]] - [1-sentence explanation of the relationship]
+- [[another-note]] - [1-sentence explanation of the relationship]
 ```
 
 ---
@@ -75,7 +78,7 @@ tags:
   - typescript
 authors:
   - author-slug
-summary: "What this article teaches"
+summary: "Core argument: What claim does this article make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -121,9 +124,12 @@ try {
 }
 ```
 
-## Related
+## Connections
 
-See also [[related-library]] and [[error-handling-patterns]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-library]] - [1-sentence explanation of the relationship]
+- [[error-handling-patterns]] - [1-sentence explanation of the relationship]
 ````
 
 ### Code Snippet Guidelines

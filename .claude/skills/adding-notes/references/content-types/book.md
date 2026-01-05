@@ -60,7 +60,7 @@ tags:
   - topic-2
 authors:
   - author-slug
-summary: "One-sentence description of the book's core idea"
+summary: "Core argument: What claim does this book make? (assertion, not description)"
 readingStatus: finished
 startedReading: 2025-12-15
 finishedReading: 2026-01-01
@@ -90,7 +90,10 @@ date: 2026-01-01
 
 ## Connections
 
-Related to [[other-book]] and [[related-concept]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[other-book]] - [1-sentence explanation of the relationship]
+- [[related-concept]] - [1-sentence explanation of the relationship]
 ```
 
 ## Special Features

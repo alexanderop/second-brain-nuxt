@@ -81,7 +81,7 @@ authors:
   - host-slug
 guests:
   - guest-slug
-summary: "Core message of the episode"
+summary: "Core argument: What claim or insight does this episode make? (assertion, not description)"
 transcript_source: youtube
 date: 2026-01-01
 ---
@@ -159,9 +159,12 @@ Include reasoning given, not just the claim.]
 - [Resource Name](url) — mentioned at 15:00
 - [[wiki-linked-note]] — discussed in context of [topic]
 
-## References
+## Connections
 
-Discusses ideas from [[referenced-book]] and [[related-concept]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[referenced-book]] - [1-sentence explanation of the relationship]
+- [[related-concept]] - [1-sentence explanation of the relationship]
 ```
 
 ---

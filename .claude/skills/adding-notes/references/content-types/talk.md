@@ -59,7 +59,7 @@ tags:
   - topic-2
 authors:
   - speaker-slug
-summary: "Core thesis of the talk"
+summary: "Core argument: What claim does this talk make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -98,9 +98,12 @@ date: 2026-01-01
 - Actionable insight 1
 - Actionable insight 2
 
-## References
+## Connections
 
-Discusses ideas from [[related-concept]] and [[referenced-work]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-concept]] - [1-sentence explanation of the relationship]
+- [[referenced-work]] - [1-sentence explanation of the relationship]
 ```
 
 ## Content Structure by Talk Type

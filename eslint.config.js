@@ -30,6 +30,7 @@ export default tseslint.config(
       'content/Readwise/**',
       'content/Excalidraw/**',
       'content/newsletter-drafts/**',
+      'content/blog-ideas/**',
       'content/_obsidian-templates/**',
       'specs/**',
     ],

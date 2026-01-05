@@ -17,7 +17,7 @@ type: note
 tags:
   - topic-1
   - topic-2
-summary: "Core idea of this note"
+summary: "Core argument: What claim does this note make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -27,7 +27,12 @@ date: 2026-01-01
 ```markdown
 [Synthesized thoughts and ideas]
 
-Connects to [[concept-1]] and [[concept-2]].
+## Connections
+
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[concept-1]] - [1-sentence explanation of the relationship]
+- [[concept-2]] - [1-sentence explanation of the relationship]
 ```
 
 ## Notes

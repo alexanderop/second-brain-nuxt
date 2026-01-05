@@ -33,7 +33,7 @@ tags:
   - topic-2
 authors:
   - u-username
-summary: "What the discussion is about"
+summary: "Core insight: What key takeaway emerged from this discussion? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -65,9 +65,12 @@ date: 2026-01-01
 - Key consensus or insights
 - Notable counterarguments
 
-## Related
+## Connections
 
-See also [[related-topic]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-topic]] - [1-sentence explanation of the relationship]
+- [[another-note]] - [1-sentence explanation of the relationship]
 ```
 
 ## Error Handling

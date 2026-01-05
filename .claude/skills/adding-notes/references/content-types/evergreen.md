@@ -16,7 +16,7 @@ type: evergreen
 tags:
   - topic-1
   - topic-2
-summary: "Core definition of this concept"
+summary: "Core argument: What claim does this concept make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -35,7 +35,11 @@ date: 2026-01-01
 
 ## Sources
 
-Synthesized from [[source-1]], [[source-2]], and [[source-3]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 source links required.]
+
+- [[source-1]] - [How this source informs this concept]
+- [[source-2]] - [How this source informs this concept]
+- [[source-3]] - [How this source informs this concept]
 ```
 
 ## Notes

@@ -29,7 +29,7 @@ tags:
   - topic-2
 authors:
   - instructor-slug
-summary: "What skills this course teaches"
+summary: "Core value: What capability does this course provide? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -52,7 +52,10 @@ date: 2026-01-01
 
 ## Connections
 
-Builds on [[prerequisite-topic]] and leads to [[advanced-topic]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[prerequisite-topic]] - [1-sentence explanation of the relationship]
+- [[advanced-topic]] - [1-sentence explanation of the relationship]
 ```
 
 ## Technical Courses

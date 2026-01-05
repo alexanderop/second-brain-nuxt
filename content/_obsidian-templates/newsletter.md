@@ -1,3 +1,6 @@
+<%*
+await tp.file.move("newsletter-drafts/" + tp.file.title)
+%>
 ---
 title: "Newsletter - {{date:YYYY-MM-DD}}"
 draft: true

@@ -116,7 +116,7 @@ tags:
   - topic-2
 authors:
   - channel-slug
-summary: "Core message of the video"
+summary: "Core argument: What claim or insight does this video make? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -138,9 +138,12 @@ date: 2026-01-01
 
 > "Exact quote from transcript"
 
-## References
+## Connections
 
-Discusses ideas from [[referenced-book]] or [[related-concept]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[referenced-book]] - [1-sentence explanation of the relationship]
+- [[related-concept]] - [1-sentence explanation of the relationship]
 ```
 
 ### Tutorial Videos (isTechnical: true)
@@ -168,9 +171,12 @@ const example = "code here"
 2. Step two
 3. Step three
 
-## References
+## Connections
 
-Builds on [[prerequisite-topic]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[prerequisite-topic]] - [1-sentence explanation of the relationship]
+- [[related-concept]] - [1-sentence explanation of the relationship]
 ````
 
 See `references/code-extraction.md` for code snippet guidelines.

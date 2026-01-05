@@ -17,7 +17,7 @@ tags:
   - topic-1
 authors:
   - author-slug
-summary: "What this quote captures"
+summary: "Core insight: What idea does this quote express? (assertion, not description)"
 date: 2026-01-01
 ---
 ```
@@ -30,6 +30,13 @@ date: 2026-01-01
 — Author Name, Source
 
 Context or why this quote resonates.
+
+## Connections
+
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[related-concept]] - [How this quote relates to this concept]
+- [[author-work]] - [Source material for this quote]
 ```
 
 ## Notes

@@ -37,7 +37,7 @@ tags:
   - topic-2
 authors:
   - owner-slug
-summary: "Brief description of what the repository does."
+summary: "Core value: What problem does this project solve? (assertion, not description)"
 date: 2026-01-02
 ---
 ```
@@ -86,7 +86,10 @@ result, err := client.Process(data)
 
 ## Connections
 
-Related to [[other-tool]] or implements patterns from [[related-concept]].
+[Each link must explain WHY you're connecting these notes. Minimum 2 links required.]
+
+- [[other-tool]] - [1-sentence explanation of the relationship]
+- [[related-concept]] - [1-sentence explanation of the relationship]
 ````
 
 ## Code Snippet Rules
