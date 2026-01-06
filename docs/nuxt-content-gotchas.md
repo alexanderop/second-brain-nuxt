@@ -71,6 +71,20 @@ export const contentTypeValues = [
 
 If the array contains a value not in the Zod schema, TypeScript will error.
 
+**Enforcing exhaustive lookup tables**: Use `satisfies Record<Type, Value>` to ensure lookup objects cover all union members:
+
+```typescript
+// app/components/BaseTypeIcon.vue
+const iconMap = {
+  youtube: 'i-lucide-youtube',
+  podcast: 'i-lucide-mic',
+  article: 'i-lucide-file-text',
+  // ... all types must be present
+} satisfies Record<ContentType, string>
+```
+
+If a new content type is added to the Zod schema and the iconMap is missing it, TypeScript will error immediately. This pattern applies to any lookup table (icons, labels, colors, route mappings) that must stay in sync with a union type.
+
 ## Excluding Directories from Collections
 
 To exclude entire directories from a collection (e.g., local-only synced content like Readwise), add glob patterns to the `source.exclude` array in `content.config.ts`:

@@ -7,8 +7,9 @@ defineProps<{
   size?: 'sm' | 'md' | 'lg'
 }>()
 
-const iconMap: Record<ContentType, string> = {
-  youtube: 'i-lucide-play',
+// Using satisfies ensures TypeScript errors if a ContentType is missing from iconMap
+const iconMap = {
+  youtube: 'i-lucide-youtube',
   podcast: 'i-lucide-mic',
   article: 'i-lucide-file-text',
   book: 'i-lucide-book-open',
@@ -24,7 +25,7 @@ const iconMap: Record<ContentType, string> = {
   reddit: 'i-lucide-message-square',
   github: 'i-lucide-github',
   newsletter: 'i-lucide-newspaper',
-}
+} satisfies Record<ContentType, string>
 
 const sizeClasses = {
   sm: 'size-4',

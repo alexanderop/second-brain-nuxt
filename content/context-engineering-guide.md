@@ -23,3 +23,4 @@ This map connects strategies for structuring information effectively for AI syst
 ## Agent Architecture
 
 - [[12-factor-agents]] - Principles for building context-aware production agents
+- [[advanced-context-engineering-for-coding-agents]] - Research-Plan-Implement workflow for complex codebases
