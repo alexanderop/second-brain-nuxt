@@ -1,6 +1,6 @@
 ---
 title: "Obsidian + Claude Code Workflows"
-type: article
+type: tweet
 url: "https://x.com/kepano/status/2007223691315499199"
 tags:
   - claude-code
