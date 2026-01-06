@@ -41,6 +41,7 @@ dev-dist/
 content/Readwise/
 
 # Obsidian
+.obsidian/
 content/.obsidian/
 
 # Generated Excalidraw SVGs
