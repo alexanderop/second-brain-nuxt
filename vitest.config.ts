@@ -26,7 +26,8 @@ export default defineConfig({
       reportsDirectory: './coverage',
     },
     projects: [
-      // Unit tests - fast, pure functions, no Nuxt runtime
+      // Layer 1: Unit tests - fast, pure functions, no Nuxt runtime
+      // Tests server/utils, pure composables, type utilities
       {
         test: {
           name: 'unit',
@@ -41,29 +42,28 @@ export default defineConfig({
           },
         },
       },
-      // API unit tests - mocked dependencies, fast
-      {
-        test: {
-          name: 'api-unit',
-          include: ['tests/api-unit/**/*.test.ts'],
-          environment: 'node',
-        },
-        resolve: {
-          alias: {
-            '~': fileURLToPath(new URL('./', import.meta.url)),
-            '~~': fileURLToPath(new URL('./', import.meta.url)),
-          },
-        },
-      },
-      // Nuxt environment tests - composables, API routes (full e2e)
+
+      // Layer 2: Integration tests - Nuxt environment with registerEndpoint
+      // Tests components + composables that need Nuxt context
       await defineVitestProject({
         test: {
-          name: 'nuxt',
-          include: ['tests/nuxt/**/index.nuxt.test.ts'],
+          name: 'integration',
+          include: ['tests/integration/**/*.test.ts'],
           environment: 'nuxt',
+          environmentOptions: {
+            nuxt: {
+              mock: {
+                intersectionObserver: true,
+                indexedDb: true,
+              },
+            },
+          },
+          setupFiles: ['./tests/integration/setup.ts'],
         },
       }),
-      // Component tests - isolated components in real browser
+
+      // Layer 3: Component tests - isolated components in real browser
+      // Tests D3.js graphs, charts, visual components
       {
         plugins: [
           vue(),
@@ -92,35 +92,6 @@ export default defineConfig({
         },
         optimizeDeps: {
           include: ['vue', 'd3'],
-        },
-      },
-      // BDD tests - full app mount with Happy DOM, mocked data layer
-      {
-        plugins: [
-          vue(),
-          tailwindcss(),
-          AutoImport({
-            imports: ['vue'],
-            dts: false,
-          }),
-        ],
-        test: {
-          name: 'bdd',
-          include: ['tests/bdd/**/*.test.ts'],
-          environment: 'happy-dom',
-          setupFiles: ['./tests/bdd/setup.ts'],
-        },
-        resolve: {
-          alias: {
-            '~': fileURLToPath(new URL('./app', import.meta.url)),
-            '~~': fileURLToPath(new URL('./', import.meta.url)),
-            '#imports': fileURLToPath(new URL('./tests/bdd/mocks/imports.ts', import.meta.url)),
-            '#components': fileURLToPath(new URL('./tests/bdd/mocks/components.ts', import.meta.url)),
-          },
-          dedupe: ['vue'],
-        },
-        optimizeDeps: {
-          include: ['vue', 'vue-router', '@nuxt/ui'],
         },
       },
     ],

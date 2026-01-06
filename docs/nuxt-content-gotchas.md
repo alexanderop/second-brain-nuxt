@@ -92,3 +92,47 @@ This prevents excluded content from being:
 - Appearing in any collection-based views
 
 **When to use**: Prefer collection-level exclusion over query-level filtering when you never want the content in that collection. It's cleaner and more performant.
+
+## Testing Server Handlers with queryCollection
+
+**Don't mock `@nuxt/content/server` internals.** Using `vi.mock('@nuxt/content/server')` is fragile and breaks when Nuxt Content updates.
+
+**Pattern: Extract pure logic to `server/utils/`**
+
+```typescript
+// ✗ Fragile: Mocking queryCollection in tests
+vi.mock('@nuxt/content/server', () => ({
+  queryCollection: vi.fn().mockResolvedValue(fixtures)
+}))
+const { default: handler } = await import('../../server/api/graph.get')
+```
+
+```typescript
+// ✓ Better: Extract pure logic, test without mocking
+// server/utils/graph.ts
+export function buildGraphFromContent(allContent: ContentItem[]): GraphData {
+  const nodes = allContent.map(createNode)
+  const edges = allContent.flatMap(item => extractEdges(item, existingNodes))
+  return { nodes, edges }
+}
+
+// server/api/graph.get.ts - thin wrapper
+export default defineEventHandler(async (event) => {
+  const allContent = await queryCollection(event, 'content').all()
+  return buildGraphFromContent(allContent)  // Pure function
+})
+
+// tests/unit/utils/graph.test.ts - no mocking needed!
+describe('buildGraphFromContent', () => {
+  it('creates edges from wiki-links', () => {
+    const result = buildGraphFromContent(fixtures.linkedNotes)
+    expect(result.edges).toHaveLength(1)
+  })
+})
+```
+
+**Why this works:**
+- Pure functions in `server/utils/` are unit testable without any framework mocking
+- Handler becomes a thin wrapper that only fetches data
+- Tests don't break when Nuxt Content internals change
+- For component tests that need API responses, use `registerEndpoint` from `@nuxt/test-utils/runtime` to mock at HTTP level
