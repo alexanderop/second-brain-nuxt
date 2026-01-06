@@ -70,21 +70,51 @@ describe('buildGraphFromContent', () => {
 ```
 
 ### Integration Tests (`tests/integration/`)
-- Components that fetch from APIs
+- **API Routes**: Use `registerEndpoint` with real server utils to test HTTP contract
+- **Page Components**: Use `registerEndpoint` to mock HTTP, test component rendering
 - Composables needing Nuxt context
-- Uses `registerEndpoint` to mock API responses
 - **Target: <3s total**
+
+#### API Integration Tests
+
+Use server utils directly to create realistic responses, then test HTTP contract:
 
 ```typescript
 // tests/integration/api/graph.test.ts
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { linkedGraph } from '../fixtures'
+import { buildGraphFromContent } from '~/server/utils/graph'
+import { linkedNotes } from '../fixtures/content'
 
 describe('/api/graph integration', () => {
-  it('can mock graph endpoint', async () => {
-    registerEndpoint('/api/graph', () => linkedGraph)
+  it('returns graph structure', async () => {
+    // Use real server util to build response
+    const graphData = buildGraphFromContent(linkedNotes)
+    registerEndpoint('/api/graph', () => graphData)
+
     const response = await $fetch('/api/graph')
-    expect(response.nodes).toHaveLength(2)
+
+    // Test HTTP contract
+    expect(response).toHaveProperty('nodes')
+    expect(response).toHaveProperty('edges')
+  })
+})
+```
+
+#### Page Component Tests
+
+Use `registerEndpoint` for page components to isolate UI testing:
+
+```typescript
+// tests/integration/pages/stats.test.ts
+import { registerEndpoint, mountSuspended } from '@nuxt/test-utils/runtime'
+import { simpleStats } from '../fixtures'
+import StatsPage from '~/pages/stats.vue'
+
+describe('Stats Page', () => {
+  it('renders stats data', async () => {
+    registerEndpoint('/api/stats', () => simpleStats)
+    const page = await mountSuspended(StatsPage)
+    expect(page.text()).toContain('Total Notes')
   })
 })
 ```
@@ -117,15 +147,26 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
-### 2. Use registerEndpoint for Integration
-Don't mock `@nuxt/content/server` internals. Mock at the HTTP level:
+### 2. Mock at the Right Layer
+
+**For API Integration Tests**: Use server utils with `registerEndpoint` to test HTTP contract:
 
 ```typescript
-// Good: HTTP-level mocking
-registerEndpoint('/api/graph', () => fixtures.graphResponse)
+// Good: Use real server util + HTTP-level mocking
+import { buildGraphFromContent } from '~/server/utils/graph'
+const graphData = buildGraphFromContent(fixtures)
+registerEndpoint('/api/graph', () => graphData)
 
-// Bad: Deep internal mocking (fragile)
-vi.mock('@nuxt/content/server', () => ({ queryCollection: mockFn }))
+// Also good: Server utils are tested separately at unit level
+// tests/unit/utils/graph.test.ts tests buildGraphFromContent thoroughly
+```
+
+**For Page Component Tests**: Use `registerEndpoint` to isolate UI testing:
+
+```typescript
+// Good: HTTP-level mocking (tests component in isolation)
+registerEndpoint('/api/stats', () => fixtures.stats)
+const page = await mountSuspended(StatsPage)
 ```
 
 ### 3. E2E Tests Real Content
@@ -135,8 +176,11 @@ E2E tests run against your actual knowledge base. They verify:
 - Search finds content
 - Content renders properly
 
-### 4. Don't Test SQLite Internals
-Focus on routes and page behavior, not Nuxt Content implementation details.
+### 4. Test Integration, Not Implementation
+Integration tests verify the contract between layers:
+- **API tests**: Content → queryCollection → handler → utils → response
+- **Page tests**: HTTP mock → component → rendered output
+- Don't test `@nuxt/content` internals (SQLite, minimark parsing, etc.)
 
 ## Coverage
 

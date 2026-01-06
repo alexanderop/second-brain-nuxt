@@ -1,59 +1,84 @@
 /**
  * Integration tests for /api/note-graph/[slug] endpoint
  *
- * These tests verify that components can fetch note-specific graph data
- * by mocking the API response with registerEndpoint.
+ * These tests verify that components can successfully fetch and parse
+ * note-specific graph data from the API. Note graph building logic is
+ * tested via E2E tests with real content.
+ *
+ * This layer tests the HTTP contract: request → response shape.
  */
 import { describe, it, expect } from 'vitest'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { isolatedNoteGraph, simpleNoteGraph, noteGraphWithL2, nullNoteGraph } from '../fixtures'
+import { simpleNoteGraph, isolatedNoteGraph } from '../fixtures/note-graph'
 
 describe('/api/note-graph/[slug] integration', () => {
-  it('can register isolated note graph', async () => {
-    registerEndpoint('/api/note-graph/isolated-note', () => isolatedNoteGraph)
+  it('returns null for non-existent note', async () => {
+    registerEndpoint('/api/note-graph/non-existent', () => null)
 
-    const response = await $fetch('/api/note-graph/isolated-note')
-    expect(response.center.id).toBe('isolated-note')
-    expect(response.connected).toEqual([])
-    expect(response.edges).toEqual([])
+    const response = await $fetch('/api/note-graph/non-existent')
+
+    expect(response).toBeFalsy()
   })
 
-  it('can register note graph with L1 connections', async () => {
+  it('returns note graph structure', async () => {
     registerEndpoint('/api/note-graph/atomic-habits', () => simpleNoteGraph)
 
     const response = await $fetch('/api/note-graph/atomic-habits')
-    expect(response.center.id).toBe('atomic-habits')
+
+    expect(response).toHaveProperty('center')
+    expect(response).toHaveProperty('connected')
+    expect(response).toHaveProperty('edges')
+  })
+
+  it('includes center node metadata', async () => {
+    registerEndpoint('/api/note-graph/atomic-habits', () => simpleNoteGraph)
+
+    const response = await $fetch('/api/note-graph/atomic-habits')
+
+    expect(response.center).toHaveProperty('id')
+    expect(response.center).toHaveProperty('title')
+    expect(response.center).toHaveProperty('type')
+    expect(response.center).toHaveProperty('isCenter')
+    expect(response.center).toHaveProperty('level')
     expect(response.center.isCenter).toBe(true)
     expect(response.center.level).toBe(0)
-    expect(response.connected).toHaveLength(2)
-    expect(response.edges).toHaveLength(2)
   })
 
-  it('can register note graph with L2 connections', async () => {
-    registerEndpoint('/api/note-graph/atomic-habits', () => noteGraphWithL2)
+  it('includes connected nodes with levels', async () => {
+    registerEndpoint('/api/note-graph/atomic-habits', () => simpleNoteGraph)
 
     const response = await $fetch('/api/note-graph/atomic-habits')
-    const l1Nodes = response.connected.filter((n: { level: number }) => n.level === 1)
-    const l2Nodes = response.connected.filter((n: { level: number }) => n.level === 2)
-    expect(l1Nodes).toHaveLength(1)
-    expect(l2Nodes).toHaveLength(1)
+
+    expect(Array.isArray(response.connected)).toBe(true)
+    if (response.connected.length > 0) {
+      const node = response.connected[0]
+      expect(node).toHaveProperty('id')
+      expect(node).toHaveProperty('title')
+      expect(node).toHaveProperty('type')
+      expect(node).toHaveProperty('level')
+    }
   })
 
-  it('edge levels indicate connection depth', async () => {
-    registerEndpoint('/api/note-graph/atomic-habits', () => noteGraphWithL2)
+  it('includes edges with levels', async () => {
+    registerEndpoint('/api/note-graph/atomic-habits', () => simpleNoteGraph)
 
     const response = await $fetch('/api/note-graph/atomic-habits')
-    const l1Edges = response.edges.filter((e: { level: number }) => e.level === 1)
-    const l2Edges = response.edges.filter((e: { level: number }) => e.level === 2)
-    expect(l1Edges).toHaveLength(1)
-    expect(l2Edges).toHaveLength(1)
+
+    expect(Array.isArray(response.edges)).toBe(true)
+    if (response.edges.length > 0) {
+      const edge = response.edges[0]
+      expect(edge).toHaveProperty('source')
+      expect(edge).toHaveProperty('target')
+      expect(edge).toHaveProperty('level')
+    }
   })
 
-  it('can register null for non-existent note', async () => {
-    registerEndpoint('/api/note-graph/non-existent', () => nullNoteGraph)
+  it('handles isolated notes', async () => {
+    registerEndpoint('/api/note-graph/isolated', () => isolatedNoteGraph)
 
-    const response = await $fetch('/api/note-graph/non-existent')
-    // registerEndpoint returning null results in undefined from $fetch
-    expect(response).toBeFalsy()
+    const response = await $fetch('/api/note-graph/isolated')
+
+    expect(response.connected).toEqual([])
+    expect(response.edges).toEqual([])
   })
 })

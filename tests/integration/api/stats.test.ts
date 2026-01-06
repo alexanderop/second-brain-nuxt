@@ -1,73 +1,52 @@
 /**
  * Integration tests for /api/stats endpoint
  *
- * These tests verify that components can fetch stats data
- * by mocking the API response with registerEndpoint.
+ * These tests verify that components can successfully fetch and parse
+ * stats data from the API. Stats aggregation logic is tested at the
+ * unit level and E2E level.
+ *
+ * This layer tests the HTTP contract: request → response shape.
  */
 import { describe, it, expect } from 'vitest'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { emptyStats, simpleStats, createStatsResponse } from '../fixtures'
+import { simpleStats } from '../fixtures/stats'
 
 describe('/api/stats integration', () => {
-  it('can register empty stats endpoint', async () => {
-    registerEndpoint('/api/stats', () => emptyStats)
-
-    const response = await $fetch('/api/stats')
-    expect(response.total).toBe(0)
-    expect(response.byType).toEqual([])
-    expect(response.connections.totalEdges).toBe(0)
-  })
-
-  it('can register stats with content', async () => {
+  it('returns stats structure', async () => {
     registerEndpoint('/api/stats', () => simpleStats)
 
     const response = await $fetch('/api/stats')
-    expect(response.total).toBe(10)
-    expect(response.byType).toHaveLength(3)
+
+    expect(response).toHaveProperty('total')
+    expect(response).toHaveProperty('byType')
+    expect(response).toHaveProperty('byTag')
+    expect(response).toHaveProperty('byAuthor')
+    expect(response).toHaveProperty('byMonth')
+    expect(response).toHaveProperty('quality')
+    expect(response).toHaveProperty('connections')
+    expect(response).toHaveProperty('thisWeek')
   })
 
   it('includes quality metrics', async () => {
     registerEndpoint('/api/stats', () => simpleStats)
 
     const response = await $fetch('/api/stats')
-    expect(response.quality.withSummary).toBe(8)
-    expect(response.quality.withNotes).toBe(5)
-    expect(response.quality.total).toBe(10)
+
+    expect(response.quality).toHaveProperty('withSummary')
+    expect(response.quality).toHaveProperty('withNotes')
+    expect(response.quality).toHaveProperty('total')
   })
 
   it('includes connection analytics', async () => {
     registerEndpoint('/api/stats', () => simpleStats)
 
     const response = await $fetch('/api/stats')
-    expect(response.connections.totalEdges).toBe(15)
-    expect(response.connections.avgPerNote).toBe(1.5)
-    expect(response.connections.orphanCount).toBe(2)
-    expect(response.connections.orphanPercent).toBe(20)
-  })
 
-  it('includes hub and orphan nodes', async () => {
-    registerEndpoint('/api/stats', () => simpleStats)
-
-    const response = await $fetch('/api/stats')
-    expect(response.connections.hubs).toHaveLength(1)
-    expect(response.connections.hubs[0].id).toBe('atomic-habits')
-    expect(response.connections.orphans).toHaveLength(1)
-  })
-
-  it('includes temporal stats', async () => {
-    registerEndpoint('/api/stats', () => simpleStats)
-
-    const response = await $fetch('/api/stats')
-    expect(response.byMonth).toHaveLength(2)
-    expect(response.thisWeek).toBe(2)
-  })
-
-  it('can use factory for custom stats', async () => {
-    const customStats = createStatsResponse({ total: 100, thisWeek: 10 })
-    registerEndpoint('/api/stats', () => customStats)
-
-    const response = await $fetch('/api/stats')
-    expect(response.total).toBe(100)
-    expect(response.thisWeek).toBe(10)
+    expect(response.connections).toHaveProperty('totalEdges')
+    expect(response.connections).toHaveProperty('avgPerNote')
+    expect(response.connections).toHaveProperty('orphanCount')
+    expect(response.connections).toHaveProperty('orphanPercent')
+    expect(response.connections).toHaveProperty('hubs')
+    expect(response.connections).toHaveProperty('orphans')
   })
 })
