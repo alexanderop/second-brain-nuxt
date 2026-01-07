@@ -17,6 +17,7 @@ Detect type from URL, then load the appropriate reference file.
 | youtube.com | See [YouTube Classification](#youtube-classification) | `references/content-types/youtube.md` or `talk.md` or `podcast.md` |
 | reddit.com | reddit | `references/content-types/reddit.md` |
 | github.com | github | `references/content-types/github.md` |
+| imdb.com/title/, themoviedb.org/movie/ | movie | `references/content-types/movie.md` |
 | goodreads.com/series/ | manga | `references/content-types/manga.md` |
 | goodreads.com, amazon.com (books) | book | `references/content-types/book.md` |
 | spotify.com/episode, podcasts.apple.com | podcast | `references/content-types/podcast.md` |

@@ -26,3 +26,6 @@ export * from './note-graph'
 
 // Raw content response fixtures
 export * from './raw-content'
+
+// Query builder mock helpers
+export * from './query-builder'

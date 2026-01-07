@@ -37,6 +37,9 @@ const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const
 // Book reading status values
 const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const
 
+// Movie watching status values
+const watchingStatusValues = ['want-to-watch', 'watching', 'watched'] as const
+
 // NOTE: Types are derived from @nuxt/content generated types in app/constants/contentTypes.ts
 // Do not export types here - import from ~/constants/contentTypes instead
 
@@ -63,11 +66,15 @@ export default defineContentConfig({
         readingStatus: z.enum(readingStatusValues).optional(),
         startedReading: z.string().optional(),
         finishedReading: z.string().optional(),
+        // Movie watching tracking
+        watchingStatus: z.enum(watchingStatusValues).optional(),
+        watchedOn: z.string().optional(),
+        trailer: z.string().url().optional(),
         // GitHub-specific fields
         stars: z.number().optional(),
         language: z.string().optional(),
-        // Rating (1-7 scale, for external content)
-        rating: z.number().min(1).max(7).optional(),
+        // Rating (1-10 scale, for external content)
+        rating: z.number().min(1).max(10).optional(),
         // Podcast episode fields
         podcast: z.string().optional(),
         guests: z.array(z.string()).optional(),

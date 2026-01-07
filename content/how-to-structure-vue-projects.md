@@ -30,4 +30,4 @@ Start simple. Adopt more complex architectures only when the project's scale and
 
 ## Related
 
-Part of a series that includes [[vue3-testing-pyramid-vitest-browser-mode|Nuxt Layers for Modular Monolith]] and Atomic Design patterns.
+Part of a series that includes [[nuxt-layers-modular-monolith]] and Atomic Design patterns.

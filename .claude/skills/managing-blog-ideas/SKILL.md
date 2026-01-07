@@ -126,7 +126,7 @@ options:
 **Draft a section:**
 - Present section titles
 - User picks one
-- Generate draft prose following writing-style skill
+- Generate draft prose following writing-style skill (especially Alexander's Voice Profile)
 - Insert under `## Draft Sections`
 
 **Find sources:**
@@ -167,12 +167,12 @@ options:
 
 ```markdown
 ---
-title: "Working Title"
+title: "[Action Verb] + [Specific Outcome] + [Context/Tool]"
 status: idea
 tags:
   - topic-1
 core_idea: "Single sentence thesis"
-target_audience: ""
+target_audience: "Vue/Nuxt developers who..."
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
@@ -183,22 +183,33 @@ updated: YYYY-MM-DD
 
 ## Outline
 
-### 1. Introduction
-- Hook
-- Context
-- Thesis
+### 1. [Hook: Problem Statement or Observation]
+- Open with pain point or personal observation
+- First person welcome
+- Never "In this post, we will..."
 
-### 2. [Main Point]
-- Key point
-- Key point
+### 2. The Problem
+- Concrete example of the pain point
+- Real scenario, specific details
 
-### 3. [Main Point]
-- Key point
-- Key point
+### 3. The Solution
+- High-level approach
+- Why this works
 
-### 4. Conclusion
-- Summary
-- Call to action
+### 4. [Implementation Step]
+- Code + explanation
+- Before/after with ❌/✅ if applicable
+
+### 5. When to Use This
+- Specific scenarios where this applies
+
+### 6. When NOT to Use This
+- Honest assessment of limitations
+- Alternative approaches
+
+### 7. Conclusion
+- Key insight (1-2 sentences)
+- Actionable next step
 
 ## Source Notes
 
@@ -208,7 +219,7 @@ updated: YYYY-MM-DD
 
 ## Draft Sections
 
-[Write draft content for each section as ideas develop]
+[Write draft content following the Drafting Guidelines below]
 
 ## Open Questions
 
@@ -221,12 +232,21 @@ updated: YYYY-MM-DD
 ## Quality Checklist
 
 Before saving:
-- [ ] Title is specific and compelling
+- [ ] Title is specific and compelling (Action Verb + Outcome + Context)
 - [ ] Core idea is a clear thesis (assertion, not description)
 - [ ] At least 3 outline sections
 - [ ] At least 2 wiki-links to source notes
 - [ ] Tags match existing taxonomy
 - [ ] Status accurately reflects completeness
+
+**For drafts, also check:**
+- [ ] Opens with problem/observation, never "In this post..."
+- [ ] Uses first-person where appropriate ("I", "In my experience")
+- [ ] Includes ❌/✅ markers for comparisons
+- [ ] Has at least one visual element (diagram, table, or callout)
+- [ ] Acknowledges limitations or alternatives
+- [ ] Ends with actionable next steps
+- [ ] Uses everyday words, not jargon
 
 ---
 
@@ -238,3 +258,46 @@ Before saving:
 - Don't advance to `outline` without 3+ sections
 - Don't advance to `draft` without prose content
 - Don't advance to `ready` without all sections drafted
+
+---
+
+## Drafting Guidelines
+
+When generating draft content, apply Alexander's voice from writing-style skill:
+
+### Opening Paragraphs
+Write openings that:
+1. Start with a problem or observation, not "In this post, we will..."
+2. Use first-person when sharing experience
+3. Hook with a relatable developer struggle
+
+Example openers:
+- "I once worked on a project that wanted to..." (personal anecdote)
+- "After [event], I started thinking about..." (observation)
+- "Manual [task] gets old fast." (pain point)
+- "Here's the thing: [unexpected insight]" (hook)
+
+### Body Structure Pattern
+For each major section:
+1. **State the problem** this section solves
+2. **Show before/after** with ❌/✅ where appropriate
+3. **Provide working code** with inline comments
+4. **Acknowledge limitations** or when this doesn't apply
+
+### Code Examples
+- Include realistic context (real file names, plausible data)
+- Add comments explaining the "why", not just the "what"
+- Show progressive refinement when teaching patterns
+
+### Visual Elements to Include
+- [ ] At least one Mermaid diagram for complex flows
+- [ ] Comparison table if presenting multiple options
+- [ ] File tree for architectural posts
+- [ ] Callout boxes (💡/⚠️) for tips and warnings
+
+### Conclusion Pattern
+End with:
+1. Brief summary of key insight (1-2 sentences)
+2. Honest assessment of trade-offs
+3. Actionable next step for the reader
+4. Optional: Link to related posts or resources

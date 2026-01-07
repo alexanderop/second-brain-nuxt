@@ -5,9 +5,9 @@ defineProps<{
 </script>
 
 <template>
-  <span class="inline-flex gap-0.5" :title="`Rating: ${rating}/7`">
+  <span class="inline-flex gap-0.5" :title="`Rating: ${rating}/10`">
     <UIcon
-      v-for="i in 7"
+      v-for="i in 10"
       :key="i"
       name="i-lucide-star"
       class="size-3.5"

@@ -38,9 +38,8 @@ tests/
 │   ├── composables/   # useShortcuts.test.ts
 │   └── types/         # table.test.ts
 ├── integration/       # Nuxt context + registerEndpoint
-│   ├── api/           # API route integration tests
-│   ├── pages/         # Page component tests
-│   └── fixtures/      # Shared test data
+│   ├── pages/         # Page-level tests with mocked APIs
+│   └── fixtures/      # Shared test data + query builder mocks
 ├── component/         # Real browser for visuals
 │   ├── components/    # D3 graphs, charts
 │   └── factories/     # Test data factories
@@ -88,6 +87,56 @@ describe('/api/graph integration', () => {
   })
 })
 ```
+
+#### Page-Level Integration Tests
+
+For testing full pages with mocked data, use `mountSuspended` + `registerEndpoint`:
+
+```typescript
+// tests/integration/pages/stats.test.ts
+import { registerEndpoint, mountSuspended } from '@nuxt/test-utils/runtime'
+import StatsPage from '~/pages/stats.vue'
+
+describe('Stats Page', () => {
+  it('renders stats from API', async () => {
+    registerEndpoint('/api/stats', () => fixtures.stats)
+    const page = await mountSuspended(StatsPage)
+    expect(page.text()).toContain('Total Notes')
+  })
+})
+```
+
+#### Mocking queryCollection
+
+Pages using `queryCollection` need `mockNuxtImport` with `vi.hoisted()`:
+
+```typescript
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+
+// Must use vi.hoisted for dynamic data
+const { mockData } = vi.hoisted(() => {
+  const holder: { value: ContentFixture[] } = { value: [] }
+  return { mockData: holder }
+})
+
+mockNuxtImport('queryCollection', () => {
+  return () => createQueryCollectionMock(mockData.value)()
+})
+
+it('renders content list', async () => {
+  mockData.value = fixtures.multipleLinks
+  const page = await mountSuspended(IndexPage)
+  expect(page.text()).toContain('Atomic Habits')
+})
+```
+
+#### Page Test Limitations
+
+| Issue | Cause | Workaround |
+|-------|-------|------------|
+| Mock data doesn't change between tests | `useAsyncData` caches results | Use same data or separate test files |
+| `UTooltip` crashes | Needs `TooltipProvider` context | Skip test or use E2E |
+| Route-based pages fail | Payload loading issues | Use E2E for `[...slug].vue` |
 
 ### Component Tests (`tests/component/`)
 - D3.js visualizations (BaseGraph)

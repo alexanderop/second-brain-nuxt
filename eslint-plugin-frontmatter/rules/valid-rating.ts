@@ -6,7 +6,7 @@ const rule: Rule.RuleModule = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Validate rating is within 1-7 range',
+      description: 'Validate rating is within 1-10 range',
       recommended: true,
     },
     messages: {
@@ -17,7 +17,7 @@ const rule: Rule.RuleModule = {
       type: 'object',
       properties: {
         min: { type: 'number', default: 1 },
-        max: { type: 'number', default: 7 },
+        max: { type: 'number', default: 10 },
       },
       additionalProperties: false,
     }],
@@ -26,7 +26,7 @@ const rule: Rule.RuleModule = {
   create(context) {
     const options = {
       min: 1,
-      max: 7,
+      max: 10,
       ...context.options[0],
     }
 

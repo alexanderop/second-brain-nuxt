@@ -84,7 +84,7 @@ const columnPinning = ref({
 })
 
 // Rating range for slider
-const ratingRange = ref<[number, number]>(filters.value.ratingRange ?? [1, 7])
+const ratingRange = ref<[number, number]>(filters.value.ratingRange ?? [1, 10])
 
 // Selected authors for USelectMenu
 const selectedAuthors = computed({
@@ -281,7 +281,7 @@ function applyRatingFilter() {
 
 // Clear rating filter
 function clearRatingFilter() {
-  ratingRange.value = [1, 7]
+  ratingRange.value = [1, 10]
   emit('set-rating-range', null)
 }
 
@@ -464,7 +464,7 @@ function removeAuthorFilter(author: string) {
             <USlider
               v-model="ratingRange"
               :min="1"
-              :max="7"
+              :max="10"
               :step="1"
             />
             <div class="flex justify-between mt-3 gap-2">

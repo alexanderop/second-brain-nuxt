@@ -166,6 +166,7 @@ export default tseslint.config(
       'frontmatter/valid-tag-format': 'warn',
       'frontmatter/required-fields': 'error',
       'frontmatter/no-duplicate-tags': 'warn',
+      'frontmatter/no-future-dates': 'error',
       'frontmatter/valid-rating': 'error',
       'frontmatter/no-placeholder-urls': 'error',
     },

@@ -1,5 +1,6 @@
 import type { ESLint, Rule } from 'eslint'
 import noDuplicateTags from './rules/no-duplicate-tags.ts'
+import noFutureDates from './rules/no-future-dates.ts'
 import noPlaceholderUrls from './rules/no-placeholder-urls.ts'
 import requiredFields from './rules/required-fields.ts'
 import validAuthorRefs from './rules/valid-author-refs.ts'
@@ -15,6 +16,7 @@ const rules: Record<string, Rule.RuleModule> = {
   'valid-tag-format': validTagFormat,
   'required-fields': requiredFields,
   'no-duplicate-tags': noDuplicateTags,
+  'no-future-dates': noFutureDates,
   'valid-rating': validRating,
   'no-placeholder-urls': noPlaceholderUrls,
 }

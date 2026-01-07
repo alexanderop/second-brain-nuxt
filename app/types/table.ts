@@ -19,7 +19,7 @@ export interface TableContentItem {
   authors: TableAuthor[]
   tags: string[]
   date?: string // Date consumed (ISO string)
-  rating?: number // 1-7 scale
+  rating?: number // 1-10 scale
   url?: string
   cover?: string
 }
@@ -47,8 +47,8 @@ export const tableParamsSchema = z.object({
   authors: z.array(z.string()).optional(),
   dateConsumedFrom: z.string().optional(),
   dateConsumedTo: z.string().optional(),
-  ratingMin: z.coerce.number().min(1).max(7).optional(),
-  ratingMax: z.coerce.number().min(1).max(7).optional(),
+  ratingMin: z.coerce.number().min(1).max(10).optional(),
+  ratingMax: z.coerce.number().min(1).max(10).optional(),
   // Sort params
   sort: z.enum(['title', 'type', 'dateConsumed', 'rating']).optional(),
   dir: z.enum(['asc', 'desc']).optional(),

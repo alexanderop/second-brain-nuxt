@@ -12,6 +12,8 @@ authors:
   - lilly-wachowski
 summary: "A computer hacker discovers the true nature of reality and his role in the war against its controllers."
 rating: 7
+watchingStatus: watched
+watchedOn: 2001
 date: 2026-01-03
 ---
 
