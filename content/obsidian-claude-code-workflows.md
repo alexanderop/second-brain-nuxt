@@ -1,6 +1,7 @@
 ---
 title: "Obsidian + Claude Code Workflows"
 type: tweet
+tweetId: "2007223691315499199"
 tweetUrl: "https://x.com/kepano/status/2007223691315499199"
 tweetText: "if you're using Obsidian with Claude Code, tell me about your workflow, and what you've used it for"
 author: steph-ango
