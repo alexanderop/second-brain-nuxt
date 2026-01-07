@@ -1,0 +1,50 @@
+{
+  "project": "SecondBrain",
+  "branchName": "ralph/feature-name",
+  "description": "Feature Description - Brief summary of what this feature adds",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Example: Add new content type",
+      "description": "As a user, I need to store a new type of content in my knowledge base.",
+      "acceptanceCriteria": [
+        "Add schema to content.config.ts",
+        "Create example content file in content/",
+        "Typecheck passes (pnpm typecheck)",
+        "Lint passes (pnpm lint:fix)"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Example: Create page component",
+      "description": "As a user, I want to view the new content type on its own page.",
+      "acceptanceCriteria": [
+        "Create page component in app/pages/",
+        "Query content using queryCollection",
+        "Display content with proper formatting",
+        "Typecheck passes",
+        "Lint passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Example: Add navigation link",
+      "description": "As a user, I want to access the new content from the navigation.",
+      "acceptanceCriteria": [
+        "Add link to site.config.ts navigation",
+        "Verify link works in dev server",
+        "Typecheck passes",
+        "Lint passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

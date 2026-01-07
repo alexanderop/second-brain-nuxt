@@ -46,3 +46,9 @@ content/.obsidian/
 
 # Generated Excalidraw SVGs
 public/excalidraw/
+
+# Ralph working files (generated during runs)
+scripts/ralph/prd.json
+scripts/ralph/progress.txt
+scripts/ralph/.last-branch
+scripts/ralph/archive/
