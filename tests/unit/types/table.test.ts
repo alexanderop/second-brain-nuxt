@@ -45,19 +45,19 @@ describe('tableParamsSchema', () => {
       })).toThrow()
     })
 
-    it('validates rating maximum (7)', () => {
+    it('validates rating maximum (10)', () => {
       expect(() => tableParamsSchema.parse({
-        ratingMax: 8,
+        ratingMax: 11,
       })).toThrow()
     })
 
     it('accepts ratings in valid range', () => {
       const result = tableParamsSchema.parse({
         ratingMin: 1,
-        ratingMax: 7,
+        ratingMax: 10,
       })
       expect(result.ratingMin).toBe(1)
-      expect(result.ratingMax).toBe(7)
+      expect(result.ratingMax).toBe(10)
     })
 
     it('accepts mid-range ratings', () => {

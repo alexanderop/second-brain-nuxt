@@ -9,21 +9,36 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
-      include: ['server/**/*.ts', 'app/composables/**/*.ts'],
+      // Only track unit-testable code: server utilities and pure composables
+      include: ['server/utils/**/*.ts', 'app/composables/**/*.ts'],
       exclude: [
         '**/*.test.ts',
         '**/*.nuxt.test.ts',
-        // Vue composables - require Nuxt environment to test
+        // Vue composables - require Nuxt environment to test (covered by E2E)
         'app/composables/useBacklinks.ts',
         'app/composables/useMentions.ts',
         'app/composables/useListNavigation.ts',
         'app/composables/usePreferences.ts',
         'app/composables/useGraphFilters.ts',
+        // Config/site composables - trivial wrappers, not worth unit testing
+        'app/composables/useSiteConfig.ts',
+        'app/composables/usePageTitle.ts',
+        'app/composables/useFocusMode.ts',
+        'app/composables/useTocVisibility.ts',
+        'app/composables/useTableFilterMenus.ts',
         // Nitro plugin - logic extracted to server/utils/wikilinks.ts
         'server/plugins/**/*.ts',
       ],
       reporter: ['text', 'html'],
       reportsDirectory: './coverage',
+      thresholds: {
+        // Baseline thresholds - raise as coverage improves
+        // Current: 60% lines (server/utils 100%, composables 30%)
+        lines: 60,
+        functions: 80,
+        branches: 70,
+        statements: 60,
+      },
     },
     projects: [
       // Layer 1: Unit tests - fast, pure functions, no Nuxt runtime
