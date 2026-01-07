@@ -10,26 +10,27 @@ Movies from IMDB or TMDB.
 
 ## Metadata Collection
 
+**CRITICAL: Never fetch IMDB directly** — IMDB returns 403 errors. Always go to TMDB.
+
 Run these in parallel:
 
-**Agent A - Movie Metadata (TMDB preferred):**
-1. If IMDB URL provided, extract IMDB ID (e.g., tt32600395)
-2. WebSearch: `{imdb_id} TMDB` to find TMDB page
-3. WebFetch TMDB page to extract:
+**Agent A - Movie Metadata (TMDB only):**
+1. Extract IMDB ID from URL (e.g., `tt16311594` from `imdb.com/title/tt16311594/`)
+2. WebSearch: `{imdb_id} site:themoviedb.org` to find TMDB page
+3. TMDB URLs follow pattern: `themoviedb.org/movie/{tmdb_id}-{slug}`
+4. WebFetch the TMDB page to extract:
    - Title and year
    - Synopsis/overview
    - Director name(s)
    - Genres (for tags)
    - Poster path → construct URL: `https://image.tmdb.org/t/p/w500/{poster_path}`
 
-**Agent B - Official Trailer:**
-1. WebSearch: `"{movie title}" {year} official trailer youtube`
-2. Look for results from official channels or with "Official Trailer" in title
-3. Extract YouTube URL (format: `https://www.youtube.com/watch?v=...`)
-4. Verify legitimacy signals:
-   - Channel contains studio name, "Movies", or is verified
-   - Title contains "Official Trailer"
-   - High view count
+**Agent B - Official Trailer (best effort):**
+1. WebSearch: `"{movie title}" {year} official trailer`
+2. Look for results containing YouTube URLs in the search results themselves
+3. **YouTube cannot be fetched directly** — only use URLs visible in search results
+4. If no YouTube URL found in 2 search attempts, **omit the trailer field entirely**
+5. **Never guess or construct YouTube URLs** — only use verified URLs from search results
 
 **Agent C - Director/Author Check:**
 ```text
@@ -39,7 +40,11 @@ If not found, create author profile for director.
 
 ## Watching Status Prompt
 
-After collecting metadata, prompt user:
+**Skip prompts for data already provided.** If user says "watched it 2025 give it a 9":
+- Set `watchingStatus: watched`, `watchedOn: "2025"`, `rating: 9`
+- Don't prompt for any of these fields
+
+Only prompt for missing information:
 
 ```yaml
 question: "What's your watching status for this movie?"
@@ -77,7 +82,7 @@ title: "Movie Title"
 type: movie
 url: "https://www.imdb.com/title/tt..."
 cover: "https://image.tmdb.org/t/p/w500/{poster_path}"
-trailer: "https://www.youtube.com/watch?v=..."
+trailer: "https://www.youtube.com/watch?v=..."  # optional - omit if not verified
 tags:
   - genre-1
   - genre-2
@@ -107,16 +112,22 @@ date: 2026-01-07
 
 ## Trailer Discovery Strategy
 
+**Constraint:** YouTube pages cannot be fetched directly. You can only use URLs that appear in web search results.
+
 Search pattern: `"{movie title}" {year} official trailer`
 
-**Verification signals for "official" trailers:**
-1. Channel name contains studio name or "Movies"
-2. Title contains "Official Trailer" or "Official Teaser"
-3. High view count (millions for major releases)
-4. Uploaded by verified channel
-5. Video length typical for trailers (1-3 minutes)
+**Look for YouTube URLs in search results** — they often appear in result snippets or descriptions. Valid format: `youtube.com/watch?v={11-char-id}`
 
-**Fallback:** If no official trailer found, omit the `trailer` field rather than linking unofficial content.
+**Verification signals (from search result context):**
+1. Result mentions official channel or studio name
+2. Title contains "Official Trailer" or "Official Teaser"
+3. High view count mentioned in snippet
+
+**Strict rules:**
+- Only use YouTube URLs that appear verbatim in search results
+- **Never construct or guess video IDs**
+- If no verified URL found after 2 searches, **omit the trailer field**
+- An empty trailer field is better than a broken link
 
 ## Body Template
 
