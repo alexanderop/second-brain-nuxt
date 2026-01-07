@@ -34,7 +34,7 @@ tags:
 authors:
   - u-username
 summary: "Core insight: What key takeaway emerged from this discussion? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use thread creation date (must not be in future)
 ---
 ```
 

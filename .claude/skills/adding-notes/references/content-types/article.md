@@ -30,7 +30,7 @@ tags:
 authors:
   - author-slug
 summary: "Core argument: What claim does this article make? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use actual publication date from article metadata (must not be in future)
 ---
 ```
 
@@ -79,7 +79,7 @@ tags:
 authors:
   - author-slug
 summary: "Core argument: What claim does this article make? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use actual publication date from article metadata (must not be in future)
 ---
 ```
 

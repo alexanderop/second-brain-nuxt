@@ -195,6 +195,7 @@ Spawn parallel validators:
 | Link context | Each link has adjacent explanation (not bare "See also") |
 | Duplicate | Title/URL doesn't already exist |
 | Tag | Tags match or similar to existing |
+| Date | Date is not in the future (must be <= today's date) |
 | Type-specific | E.g., podcast: profile exists, guest not in hosts |
 
 **Wiki-link note:** Readwise highlights (`content/readwise/`) are excluded from Nuxt Content and won't resolve as valid wiki-links. Use plain text or italics for books/articles that only exist in Readwise.

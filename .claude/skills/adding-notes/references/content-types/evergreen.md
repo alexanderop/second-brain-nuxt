@@ -17,7 +17,7 @@ tags:
   - topic-1
   - topic-2
 summary: "Core argument: What claim does this concept make? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use today's date when creating the note (must not be in future)
 ---
 ```
 

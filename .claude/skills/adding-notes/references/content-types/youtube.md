@@ -117,7 +117,7 @@ tags:
 authors:
   - channel-slug
 summary: "Core argument: What claim or insight does this video make? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use video upload date (must not be in future)
 ---
 ```
 

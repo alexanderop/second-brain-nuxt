@@ -36,7 +36,7 @@ authors:
 volumes: 37
 status: hiatus
 summary: "Epic manga following Miyamoto Musashi's journey to become Japan's greatest swordsman."
-date: 2026-01-01
+date: YYYY-MM-DD  # Use series start date or today's date (must not be in future)
 ---
 ```
 

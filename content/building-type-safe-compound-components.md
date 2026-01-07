@@ -10,7 +10,7 @@ tags:
 authors:
   - tkdodo
 summary: "Compound components work best for flexible layouts, not dynamic data or fixed structures. A factory function pattern solves the type safety problem without sacrificing flexibility."
-date: 2026-02-01
+date: 2025-12-26
 ---
 
 ## Summary

@@ -93,7 +93,7 @@ authors:
   - author-slug
 guest_author: guest-author-slug    # Optional - for one-off contributors
 summary: "Core argument: What claim does this article make? (assertion, not description)"
-date: 2024-03-20
+date: YYYY-MM-DD  # Use article publication date (must not be in future)
 ---
 ```
 

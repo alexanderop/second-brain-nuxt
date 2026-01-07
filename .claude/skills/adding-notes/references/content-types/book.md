@@ -63,8 +63,8 @@ authors:
 summary: "Core argument: What claim does this book make? (assertion, not description)"
 readingStatus: finished
 startedReading: 2025-12-15
-finishedReading: 2026-01-01
-date: 2026-01-01
+finishedReading: YYYY-MM-DD
+date: YYYY-MM-DD  # Use actual publication date or today's date (must not be in future)
 ---
 ```
 

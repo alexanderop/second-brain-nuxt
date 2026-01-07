@@ -83,7 +83,7 @@ guests:
   - guest-slug
 summary: "Core argument: What claim or insight does this episode make? (assertion, not description)"
 transcript_source: youtube
-date: 2026-01-01
+date: YYYY-MM-DD  # Use episode publication date (must not be in future)
 ---
 ```
 

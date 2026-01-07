@@ -18,7 +18,7 @@ tags:
 authors:
   - author-slug
 summary: "Core insight: What idea does this quote express? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use today's date when capturing the quote (must not be in future)
 ---
 ```
 

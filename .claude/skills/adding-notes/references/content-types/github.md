@@ -38,7 +38,7 @@ tags:
 authors:
   - owner-slug
 summary: "Core value: What problem does this project solve? (assertion, not description)"
-date: 2026-01-02
+date: YYYY-MM-DD  # Use today's date when capturing the repo (must not be in future)
 ---
 ```
 

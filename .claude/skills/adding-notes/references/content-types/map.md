@@ -17,7 +17,7 @@ tags:
   - learning-path
   - topic-area
 summary: "A curated map connecting key resources about [topic]"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use today's date when creating the MOC (must not be in future)
 ---
 ```
 

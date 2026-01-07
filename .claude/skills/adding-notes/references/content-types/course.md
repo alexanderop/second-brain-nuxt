@@ -30,7 +30,7 @@ tags:
 authors:
   - instructor-slug
 summary: "Core value: What capability does this course provide? (assertion, not description)"
-date: 2026-01-01
+date: YYYY-MM-DD  # Use course start date or today's date (must not be in future)
 ---
 ```
 
