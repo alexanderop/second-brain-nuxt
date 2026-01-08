@@ -18,4 +18,22 @@ test.describe('Navigation Shortcuts', () => {
     // Verify home page content loads
     await expect(page.getByRole('heading', { name: 'Recent Additions', level: 1 })).toBeVisible()
   })
+
+  test('G then B navigates to books page from home', async ({ page }) => {
+    // Start from home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on the home page
+    await expect(page).toHaveURL('/')
+
+    // Press G then B to navigate to books
+    await page.keyboard.press('g')
+    await page.keyboard.press('b')
+
+    // Verify navigation to books page
+    await expect(page).toHaveURL('/books')
+
+    // Verify books page content loads
+    await expect(page.getByRole('heading', { name: 'Books', level: 1 })).toBeVisible()
+  })
 })
