@@ -246,3 +246,31 @@ test.describe('Action Shortcuts - Note Page', () => {
     expect(clipboardText).toBe('https://michaelnthiessen.com/12-design-patterns-vue')
   })
 })
+
+test.describe('General Shortcuts', () => {
+  test('? (Shift+/) opens shortcuts modal and Escape closes it', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on home page
+    await expect(page).toHaveURL('/')
+
+    // Press Shift+/ (which is ?) to open shortcuts modal
+    await page.keyboard.press('Shift+/')
+
+    // Verify shortcuts modal opens with title "Keyboard Shortcuts"
+    const modalTitle = page.getByRole('heading', { name: 'Keyboard Shortcuts' })
+    await expect(modalTitle).toBeVisible()
+
+    // Verify modal displays all shortcut categories
+    await expect(page.getByRole('heading', { name: 'General' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Navigation' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Actions' })).toBeVisible()
+
+    // Press Escape to close the modal
+    await page.keyboard.press('Escape')
+
+    // Verify modal is closed
+    await expect(modalTitle).not.toBeVisible()
+  })
+})
