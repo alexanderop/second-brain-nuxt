@@ -396,4 +396,29 @@ test.describe('General Shortcuts', () => {
     // Verify header is visible again
     await expect(header).toBeVisible()
   })
+
+  test('] toggles table of contents on note page', async ({ page }) => {
+    // Navigate to a note page with headings (has TOC)
+    await page.goto('/second-brain-system', { waitUntil: 'networkidle' })
+
+    // Wait for page to fully load
+    await expect(page.locator('h1').first()).toBeVisible()
+
+    // TOC sidebar should be visible initially (note has multiple headings)
+    // The TOC is in an <aside> element with UContentToc component
+    const tocSidebar = page.locator('aside').filter({ has: page.locator('nav') })
+    await expect(tocSidebar).toBeVisible()
+
+    // Press ] to toggle TOC off
+    await page.keyboard.press(']')
+
+    // TOC should now be hidden
+    await expect(tocSidebar).not.toBeVisible()
+
+    // Press ] again to toggle TOC back on
+    await page.keyboard.press(']')
+
+    // TOC should be visible again
+    await expect(tocSidebar).toBeVisible()
+  })
 })
