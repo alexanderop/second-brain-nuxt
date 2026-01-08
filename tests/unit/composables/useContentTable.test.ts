@@ -22,6 +22,8 @@ import {
   isValidColumn,
   isValidDirection,
   toStringArray,
+  buildAuthorMap,
+  enrichContentWithAuthors,
 } from '~/composables/useContentTable'
 import type { FilterState, TableContentItem } from '~/types/table'
 
@@ -1068,6 +1070,241 @@ describe('useContentTable', () => {
 
     it('handles mixed types correctly', () => {
       expect(toStringArray(['valid', 42, true, 'also-valid', undefined])).toEqual(['valid', 'also-valid'])
+    })
+  })
+
+  describe('buildAuthorMap', () => {
+    it('creates empty map from empty array', () => {
+      const result = buildAuthorMap([])
+      expect(result.size).toBe(0)
+    })
+
+    it('creates map with single author', () => {
+      const authors = [{ slug: 'john-doe', name: 'John Doe', avatar: '/avatars/john.png' }]
+      const result = buildAuthorMap(authors)
+
+      expect(result.size).toBe(1)
+      expect(result.get('john-doe')).toEqual({
+        slug: 'john-doe',
+        name: 'John Doe',
+        avatar: '/avatars/john.png',
+      })
+    })
+
+    it('creates map with multiple authors', () => {
+      const authors = [
+        { slug: 'john-doe', name: 'John Doe', avatar: '/avatars/john.png' },
+        { slug: 'jane-smith', name: 'Jane Smith', avatar: '/avatars/jane.png' },
+        { slug: 'bob-wilson', name: 'Bob Wilson' },
+      ]
+      const result = buildAuthorMap(authors)
+
+      expect(result.size).toBe(3)
+      expect(result.get('john-doe')?.name).toBe('John Doe')
+      expect(result.get('jane-smith')?.name).toBe('Jane Smith')
+      expect(result.get('bob-wilson')?.name).toBe('Bob Wilson')
+    })
+
+    it('handles authors without avatar', () => {
+      const authors = [{ slug: 'no-avatar', name: 'No Avatar Author' }]
+      const result = buildAuthorMap(authors)
+
+      expect(result.get('no-avatar')).toEqual({
+        slug: 'no-avatar',
+        name: 'No Avatar Author',
+        avatar: undefined,
+      })
+    })
+
+    it('overwrites duplicate slugs with last occurrence', () => {
+      const authors = [
+        { slug: 'duplicate', name: 'First Name' },
+        { slug: 'duplicate', name: 'Second Name' },
+      ]
+      const result = buildAuthorMap(authors)
+
+      expect(result.size).toBe(1)
+      expect(result.get('duplicate')?.name).toBe('Second Name')
+    })
+  })
+
+  describe('enrichContentWithAuthors', () => {
+    const authorMap = new Map([
+      ['john-doe', { slug: 'john-doe', name: 'John Doe', avatar: '/avatars/john.png' }],
+      ['jane-smith', { slug: 'jane-smith', name: 'Jane Smith', avatar: '/avatars/jane.png' }],
+    ])
+
+    it('returns empty array for empty content', () => {
+      const result = enrichContentWithAuthors([], authorMap)
+      expect(result).toEqual([])
+    })
+
+    it('enriches content with single known author', () => {
+      const content = [{
+        stem: 'test-article',
+        title: 'Test Article',
+        type: 'article' as const,
+        authors: ['john-doe'],
+        tags: ['tech'],
+        date: '2024-01-15',
+        rating: 8,
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result).toHaveLength(1)
+      expect(result[0]?.authors).toEqual([
+        { slug: 'john-doe', name: 'John Doe', avatar: '/avatars/john.png' },
+      ])
+    })
+
+    it('enriches content with multiple known authors', () => {
+      const content = [{
+        stem: 'multi-author',
+        title: 'Multi Author Article',
+        type: 'book' as const,
+        authors: ['john-doe', 'jane-smith'],
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.authors).toHaveLength(2)
+      expect(result[0]?.authors[0]?.name).toBe('John Doe')
+      expect(result[0]?.authors[1]?.name).toBe('Jane Smith')
+    })
+
+    it('creates fallback for unknown authors', () => {
+      const content = [{
+        stem: 'unknown-author',
+        title: 'Unknown Author Article',
+        type: 'podcast' as const,
+        authors: ['unknown-person'],
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.authors).toEqual([
+        { slug: 'unknown-person', name: 'unknown-person', avatar: undefined },
+      ])
+    })
+
+    it('handles mix of known and unknown authors', () => {
+      const content = [{
+        stem: 'mixed-authors',
+        title: 'Mixed Authors',
+        type: 'article' as const,
+        authors: ['john-doe', 'unknown-author', 'jane-smith'],
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.authors).toHaveLength(3)
+      expect(result[0]?.authors[0]?.name).toBe('John Doe')
+      expect(result[0]?.authors[1]?.name).toBe('unknown-author')
+      expect(result[0]?.authors[2]?.name).toBe('Jane Smith')
+    })
+
+    it('handles content without authors', () => {
+      const content = [{
+        stem: 'no-authors',
+        title: 'No Authors Article',
+        type: 'article' as const,
+        authors: undefined,
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.authors).toEqual([])
+    })
+
+    it('handles content with empty authors array', () => {
+      const content = [{
+        stem: 'empty-authors',
+        title: 'Empty Authors',
+        type: 'book' as const,
+        authors: [],
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.authors).toEqual([])
+    })
+
+    it('maps all content fields correctly', () => {
+      const content = [{
+        stem: 'full-content',
+        title: 'Full Content Item',
+        type: 'book' as const,
+        authors: ['john-doe'],
+        tags: ['tech', 'programming'],
+        date: '2024-06-15',
+        rating: 9,
+        url: 'https://example.com',
+        cover: '/covers/book.png',
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]).toEqual({
+        slug: 'full-content',
+        title: 'Full Content Item',
+        type: 'book',
+        authors: [{ slug: 'john-doe', name: 'John Doe', avatar: '/avatars/john.png' }],
+        tags: ['tech', 'programming'],
+        date: '2024-06-15',
+        rating: 9,
+        url: 'https://example.com',
+        cover: '/covers/book.png',
+      })
+    })
+
+    it('converts stem to string for slug', () => {
+      const content = [{
+        stem: 12345,
+        title: 'Numeric Stem',
+        type: 'article' as const,
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]?.slug).toBe('12345')
+    })
+
+    it('handles content with undefined optional fields', () => {
+      const content = [{
+        stem: 'minimal',
+        title: 'Minimal Content',
+        type: 'talk' as const,
+      }]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result[0]).toEqual({
+        slug: 'minimal',
+        title: 'Minimal Content',
+        type: 'talk',
+        authors: [],
+        tags: [],
+        date: undefined,
+        rating: undefined,
+        url: undefined,
+        cover: undefined,
+      })
+    })
+
+    it('enriches multiple content items', () => {
+      const content = [
+        { stem: 'item-1', title: 'Item 1', type: 'book' as const, authors: ['john-doe'] },
+        { stem: 'item-2', title: 'Item 2', type: 'podcast' as const, authors: ['jane-smith'] },
+        { stem: 'item-3', title: 'Item 3', type: 'article' as const, authors: [] },
+      ]
+
+      const result = enrichContentWithAuthors(content, authorMap)
+
+      expect(result).toHaveLength(3)
+      expect(result[0]?.authors[0]?.name).toBe('John Doe')
+      expect(result[1]?.authors[0]?.name).toBe('Jane Smith')
+      expect(result[2]?.authors).toEqual([])
     })
   })
 })
