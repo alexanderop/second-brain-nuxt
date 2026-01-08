@@ -375,4 +375,25 @@ test.describe('General Shortcuts', () => {
     )
     expect(afterSecondToggleIsDark).toBe(initialIsDark)
   })
+
+  test('Cmd+Shift+\\ toggles focus mode (hides header)', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify header is initially visible
+    const header = page.locator('header')
+    await expect(header).toBeVisible()
+
+    // Press Meta+Shift+\ to toggle focus mode on (hide header)
+    await page.keyboard.press('Meta+Shift+\\')
+
+    // Verify header is hidden
+    await expect(header).not.toBeVisible()
+
+    // Press Meta+Shift+\ again to toggle focus mode off (show header)
+    await page.keyboard.press('Meta+Shift+\\')
+
+    // Verify header is visible again
+    await expect(header).toBeVisible()
+  })
 })
