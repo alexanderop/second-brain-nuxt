@@ -205,4 +205,24 @@ test.describe('Action Shortcuts - Note Page', () => {
     // Verify no new page was opened
     expect(newPageOpened).toBe(false)
   })
+
+  test('Shift+L copies wiki-link to clipboard', async ({ page, context }) => {
+    // Grant clipboard permissions
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+
+    // Navigate to a note page
+    await page.goto('/second-brain-system', { waitUntil: 'networkidle' })
+
+    // Wait for page to fully load
+    await expect(page.locator('h1').first()).toBeVisible()
+
+    // Press Shift+L to copy wiki-link
+    await page.keyboard.press('Shift+l')
+
+    // Read clipboard content
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+
+    // Verify clipboard contains the wiki-link format
+    expect(clipboardText).toBe('[[second-brain-system]]')
+  })
 })
