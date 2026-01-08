@@ -1,0 +1,8 @@
+{
+  "name": "@second-brain/docs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Docs site will be initialized in US-002'"
+  }
+}
