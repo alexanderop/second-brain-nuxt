@@ -1,0 +1,233 @@
+{
+  "project": "SecondBrain",
+  "branchName": "ralph/shortcuts-e2e-tests",
+  "description": "E2E Tests for Keyboard Shortcuts - Comprehensive Playwright tests for navigation, action, and general keyboard shortcuts",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Navigation shortcut G+H goes home",
+      "description": "As a user, I press G then H to navigate to the home page from any page.",
+      "acceptanceCriteria": [
+        "From /books page, pressing G then H navigates to /",
+        "URL changes to root path",
+        "Home page content loads",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Navigation shortcut G+B goes to books",
+      "description": "As a user, I press G then B to navigate to the books page.",
+      "acceptanceCriteria": [
+        "From home page, pressing G then B navigates to /books",
+        "Books page content loads",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Navigation shortcut G+G goes to graph",
+      "description": "As a user, I press G then G to navigate to the graph page.",
+      "acceptanceCriteria": [
+        "Pressing G then G navigates to /graph",
+        "Graph page content loads",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Navigation shortcut G+T goes to tags",
+      "description": "As a user, I press G then T to navigate to the tags page.",
+      "acceptanceCriteria": [
+        "Pressing G then T navigates to /tags",
+        "Tags page content loads",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Navigation shortcut G+A goes to authors",
+      "description": "As a user, I press G then A to navigate to the authors page.",
+      "acceptanceCriteria": [
+        "Pressing G then A navigates to /authors",
+        "Authors page content loads",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Action shortcut J/K for list navigation on home page",
+      "description": "As a user on a list page, I use J to move down and K to move up through items.",
+      "acceptanceCriteria": [
+        "On home page, pressing J highlights next content card",
+        "Pressing K highlights previous content card",
+        "Visual selection indicator updates correctly",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Action shortcut Enter opens selected item",
+      "description": "As a user, I press Enter to open the currently selected list item.",
+      "acceptanceCriteria": [
+        "After selecting item with J, pressing Enter navigates to that note",
+        "Correct note page loads",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Action shortcut O opens resource link (note page)",
+      "description": "As a user on a note page with a URL, I press O to open the resource link.",
+      "acceptanceCriteria": [
+        "On a note with url field (e.g., 12-design-patterns-in-vue), pressing O opens link in new tab",
+        "Link opens in new browser tab/window",
+        "Original page remains open",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "Use context.waitForEvent('page') pattern from author-shortcut.spec.ts"
+    },
+    {
+      "id": "US-009",
+      "title": "Action shortcut Shift+L copies wiki-link (note page)",
+      "description": "As a user on a note page, I press Shift+L to copy the wiki-link format.",
+      "acceptanceCriteria": [
+        "On note page, pressing Shift+L copies [[slug]] to clipboard",
+        "Clipboard contains correct wiki-link format",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": "May need context.grantPermissions(['clipboard-read', 'clipboard-write'])"
+    },
+    {
+      "id": "US-010",
+      "title": "Action shortcut Shift+C copies URL (note page)",
+      "description": "As a user on a note page with a URL, I press Shift+C to copy the URL.",
+      "acceptanceCriteria": [
+        "On a note with url field, pressing Shift+C copies URL to clipboard",
+        "Clipboard contains the note's source URL",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": "May need context.grantPermissions(['clipboard-read', 'clipboard-write'])"
+    },
+    {
+      "id": "US-011",
+      "title": "General shortcut ? shows shortcuts modal",
+      "description": "As a user, I press ? to view all available keyboard shortcuts.",
+      "acceptanceCriteria": [
+        "Pressing Shift+/ (?) opens shortcuts modal",
+        "Modal displays all shortcut categories",
+        "Pressing Escape closes the modal",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "General shortcut / opens search",
+      "description": "As a user, I press / to open the search modal.",
+      "acceptanceCriteria": [
+        "Pressing / opens search modal",
+        "Search input is focused",
+        "Pressing Escape closes the modal",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "General shortcut Cmd+K opens search",
+      "description": "As a user, I press Cmd+K (or Ctrl+K) to open the search modal.",
+      "acceptanceCriteria": [
+        "Pressing Meta+K opens search modal",
+        "Search input is focused",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "General shortcut Escape closes modal",
+      "description": "As a user, I press Escape to close any open modal.",
+      "acceptanceCriteria": [
+        "With search modal open, pressing Escape closes it",
+        "With shortcuts modal open, pressing Escape closes it",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "General shortcut Cmd+Alt+T toggles dark mode",
+      "description": "As a user, I press Cmd+Alt+T to toggle between light and dark mode.",
+      "acceptanceCriteria": [
+        "Pressing Meta+Alt+T toggles color mode",
+        "Page reflects the new color mode (dark/light class changes)",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": "Verify via document.documentElement.classList.contains('dark')"
+    },
+    {
+      "id": "US-016",
+      "title": "General shortcut Cmd+Shift+\\ toggles focus mode",
+      "description": "As a user, I press Cmd+Shift+\\ to toggle focus mode (hide header).",
+      "acceptanceCriteria": [
+        "Pressing Meta+Shift+\\ hides the header (focus mode)",
+        "Pressing again shows the header",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": "Verify via header visibility"
+    },
+    {
+      "id": "US-017",
+      "title": "General shortcut ] toggles table of contents (note page)",
+      "description": "As a user on a note page, I press ] to toggle the table of contents visibility.",
+      "acceptanceCriteria": [
+        "On a note page with TOC, pressing ] toggles TOC visibility",
+        "TOC appears/disappears correctly",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

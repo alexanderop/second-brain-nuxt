@@ -1,0 +1,14 @@
+{
+  "name": "vue-lsp",
+  "version": "1.0.0",
+  "description": "Vue language server for Claude Code",
+  "lspServers": {
+    "vue": {
+      "command": "vue-language-server",
+      "args": ["--stdio"],
+      "extensionToLanguage": {
+        ".vue": "vue"
+      }
+    }
+  }
+}
