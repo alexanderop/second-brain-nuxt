@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shortcutsList, type Shortcut } from '../../../app/composables/useShortcuts'
+import { shortcutsList, useShortcutsModal, type Shortcut } from '../../../app/composables/useShortcuts'
 
 describe('shortcutsList', () => {
   it('exports an array of shortcuts', () => {
@@ -77,5 +77,23 @@ describe('shortcutsList', () => {
     const keyCombos = shortcutsList.map(s => s.keys.join('+'))
     const uniqueCombos = new Set(keyCombos)
     expect(uniqueCombos.size).toBe(keyCombos.length)
+  })
+})
+
+describe('useShortcutsModal', () => {
+  it('returns a ref with default value false', () => {
+    const isOpen = useShortcutsModal()
+    expect(isOpen.value).toBe(false)
+  })
+
+  it('returns a mutable ref that can be toggled', () => {
+    const isOpen = useShortcutsModal()
+    expect(isOpen.value).toBe(false)
+
+    isOpen.value = true
+    expect(isOpen.value).toBe(true)
+
+    isOpen.value = false
+    expect(isOpen.value).toBe(false)
   })
 })
