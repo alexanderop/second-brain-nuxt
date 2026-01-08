@@ -216,6 +216,16 @@ export function sortItems(
   return sorted
 }
 
+// Pure pagination functions for testability
+export function paginateItems<T>(items: T[], page: number, pageSize: number): T[] {
+  const start = (page - 1) * pageSize
+  return items.slice(start, start + pageSize)
+}
+
+export function calculateTotalPages(totalItems: number, pageSize: number): number {
+  return Math.ceil(totalItems / pageSize)
+}
+
 export function useContentTable() {
   // URL-synced params via VueUse
   const typeParam = useRouteQuery<string | null>('type')
@@ -335,13 +345,10 @@ export function useContentTable() {
     return sortItems(filteredItems.value, column, direction)
   })
 
-  // Pagination
-  const paginatedItems = computed(() => {
-    const start = (page.value - 1) * PAGE_SIZE
-    return sortedItems.value.slice(start, start + PAGE_SIZE)
-  })
+  // Pagination using extracted pure functions
+  const paginatedItems = computed(() => paginateItems(sortedItems.value, page.value, PAGE_SIZE))
 
-  const totalPages = computed(() => Math.ceil(sortedItems.value.length / PAGE_SIZE))
+  const totalPages = computed(() => calculateTotalPages(sortedItems.value.length, PAGE_SIZE))
   const totalItems = computed(() => sortedItems.value.length)
 
   // Dynamic filter options (based on current filtered results, excluding self)
