@@ -17,6 +17,8 @@ import {
   filterByRatingRange,
   applyAllFilters,
   sortItems,
+  paginateItems,
+  calculateTotalPages,
 } from '~/composables/useContentTable'
 import type { FilterState, TableContentItem } from '~/types/table'
 
@@ -853,6 +855,120 @@ describe('useContentTable', () => {
         ]
         const result = sortItems(singleItem, 'title', 'asc')
         expect(result).toEqual(singleItem)
+      })
+    })
+  })
+
+  describe('paginateItems', () => {
+    const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+    describe('first page', () => {
+      it('returns first page of items', () => {
+        const result = paginateItems(items, 1, 3)
+        expect(result).toEqual(['a', 'b', 'c'])
+      })
+
+      it('returns all items when page size exceeds total', () => {
+        const result = paginateItems(items, 1, 20)
+        expect(result).toEqual(items)
+      })
+    })
+
+    describe('middle page', () => {
+      it('returns correct slice for middle page', () => {
+        const result = paginateItems(items, 2, 3)
+        expect(result).toEqual(['d', 'e', 'f'])
+      })
+
+      it('returns correct slice for third page', () => {
+        const result = paginateItems(items, 3, 3)
+        expect(result).toEqual(['g', 'h', 'i'])
+      })
+    })
+
+    describe('last page', () => {
+      it('returns partial last page', () => {
+        const result = paginateItems(items, 4, 3)
+        expect(result).toEqual(['j'])
+      })
+
+      it('returns empty array when page is beyond data', () => {
+        const result = paginateItems(items, 5, 3)
+        expect(result).toEqual([])
+      })
+    })
+
+    describe('edge cases', () => {
+      it('handles empty array', () => {
+        const result = paginateItems([], 1, 10)
+        expect(result).toEqual([])
+      })
+
+      it('handles page size of 1', () => {
+        const result = paginateItems(items, 3, 1)
+        expect(result).toEqual(['c'])
+      })
+
+      it('handles exact page boundary', () => {
+        const result = paginateItems(['a', 'b', 'c', 'd', 'e', 'f'], 2, 3)
+        expect(result).toEqual(['d', 'e', 'f'])
+      })
+    })
+
+    describe('immutability', () => {
+      it('does not mutate original array', () => {
+        const original = [...items]
+        paginateItems(items, 2, 3)
+        expect(items).toEqual(original)
+      })
+
+      it('returns a new array reference', () => {
+        const result = paginateItems(items, 1, 10)
+        expect(result).not.toBe(items)
+      })
+    })
+  })
+
+  describe('calculateTotalPages', () => {
+    describe('exact division', () => {
+      it('returns 1 page for 10 items with page size 10', () => {
+        expect(calculateTotalPages(10, 10)).toBe(1)
+      })
+
+      it('returns 2 pages for 20 items with page size 10', () => {
+        expect(calculateTotalPages(20, 10)).toBe(2)
+      })
+
+      it('returns 5 pages for 25 items with page size 5', () => {
+        expect(calculateTotalPages(25, 5)).toBe(5)
+      })
+    })
+
+    describe('partial last page', () => {
+      it('rounds up for partial page (11 items, page size 10)', () => {
+        expect(calculateTotalPages(11, 10)).toBe(2)
+      })
+
+      it('rounds up for partial page (1 item, page size 10)', () => {
+        expect(calculateTotalPages(1, 10)).toBe(1)
+      })
+
+      it('rounds up for partial page (7 items, page size 3)', () => {
+        expect(calculateTotalPages(7, 3)).toBe(3)
+      })
+    })
+
+    describe('edge cases', () => {
+      it('returns 0 pages for 0 items', () => {
+        expect(calculateTotalPages(0, 10)).toBe(0)
+      })
+
+      it('returns correct pages for page size 1', () => {
+        expect(calculateTotalPages(5, 1)).toBe(5)
+      })
+
+      it('handles large numbers', () => {
+        expect(calculateTotalPages(1000, 25)).toBe(40)
       })
     })
   })
