@@ -158,3 +158,51 @@ test.describe('Action Shortcuts - List Navigation', () => {
     await expect(cards.nth(1)).not.toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
   })
 })
+
+test.describe('Action Shortcuts - Note Page', () => {
+  test('O opens resource link in new tab', async ({ page, context }) => {
+    // Navigate to a note with a URL field
+    await page.goto('/12-design-patterns-in-vue', { waitUntil: 'networkidle' })
+
+    // Wait for page to fully load
+    await expect(page.locator('h1').first()).toBeVisible()
+
+    // Listen for new page event before pressing the key
+    const [newPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.keyboard.press('o'),
+    ])
+
+    // Wait for the new page to load
+    await newPage.waitForLoadState('networkidle')
+
+    // Verify the new page URL contains the expected domain
+    await expect(newPage).toHaveURL(/michaelnthiessen\.com/)
+
+    // Verify original page remains open
+    await expect(page).toHaveURL('/12-design-patterns-in-vue')
+  })
+
+  test('O does nothing when note has no URL', async ({ page, context }) => {
+    // Navigate to a note without a URL field (evergreen note)
+    await page.goto('/second-brain-system', { waitUntil: 'networkidle' })
+
+    // Wait for page to fully load
+    await expect(page.locator('h1').first()).toBeVisible()
+
+    // Set up listener to detect if new page opens
+    let newPageOpened = false
+    context.on('page', () => {
+      newPageOpened = true
+    })
+
+    // Press the o key
+    await page.keyboard.press('o')
+
+    // Wait a bit to ensure no navigation happens
+    await page.waitForTimeout(500)
+
+    // Verify no new page was opened
+    expect(newPageOpened).toBe(false)
+  })
+})
