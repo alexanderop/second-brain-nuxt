@@ -347,4 +347,32 @@ test.describe('General Shortcuts', () => {
     // Verify modal is closed
     await expect(modalTitle).not.toBeVisible()
   })
+
+  test('Cmd+Alt+T toggles dark mode', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Get the initial color mode state
+    const initialIsDark = await page.evaluate(() =>
+      document.documentElement.classList.contains('dark'),
+    )
+
+    // Press Meta+Alt+T to toggle color mode
+    await page.keyboard.press('Meta+Alt+t')
+
+    // Verify the color mode has toggled
+    const afterToggleIsDark = await page.evaluate(() =>
+      document.documentElement.classList.contains('dark'),
+    )
+    expect(afterToggleIsDark).toBe(!initialIsDark)
+
+    // Toggle again to verify it toggles back
+    await page.keyboard.press('Meta+Alt+t')
+
+    // Verify it toggled back to initial state
+    const afterSecondToggleIsDark = await page.evaluate(() =>
+      document.documentElement.classList.contains('dark'),
+    )
+    expect(afterSecondToggleIsDark).toBe(initialIsDark)
+  })
 })
