@@ -80,6 +80,24 @@ describe('server/utils/mentions', () => {
         linksTo: new Set(['atomic-habits']),
       })
     })
+
+    it('uses slug as title fallback when title is missing', () => {
+      const content: ContentItem[] = [
+        { path: '/no-title', body: { type: 'minimark', value: [] } },
+      ]
+      const contentMap = buildContentMapWithLinks(content)
+
+      expect(contentMap.get('no-title')?.title).toBe('no-title')
+    })
+
+    it('uses note as type fallback when type is missing', () => {
+      const content: ContentItem[] = [
+        { path: '/no-type', title: 'Has Title', body: { type: 'minimark', value: [] } },
+      ]
+      const contentMap = buildContentMapWithLinks(content)
+
+      expect(contentMap.get('no-type')?.type).toBe('note')
+    })
   })
 
   describe('extractSlugFromSectionId', () => {
@@ -161,6 +179,33 @@ describe('server/utils/mentions', () => {
       const mentionsMap = buildMentionsMap(sections, 'atomic-habits', contentMap, titleRegex)
 
       expect(mentionsMap.get('article-two')?.content).toBe('First mention of Atomic Habits')
+    })
+
+    it('uses titles[0] as sectionTitle when available', () => {
+      const sections: SearchSection[] = [
+        { id: '/article-two#section', content: 'Atomic Habits mention', titles: ['First Title', 'Second'], title: 'Fallback' },
+      ]
+      const mentionsMap = buildMentionsMap(sections, 'atomic-habits', contentMap, titleRegex)
+
+      expect(mentionsMap.get('article-two')?.sectionTitle).toBe('First Title')
+    })
+
+    it('uses title as sectionTitle fallback when titles is empty', () => {
+      const sections: SearchSection[] = [
+        { id: '/article-two#section', content: 'Atomic Habits mention', titles: [], title: 'Title Fallback' },
+      ]
+      const mentionsMap = buildMentionsMap(sections, 'atomic-habits', contentMap, titleRegex)
+
+      expect(mentionsMap.get('article-two')?.sectionTitle).toBe('Title Fallback')
+    })
+
+    it('uses path as sectionTitle fallback when both titles and title are missing', () => {
+      const sections: SearchSection[] = [
+        { id: '/article-two#section', content: 'Atomic Habits mention' },
+      ]
+      const mentionsMap = buildMentionsMap(sections, 'atomic-habits', contentMap, titleRegex)
+
+      expect(mentionsMap.get('article-two')?.sectionTitle).toBe('article-two')
     })
   })
 
