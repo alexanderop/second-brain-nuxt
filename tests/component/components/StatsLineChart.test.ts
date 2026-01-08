@@ -1,27 +1,26 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { page } from '@vitest/browser/context'
 import { render } from 'vitest-browser-vue'
 import StatsLineChart from '~/components/StatsLineChart.vue'
-import { createLineChartData, createEmptyChartData } from '../factories/chartFactory'
+import { createLineChartData } from '../factories/chartFactory'
+import type { LineChartDataPoint } from '../factories/chartFactory'
 
 /** Wait for D3 to render the chart */
 async function waitForChart(ms = 300): Promise<void> {
   await new Promise(r => setTimeout(r, ms))
 }
 
+/** Render chart with explicit viewport setup (KCD pattern: visible dependencies) */
+async function renderLineChart(props: { data: LineChartDataPoint[], height?: number }) {
+  await page.viewport(800, 400)
+  return render(StatsLineChart, { props })
+}
+
 describe('StatsLineChart', () => {
-  beforeEach(async () => {
-    await page.viewport(800, 400)
-  })
 
   describe('rendering', () => {
     it('renders SVG when data provided', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData() })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -29,12 +28,7 @@ describe('StatsLineChart', () => {
     })
 
     it('renders area path', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData() })
       await waitForChart()
 
       // Area path has gradient fill
@@ -46,12 +40,7 @@ describe('StatsLineChart', () => {
     })
 
     it('renders line path', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData() })
       await waitForChart()
 
       // Line path has stroke and no fill
@@ -64,11 +53,7 @@ describe('StatsLineChart', () => {
     })
 
     it('renders data points as circles', async () => {
-      const data = createLineChartData(6)
-      const { container } = render(StatsLineChart, {
-        props: { data },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(6) })
       await waitForChart()
 
       const circles = container.querySelectorAll('circle')
@@ -76,12 +61,7 @@ describe('StatsLineChart', () => {
     })
 
     it('does not render SVG when data is empty', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createEmptyChartData(),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: [] })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -91,12 +71,7 @@ describe('StatsLineChart', () => {
 
   describe('axes', () => {
     it('renders x-axis labels', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(4),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(4) })
       await waitForChart()
 
       const xLabels = container.querySelectorAll('text.x-label')
@@ -104,12 +79,7 @@ describe('StatsLineChart', () => {
     })
 
     it('formats date labels correctly', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3) })
       await waitForChart()
 
       // Labels should be formatted like "Jan 24" from "2024-01"
@@ -126,12 +96,7 @@ describe('StatsLineChart', () => {
     })
 
     it('renders y-axis labels', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(4),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(4) })
       await waitForChart()
 
       const yLabels = container.querySelectorAll('text.y-label')
@@ -141,12 +106,7 @@ describe('StatsLineChart', () => {
 
   describe('grid lines', () => {
     it('renders horizontal grid lines', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(4),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(4) })
       await waitForChart()
 
       const gridLines = container.querySelectorAll('line.grid-line')
@@ -156,13 +116,7 @@ describe('StatsLineChart', () => {
 
   describe('custom height', () => {
     it('respects custom height prop', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-          height: 250,
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3), height: 250 })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -170,12 +124,7 @@ describe('StatsLineChart', () => {
     })
 
     it('uses default height of 160 when not specified', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3) })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -185,12 +134,7 @@ describe('StatsLineChart', () => {
 
   describe('gradient', () => {
     it('creates area gradient definition', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3) })
       await waitForChart()
 
       const gradient = container.querySelector('defs linearGradient#area-gradient')
@@ -204,12 +148,7 @@ describe('StatsLineChart', () => {
 
   describe('data point styling', () => {
     it('data points have correct fill color', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3) })
       await waitForChart()
 
       const circles = container.querySelectorAll('circle')
@@ -219,12 +158,7 @@ describe('StatsLineChart', () => {
     })
 
     it('data points have correct radius', async () => {
-      const { container } = render(StatsLineChart, {
-        props: {
-          data: createLineChartData(3),
-        },
-      })
-
+      const { container } = await renderLineChart({ data: createLineChartData(3) })
       await waitForChart()
 
       const circles = container.querySelectorAll('circle')

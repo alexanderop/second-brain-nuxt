@@ -187,6 +187,50 @@ E2E tests run against your actual knowledge base. They verify:
 ### 4. Don't Test SQLite Internals
 Focus on routes and page behavior, not Nuxt Content implementation details.
 
+### 5. AHA Testing (Avoid Hasty Abstractions)
+
+Based on [Kent C. Dodds' testing principles](https://kentcdodds.com/blog/avoid-nesting-when-youre-testing):
+
+**Avoid mutable variables in tests.** Don't use `let` at describe scope with `beforeEach` assignment:
+
+```typescript
+// Bad: Hidden state, hard to trace variable values
+describe('myTest', () => {
+  let mockFn: Mock
+
+  beforeEach(() => {
+    mockFn = vi.fn()  // Where is this assigned? What's the value?
+  })
+
+  it('does something', () => {
+    expect(mockFn).toHaveBeenCalled()  // Have to scroll up to understand
+  })
+})
+
+// Good: Setup function returns fresh values per test
+describe('myTest', () => {
+  function setup() {
+    const mockFn = vi.fn()
+    return { mockFn }
+  }
+
+  it('does something', () => {
+    const { mockFn } = setup()  // Everything visible in the test
+    // ...
+    expect(mockFn).toHaveBeenCalled()
+  })
+})
+```
+
+**When `beforeEach`/`afterEach` is OK:**
+- Cleanup that must run even if test fails (e.g., `vi.unstubAllGlobals()`)
+- Server start/stop in `beforeAll`/`afterAll`
+- Console mock setup/teardown
+
+**When to avoid `beforeEach`:**
+- As a mechanism for code reuse (use setup functions instead)
+- When it mutates shared state between tests
+
 ## Coverage
 
 Coverage tracked for:

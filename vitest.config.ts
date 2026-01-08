@@ -26,18 +26,19 @@ export default defineConfig({
         'app/composables/useFocusMode.ts',
         'app/composables/useTocVisibility.ts',
         'app/composables/useTableFilterMenus.ts',
+        // useContentTable - pure functions tested (168 tests), composable wrapper needs Nuxt
+        'app/composables/useContentTable.ts',
         // Nitro plugin - logic extracted to server/utils/wikilinks.ts
         'server/plugins/**/*.ts',
       ],
       reporter: ['text', 'html'],
       reportsDirectory: './coverage',
       thresholds: {
-        // Baseline thresholds - raise as coverage improves
-        // Current: 60% lines (server/utils 100%, composables 30%)
-        lines: 60,
-        functions: 80,
-        branches: 70,
-        statements: 60,
+        // Enforced 100% coverage for tracked files
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
       },
     },
     projects: [

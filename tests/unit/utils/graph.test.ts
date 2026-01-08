@@ -138,6 +138,50 @@ describe('server/utils/graph', () => {
 
       expect(node.type).toBe('note')
     })
+
+    it('defaults authors to empty array when not an array', () => {
+       
+      const item: any = { path: '/test', authors: 'not-an-array' }
+      const node = createNode(item)
+
+      expect(node.authors).toEqual([])
+    })
+
+    it('defaults authors to empty array when undefined', () => {
+      const item: ContentItem = { path: '/test' }
+      const node = createNode(item)
+
+      expect(node.authors).toEqual([])
+    })
+
+    it('defaults tags to empty array when not an array', () => {
+       
+      const item: any = { path: '/test', tags: 'not-an-array' }
+      const node = createNode(item)
+
+      expect(node.tags).toEqual([])
+    })
+
+    it('defaults tags to empty array when undefined', () => {
+      const item: ContentItem = { path: '/test' }
+      const node = createNode(item)
+
+      expect(node.tags).toEqual([])
+    })
+
+    it('preserves authors array when provided', () => {
+      const item: ContentItem = { path: '/test', authors: ['author-1', 'author-2'] }
+      const node = createNode(item)
+
+      expect(node.authors).toEqual(['author-1', 'author-2'])
+    })
+
+    it('preserves tags array when provided', () => {
+      const item: ContentItem = { path: '/test', tags: ['tag-1', 'tag-2'] }
+      const node = createNode(item)
+
+      expect(node.tags).toEqual(['tag-1', 'tag-2'])
+    })
   })
 
   describe('extractEdges', () => {

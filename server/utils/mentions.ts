@@ -87,8 +87,11 @@ export function buildMentionsMap(
     if (mentionsByPath.has(path)) continue
     if (!shouldIncludeSection(section, targetSlug, contentMap, titleRegex)) continue
 
+    // section.content is guaranteed truthy by shouldIncludeSection check above
+     
+    const content = section.content!
     mentionsByPath.set(path, {
-      content: section.content || '',
+      content,
       sectionTitle: section.titles?.[0] || section.title || path,
     })
   }

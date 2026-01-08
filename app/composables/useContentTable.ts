@@ -93,6 +93,79 @@ export function isNullish(val: unknown): val is null | undefined {
   return val === null || val === undefined
 }
 
+// Pure filtering functions for testability
+export function filterByType<T extends { type: ContentType }>(
+  items: T[],
+  types: ContentType[] | undefined,
+): T[] {
+  if (!types?.length) return items
+  return items.filter(item => types.includes(item.type))
+}
+
+export function filterByTags<T extends { tags?: string[] }>(
+  items: T[],
+  tags: string[] | undefined,
+): T[] {
+  if (!tags?.length) return items
+  return items.filter((item) => {
+    const itemTags = item.tags
+    if (!itemTags?.length) return false
+    return tags.some(t => itemTags.includes(t))
+  })
+}
+
+export function filterByAuthors<T extends { authors?: TableAuthor[] }>(
+  items: T[],
+  authorSlugs: string[] | undefined,
+): T[] {
+  if (!authorSlugs?.length) return items
+  return items.filter((item) => {
+    if (!item.authors?.length) return false
+    const slugs = item.authors.map(a => a.slug)
+    return authorSlugs.some(a => slugs.includes(a))
+  })
+}
+
+export function filterByDateRange<T extends { date?: string }>(
+  items: T[],
+  range: [string, string] | undefined,
+): T[] {
+  if (!range) return items
+  const [from, to] = range
+  const fromDate = new Date(from)
+  const toDate = new Date(to)
+  return items.filter((item) => {
+    if (!item.date) return false
+    const date = new Date(item.date)
+    return date >= fromDate && date <= toDate
+  })
+}
+
+export function filterByRatingRange<T extends { rating?: number }>(
+  items: T[],
+  range: [number, number] | undefined,
+): T[] {
+  if (!range) return items
+  const [min, max] = range
+  return items.filter((item) => {
+    if (item.rating === undefined) return false
+    return item.rating >= min && item.rating <= max
+  })
+}
+
+export function applyAllFilters(
+  items: TableContentItem[],
+  filters: FilterState,
+): TableContentItem[] {
+  let result = items
+  result = filterByType(result, filters.type)
+  result = filterByTags(result, filters.tags)
+  result = filterByAuthors(result, filters.authors)
+  result = filterByDateRange(result, filters.dateConsumedRange)
+  result = filterByRatingRange(result, filters.ratingRange)
+  return result
+}
+
 // Helper: Compare two numbers
 export function compareNumbers(a: number, b: number): number {
   if (a < b) return -1
@@ -127,6 +200,86 @@ export function getSortValue(item: TableContentItem, column: SortState['column']
   return undefined
 }
 
+// Pure sorting function for testability
+export function sortItems(
+  items: TableContentItem[],
+  column: SortState['column'],
+  direction: SortState['direction'],
+): TableContentItem[] {
+  const sorted = [...items]
+  sorted.sort((a, b) => {
+    const aVal = getSortValue(a, column)
+    const bVal = getSortValue(b, column)
+    const cmp = compareValues(aVal, bVal)
+    return direction === 'asc' ? cmp : -cmp
+  })
+  return sorted
+}
+
+// Pure pagination functions for testability
+export function paginateItems<T>(items: T[], page: number, pageSize: number): T[] {
+  const start = (page - 1) * pageSize
+  return items.slice(start, start + pageSize)
+}
+
+export function calculateTotalPages(totalItems: number, pageSize: number): number {
+  return Math.ceil(totalItems / pageSize)
+}
+
+// Validation helpers for sort state
+const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating']
+
+export function isValidColumn(value: string | null): value is SortState['column'] {
+  return value !== null && validColumns.includes(value)
+}
+
+export function isValidDirection(value: string | null): value is SortState['direction'] {
+  return value === 'asc' || value === 'desc'
+}
+
+// Helper: Safely convert to string array
+export function toStringArray(arr: unknown): string[] {
+  if (!Array.isArray(arr)) return []
+  return arr.filter((x): x is string => typeof x === 'string')
+}
+
+// Author enrichment functions for testability
+export function buildAuthorMap(authors: Array<{ slug: string, name: string, avatar?: string }>): Map<string, TableAuthor> {
+  const map = new Map<string, TableAuthor>()
+  for (const author of authors) {
+    map.set(author.slug, {
+      slug: author.slug,
+      name: author.name,
+      avatar: author.avatar,
+    })
+  }
+  return map
+}
+
+export function enrichContentWithAuthors<T extends { stem: unknown, title: string, type: ContentType, authors?: unknown, tags?: string[], date?: string, rating?: number, url?: string, cover?: string }>(
+  content: T[],
+  authorMap: Map<string, TableAuthor>,
+): TableContentItem[] {
+  return content.map((item) => {
+    const slug = String(item.stem)
+    const authorSlugs = toStringArray(item.authors)
+    return {
+      slug,
+      title: item.title,
+      type: item.type,
+      authors: authorSlugs.map((authorSlug) => {
+        const author = authorMap.get(authorSlug)
+        return author || { slug: authorSlug, name: authorSlug, avatar: undefined }
+      }),
+      tags: item.tags || [],
+      date: item.date,
+      rating: item.rating,
+      url: item.url,
+      cover: item.cover,
+    }
+  })
+}
+
 export function useContentTable() {
   // URL-synced params via VueUse
   const typeParam = useRouteQuery<string | null>('type')
@@ -158,16 +311,6 @@ export function useContentTable() {
     return buildFilterState(parsed.data)
   })
 
-  // Type guards for sort state
-  const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating']
-  function isValidColumn(value: string | null): value is SortState['column'] {
-    return value !== null && validColumns.includes(value)
-  }
-
-  function isValidDirection(value: string | null): value is SortState['direction'] {
-    return value === 'asc' || value === 'desc'
-  }
-
   const sort = computed<SortState>(() => {
     const column = isValidColumn(sortParam.value) ? sortParam.value : 'dateConsumed'
     const direction = isValidDirection(dirParam.value) ? dirParam.value : 'desc'
@@ -192,126 +335,31 @@ export function useContentTable() {
       .all()
   })
 
-  // Build author lookup map
+  // Build author lookup map using extracted function
   const authorMap = computed(() => {
-    const map = new Map<string, TableAuthor>()
-    if (rawAuthors.value) {
-      for (const author of rawAuthors.value) {
-        map.set(author.slug, {
-          slug: author.slug,
-          name: author.name,
-          avatar: author.avatar,
-        })
-      }
-    }
-    return map
+    if (!rawAuthors.value) return new Map<string, TableAuthor>()
+    return buildAuthorMap(rawAuthors.value)
   })
 
-  // Helper: Safely convert to string array
-  function toStringArray(arr: unknown): string[] {
-    if (!Array.isArray(arr)) return []
-    return arr.filter((x): x is string => typeof x === 'string')
-  }
-
-  // Enriched content with author objects
+  // Enriched content with author objects using extracted function
   const allContent = computed<TableContentItem[]>(() => {
     if (!rawContent.value) return []
-
-    return rawContent.value.map((item) => {
-      const slug = String(item.stem)
-      const authorSlugs = toStringArray(item.authors)
-      return {
-        slug,
-        title: item.title,
-        type: item.type,
-        authors: authorSlugs.map((authorSlug) => {
-          const author = authorMap.value.get(authorSlug)
-          return author || { slug: authorSlug, name: authorSlug, avatar: undefined }
-        }),
-        tags: item.tags || [],
-        date: item.date,
-        rating: item.rating,
-        url: item.url,
-        cover: item.cover,
-      }
-    })
+    return enrichContentWithAuthors(rawContent.value, authorMap.value)
   })
 
-  // Client-side filtering
-  const filteredItems = computed(() => {
-    let result = allContent.value
-    const f = filters.value
+  // Client-side filtering using extracted pure functions
+  const filteredItems = computed(() => applyAllFilters(allContent.value, filters.value))
 
-    // Type filter (OR)
-    const typeFilter = f.type
-    if (typeFilter?.length) {
-      result = result.filter(item => typeFilter.includes(item.type))
-    }
-
-    // Tags filter (OR) - exclude items without tags when filter active
-    const tagsFilter = f.tags
-    if (tagsFilter?.length) {
-      result = result.filter((item) => {
-        if (!item.tags?.length) return false
-        return tagsFilter.some(t => item.tags.includes(t))
-      })
-    }
-
-    // Authors filter (OR) - exclude items without authors when filter active
-    const authorsFilter = f.authors
-    if (authorsFilter?.length) {
-      result = result.filter((item) => {
-        if (!item.authors?.length) return false
-        const slugs = item.authors.map(a => a.slug)
-        return authorsFilter.some(a => slugs.includes(a))
-      })
-    }
-
-    // Date consumed range
-    if (f.dateConsumedRange) {
-      const fromDate = new Date(f.dateConsumedRange[0])
-      const toDate = new Date(f.dateConsumedRange[1])
-      result = result.filter((item) => {
-        if (!item.date) return false
-        const date = new Date(item.date)
-        return date >= fromDate && date <= toDate
-      })
-    }
-
-    // Rating range
-    if (f.ratingRange) {
-      const [min, max] = f.ratingRange
-      result = result.filter((item) => {
-        if (item.rating === undefined) return false
-        return item.rating >= min && item.rating <= max
-      })
-    }
-
-    return result
-  })
-
-  // Client-side sorting
+  // Client-side sorting using extracted pure function
   const sortedItems = computed(() => {
-    const items = [...filteredItems.value]
     const { column, direction } = sort.value
-
-    items.sort((a, b) => {
-      const aVal = getSortValue(a, column)
-      const bVal = getSortValue(b, column)
-      const cmp = compareValues(aVal, bVal)
-      return direction === 'asc' ? cmp : -cmp
-    })
-
-    return items
+    return sortItems(filteredItems.value, column, direction)
   })
 
-  // Pagination
-  const paginatedItems = computed(() => {
-    const start = (page.value - 1) * PAGE_SIZE
-    return sortedItems.value.slice(start, start + PAGE_SIZE)
-  })
+  // Pagination using extracted pure functions
+  const paginatedItems = computed(() => paginateItems(sortedItems.value, page.value, PAGE_SIZE))
 
-  const totalPages = computed(() => Math.ceil(sortedItems.value.length / PAGE_SIZE))
+  const totalPages = computed(() => calculateTotalPages(sortedItems.value.length, PAGE_SIZE))
   const totalItems = computed(() => sortedItems.value.length)
 
   // Dynamic filter options (based on current filtered results, excluding self)

@@ -42,6 +42,11 @@ describe('extractLinksFromMinimark', () => {
     expect(extractLinksFromMinimark(node)).toEqual(['my-note'])
   })
 
+  it('ignores root link with only slash', () => {
+    const node = ['a', { href: '/' }, 'Home']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
   it('returns empty array for null input', () => {
     expect(extractLinksFromMinimark(null)).toEqual([])
   })
