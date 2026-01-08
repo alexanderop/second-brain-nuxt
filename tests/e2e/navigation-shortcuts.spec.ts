@@ -54,4 +54,22 @@ test.describe('Navigation Shortcuts', () => {
     // Verify graph page content loads (h1 is "Knowledge Graph")
     await expect(page.getByRole('heading', { name: 'Knowledge Graph', level: 1 })).toBeVisible()
   })
+
+  test('G then T navigates to tags page', async ({ page }) => {
+    // Start from home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on the home page
+    await expect(page).toHaveURL('/')
+
+    // Press G then T to navigate to tags
+    await page.keyboard.press('g')
+    await page.keyboard.press('t')
+
+    // Verify navigation to tags page
+    await expect(page).toHaveURL('/tags')
+
+    // Verify tags page content loads
+    await expect(page.getByRole('heading', { name: 'Tags', level: 1 })).toBeVisible()
+  })
 })
