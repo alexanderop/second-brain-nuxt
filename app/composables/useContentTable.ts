@@ -243,6 +243,43 @@ export function toStringArray(arr: unknown): string[] {
   return arr.filter((x): x is string => typeof x === 'string')
 }
 
+// Author enrichment functions for testability
+export function buildAuthorMap(authors: Array<{ slug: string, name: string, avatar?: string }>): Map<string, TableAuthor> {
+  const map = new Map<string, TableAuthor>()
+  for (const author of authors) {
+    map.set(author.slug, {
+      slug: author.slug,
+      name: author.name,
+      avatar: author.avatar,
+    })
+  }
+  return map
+}
+
+export function enrichContentWithAuthors<T extends { stem: unknown, title: string, type: ContentType, authors?: unknown, tags?: string[], date?: string, rating?: number, url?: string, cover?: string }>(
+  content: T[],
+  authorMap: Map<string, TableAuthor>,
+): TableContentItem[] {
+  return content.map((item) => {
+    const slug = String(item.stem)
+    const authorSlugs = toStringArray(item.authors)
+    return {
+      slug,
+      title: item.title,
+      type: item.type,
+      authors: authorSlugs.map((authorSlug) => {
+        const author = authorMap.get(authorSlug)
+        return author || { slug: authorSlug, name: authorSlug, avatar: undefined }
+      }),
+      tags: item.tags || [],
+      date: item.date,
+      rating: item.rating,
+      url: item.url,
+      cover: item.cover,
+    }
+  })
+}
+
 export function useContentTable() {
   // URL-synced params via VueUse
   const typeParam = useRouteQuery<string | null>('type')
@@ -298,43 +335,16 @@ export function useContentTable() {
       .all()
   })
 
-  // Build author lookup map
+  // Build author lookup map using extracted function
   const authorMap = computed(() => {
-    const map = new Map<string, TableAuthor>()
-    if (rawAuthors.value) {
-      for (const author of rawAuthors.value) {
-        map.set(author.slug, {
-          slug: author.slug,
-          name: author.name,
-          avatar: author.avatar,
-        })
-      }
-    }
-    return map
+    if (!rawAuthors.value) return new Map<string, TableAuthor>()
+    return buildAuthorMap(rawAuthors.value)
   })
 
-  // Enriched content with author objects
+  // Enriched content with author objects using extracted function
   const allContent = computed<TableContentItem[]>(() => {
     if (!rawContent.value) return []
-
-    return rawContent.value.map((item) => {
-      const slug = String(item.stem)
-      const authorSlugs = toStringArray(item.authors)
-      return {
-        slug,
-        title: item.title,
-        type: item.type,
-        authors: authorSlugs.map((authorSlug) => {
-          const author = authorMap.value.get(authorSlug)
-          return author || { slug: authorSlug, name: authorSlug, avatar: undefined }
-        }),
-        tags: item.tags || [],
-        date: item.date,
-        rating: item.rating,
-        url: item.url,
-        cover: item.cover,
-      }
-    })
+    return enrichContentWithAuthors(rawContent.value, authorMap.value)
   })
 
   // Client-side filtering using extracted pure functions
