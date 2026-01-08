@@ -352,5 +352,12 @@ describe('useContentTable', () => {
       expect(getSortValue(itemWithoutDate, 'dateConsumed')).toBeUndefined()
       expect(getSortValue(itemWithoutDate, 'rating')).toBeUndefined()
     })
+
+    it('returns undefined for unknown column', () => {
+      // Test the fallback case for unknown columns (runtime safety check)
+      const unknownColumn = 'unknownColumn'
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Testing runtime fallback for invalid column type
+      expect(getSortValue(item, unknownColumn as Parameters<typeof getSortValue>[1])).toBeUndefined()
+    })
   })
 })
