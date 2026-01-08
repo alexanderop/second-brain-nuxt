@@ -226,6 +226,23 @@ export function calculateTotalPages(totalItems: number, pageSize: number): numbe
   return Math.ceil(totalItems / pageSize)
 }
 
+// Validation helpers for sort state
+const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating']
+
+export function isValidColumn(value: string | null): value is SortState['column'] {
+  return value !== null && validColumns.includes(value)
+}
+
+export function isValidDirection(value: string | null): value is SortState['direction'] {
+  return value === 'asc' || value === 'desc'
+}
+
+// Helper: Safely convert to string array
+export function toStringArray(arr: unknown): string[] {
+  if (!Array.isArray(arr)) return []
+  return arr.filter((x): x is string => typeof x === 'string')
+}
+
 export function useContentTable() {
   // URL-synced params via VueUse
   const typeParam = useRouteQuery<string | null>('type')
@@ -256,16 +273,6 @@ export function useContentTable() {
 
     return buildFilterState(parsed.data)
   })
-
-  // Type guards for sort state
-  const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating']
-  function isValidColumn(value: string | null): value is SortState['column'] {
-    return value !== null && validColumns.includes(value)
-  }
-
-  function isValidDirection(value: string | null): value is SortState['direction'] {
-    return value === 'asc' || value === 'desc'
-  }
 
   const sort = computed<SortState>(() => {
     const column = isValidColumn(sortParam.value) ? sortParam.value : 'dateConsumed'
@@ -305,12 +312,6 @@ export function useContentTable() {
     }
     return map
   })
-
-  // Helper: Safely convert to string array
-  function toStringArray(arr: unknown): string[] {
-    if (!Array.isArray(arr)) return []
-    return arr.filter((x): x is string => typeof x === 'string')
-  }
 
   // Enriched content with author objects
   const allContent = computed<TableContentItem[]>(() => {
