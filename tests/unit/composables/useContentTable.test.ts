@@ -16,6 +16,7 @@ import {
   filterByDateRange,
   filterByRatingRange,
   applyAllFilters,
+  sortItems,
 } from '~/composables/useContentTable'
 import type { FilterState, TableContentItem } from '~/types/table'
 
@@ -675,6 +676,184 @@ describe('useContentTable', () => {
         tags: ['business'], // No book has business tag
       })
       expect(result).toEqual([])
+    })
+  })
+
+  describe('sortItems', () => {
+    const items: TableContentItem[] = [
+      {
+        slug: 'item-1',
+        title: 'Zebra Book',
+        type: 'book',
+        authors: [],
+        tags: [],
+        date: '2024-06-15',
+        rating: 5,
+      },
+      {
+        slug: 'item-2',
+        title: 'Apple Podcast',
+        type: 'podcast',
+        authors: [],
+        tags: [],
+        date: '2024-01-10',
+        rating: 8,
+      },
+      {
+        slug: 'item-3',
+        title: 'Banana Article',
+        type: 'article',
+        authors: [],
+        tags: [],
+        date: '2024-09-20',
+        rating: 3,
+      },
+      {
+        slug: 'item-4',
+        title: 'Cherry Talk',
+        type: 'talk',
+        authors: [],
+        tags: [],
+        date: undefined,
+        rating: undefined,
+      },
+    ]
+
+    describe('sorting by title column', () => {
+      it('sorts by title ascending', () => {
+        const result = sortItems(items, 'title', 'asc')
+        expect(result.map(i => i.title)).toEqual([
+          'Apple Podcast',
+          'Banana Article',
+          'Cherry Talk',
+          'Zebra Book',
+        ])
+      })
+
+      it('sorts by title descending', () => {
+        const result = sortItems(items, 'title', 'desc')
+        expect(result.map(i => i.title)).toEqual([
+          'Zebra Book',
+          'Cherry Talk',
+          'Banana Article',
+          'Apple Podcast',
+        ])
+      })
+    })
+
+    describe('sorting by type column', () => {
+      it('sorts by type ascending', () => {
+        const result = sortItems(items, 'type', 'asc')
+        expect(result.map(i => i.type)).toEqual([
+          'article',
+          'book',
+          'podcast',
+          'talk',
+        ])
+      })
+
+      it('sorts by type descending', () => {
+        const result = sortItems(items, 'type', 'desc')
+        expect(result.map(i => i.type)).toEqual([
+          'talk',
+          'podcast',
+          'book',
+          'article',
+        ])
+      })
+    })
+
+    describe('sorting by dateConsumed column', () => {
+      it('sorts by dateConsumed ascending with nulls at end', () => {
+        const result = sortItems(items, 'dateConsumed', 'asc')
+        expect(result.map(i => i.date)).toEqual([
+          '2024-01-10',
+          '2024-06-15',
+          '2024-09-20',
+          undefined,
+        ])
+      })
+
+      it('sorts by dateConsumed descending with nulls at start', () => {
+        const result = sortItems(items, 'dateConsumed', 'desc')
+        expect(result.map(i => i.date)).toEqual([
+          undefined,
+          '2024-09-20',
+          '2024-06-15',
+          '2024-01-10',
+        ])
+      })
+    })
+
+    describe('sorting by rating column', () => {
+      it('sorts by rating ascending with nulls at end', () => {
+        const result = sortItems(items, 'rating', 'asc')
+        expect(result.map(i => i.rating)).toEqual([3, 5, 8, undefined])
+      })
+
+      it('sorts by rating descending with nulls at start', () => {
+        const result = sortItems(items, 'rating', 'desc')
+        expect(result.map(i => i.rating)).toEqual([undefined, 8, 5, 3])
+      })
+    })
+
+    describe('null value handling', () => {
+      it('pushes null values to end in ascending order', () => {
+        const itemsWithNulls: TableContentItem[] = [
+          { slug: 'a', title: 'A', type: 'book', authors: [], tags: [], date: undefined, rating: undefined },
+          { slug: 'b', title: 'B', type: 'book', authors: [], tags: [], date: '2024-01-01', rating: 5 },
+          { slug: 'c', title: 'C', type: 'book', authors: [], tags: [], date: undefined, rating: undefined },
+        ]
+        const result = sortItems(itemsWithNulls, 'dateConsumed', 'asc')
+        expect(result.map(i => i.slug)).toEqual(['b', 'a', 'c'])
+      })
+
+      it('pushes null values to start in descending order', () => {
+        const itemsWithNulls: TableContentItem[] = [
+          { slug: 'a', title: 'A', type: 'book', authors: [], tags: [], date: undefined, rating: undefined },
+          { slug: 'b', title: 'B', type: 'book', authors: [], tags: [], date: '2024-01-01', rating: 5 },
+          { slug: 'c', title: 'C', type: 'book', authors: [], tags: [], date: undefined, rating: undefined },
+        ]
+        const result = sortItems(itemsWithNulls, 'dateConsumed', 'desc')
+        expect(result.map(i => i.slug)).toEqual(['a', 'c', 'b'])
+      })
+
+      it('maintains order when all values are null', () => {
+        const itemsAllNull: TableContentItem[] = [
+          { slug: 'a', title: 'A', type: 'book', authors: [], tags: [], rating: undefined },
+          { slug: 'b', title: 'B', type: 'book', authors: [], tags: [], rating: undefined },
+        ]
+        const result = sortItems(itemsAllNull, 'rating', 'asc')
+        expect(result.map(i => i.slug)).toEqual(['a', 'b'])
+      })
+    })
+
+    describe('immutability', () => {
+      it('does not mutate original array', () => {
+        const original = [...items]
+        sortItems(items, 'title', 'asc')
+        expect(items).toEqual(original)
+      })
+
+      it('returns a new array reference', () => {
+        const result = sortItems(items, 'title', 'asc')
+        expect(result).not.toBe(items)
+      })
+    })
+
+    describe('edge cases', () => {
+      it('handles empty array', () => {
+        const result = sortItems([], 'title', 'asc')
+        expect(result).toEqual([])
+      })
+
+      it('handles single item array', () => {
+        const singleItem: TableContentItem[] = [
+          { slug: 'a', title: 'A', type: 'book', authors: [], tags: [] },
+        ]
+        const result = sortItems(singleItem, 'title', 'asc')
+        expect(result).toEqual(singleItem)
+      })
     })
   })
 })
