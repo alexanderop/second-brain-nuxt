@@ -225,4 +225,24 @@ test.describe('Action Shortcuts - Note Page', () => {
     // Verify clipboard contains the wiki-link format
     expect(clipboardText).toBe('[[second-brain-system]]')
   })
+
+  test('Shift+C copies URL to clipboard', async ({ page, context }) => {
+    // Grant clipboard permissions
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+
+    // Navigate to a note with a URL field
+    await page.goto('/12-design-patterns-in-vue', { waitUntil: 'networkidle' })
+
+    // Wait for page to fully load
+    await expect(page.locator('h1').first()).toBeVisible()
+
+    // Press Shift+C to copy URL
+    await page.keyboard.press('Shift+c')
+
+    // Read clipboard content
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+
+    // Verify clipboard contains the source URL
+    expect(clipboardText).toBe('https://michaelnthiessen.com/12-design-patterns-vue')
+  })
 })
