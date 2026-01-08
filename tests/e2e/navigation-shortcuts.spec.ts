@@ -297,4 +297,22 @@ test.describe('General Shortcuts', () => {
     // Verify modal is closed
     await expect(searchInput).not.toBeVisible()
   })
+
+  test('Cmd+K (Meta+K) opens search modal', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on home page
+    await expect(page).toHaveURL('/')
+
+    // Press Meta+K to open search modal
+    await page.keyboard.press('Meta+k')
+
+    // Verify search modal opens with command palette placeholder
+    const searchInput = page.getByPlaceholder('Search notes, authors, newsletters, podcasts...')
+    await expect(searchInput).toBeVisible()
+
+    // Verify the search input is focused
+    await expect(searchInput).toBeFocused()
+  })
 })
