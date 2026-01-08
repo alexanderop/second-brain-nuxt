@@ -36,4 +36,22 @@ test.describe('Navigation Shortcuts', () => {
     // Verify books page content loads
     await expect(page.getByRole('heading', { name: 'Books', level: 1 })).toBeVisible()
   })
+
+  test('G then G navigates to graph page', async ({ page }) => {
+    // Start from home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on the home page
+    await expect(page).toHaveURL('/')
+
+    // Press G then G to navigate to graph
+    await page.keyboard.press('g')
+    await page.keyboard.press('g')
+
+    // Verify navigation to graph page
+    await expect(page).toHaveURL('/graph')
+
+    // Verify graph page content loads (h1 is "Knowledge Graph")
+    await expect(page.getByRole('heading', { name: 'Knowledge Graph', level: 1 })).toBeVisible()
+  })
 })
