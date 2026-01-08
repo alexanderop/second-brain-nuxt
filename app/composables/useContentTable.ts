@@ -200,6 +200,22 @@ export function getSortValue(item: TableContentItem, column: SortState['column']
   return undefined
 }
 
+// Pure sorting function for testability
+export function sortItems(
+  items: TableContentItem[],
+  column: SortState['column'],
+  direction: SortState['direction'],
+): TableContentItem[] {
+  const sorted = [...items]
+  sorted.sort((a, b) => {
+    const aVal = getSortValue(a, column)
+    const bVal = getSortValue(b, column)
+    const cmp = compareValues(aVal, bVal)
+    return direction === 'asc' ? cmp : -cmp
+  })
+  return sorted
+}
+
 export function useContentTable() {
   // URL-synced params via VueUse
   const typeParam = useRouteQuery<string | null>('type')
@@ -313,19 +329,10 @@ export function useContentTable() {
   // Client-side filtering using extracted pure functions
   const filteredItems = computed(() => applyAllFilters(allContent.value, filters.value))
 
-  // Client-side sorting
+  // Client-side sorting using extracted pure function
   const sortedItems = computed(() => {
-    const items = [...filteredItems.value]
     const { column, direction } = sort.value
-
-    items.sort((a, b) => {
-      const aVal = getSortValue(a, column)
-      const bVal = getSortValue(b, column)
-      const cmp = compareValues(aVal, bVal)
-      return direction === 'asc' ? cmp : -cmp
-    })
-
-    return items
+    return sortItems(filteredItems.value, column, direction)
   })
 
   // Pagination
