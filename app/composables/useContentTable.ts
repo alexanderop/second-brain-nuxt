@@ -93,6 +93,79 @@ export function isNullish(val: unknown): val is null | undefined {
   return val === null || val === undefined
 }
 
+// Pure filtering functions for testability
+export function filterByType<T extends { type: ContentType }>(
+  items: T[],
+  types: ContentType[] | undefined,
+): T[] {
+  if (!types?.length) return items
+  return items.filter(item => types.includes(item.type))
+}
+
+export function filterByTags<T extends { tags?: string[] }>(
+  items: T[],
+  tags: string[] | undefined,
+): T[] {
+  if (!tags?.length) return items
+  return items.filter((item) => {
+    const itemTags = item.tags
+    if (!itemTags?.length) return false
+    return tags.some(t => itemTags.includes(t))
+  })
+}
+
+export function filterByAuthors<T extends { authors?: TableAuthor[] }>(
+  items: T[],
+  authorSlugs: string[] | undefined,
+): T[] {
+  if (!authorSlugs?.length) return items
+  return items.filter((item) => {
+    if (!item.authors?.length) return false
+    const slugs = item.authors.map(a => a.slug)
+    return authorSlugs.some(a => slugs.includes(a))
+  })
+}
+
+export function filterByDateRange<T extends { date?: string }>(
+  items: T[],
+  range: [string, string] | undefined,
+): T[] {
+  if (!range) return items
+  const [from, to] = range
+  const fromDate = new Date(from)
+  const toDate = new Date(to)
+  return items.filter((item) => {
+    if (!item.date) return false
+    const date = new Date(item.date)
+    return date >= fromDate && date <= toDate
+  })
+}
+
+export function filterByRatingRange<T extends { rating?: number }>(
+  items: T[],
+  range: [number, number] | undefined,
+): T[] {
+  if (!range) return items
+  const [min, max] = range
+  return items.filter((item) => {
+    if (item.rating === undefined) return false
+    return item.rating >= min && item.rating <= max
+  })
+}
+
+export function applyAllFilters(
+  items: TableContentItem[],
+  filters: FilterState,
+): TableContentItem[] {
+  let result = items
+  result = filterByType(result, filters.type)
+  result = filterByTags(result, filters.tags)
+  result = filterByAuthors(result, filters.authors)
+  result = filterByDateRange(result, filters.dateConsumedRange)
+  result = filterByRatingRange(result, filters.ratingRange)
+  return result
+}
+
 // Helper: Compare two numbers
 export function compareNumbers(a: number, b: number): number {
   if (a < b) return -1
@@ -237,58 +310,8 @@ export function useContentTable() {
     })
   })
 
-  // Client-side filtering
-  const filteredItems = computed(() => {
-    let result = allContent.value
-    const f = filters.value
-
-    // Type filter (OR)
-    const typeFilter = f.type
-    if (typeFilter?.length) {
-      result = result.filter(item => typeFilter.includes(item.type))
-    }
-
-    // Tags filter (OR) - exclude items without tags when filter active
-    const tagsFilter = f.tags
-    if (tagsFilter?.length) {
-      result = result.filter((item) => {
-        if (!item.tags?.length) return false
-        return tagsFilter.some(t => item.tags.includes(t))
-      })
-    }
-
-    // Authors filter (OR) - exclude items without authors when filter active
-    const authorsFilter = f.authors
-    if (authorsFilter?.length) {
-      result = result.filter((item) => {
-        if (!item.authors?.length) return false
-        const slugs = item.authors.map(a => a.slug)
-        return authorsFilter.some(a => slugs.includes(a))
-      })
-    }
-
-    // Date consumed range
-    if (f.dateConsumedRange) {
-      const fromDate = new Date(f.dateConsumedRange[0])
-      const toDate = new Date(f.dateConsumedRange[1])
-      result = result.filter((item) => {
-        if (!item.date) return false
-        const date = new Date(item.date)
-        return date >= fromDate && date <= toDate
-      })
-    }
-
-    // Rating range
-    if (f.ratingRange) {
-      const [min, max] = f.ratingRange
-      result = result.filter((item) => {
-        if (item.rating === undefined) return false
-        return item.rating >= min && item.rating <= max
-      })
-    }
-
-    return result
-  })
+  // Client-side filtering using extracted pure functions
+  const filteredItems = computed(() => applyAllFilters(allContent.value, filters.value))
 
   // Client-side sorting
   const sortedItems = computed(() => {
