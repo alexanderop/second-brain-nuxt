@@ -12,8 +12,11 @@
   },
   "scripts": {
     "dev": "pnpm --filter @second-brain/web dev",
+    "dev:docs": "pnpm --filter @second-brain/docs dev",
     "build": "pnpm --filter @second-brain/web build",
+    "build:docs": "pnpm --filter @second-brain/docs build",
     "typecheck": "pnpm --filter @second-brain/web typecheck",
+    "typecheck:docs": "pnpm --filter @second-brain/docs typecheck",
     "lint": "pnpm --filter @second-brain/web lint",
     "lint:fix": "pnpm --filter @second-brain/web lint:fix",
     "test:unit": "pnpm --filter @second-brain/web test:unit",

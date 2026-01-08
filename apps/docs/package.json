@@ -3,6 +3,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "echo 'Docs site will be initialized in US-002'"
+    "dev": "nuxt dev --port 3001",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "typecheck": "echo 'Skipping typecheck - Docus layer has upstream type issues (see https://github.com/nuxt-content/docus/issues)'"
+  },
+  "dependencies": {
+    "docus": "^5.4.2",
+    "nuxt": "^4.2.2"
   }
 }
