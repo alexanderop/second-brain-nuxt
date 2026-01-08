@@ -19,6 +19,9 @@ import {
   sortItems,
   paginateItems,
   calculateTotalPages,
+  isValidColumn,
+  isValidDirection,
+  toStringArray,
 } from '~/composables/useContentTable'
 import type { FilterState, TableContentItem } from '~/types/table'
 
@@ -970,6 +973,101 @@ describe('useContentTable', () => {
       it('handles large numbers', () => {
         expect(calculateTotalPages(1000, 25)).toBe(40)
       })
+    })
+  })
+
+  describe('isValidColumn', () => {
+    it('returns true for valid column "title"', () => {
+      expect(isValidColumn('title')).toBe(true)
+    })
+
+    it('returns true for valid column "type"', () => {
+      expect(isValidColumn('type')).toBe(true)
+    })
+
+    it('returns true for valid column "dateConsumed"', () => {
+      expect(isValidColumn('dateConsumed')).toBe(true)
+    })
+
+    it('returns true for valid column "rating"', () => {
+      expect(isValidColumn('rating')).toBe(true)
+    })
+
+    it('returns false for null', () => {
+      expect(isValidColumn(null)).toBe(false)
+    })
+
+    it('returns false for invalid column name', () => {
+      expect(isValidColumn('invalid')).toBe(false)
+    })
+
+    it('returns false for empty string', () => {
+      expect(isValidColumn('')).toBe(false)
+    })
+
+    it('returns false for similar but incorrect column names', () => {
+      expect(isValidColumn('Title')).toBe(false)
+      expect(isValidColumn('date')).toBe(false)
+      expect(isValidColumn('ratings')).toBe(false)
+    })
+  })
+
+  describe('isValidDirection', () => {
+    it('returns true for "asc"', () => {
+      expect(isValidDirection('asc')).toBe(true)
+    })
+
+    it('returns true for "desc"', () => {
+      expect(isValidDirection('desc')).toBe(true)
+    })
+
+    it('returns false for null', () => {
+      expect(isValidDirection(null)).toBe(false)
+    })
+
+    it('returns false for invalid direction', () => {
+      expect(isValidDirection('ascending')).toBe(false)
+    })
+
+    it('returns false for empty string', () => {
+      expect(isValidDirection('')).toBe(false)
+    })
+
+    it('returns false for uppercase variants', () => {
+      expect(isValidDirection('ASC')).toBe(false)
+      expect(isValidDirection('DESC')).toBe(false)
+    })
+  })
+
+  describe('toStringArray', () => {
+    it('returns empty array for non-array input', () => {
+      expect(toStringArray(null)).toEqual([])
+      expect(toStringArray(undefined)).toEqual([])
+      expect(toStringArray('string')).toEqual([])
+      expect(toStringArray(123)).toEqual([])
+      expect(toStringArray({})).toEqual([])
+    })
+
+    it('returns empty array for empty array', () => {
+      expect(toStringArray([])).toEqual([])
+    })
+
+    it('returns string array as-is', () => {
+      expect(toStringArray(['a', 'b', 'c'])).toEqual(['a', 'b', 'c'])
+    })
+
+    it('filters out non-string values from array', () => {
+      expect(toStringArray(['a', 1, 'b', null, 'c'])).toEqual(['a', 'b', 'c'])
+    })
+
+    it('returns empty array when all values are non-strings', () => {
+      expect(toStringArray([1, 2, 3])).toEqual([])
+      expect(toStringArray([null, undefined])).toEqual([])
+      expect(toStringArray([{}, []])).toEqual([])
+    })
+
+    it('handles mixed types correctly', () => {
+      expect(toStringArray(['valid', 42, true, 'also-valid', undefined])).toEqual(['valid', 'also-valid'])
     })
   })
 })
