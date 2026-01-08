@@ -91,3 +91,41 @@ test.describe('Navigation Shortcuts', () => {
     await expect(page.getByRole('heading', { name: 'Authors', level: 1 })).toBeVisible()
   })
 })
+
+test.describe('Action Shortcuts - List Navigation', () => {
+  test('J moves selection down and K moves selection up on home page', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Get all content cards (articles)
+    const cards = page.locator('article')
+    await expect(cards.first()).toBeVisible()
+
+    // Initially no card should be selected (no muted background)
+    await expect(cards.first()).not.toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Press J to select the first item (index goes from -1 to 0)
+    await page.keyboard.press('j')
+
+    // First card should now be selected (has muted background class)
+    await expect(cards.first()).toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Press K - should stay at first item (can't go below 0)
+    await page.keyboard.press('k')
+    await expect(cards.first()).toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Press J to move to second item
+    await page.keyboard.press('j')
+
+    // First card should no longer be selected
+    await expect(cards.first()).not.toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Second card should now be selected
+    await expect(cards.nth(1)).toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Press K to go back to first item
+    await page.keyboard.press('k')
+    await expect(cards.first()).toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+    await expect(cards.nth(1)).not.toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+  })
+})
