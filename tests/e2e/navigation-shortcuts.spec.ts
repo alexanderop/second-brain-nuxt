@@ -315,4 +315,36 @@ test.describe('General Shortcuts', () => {
     // Verify the search input is focused
     await expect(searchInput).toBeFocused()
   })
+
+  test('Escape closes search modal', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Open search modal
+    await page.keyboard.press('/')
+    const searchInput = page.getByPlaceholder('Search notes, authors, newsletters, podcasts...')
+    await expect(searchInput).toBeVisible()
+
+    // Press Escape to close
+    await page.keyboard.press('Escape')
+
+    // Verify modal is closed
+    await expect(searchInput).not.toBeVisible()
+  })
+
+  test('Escape closes shortcuts modal', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Open shortcuts modal with ? (Shift+/)
+    await page.keyboard.press('Shift+/')
+    const modalTitle = page.getByRole('heading', { name: 'Keyboard Shortcuts' })
+    await expect(modalTitle).toBeVisible()
+
+    // Press Escape to close
+    await page.keyboard.press('Escape')
+
+    // Verify modal is closed
+    await expect(modalTitle).not.toBeVisible()
+  })
 })
