@@ -72,4 +72,22 @@ test.describe('Navigation Shortcuts', () => {
     // Verify tags page content loads
     await expect(page.getByRole('heading', { name: 'Tags', level: 1 })).toBeVisible()
   })
+
+  test('G then A navigates to authors page', async ({ page }) => {
+    // Start from home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Verify we're on the home page
+    await expect(page).toHaveURL('/')
+
+    // Press G then A to navigate to authors
+    await page.keyboard.press('g')
+    await page.keyboard.press('a')
+
+    // Verify navigation to authors page
+    await expect(page).toHaveURL('/authors')
+
+    // Verify authors page content loads
+    await expect(page.getByRole('heading', { name: 'Authors', level: 1 })).toBeVisible()
+  })
 })
