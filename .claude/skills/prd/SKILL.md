@@ -12,7 +12,7 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 ## The Job
 
 1. Receive a feature description from the user
-2. Ask 3-5 essential clarifying questions (with lettered options)
+2. Use `AskUserQuestion` tool to ask 3-5 essential clarifying questions
 3. Generate a structured PRD based on answers
 4. Save to `tasks/prd-[feature-name].md`
 
@@ -22,36 +22,62 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 
 ## Step 1: Clarifying Questions
 
-Ask only critical questions where the initial prompt is ambiguous. Focus on:
+**Use the `AskUserQuestion` tool** to gather requirements interactively. Ask only critical questions where the initial prompt is ambiguous.
 
+Focus on these areas:
 - **Problem/Goal:** What problem does this solve?
 - **Core Functionality:** What are the key actions?
 - **Scope/Boundaries:** What should it NOT do?
 - **Success Criteria:** How do we know it's done?
 
-### Format Questions Like This:
+### How to Ask
 
+Use `AskUserQuestion` with 2-4 questions at a time. Each question should have 2-4 concrete options.
+
+**Example tool call:**
+```json
+{
+  "questions": [
+    {
+      "question": "What is the primary goal of this feature?",
+      "header": "Goal",
+      "options": [
+        {"label": "Improve onboarding", "description": "Help new users get started faster"},
+        {"label": "Increase retention", "description": "Keep existing users engaged"},
+        {"label": "Reduce support", "description": "Decrease tickets and manual help"}
+      ],
+      "multiSelect": false
+    },
+    {
+      "question": "Who is the target user?",
+      "header": "Users",
+      "options": [
+        {"label": "New users", "description": "Users who just signed up"},
+        {"label": "All users", "description": "Everyone regardless of tenure"},
+        {"label": "Admin users", "description": "Users with elevated permissions"}
+      ],
+      "multiSelect": false
+    },
+    {
+      "question": "What scope do you want?",
+      "header": "Scope",
+      "options": [
+        {"label": "MVP (Recommended)", "description": "Minimal viable version, iterate later"},
+        {"label": "Full-featured", "description": "Complete implementation upfront"},
+        {"label": "Backend only", "description": "Just the API, no UI"},
+        {"label": "UI only", "description": "Frontend with mock data"}
+      ],
+      "multiSelect": false
+    }
+  ]
+}
 ```
-1. What is the primary goal of this feature?
-   A. Improve user onboarding experience
-   B. Increase user retention
-   C. Reduce support burden
-   D. Other: [please specify]
 
-2. Who is the target user?
-   A. New users only
-   B. Existing users only
-   C. All users
-   D. Admin users only
-
-3. What is the scope?
-   A. Minimal viable version
-   B. Full-featured implementation
-   C. Just the backend/API
-   D. Just the UI
-```
-
-This lets users respond with "1A, 2C, 3B" for quick iteration.
+**Tips:**
+- Users can always select "Other" to provide custom input
+- Use `multiSelect: true` when options aren't mutually exclusive
+- Keep headers under 12 characters
+- Add "(Recommended)" to the suggested option's label
 
 ---
 
@@ -232,8 +258,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 
 Before saving the PRD:
 
-- [ ] Asked clarifying questions with lettered options
-- [ ] Incorporated user's answers
+- [ ] Used `AskUserQuestion` tool to clarify requirements
+- [ ] Incorporated user's answers into the PRD
 - [ ] User stories are small and specific
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
