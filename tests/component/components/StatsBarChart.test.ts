@@ -1,31 +1,29 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { page } from '@vitest/browser/context'
 import { render } from 'vitest-browser-vue'
 import StatsBarChart from '~/components/StatsBarChart.vue'
 import {
   createBarChartData,
-  createEmptyChartData,
   createSingleItemData,
 } from '../factories/chartFactory'
+import type { BarChartDataItem } from '../factories/chartFactory'
 
 /** Wait for D3 to render the chart */
 async function waitForChart(ms = 300): Promise<void> {
   await new Promise(r => setTimeout(r, ms))
 }
 
+/** Render chart with explicit viewport setup (KCD pattern: visible dependencies) */
+async function renderBarChart(props: { data: BarChartDataItem[], height?: number, horizontal?: boolean }) {
+  await page.viewport(800, 400)
+  return render(StatsBarChart, { props })
+}
+
 describe('StatsBarChart', () => {
-  beforeEach(async () => {
-    await page.viewport(800, 400)
-  })
 
   describe('rendering', () => {
     it('renders SVG when data provided', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createBarChartData(),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData() })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -33,11 +31,7 @@ describe('StatsBarChart', () => {
     })
 
     it('renders correct number of bars', async () => {
-      const data = createBarChartData(4)
-      const { container } = render(StatsBarChart, {
-        props: { data },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(4) })
       await waitForChart()
 
       const bars = container.querySelectorAll('rect.bar')
@@ -45,11 +39,7 @@ describe('StatsBarChart', () => {
     })
 
     it('renders labels for each bar', async () => {
-      const data = createBarChartData(3)
-      const { container } = render(StatsBarChart, {
-        props: { data },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(3) })
       await waitForChart()
 
       const labels = container.querySelectorAll('text.label')
@@ -63,11 +53,7 @@ describe('StatsBarChart', () => {
     })
 
     it('renders values for each bar', async () => {
-      const data = createBarChartData(2)
-      const { container } = render(StatsBarChart, {
-        props: { data },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(2) })
       await waitForChart()
 
       const values = container.querySelectorAll('text.value')
@@ -80,12 +66,7 @@ describe('StatsBarChart', () => {
     })
 
     it('does not render SVG when data is empty', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createEmptyChartData(),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: [] })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -93,12 +74,7 @@ describe('StatsBarChart', () => {
     })
 
     it('renders single bar when only one data item', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createSingleItemData(),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createSingleItemData() })
       await waitForChart()
 
       const bars = container.querySelectorAll('rect.bar')
@@ -108,14 +84,7 @@ describe('StatsBarChart', () => {
 
   describe('horizontal mode', () => {
     it('renders horizontal bars when horizontal prop is true', async () => {
-      const data = createBarChartData(3)
-      const { container } = render(StatsBarChart, {
-        props: {
-          data,
-          horizontal: true,
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(3), horizontal: true })
       await waitForChart()
 
       const bars = container.querySelectorAll('rect.bar')
@@ -129,11 +98,7 @@ describe('StatsBarChart', () => {
     })
 
     it('renders vertical bars by default', async () => {
-      const data = createBarChartData(3)
-      const { container } = render(StatsBarChart, {
-        props: { data },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(3) })
       await waitForChart()
 
       const bars = container.querySelectorAll('rect.bar')
@@ -148,13 +113,7 @@ describe('StatsBarChart', () => {
 
   describe('custom height', () => {
     it('respects custom height prop', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createBarChartData(2),
-          height: 300,
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(2), height: 300 })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -162,12 +121,7 @@ describe('StatsBarChart', () => {
     })
 
     it('uses default height of 200 when not specified', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createBarChartData(2),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(2) })
       await waitForChart()
 
       const svg = container.querySelector('svg')
@@ -177,11 +131,7 @@ describe('StatsBarChart', () => {
 
   describe('gradients', () => {
     it('creates gradient definitions for each bar', async () => {
-      const data = createBarChartData(3)
-      const { container } = render(StatsBarChart, {
-        props: { data },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(3) })
       await waitForChart()
 
       const gradients = container.querySelectorAll('defs linearGradient')
@@ -189,12 +139,7 @@ describe('StatsBarChart', () => {
     })
 
     it('bars use gradient fills', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createBarChartData(2),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(2) })
       await waitForChart()
 
       const bars = container.querySelectorAll('rect.bar')
@@ -208,12 +153,7 @@ describe('StatsBarChart', () => {
 
   describe('grid lines', () => {
     it('renders grid lines', async () => {
-      const { container } = render(StatsBarChart, {
-        props: {
-          data: createBarChartData(3),
-        },
-      })
-
+      const { container } = await renderBarChart({ data: createBarChartData(3) })
       await waitForChart()
 
       const gridLines = container.querySelectorAll('line.grid-line')
