@@ -93,6 +93,35 @@ test.describe('Navigation Shortcuts', () => {
 })
 
 test.describe('Action Shortcuts - List Navigation', () => {
+  test('Enter opens the selected item', async ({ page }) => {
+    // Go to home page
+    await page.goto('/', { waitUntil: 'networkidle' })
+
+    // Get the first content card and its link
+    const firstCard = page.locator('article').first()
+    await expect(firstCard).toBeVisible()
+
+    // Get the href of the link inside the first card
+    const firstLink = firstCard.locator('a').first()
+    const href = await firstLink.getAttribute('href')
+    expect(href).toBeTruthy()
+
+    // Press J to select the first item
+    await page.keyboard.press('j')
+
+    // Verify first card is selected
+    await expect(firstCard).toHaveClass(/bg-\[var\(--ui-bg-muted\)\]/)
+
+    // Press Enter to open the selected item
+    await page.keyboard.press('Enter')
+
+    // Verify navigation to the note page
+    await expect(page).toHaveURL(href!)
+
+    // Verify the note page content loads (should have the note's title as h1)
+    await expect(page.locator('h1').first()).toBeVisible()
+  })
+
   test('J moves selection down and K moves selection up on home page', async ({ page }) => {
     // Go to home page
     await page.goto('/', { waitUntil: 'networkidle' })
