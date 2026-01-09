@@ -6,11 +6,17 @@ Second Brain is a personal knowledge base for capturing and connecting content (
 
 This Second Brain belongs to **Alexander Opalic**. When creating personal notes, TILs, or blog posts, use `authors: [alexander-opalic]` in frontmatter.
 
+## Monorepo Structure
+
+This is a pnpm workspaces monorepo:
+- `apps/web` - Main Nuxt application
+- `apps/docs` - Documentation site (Docus)
+
 ## Commands
 
 ```bash
-pnpm dev          # Start dev server at localhost:3000
-pnpm build        # Build for production
+pnpm dev          # Start web app at localhost:3000
+pnpm build        # Build web app for production
 pnpm lint:fix     # Auto-fix linting issues
 pnpm typecheck    # Verify type safety
 ```
@@ -34,14 +40,14 @@ Always use `pnpm test:unit` for local development.
 
 ## Structure
 
-- `app/` - Vue application (pages, components, composables)
-- `content/` - Markdown files (flat structure, type via frontmatter)
-- `site.config.ts` - Site customization (name, nav, shortcuts)
-- `content.config.ts` - Collection schema definitions
+- `apps/web/app/` - Vue application (pages, components, composables)
+- `apps/web/content/` - Markdown files (flat structure, type via frontmatter)
+- `apps/web/site.config.ts` - Site customization (name, nav, shortcuts)
+- `apps/web/content.config.ts` - Collection schema definitions
 
 ## Configuration
 
-All customizable values are in `site.config.ts`. Key composables:
+All customizable values are in `apps/web/site.config.ts`. Key composables:
 - `useSiteConfig()` - Access site config in components
 - `usePageTitle('Page')` - Sets title as "Page - Site Name"
 
@@ -49,7 +55,7 @@ All customizable values are in `site.config.ts`. Key composables:
 
 - Content uses flat structure with wiki-links: `[[slug]]`
 - Query content via `queryCollection('content')`
-- Catch-all route at `app/pages/[...slug].vue`
+- Catch-all route at `apps/web/app/pages/[...slug].vue`
 
 ## Further Reading
 
