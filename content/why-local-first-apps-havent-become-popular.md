@@ -9,7 +9,7 @@ tags:
 authors:
   - marco-bambini
 summary: "Explains why local-first apps remain niche despite their advantages—syncing data across distributed devices without losing information is genuinely hard."
-date: 2026-01-03T10:31:19
+date: 2026-01-03
 ---
 
 Local-first apps sound ideal: fast responses, offline capability, data ownership. Yet they remain rare. The core problem? Syncing is hard.

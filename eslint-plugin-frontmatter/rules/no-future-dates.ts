@@ -29,8 +29,9 @@ const rule: Rule.RuleModule = {
           return
         }
 
-        const parsed = new Date(dateValue)
-        if (Number.isNaN(parsed.getTime())) {
+        // Validate date format (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+        if (!dateRegex.test(dateValue)) {
           context.report({
             loc: node.position,
             messageId: 'invalidDate',
@@ -39,16 +40,18 @@ const rule: Rule.RuleModule = {
           return
         }
 
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+        // Compare as strings to avoid timezone issues
+        // Both are YYYY-MM-DD format, so string comparison works correctly
+        const now = new Date()
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 
-        if (parsed > today) {
+        if (dateValue > todayStr) {
           context.report({
             loc: node.position,
             messageId: 'futureDate',
             data: {
               date: dateValue,
-              today: today.toISOString().split('T')[0],
+              today: todayStr,
             },
           })
         }

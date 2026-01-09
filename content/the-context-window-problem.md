@@ -10,7 +10,7 @@ tags:
 authors:
   - varin-nair
 summary: "Frontier models cap out at 1-2 million tokens, yet enterprise codebases span several million. Factory's solution: a five-layer context stack that delivers the right information at the right time."
-date: 2026-01-03T12:26:58
+date: 2026-01-03
 ---
 
 ## The Problem

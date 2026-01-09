@@ -11,7 +11,7 @@ authors:
   - mo-gawdat
   - steven-bartlett
 summary: "Mo Gawdat, former Chief Business Officer at Google X, warns that AI represents humanity's greatest existential challenge—bigger than climate change—and outlines his 'three inevitables' for why we're approaching a point of no return."
-date: 2026-01-03T08:38:20
+date: 2026-01-03
 ---
 
 Mo Gawdat spent years at Google X watching machines develop intelligence without explicit programming. A pivotal moment came when robotic grippers learned to pick up yellow balls on their own—no human taught them how. Within weeks, they mastered picking up everything. That emergence of genuine learning convinced him the machines were becoming sentient.

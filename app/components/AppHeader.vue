@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { NuxtLink, UButton, UKbd, USlideover } from '#components'
 import { useSiteConfig } from '~/composables/useSiteConfig'
+import { useRandomNote } from '~/composables/useRandomNote'
 
 const { name: siteName, nav: links } = useSiteConfig()
+const { navigateToRandomNote } = useRandomNote()
 
 const searchOpen = defineModel<boolean>('searchOpen', { default: false })
 const shortcutsOpen = defineModel<boolean>('shortcutsOpen', { default: false })
@@ -40,6 +42,16 @@ const mobileMenuOpen = ref(false)
           <UKbd class="ml-2 hidden sm:inline-flex">
             <span class="text-xs">⌘K</span>
           </UKbd>
+        </UButton>
+        <UButton
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-shuffle"
+          title="Random note"
+          class="hidden sm:inline-flex"
+          @click="navigateToRandomNote"
+        >
+          <UKbd>R</UKbd>
         </UButton>
         <UButton
           variant="ghost"

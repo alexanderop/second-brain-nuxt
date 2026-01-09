@@ -65,6 +65,7 @@ export const siteConfig = {
       { keys: ['G', 'T'], to: '/tags', description: 'Go to tags' },
       { keys: ['G', 'A'], to: '/authors', description: 'Go to authors' },
       { keys: ['G', 'S'], to: '/stats', description: 'Go to stats' },
+      { keys: ['R'], to: 'random', description: 'Go to random note' },
     ],
     actions: [
       { keys: ['J'], description: 'Next item' },

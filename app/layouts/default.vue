@@ -7,11 +7,13 @@ import AppSearchModal from '~/components/AppSearchModal.vue'
 import AppShortcutsModal from '~/components/AppShortcutsModal.vue'
 import { useShortcutsModal } from '~/composables/useShortcuts'
 import { useFocusMode } from '~/composables/useFocusMode'
+import { useRandomNote } from '~/composables/useRandomNote'
 
 const searchOpen = ref(false)
 const shortcutsOpen = useShortcutsModal()
 const colorMode = useColorMode()
 const { isFocusMode, toggle: toggleFocusMode } = useFocusMode()
+const { navigateToRandomNote } = useRandomNote()
 
 defineShortcuts({
   'shift_/': () => {
@@ -43,6 +45,9 @@ defineShortcuts({
   },
   'g-a': () => {
     navigateTo('/authors')
+  },
+  'r': () => {
+    navigateToRandomNote()
   },
 })
 </script>

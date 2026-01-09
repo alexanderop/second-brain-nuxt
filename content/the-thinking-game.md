@@ -11,7 +11,7 @@ tags:
 authors:
   - demis-hassabis
 summary: "Documentary tracing DeepMind's journey from a London startup to defeating world champions at Go and StarCraft, revealing the team's pursuit of artificial general intelligence."
-date: 2026-01-03T08:51:04
+date: 2026-01-03
 rating: 7
 ---
 

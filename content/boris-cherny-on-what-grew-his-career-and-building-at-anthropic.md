@@ -12,7 +12,7 @@ authors:
   - ryan-peterman
   - boris-cherny
 summary: "Boris Cherny, creator of Claude Code and former Meta principal engineer, shares how side projects, generalist thinking, and cross-org navigation shaped his career—plus insights on how AI tools are reshaping engineering productivity."
-date: 2026-01-03T08:49:54
+date: 2026-01-03
 ---
 
 ## Key Takeaways
