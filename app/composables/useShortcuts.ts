@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import { useState } from '#imports'
 import { siteConfig } from '~~/site.config'
 
@@ -18,7 +19,7 @@ export const shortcutsList: Shortcut[] = [
   ...siteConfig.shortcuts.actions.map((s: ActionShortcut) => ({ ...s, category: 'actions' as const })),
 ]
 
-// Shared modal state
-export function useShortcutsModal() {
+/** Shared modal state for the shortcuts help dialog. */
+export function useShortcutsModal(): Ref<boolean> {
   return useState('shortcutsModalOpen', () => false)
 }

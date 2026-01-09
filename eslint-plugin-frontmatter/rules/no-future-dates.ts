@@ -2,6 +2,16 @@ import type { Rule } from 'eslint'
 import { parseFrontmatter } from '../utils/parse-frontmatter.ts'
 import type { YamlNode } from '../utils/types.ts'
 
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/
+
+/** Format a Date as YYYY-MM-DD string for comparison. */
+function formatDateAsIso(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const rule: Rule.RuleModule = {
   meta: {
     type: 'problem',
@@ -29,9 +39,7 @@ const rule: Rule.RuleModule = {
           return
         }
 
-        // Validate date format (YYYY-MM-DD)
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!dateRegex.test(dateValue)) {
+        if (!DATE_FORMAT_REGEX.test(dateValue)) {
           context.report({
             loc: node.position,
             messageId: 'invalidDate',
@@ -42,8 +50,7 @@ const rule: Rule.RuleModule = {
 
         // Compare as strings to avoid timezone issues
         // Both are YYYY-MM-DD format, so string comparison works correctly
-        const now = new Date()
-        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+        const todayStr = formatDateAsIso(new Date())
 
         if (dateValue > todayStr) {
           context.report({

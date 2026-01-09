@@ -12,8 +12,12 @@ export function buildNotePath(stem: string): string {
   return `/${stem}`
 }
 
-export function useRandomNote() {
-  const navigateToRandomNote = async () => {
+interface UseRandomNoteReturn {
+  navigateToRandomNote: () => Promise<void>
+}
+
+export function useRandomNote(): UseRandomNoteReturn {
+  async function navigateToRandomNote(): Promise<void> {
     const items = await queryCollection('content').select('stem').all()
     const randomItem = selectRandomItem(items)
     if (!randomItem) return

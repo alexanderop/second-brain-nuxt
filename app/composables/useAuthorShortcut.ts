@@ -22,8 +22,14 @@ export function getAuthorAction(authors: string[] | undefined): AuthorAction {
   return { type: 'multiple', authors }
 }
 
-export function useAuthorShortcut(authors: Ref<string[] | undefined>) {
-  function openAuthor(slug: string) {
+interface UseAuthorShortcutReturn {
+  handleShortcut: () => AuthorAction
+  openAuthor: (slug: string) => void
+  getAuthorAction: typeof getAuthorAction
+}
+
+export function useAuthorShortcut(authors: Ref<string[] | undefined>): UseAuthorShortcutReturn {
+  function openAuthor(slug: string): void {
     window.open(getAuthorUrl(slug), '_blank')
   }
 
