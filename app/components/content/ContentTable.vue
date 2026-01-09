@@ -8,6 +8,26 @@ import { useTableFilterMenus, CONTENT_TYPE_ICONS } from '~/composables/useTableF
 
 const router = useRouter()
 
+// Color mapping for content type badges (subtle/muted tints)
+const CONTENT_TYPE_COLORS: Record<ContentType, string> = {
+  youtube: 'error',
+  podcast: 'secondary',
+  article: 'info',
+  book: 'warning',
+  manga: 'warning',
+  movie: 'error',
+  tv: 'info',
+  tweet: 'info',
+  quote: 'success',
+  course: 'warning',
+  note: 'neutral',
+  evergreen: 'success',
+  map: 'secondary',
+  reddit: 'warning',
+  github: 'neutral',
+  newsletter: 'info',
+}
+
 // State interface combines related props
 export interface ContentTableState {
   filters: FilterState
@@ -172,8 +192,8 @@ const columns: TableColumn<TableContentItem>[] = [
     cell: ({ row }) => {
       const type = getRowType(row)
       return h(UBadge, {
-        variant: 'subtle',
-        color: 'neutral',
+        variant: 'soft',
+        color: CONTENT_TYPE_COLORS[type] || 'neutral',
         icon: CONTENT_TYPE_ICONS[type],
         class: 'capitalize',
       }, () => type)
@@ -245,9 +265,19 @@ const columns: TableColumn<TableContentItem>[] = [
     size: 80,
     cell: ({ row }) => {
       const rating = getRowRating(row)
-      return h('span', {
-        class: rating ? 'font-medium' : 'text-[var(--ui-text-muted)]',
-      }, rating ?? '—')
+      if (!rating) return h('span', { class: 'text-[var(--ui-text-muted)]' }, '—')
+
+      // Color based on rating tier: 8-10 green, 6-7 amber, 4-5 gray, 1-3 red
+      const color = rating >= 8 ? 'success'
+        : rating >= 6 ? 'warning'
+          : rating >= 4 ? 'neutral'
+            : 'error'
+
+      return h(UBadge, {
+        variant: 'soft',
+        color,
+        size: 'xs',
+      }, () => rating.toString())
     },
   },
   {
@@ -324,6 +354,10 @@ function removeAuthorFilter(author: string) {
     loading-color="primary"
     class="w-full"
     sticky
+    :ui="{
+      tbody: 'divide-y divide-[var(--ui-border)]',
+      tr: 'hover:bg-[var(--ui-bg-elevated)] transition-colors cursor-pointer',
+    }"
     @select="onRowClick"
   >
     <!-- Custom header slots for filters -->

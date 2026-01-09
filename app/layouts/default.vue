@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { defineShortcuts, navigateTo, useColorMode } from '#imports'
 import { UApp, UContainer } from '#components'
 import AppHeader from '~/components/AppHeader.vue'
+import AppFooter from '~/components/AppFooter.vue'
 import AppSearchModal from '~/components/AppSearchModal.vue'
 import AppShortcutsModal from '~/components/AppShortcutsModal.vue'
 import { useShortcutsModal } from '~/composables/useShortcuts'
@@ -60,6 +61,7 @@ defineShortcuts({
         <main class="py-8">
           <slot />
         </main>
+        <AppFooter v-if="!isFocusMode" />
       </div>
     </UContainer>
     <AppSearchModal v-model:open="searchOpen" />

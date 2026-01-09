@@ -92,7 +92,7 @@ export const siteConfig = {
    * Used in footer or about page
    */
   social: {
-    github: '',
+    github: 'https://github.com/alexanderop/second-brain-nuxt',
     twitter: '',
   },
 } as const
