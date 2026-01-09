@@ -1,4 +1,9 @@
 export default defineAppConfig({
+  ui: {
+    colors: {
+      primary: 'purple',
+    },
+  },
   docus: {
     title: 'Second Brain',
     description: 'Personal knowledge base for capturing and connecting content using Zettelkasten-style wiki-links.',
@@ -11,8 +16,7 @@ export default defineAppConfig({
       exclude: [],
     },
     header: {
-      logo: false,
-      title: 'Second Brain',
+      logo: true,
       showLinkIcon: true,
     },
     footer: {

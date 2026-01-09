@@ -32,6 +32,10 @@ Second Brain
 A personal knowledge base for capturing and connecting content using Zettelkasten-style wiki-links. Built with Nuxt 4 and @nuxt/content v3.
 ::
 
+::tip{icon="i-heroicons-light-bulb"}
+**New to Second Brain?** Start with the [Introduction](/getting-started/introduction) to understand the core concepts, then follow the [Project Structure](/getting-started/project-structure) guide to explore the codebase.
+::
+
 ::card-group
   ::card{icon="i-heroicons-document-text" title="Content Types" to="/content/overview"}
   Learn about the different content types: podcasts, articles, books, notes, and more.
