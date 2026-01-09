@@ -47,3 +47,13 @@ This map connects essential resources for [topic description].
 ## Graph Visualization
 
 Maps appear as pink hexagons, making them easy to identify as hub nodes in the knowledge graph.
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — MOCs organize links, not visualize concepts.
+
+**Default action:** Skip. The map's purpose is to curate links, not present frameworks.
+
+**Log outcome:** `✓ No diagram needed: Map type - link curation, not concept visualization`

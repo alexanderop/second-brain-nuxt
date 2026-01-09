@@ -107,3 +107,23 @@ See `references/code-extraction.md` for detailed guidelines.
 - Language badge
 - Star count
 - Repository link
+
+---
+
+## Diagram Evaluation
+
+**Priority: MEDIUM** — GitHub repos may have architectural concepts worth visualizing.
+
+**Look for these triggers:**
+- README describes architecture
+- Multi-component system
+- Plugin/extension architecture
+- Data flow through the system
+- Pipeline stages
+
+**Common skip reasons:**
+- Simple utility library
+- Single-purpose tool
+- Documentation already includes diagrams (don't duplicate)
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

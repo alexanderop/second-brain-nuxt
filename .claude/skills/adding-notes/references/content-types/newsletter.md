@@ -144,3 +144,18 @@ Include frameworks, mental models, or actionable advice.]
 | Newsletter profile exists | Error | Newsletter `{slug}` not found in `content/newsletters/` |
 | Author in newsletter authors | Warning | Author `{author}` not listed in newsletter's authors |
 | URL domain mismatch | Warning | Article URL doesn't match newsletter website |
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Newsletters are typically prose-focused.
+
+**Evaluate if:** The article presents a named framework or methodology.
+
+**Common skip reasons:**
+- News/commentary format
+- List-based content
+- No visual structure in the writing
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

@@ -72,6 +72,7 @@ Phase 1: Type Detection → Route to content-type file
 Phase 2: Parallel Metadata Collection → Per-type agents
 Phase 3: Author Creation → See references/author-creation.md
 Phase 4: Content Generation → Apply writing-style, generate body
+Phase 4.25: Diagram Evaluation → REQUIRED visual assessment with logged outcome
 Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any exist)
 Phase 5: Quality Validation → Parallel validators
 Phase 6: Save Note → Write to content/{slug}.md with link density report
@@ -154,11 +155,39 @@ socials:
 3. If `isTechnical`: collect code snippets from Phase 2
 4. **Compile frontmatter** using template from content-type file
 5. **Generate body** with wiki-links (see Phase 4.5 for connection discovery)
-6. Add diagrams if applicable (see `references/diagrams-guide.md`)
 
 **Tags:** 3-5 relevant tags. Use tags you've seen in prior notes or `Grep` for similar content to find existing tags.
 
 **Summary:** Frame as a core argument, not a description. What claim does this content make?
+
+### Phase 4.25: Diagram Evaluation (REQUIRED)
+
+**Every note must have an explicit diagram decision logged.**
+
+1. **Load the diagram guide**: `Read references/diagrams-guide.md`
+2. **Apply the decision tree** from the guide based on content type priority
+3. **Evaluate the content** for diagram candidates:
+   - Does the content present a named framework with spatial structure?
+   - Is there a process flow or step sequence?
+   - Are there system relationships or feedback loops?
+   - Is there a timeline or progression?
+
+4. **Log the outcome** (REQUIRED - one of these must appear):
+
+**If adding a diagram:**
+```text
+✓ Diagram added: [mermaid-type] - [description]
+  Example: "✓ Diagram added: graph LR - Habit Loop cycle"
+```
+
+**If no diagram needed:**
+```text
+✓ No diagram needed: [specific reason]
+  Examples:
+  - "✓ No diagram needed: Content is list-based, no spatial structure"
+  - "✓ No diagram needed: Quote type - minimal content"
+  - "✓ No diagram needed: Discussion thread without visual concepts"
+```
 
 ### Phase 4.5: Connection Discovery
 
@@ -229,10 +258,13 @@ Save to `content/{slug}.md`. Confirm with link density status:
   - Type: {type}
   - Authors: {author-slugs}
   - Tags: {tag-count} tags
+  - Diagram: {diagram-status}
   - Wiki-links: {link-count} connections ({status})
     - [[link-1]] (why: {context})
     - [[link-2]] (why: {context})
 ```
+
+**Diagram status:** `Added: [type] - [description]` or `None: [reason]`
 
 **Link density status:**
 - `{link-count} >= 3`: "well-connected"

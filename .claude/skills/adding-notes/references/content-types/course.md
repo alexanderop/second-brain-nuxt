@@ -64,3 +64,23 @@ If the course is technical (programming, DevOps, etc.):
 - Set `isTechnical: true`
 - Add Code Snippets section (see `references/code-extraction.md`)
 - Extract practical examples from course materials
+
+---
+
+## Diagram Evaluation
+
+**Priority: HIGH** — Courses often have structured learning paths and methodologies.
+
+**Look for these triggers:**
+- Module/lesson progression structure
+- Methodology or framework being taught
+- Architecture patterns (technical courses)
+- Workflow or process demonstrations
+- Before/after skill transformations
+
+**Common diagram opportunities:**
+- Learning path: `flowchart LR` showing module progression
+- Methodology: `graph TD` showing framework structure
+- Architecture: `graph TD` with subgraphs for components
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

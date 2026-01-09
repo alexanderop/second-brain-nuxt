@@ -99,3 +99,29 @@ date: 2026-01-01
 ## Special Features
 
 **Book Cover**: Notes with `type: book` and valid `cover` URL automatically display the cover image in the UI.
+
+---
+
+## Diagram Evaluation
+
+**Priority: HIGH** — Books commonly present visual frameworks.
+
+**Look for these triggers:**
+- Named models ("The Habit Loop", "The Golden Circle", "The Flywheel")
+- Numbered frameworks ("Four Laws of...", "Five Dysfunctions of...", "Three Pillars of...")
+- Circular/cyclical relationships described in text
+- Pyramids, matrices, or layered structures
+- Before/after transformation processes
+
+**Example from Atomic Habits:**
+The "Habit Loop" (Cue → Craving → Response → Reward → reinforces Cue) was diagrammed as:
+
+```text
+graph LR
+    C[Cue] --> CR[Craving]
+    CR --> R[Response]
+    R --> RW[Reward]
+    RW -.->|Reinforces| C
+```
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

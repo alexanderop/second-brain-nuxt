@@ -158,3 +158,13 @@ Search pattern: `"{movie title}" {year} official trailer`
 **Movie Poster**: Notes with `type: movie` and valid `cover` URL automatically display the poster in the UI.
 
 **Embedded Trailer**: Notes with `trailer` URL can embed the YouTube player in the UI.
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Movie notes focus on themes and experience.
+
+**Default action:** Skip. Movies are narrative/thematic, not conceptual frameworks.
+
+**Log outcome:** `✓ No diagram needed: Movie type - narrative content`

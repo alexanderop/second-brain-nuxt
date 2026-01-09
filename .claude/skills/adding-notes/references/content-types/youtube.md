@@ -195,3 +195,28 @@ See `references/code-extraction.md` for code snippet guidelines.
 - Channel owner goes in `authors`
 - Clean title: remove "- YouTube" suffix
 - For tutorials, always spawn code extraction agent
+
+---
+
+## Diagram Evaluation
+
+**Priority: HIGH for tutorials (isTechnical: true), MEDIUM for standard**
+
+**Tutorial triggers:**
+- Step-by-step process shown on screen
+- Architecture being built or explained
+- Workflow demonstration
+- Component relationships explained
+- Data flow visualization
+
+**Standard video triggers:**
+- Named frameworks discussed
+- Process or methodology explained
+- Comparison of approaches
+
+**Mermaid types commonly used:**
+- `flowchart LR` — Build processes, workflows
+- `graph TD` — Architecture, component hierarchies
+- `sequenceDiagram` — API calls demonstrated
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

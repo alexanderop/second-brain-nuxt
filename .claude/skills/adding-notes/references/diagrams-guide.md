@@ -2,6 +2,47 @@
 
 Add visual diagrams **only when they genuinely clarify structure** that's hard to convey in text.
 
+---
+
+## REQUIRED: Decision Tree
+
+**Every note must evaluate this tree. This is not optional.**
+
+```text
+1. NAMED FRAMEWORK?
+   ("Habit Loop", "Golden Circle", "Four Laws of...")
+   → YES: LIKELY ADD - Named models deserve visualization
+
+2. PROCESS or SEQUENCE?
+   (steps, workflow, cause-effect chain)
+   → YES: LIKELY ADD - Use flowchart LR
+
+3. SYSTEM RELATIONSHIPS?
+   (components, feedback loops, hierarchies)
+   → YES: LIKELY ADD - Use graph with connections
+
+4. TIMELINE or PROGRESSION?
+   (phases, evolution, history)
+   → YES: LIKELY ADD - Use timeline or graph LR
+
+5. LOW priority content type?
+   (quote, note, map, reddit, manga, movie)
+   → LIKELY SKIP - Log reason and proceed
+
+6. None of the above?
+   → SKIP: "No visual structure identified"
+```
+
+### Type Priority Matrix
+
+| Priority | Content Types | Action |
+|----------|---------------|--------|
+| **HIGH** | book, talk, course, article (tech), youtube (tech) | Actively look for diagram opportunities |
+| **MEDIUM** | evergreen, podcast, github | Evaluate if frameworks are presented |
+| **LOW** | quote, note, map, reddit, newsletter, manga, movie | Skip unless obvious visual structure |
+
+---
+
 ## When to Add Diagrams
 
 ✅ **Use diagrams for:**
@@ -100,6 +141,90 @@ flowchart LR
 | **Courses** | Learning path, module structure, or methodology |
 | **Evergreen** | Synthesizing a concept with structural relationships |
 
+---
+
+## Diagram Triggers by Content Type
+
+### Books
+Look for these patterns that signal diagram opportunities:
+- "The [X] Model" or "The [X] Framework"
+- "Four laws of...", "Three pillars of...", "Five stages of..."
+- Circular relationships ("A leads to B leads to C leads to A")
+- Before/after transformations
+- Concentric circles or layers ("at the core...", "surrounding that...")
+
+### Talks/YouTube
+Watch for:
+- Speaker draws on whiteboard or shows diagram slide
+- Mentions "let me show you how this works"
+- Describes a cycle or loop
+- Compares two approaches side-by-side
+
+### Technical Content (articles, courses, github)
+- Architecture diagrams
+- Data flow descriptions
+- Request/response cycles
+- Component relationships
+- Pipeline stages
+
+---
+
 ## Placement
 
 Add a `## Diagram` or `## Visual Model` section after explaining the concept in text. The diagram reinforces understanding; the text remains primary.
+
+---
+
+## Quick Reference: Common Patterns
+
+### The "Loop" Pattern
+Content says: "X leads to Y, which reinforces X"
+
+```text
+graph LR
+    A[X] --> B[Y]
+    B -.->|reinforces| A
+```
+
+### The "Hierarchy" Pattern
+Content says: "At the core is X, surrounded by Y, then Z"
+
+```text
+graph TD
+    subgraph Outer[" "]
+        subgraph Middle[" "]
+            Core[X]
+        end
+        Y[Y surrounds]
+    end
+    Z[Z encompasses all]
+```
+
+### The "Process" Pattern
+Content says: "First X, then Y, then Z"
+
+```text
+flowchart LR
+    X[Step 1] --> Y[Step 2] --> Z[Step 3]
+```
+
+### The "Decision" Pattern
+Content says: "If X, do Y; otherwise do Z"
+
+```text
+flowchart TD
+    X{Decision?}
+    X -->|Yes| Y[Path A]
+    X -->|No| Z[Path B]
+```
+
+### The "Cycle" Pattern (e.g., Habit Loop)
+Content says: "A triggers B, B produces C, C reinforces A"
+
+```text
+graph LR
+    A[Cue] --> B[Craving]
+    B --> C[Response]
+    C --> D[Reward]
+    D -.->|reinforces| A
+```

@@ -132,3 +132,24 @@ If truly conversational with multiple speakers:
 - Use transcript for accurate quotes and specific examples
 - Speaker goes in `authors`, not `guests`
 - Conference field helps with searchability and context
+
+---
+
+## Diagram Evaluation
+
+**Priority: HIGH** — Talks frequently present visual models on slides.
+
+**Look for these triggers:**
+- Speaker draws on whiteboard or shows diagram slide
+- References to "let me show you how this works"
+- Named frameworks or methodologies
+- Architecture explanations
+- Process demonstrations
+- Comparisons of approaches (before/after, old/new way)
+
+**Mermaid types commonly used:**
+- `graph TD` — Hierarchies, organizational structures
+- `flowchart LR` — Processes, workflows, pipelines
+- `graph LR` with subgraphs — Comparisons, before/after
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

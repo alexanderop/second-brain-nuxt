@@ -86,3 +86,13 @@ date: 2026-01-01
 - Reddit author slugs use `u-` prefix in filename: `content/authors/u-username.md`
 - Include upvote counts for context on comment quality
 - Focus on top-voted comments for key insights
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Reddit discussions rarely present formal frameworks.
+
+**Default action:** Skip unless a highly-upvoted comment explains a visual process.
+
+**Log outcome:** `✓ No diagram needed: Discussion thread without visual concepts`

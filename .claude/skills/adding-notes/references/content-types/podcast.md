@@ -194,3 +194,22 @@ Episode-specific validator checks:
 - Parse timestamps from show notes even without full transcript
 - Multi-platform URLs improve discoverability
 - See `references/podcast-profile-creation.md` if show profile doesn't exist
+
+---
+
+## Diagram Evaluation
+
+**Priority: MEDIUM** — Podcasts occasionally present frameworks worth visualizing.
+
+**Look for these triggers:**
+- Guest describes a named methodology or framework
+- Discussion of a process or workflow
+- Mental model or decision framework explained
+- Host/guest draws on whiteboard or references a visual
+
+**Common skip reasons:**
+- Discussion-based without visual concepts
+- News/commentary format
+- Interview without framework content
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

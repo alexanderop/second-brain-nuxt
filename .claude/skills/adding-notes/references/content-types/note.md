@@ -40,3 +40,13 @@ date: 2026-01-01
 - No external URL required
 - Focus on personal synthesis, not source summary
 - Use wiki-links to connect to related notes
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Personal notes focus on synthesis, not visualization.
+
+**Default action:** Skip unless you're synthesizing a concept with clear visual structure.
+
+**Log outcome:** `✓ No diagram needed: Personal synthesis without visual framework`

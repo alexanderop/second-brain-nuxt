@@ -141,3 +141,28 @@ See `references/code-extraction.md` for detailed selection and formatting rules.
 - 5-20 lines each, self-contained
 - Proper language tags
 - Skip: boilerplate, imports-only, obvious examples
+
+---
+
+## Diagram Evaluation
+
+**Priority: HIGH for technical articles, MEDIUM for general articles**
+
+**Technical article triggers:**
+- Architecture explanations
+- Data flow descriptions
+- Request/response cycles
+- Component interactions
+- Pipeline or build processes
+
+**General article triggers:**
+- Named frameworks or models
+- Process descriptions with steps
+- Comparison of approaches
+
+**Mermaid types commonly used:**
+- `graph TD` — Architecture, component relationships
+- `flowchart LR` — Data flow, request cycles
+- `sequenceDiagram` — API interactions (use sparingly)
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

@@ -48,3 +48,19 @@ date: 2026-01-01
 - Synthesize multiple sources into a cohesive understanding
 - Use the Sources section to link to original materials
 - Write in your own words, not quotes
+
+---
+
+## Diagram Evaluation
+
+**Priority: MEDIUM** — Evergreen notes synthesize concepts that may have visual structure.
+
+**Look for these triggers:**
+- The concept you're synthesizing has a natural visual form
+- Multiple sources describe the same framework differently (diagram unifies them)
+- Relationships between sub-concepts benefit from visualization
+- The concept involves stages, layers, or cycles
+
+**If no clear visual structure:** `✓ No diagram needed: Synthesized concept is text-based`
+
+**Log outcome:** `✓ Diagram added: [type] - [description]` or `✓ No diagram needed: [reason]`

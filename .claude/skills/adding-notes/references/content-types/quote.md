@@ -44,3 +44,15 @@ Context or why this quote resonates.
 - Title format: "Quote from [Author]" or use the quote's key phrase
 - Author is required (create profile if needed)
 - Add context explaining why the quote matters
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Quotes rarely need diagrams.
+
+**Default action:** Skip with reason "Quote type - minimal content, no visual structure"
+
+**Exception:** Only add if the quote itself describes a visual framework (rare).
+
+**Log outcome:** `✓ No diagram needed: Quote type - minimal content`

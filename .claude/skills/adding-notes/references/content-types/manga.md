@@ -74,3 +74,13 @@ Similar to [[other-manga]] or explores themes from [[related-concept]].
 - Always use the **series URL**, not individual volume URLs
 - One note per series, regardless of volume count
 - Cover should be from first volume typically
+
+---
+
+## Diagram Evaluation
+
+**Priority: LOW** — Manga notes are narrative-focused.
+
+**Default action:** Skip. Manga is storytelling, not conceptual frameworks.
+
+**Log outcome:** `✓ No diagram needed: Manga type - narrative content`
