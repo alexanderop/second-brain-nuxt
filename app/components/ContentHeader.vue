@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { computed } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { useRequestURL } from '#imports'
 import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components'
@@ -18,26 +19,42 @@ const props = defineProps<{
 const { copy, copied } = useClipboard()
 const requestUrl = useRequestURL()
 
-const copyItems: DropdownMenuItem[] = [
-  {
-    label: 'Copy Wiki',
-    icon: 'i-lucide-link',
-    onSelect: () => copy(`[[${props.content.slug}]]`),
-  },
-  {
-    label: 'Copy URL',
-    icon: 'i-lucide-globe',
-    onSelect: () => copy(`${requestUrl.origin}/${props.content.slug}`),
-  },
-  {
-    label: 'Copy Markdown',
-    icon: 'i-lucide-file-text',
-    onSelect: async () => {
-      const { raw } = await $fetch<{ raw: string }>(`/api/raw-content/${props.content.slug}`)
-      copy(raw)
+const copyItems = computed<DropdownMenuItem[]>(() => {
+  const items: DropdownMenuItem[] = [
+    {
+      label: 'Copy Wiki',
+      icon: 'i-lucide-link',
+      onSelect: () => copy(`[[${props.content.slug}]]`),
     },
-  },
-]
+    {
+      label: 'Copy URL',
+      icon: 'i-lucide-globe',
+      onSelect: () => copy(`${requestUrl.origin}/${props.content.slug}`),
+    },
+    {
+      label: 'Copy Markdown',
+      icon: 'i-lucide-file-text',
+      onSelect: async () => {
+        const { raw } = await $fetch<{ raw: string }>(`/api/raw-content/${props.content.slug}`)
+        copy(raw)
+      },
+    },
+  ]
+
+  // Add Copy Source option if origin URL exists
+  if (props.content.url) {
+    items.push({
+      label: 'Copy Source',
+      icon: 'i-lucide-external-link',
+      onSelect: () => {
+        if (props.content.url)
+          copy(props.content.url)
+      },
+    })
+  }
+
+  return items
+})
 
 function formatDate(date?: Date | string) {
   if (!date)
