@@ -1,6 +1,6 @@
 ---
 title: "The Age of Abundance"
-type: concept
+type: evergreen
 tags:
   - ai
   - robotics

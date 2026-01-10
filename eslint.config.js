@@ -166,6 +166,7 @@ export default tseslint.config(
       'frontmatter/valid-author-refs': 'error',
       'frontmatter/valid-wiki-links': 'warn',
       'frontmatter/valid-tag-format': 'warn',
+      'frontmatter/valid-type': 'error',
       'frontmatter/required-fields': 'error',
       'frontmatter/no-duplicate-tags': 'warn',
       'frontmatter/no-future-dates': 'error',

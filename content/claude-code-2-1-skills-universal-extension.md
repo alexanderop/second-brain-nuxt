@@ -1,6 +1,6 @@
 ---
 title: "Claude Code 2.1: Skills Become the Universal Extension"
-type: blog
+type: article
 tags:
   - claude-code
   - ai-agents
