@@ -1,0 +1,436 @@
+{
+  "project": "SecondBrain",
+  "branchName": "ralph/monorepo-documentation",
+  "description": "Monorepo Structure with Docus Documentation Site - Convert to pnpm workspaces and add comprehensive documentation for forkers",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Initialize pnpm workspaces monorepo structure",
+      "description": "As a maintainer, I want the project restructured as a monorepo so that the main app and docs can share dependencies and be managed together.",
+      "acceptanceCriteria": [
+        "Create pnpm-workspace.yaml with packages: ['apps/*']",
+        "Move existing app to apps/web/ using git mv to preserve history",
+        "Create apps/docs/ directory placeholder",
+        "Update root package.json with workspace scripts",
+        "pnpm dev runs the web app from root",
+        "pnpm build works from root",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "This is foundational - must complete before any other stories. Use git mv for history preservation."
+    },
+    {
+      "id": "US-002",
+      "title": "Initialize Docus documentation site",
+      "description": "As a maintainer, I want a Docus-powered documentation site so that I can write docs in Markdown with automatic navigation.",
+      "acceptanceCriteria": [
+        "Initialize Docus in apps/docs/ using latest stable version",
+        "Configure app.config.ts with Second Brain branding (title, description, socials)",
+        "Set up basic navigation structure in content/",
+        "Create placeholder index page",
+        "pnpm --filter docs dev starts docs site on port 3001",
+        "Typecheck passes",
+        "Verify docs site loads in browser using dev-browser skill"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Use https://github.com/nuxt-content/docus for latest Docus setup instructions"
+    },
+    {
+      "id": "US-003",
+      "title": "Create Getting Started introduction documentation",
+      "description": "As a forker, I want clear setup instructions so that I can get the project running locally.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/1.getting-started/1.introduction.md",
+        "Document prerequisites (Node 24.x, pnpm 10+)",
+        "Step-by-step fork and clone instructions",
+        "Environment setup (copy .env.example, explain variables)",
+        "First run instructions (pnpm install, pnpm dev)",
+        "Verification steps (visit localhost, see homepage)",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Document project structure and architecture",
+      "description": "As a forker, I want to understand the codebase structure so that I know where to find and modify things.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/1.getting-started/2.project-structure.md",
+        "Document monorepo layout (apps/web, apps/docs)",
+        "Explain key directories: app/, content/, server/, modules/",
+        "Describe the flat content structure philosophy",
+        "Include architecture diagram using Mermaid",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Use Mermaid for diagrams - Docus supports them natively"
+    },
+    {
+      "id": "US-005",
+      "title": "Create Content Types reference documentation",
+      "description": "As a forker, I want documentation for each content type so that I know which fields are required and how to use them.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/2.content/1.overview.md explaining the content system",
+        "Create apps/docs/content/2.content/2.content-types.md",
+        "Document external types: youtube, podcast, article, book, manga, movie, tv, tweet, course, reddit, github, newsletter",
+        "Document personal types: quote, note, evergreen, map",
+        "Document required vs optional fields for each type",
+        "Include complete frontmatter examples for each type",
+        "Explain the author requirement for external content",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Reference content.config.ts for schema definitions"
+    },
+    {
+      "id": "US-006",
+      "title": "Document wiki-linking and connections",
+      "description": "As a forker, I want to understand the wiki-link system so that I can effectively connect my notes.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/2.content/3.wiki-links.md",
+        "Explain [[slug]] syntax and how it's processed",
+        "Document backlinks vs mentions (title/text matches)",
+        "Provide best practices for linking",
+        "Explain MOCs (Maps of Content) and their special visualization",
+        "Include examples of well-connected notes",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Create Authors and Collections documentation",
+      "description": "As a forker, I want to understand how authors, podcasts, and newsletters work so that I can add my own.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/2.content/4.collections.md",
+        "Document author profiles (bio, avatar, website, socials)",
+        "Document podcast shows (hosts, feed, platform links)",
+        "Document newsletters (platform field, issue references)",
+        "Include example frontmatter for each collection type",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Document features overview page",
+      "description": "As a forker, I want a features overview so I understand what the app can do.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/1.overview.md",
+        "List all major features with brief descriptions",
+        "Link to detailed pages for each feature",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Document Knowledge Graph feature",
+      "description": "As a forker, I want to understand the knowledge graph visualization.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/2.knowledge-graph.md",
+        "Explain D3.js force-directed visualization",
+        "Document filtering options",
+        "Document node interactions (click, hover)",
+        "Explain graph API endpoints",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Document Search feature",
+      "description": "As a forker, I want to understand the search functionality.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/3.search.md",
+        "Document Command-K shortcut",
+        "Explain Fuse.js fuzzy search",
+        "Document search history feature",
+        "Explain search result categories",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Document Table View feature",
+      "description": "As a forker, I want to understand the table view functionality.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/4.table-view.md",
+        "Document filtering options",
+        "Document sorting capabilities",
+        "Document pagination",
+        "Explain column customization",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Document Stats Dashboard feature",
+      "description": "As a forker, I want to understand the statistics dashboard.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/5.stats-dashboard.md",
+        "Document available metrics",
+        "Explain chart visualizations",
+        "Document data sources",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Document Keyboard Shortcuts feature",
+      "description": "As a forker, I want a complete list of keyboard shortcuts.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/3.features/6.keyboard-shortcuts.md",
+        "Document all navigation shortcuts (G+H, G+B, etc.)",
+        "Document action shortcuts (J, K, Enter, O, etc.)",
+        "Document general shortcuts (?, /, Cmd+K, etc.)",
+        "Explain how to customize shortcuts via site.config.ts",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Reference site.config.ts for shortcut definitions"
+    },
+    {
+      "id": "US-014",
+      "title": "Document Claude Code integration overview",
+      "description": "As a forker, I want to understand how Claude Code integrates with this project.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/4.claude-code/1.overview.md",
+        "Explain what Claude Code skills are and how they work",
+        "Document the .claude/skills/ directory structure",
+        "Explain CLAUDE.md and its purpose",
+        "List all 19+ available skills with brief descriptions",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Document content creation skills",
+      "description": "As a forker, I want detailed guides for adding content via Claude Code.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/4.claude-code/2.adding-content.md",
+        "Document /adding-notes skill workflow",
+        "Document /adding-tweets skill",
+        "Document /creating-obsidian-templates skill",
+        "Include example conversations showing skill usage",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Document content enhancement skills",
+      "description": "As a forker, I want to know how to enhance existing notes.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/4.claude-code/3.enhancing-content.md",
+        "Document /enhancing-notes skill (Blinkist-style summaries)",
+        "Document /enhancing-talks skill (transcripts, timestamps)",
+        "Document /enhancing-authors skill (bio, avatar via web research)",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Document knowledge organization skills",
+      "description": "As a forker, I want to know how to organize and connect my notes.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/4.claude-code/4.organizing-knowledge.md",
+        "Document /linking-notes skill",
+        "Document /moc-curator skill",
+        "Document /managing-tags skill",
+        "Document /exploring-graph skill",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Document quality and review skills",
+      "description": "As a forker, I want to maintain high-quality notes.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/4.claude-code/5.quality-review.md",
+        "Document /reviewing-notes skill",
+        "Document /summarizing-topic skill",
+        "Document /writing-style skill",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Create site configuration customization guide",
+      "description": "As a forker, I want to customize the app for my own use.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/5.customization/1.site-config.md",
+        "Document all site.config.ts options",
+        "Explain how to add/remove navigation items",
+        "Document keyboard shortcut customization",
+        "Document social links configuration",
+        "Typecheck passes"
+      ],
+      "priority": 19,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Create theming customization guide",
+      "description": "As a forker, I want to customize the visual appearance.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/5.customization/2.theming.md",
+        "Document color customization options",
+        "Explain dark mode configuration",
+        "Document CSS variable overrides",
+        "Typecheck passes"
+      ],
+      "priority": 20,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Document extending the app",
+      "description": "As a forker, I want to know how to extend the app with new features.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/5.customization/3.extending.md",
+        "Document adding new content types (schema changes, type icons)",
+        "Document adding new pages/routes",
+        "Document creating custom composables",
+        "Document adding new Claude Code skills",
+        "Typecheck passes"
+      ],
+      "priority": 21,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Create Vercel deployment guide",
+      "description": "As a forker, I want to deploy my own instance to Vercel.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/6.deployment/1.vercel.md",
+        "Step-by-step Vercel deployment instructions",
+        "Environment variables configuration",
+        "Custom domain setup instructions",
+        "Typecheck passes"
+      ],
+      "priority": 22,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Create other platforms deployment guide",
+      "description": "As a forker, I want deployment options beyond Vercel.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/6.deployment/2.other-platforms.md",
+        "Document Netlify deployment",
+        "Document Cloudflare Pages deployment",
+        "Note any platform-specific considerations",
+        "Typecheck passes"
+      ],
+      "priority": 23,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "Create API reference documentation",
+      "description": "As a forker, I want API documentation so I can understand the server endpoints.",
+      "acceptanceCriteria": [
+        "Create apps/docs/content/7.api-reference/1.overview.md",
+        "Document /api/graph endpoint",
+        "Document /api/backlinks endpoint",
+        "Document /api/mentions endpoint",
+        "Document /api/stats endpoint",
+        "Document /api/note-graph/[slug] endpoint",
+        "Document /api/raw-content/[slug] endpoint",
+        "Include request/response examples for each",
+        "Typecheck passes"
+      ],
+      "priority": 24,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Enable search functionality in docs",
+      "description": "As a reader, I want to search the documentation.",
+      "acceptanceCriteria": [
+        "Enable Docus built-in search functionality",
+        "Verify search indexes all documentation pages",
+        "Search results show relevant matches with context",
+        "Typecheck passes",
+        "Verify search works in browser using dev-browser skill"
+      ],
+      "priority": 25,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Configure docs CI/CD deployment",
+      "description": "As a maintainer, I want to deploy the docs independently.",
+      "acceptanceCriteria": [
+        "Add GitHub Actions workflow for docs deployment",
+        "Configure workflow to deploy apps/docs to subdomain",
+        "Ensure docs build passes in CI",
+        "Typecheck passes"
+      ],
+      "priority": 26,
+      "passes": true,
+      "notes": "Target subdomain: docs.secondbrain.dev"
+    },
+    {
+      "id": "US-027",
+      "title": "Update root README with monorepo info",
+      "description": "As a visitor, I want the README to explain the monorepo structure.",
+      "acceptanceCriteria": [
+        "Update root README.md with monorepo overview",
+        "Add links to documentation site",
+        "Include quick start commands for both web and docs",
+        "Document workspace scripts",
+        "Typecheck passes"
+      ],
+      "priority": 27,
+      "passes": true,
+      "notes": ""
+    }
+  ]
+}

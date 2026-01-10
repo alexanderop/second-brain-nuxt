@@ -1,0 +1,225 @@
+# Ralph Progress Log
+# Feature: 100% Unit Test Coverage
+# Branch: ralph/100-percent-test-coverage
+# Started: 2026-01-07
+
+## Codebase Patterns
+- Run `pnpm lint:fix && pnpm typecheck` before committing
+- Test pure exported functions directly by importing them in test files
+- To test runtime fallback behavior, use type assertion with eslint-disable comment
+- Coverage shows 100% branch even when line coverage is lower (composable internal code not tested)
+- Mock browser globals (window, document) in Node environment using `vi.stubGlobal('name', mockObj)` and `vi.unstubAllGlobals()` in afterEach
+- V8 branch coverage requires testing BOTH branches of ternaries (e.g., Array.isArray true AND false cases)
+
+---
+
+## 2026-01-08 - US-001
+- What was implemented: Test for getSortValue unknown column fallback case
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- **Learnings for future iterations:**
+  - Test was already written but not committed - check git status before assuming work is needed
+  - The getSortValue function already had 100% branch coverage
+  - Use `as Parameters<typeof fn>[n]` for type-safe casting when testing runtime edge cases
+---
+
+## 2026-01-08 - US-002
+- What was implemented: Extracted 6 pure filtering functions from useContentTable composable
+- Files changed: app/composables/useContentTable.ts
+- Functions extracted:
+  - `filterByType(items, types)` - filters by content type with OR logic
+  - `filterByTags(items, tags)` - filters by tags with OR logic
+  - `filterByAuthors(items, authorSlugs)` - filters by author slugs with OR logic
+  - `filterByDateRange(items, range)` - filters by date range (from/to)
+  - `filterByRatingRange(items, range)` - filters by rating range (min/max)
+  - `applyAllFilters(items, filters)` - combines all filters
+- Refactored `filteredItems` computed to use `applyAllFilters`
+- **Learnings for future iterations:**
+  - Use local variable extraction to avoid non-null assertions (e.g., `const itemTags = item.tags`)
+  - The existing `applyFiltersExcept` was already extracted for dynamic filter options
+  - Keep functions generic using `<T extends { ... }>` for reusability
+---
+
+## 2026-01-08 - US-003
+- What was implemented: Comprehensive tests for extracted filtering functions
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- Tests added:
+  - `filterByType`: 5 tests (undefined, empty, single, multiple, no match)
+  - `filterByTags`: 7 tests (undefined, empty, single, multiple, OR logic, exclude empty)
+  - `filterByAuthors`: 7 tests (undefined, empty, single, multiple, OR logic, exclude empty)
+  - `filterByDateRange`: 6 tests (undefined, inclusive range, boundary, exclude undefined)
+  - `filterByRatingRange`: 7 tests (undefined, inclusive range, boundaries min/max, exclude undefined)
+  - `applyAllFilters`: 9 tests (no filter, single filters, combined AND logic)
+- **Learnings for future iterations:**
+  - Test names should accurately describe expected behavior (fixed a test that said "returns empty" but expected items)
+  - Use `toEqual([])` for empty array assertions, not `toHaveLength(0)`
+  - TableContentItem interface is in `~/types/table` for reference
+---
+
+## 2026-01-08 - US-004
+- What was implemented: Extracted sorting logic from useContentTable to pure function
+- Files changed: app/composables/useContentTable.ts
+- Function extracted:
+  - `sortItems(items, column, direction)` - sorts items by column with direction
+- Refactored `sortedItems` computed to use `sortItems`
+- **Learnings for future iterations:**
+  - The sortItems function reuses existing helpers (getSortValue, compareValues)
+  - Creating a copy of the array inside the function ensures immutability
+  - Keep function signatures consistent with existing patterns (column: SortState['column'])
+---
+
+## 2026-01-08 - US-005
+- What was implemented: Comprehensive tests for sortItems function
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- Tests added (18 total):
+  - Sorting by title column: ascending/descending
+  - Sorting by type column: ascending/descending
+  - Sorting by dateConsumed column: ascending/descending with null handling
+  - Sorting by rating column: ascending/descending with null handling
+  - Null value handling: nulls at end (asc), nulls at start (desc), all nulls
+  - Immutability: original array unchanged, new array reference returned
+  - Edge cases: empty array, single item array
+- **Learnings for future iterations:**
+  - Null values go to END in ascending order, but go to START in descending order (due to -cmp negation)
+  - The sortItems function creates a copy via spread `[...items]` before sorting for immutability
+  - Tests should verify actual implementation behavior, not assumed behavior
+---
+
+## 2026-01-08 - US-006
+- What was implemented: Extracted pagination logic from useContentTable to pure functions
+- Files changed: app/composables/useContentTable.ts
+- Functions extracted:
+  - `paginateItems(items, page, pageSize)` - generic function to slice items for pagination
+  - `calculateTotalPages(totalItems, pageSize)` - calculates total page count
+- Refactored `paginatedItems` and `totalPages` computed to use extracted functions
+- **Learnings for future iterations:**
+  - Use generic `<T>` for pagination functions since they work on any array type
+  - Pagination formula: start = (page - 1) * pageSize, end = start + pageSize
+  - Math.ceil handles partial last pages automatically
+---
+
+## 2026-01-08 - US-007
+- What was implemented: Comprehensive tests for pagination functions
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- Tests added (19 total):
+  - `paginateItems`: first page (normal, exceeds total), middle pages, last page (partial, beyond data), edge cases (empty, page size 1, exact boundary), immutability tests
+  - `calculateTotalPages`: exact division (10/10, 20/10, 25/5), partial last page (11/10, 1/10, 7/3), edge cases (0 items, page size 1, large numbers)
+- **Learnings for future iterations:**
+  - Pagination functions are generic and work with any array type (used simple string arrays in tests)
+  - `slice()` automatically handles out-of-bounds indices (returns empty array for pages beyond data)
+  - Test immutability by checking both that original is unchanged AND that result is new reference
+---
+
+## 2026-01-08 - US-008
+- What was implemented: Extracted validation helpers from useContentTable to module scope
+- Files changed: app/composables/useContentTable.ts
+- Functions extracted:
+  - `isValidColumn(value)` - type guard for valid sort columns
+  - `isValidDirection(value)` - type guard for 'asc' or 'desc'
+  - `toStringArray(arr)` - safely converts unknown to string array
+- Removed duplicate definitions that were inside the composable function
+- **Learnings for future iterations:**
+  - Move `const validColumns` to module scope alongside the exported function that uses it
+  - Type guard functions use `value is Type` return type for proper narrowing
+  - Composable can reference module-scope functions directly (no need for closure)
+---
+
+## 2026-01-08 - US-009
+- What was implemented: Comprehensive tests for validation helper functions
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- Tests added (22 total):
+  - `isValidColumn`: 8 tests (valid columns: title/type/dateConsumed/rating, null, invalid, empty string, case sensitivity)
+  - `isValidDirection`: 6 tests (asc/desc valid, null, invalid direction, empty string, uppercase variants)
+  - `toStringArray`: 6 tests (non-array inputs, empty array, string arrays, mixed type filtering)
+- **Learnings for future iterations:**
+  - Validation functions are simple type guards - test both positive and negative cases
+  - Test case sensitivity explicitly since URL params may have different casing
+  - For filtering functions like toStringArray, test with various mixed type arrays
+---
+
+## 2026-01-08 - US-010
+- What was implemented: Extracted author enrichment logic from useContentTable to pure functions
+- Files changed: app/composables/useContentTable.ts
+- Functions extracted:
+  - `buildAuthorMap(authors)` - builds a Map<string, TableAuthor> from author array
+  - `enrichContentWithAuthors(content, authorMap)` - transforms raw content into TableContentItem[] with resolved author objects
+- Refactored `authorMap` and `allContent` computed to use extracted functions
+- **Learnings for future iterations:**
+  - Use generic type constraints with minimal interface for maximum flexibility (e.g., `<T extends { stem: unknown, ... }>`)
+  - The enrichContentWithAuthors function handles fallback for unknown authors (uses slug as name)
+  - Keep the composable simple by delegating complex transformations to pure functions
+---
+
+## 2026-01-08 - US-011
+- What was implemented: Comprehensive tests for author enrichment functions
+- Files changed: tests/unit/composables/useContentTable.test.ts
+- Tests added (17 total):
+  - `buildAuthorMap`: 5 tests (empty array, single author, multiple authors, no avatar, duplicate slugs)
+  - `enrichContentWithAuthors`: 12 tests (empty content, single/multiple known authors, unknown author fallback, mixed authors, undefined authors, empty authors array, all fields mapping, stem to string conversion, minimal content, multiple items)
+- **Learnings for future iterations:**
+  - Fallback for unknown authors uses the slug as both slug and name with undefined avatar
+  - The function converts stem to string via `String(item.stem)` for flexible input types
+  - Test both positive cases (known authors) and fallback cases (unknown authors) separately
+---
+
+## 2026-01-08 - US-012
+- What was implemented: Comprehensive tests for useAuthorShortcut composable
+- Files changed: tests/unit/composables/useAuthorShortcut.test.ts
+- Tests added (11 new tests):
+  - `openAuthor`: 2 tests (correct URL, special character encoding)
+  - `handleShortcut`: 5 tests (none for undefined, none for empty, single opens window, multiple doesn't open, reactive to ref changes)
+  - `getAuthorAction` returned from composable: 1 test
+  - Edge case: empty string author slug returns multiple type
+- **Learnings for future iterations:**
+  - Use `vi.stubGlobal('window', { open: mockFn })` for mocking browser globals in Node environment
+  - Use `vi.unstubAllGlobals()` in afterEach to clean up stubbed globals
+  - Test that composable functions react to ref value changes for proper reactivity testing
+  - Coverage achieved: 100% for useAuthorShortcut.ts
+---
+
+## 2026-01-08 - US-013
+- What was implemented: Tests for useShortcutsModal composable function
+- Files changed: tests/unit/composables/useShortcuts.test.ts
+- Tests added (2 total):
+  - `useShortcutsModal`: returns ref with default false value
+  - `useShortcutsModal`: returns mutable ref that can be toggled
+- **Learnings for future iterations:**
+  - useState mock already exists in tests/mocks/imports.ts - no additional mocking needed
+  - Simple composables using useState just need basic ref behavior tests
+  - Coverage achieved: 100% for useShortcuts.ts (lines 23-24 now covered)
+---
+
+## 2026-01-08 - US-014
+- What was implemented: Updated coverage thresholds to 100% for all metrics
+- Files changed:
+  - vitest.config.ts - Updated branches threshold from 98 to 100
+  - server/utils/mentions.ts - Refactored to use non-null assertion instead of unreachable `|| ''` fallback
+  - tests/unit/utils/graph.test.ts - Added tests for Array.isArray true branches (tags/authors)
+- Tests added (4 total):
+  - `createNode`: preserves authors array when provided
+  - `createNode`: preserves tags array when provided
+  - `createNode`: defaults tags to empty array when not an array
+  - `createNode`: defaults tags to empty array when undefined
+- **Learnings for future iterations:**
+  - V8 branch coverage requires testing BOTH branches of ternary operators (true AND false cases)
+  - Defensive `|| ''` fallbacks can be unreachable if earlier guards guarantee truthiness
+  - Use `// eslint-disable-next-line` with explanatory comment for justified non-null assertions
+  - Test fixtures with actual values (not just undefined/invalid) to cover the "true" branch of type guards
+---
+
+## 2026-01-08 - US-015
+- What was implemented: Verified full 100% test coverage achieved
+- Verification results:
+  - 381 tests pass across 12 test files
+  - All files show 100% coverage: Statements, Branches, Functions, Lines
+  - No uncovered lines remain in coverage report
+  - Lint passes (only warnings, no errors)
+  - Typecheck passes
+- Coverage report summary:
+  - app/composables: useAuthorShortcut.ts, useShortcuts.ts - 100%
+  - server/utils: backlinks.ts, graph.ts, mentions.ts, minimark.ts, text.ts, wikilinks.ts - 100%
+- **Learnings for future iterations:**
+  - Coverage threshold enforcement at 100% ensures no regressions
+  - The test suite completes in ~500ms making it fast for local development
+  - All 15 user stories completed - PRD fully delivered
+---
+

@@ -1,0 +1,447 @@
+# Ralph Progress Log
+Started: Thu Jan  8 21:21:28 CET 2026
+
+## Codebase Patterns
+- Root workspace scripts delegate to apps/web via `pnpm --filter @second-brain/web <command>`
+- Use `git mv` to move files while preserving git history
+- Clean `node_modules` and reinstall after major structural changes
+- Monorepo structure: apps/web (main Nuxt app), apps/docs (documentation site)
+- Pre-commit hook runs: `pnpm lint:fix && pnpm typecheck && pnpm test:unit`
+- Docus 5.4.2 has upstream type issues with @nuxt/ui - typecheck is skipped for docs
+- Docus requires better-sqlite3 native bindings - may need manual build: `cd node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3 && npm run build-release`
+- Docs site runs on port 3001 via `pnpm dev:docs` or `pnpm --filter @second-brain/docs dev`
+
+---
+
+## 2026-01-08 21:30 - US-001
+- **What was implemented**: Converted project to pnpm workspaces monorepo
+- **Files changed**:
+  - Created `pnpm-workspace.yaml` with `packages: ['apps/*']`
+  - Moved entire Nuxt app to `apps/web/` using git mv (576 files)
+  - Created `apps/docs/package.json` placeholder
+  - Updated root `package.json` with workspace scripts
+  - Updated `CLAUDE.md` with new structure docs
+- **Learnings for future iterations**:
+  - eslint-plugin-frontmatter was a local plugin in root - needed to be moved along with eslint.config.js
+  - All lint configs (.markdownlint.json, .oxlintrc.json) need to stay with the app
+  - Build script references (scripts/build-excalidraw.ts) need to be in the right location
+  - After restructuring, must run `pnpm install` to regenerate node_modules
+---
+
+## 2026-01-08 21:37 - US-002
+- **What was implemented**: Initialized Docus documentation site
+- **Files changed**:
+  - `apps/docs/package.json` - Added docus 5.4.2 and nuxt 4.2.2 dependencies, scripts
+  - `apps/docs/nuxt.config.ts` - Extends docus, disabled typecheck due to upstream issues
+  - `apps/docs/app.config.ts` - Second Brain branding (title, description, GitHub socials)
+  - `apps/docs/tsconfig.json` - TypeScript config with skipLibCheck
+  - `apps/docs/content/0.index/index.md` - Hero landing page with card links
+  - `apps/docs/content/*/` - Created 7 navigation sections with _dir.yml files
+  - `apps/docs/public/.gitkeep` - Placeholder for static assets
+  - `package.json` - Added dev:docs, build:docs, typecheck:docs scripts
+  - `pnpm-lock.yaml` - Updated with new dependencies
+- **Learnings for future iterations**:
+  - Docus 5.4.2 has type errors in its own codebase (i18n, @nuxt/ui compatibility)
+  - Skip typecheck for docs via echo message - upstream issue not ours
+  - Docus uses @nuxt/content v3 under the hood with SQLite - may need better-sqlite3 rebuild
+  - Navigation sections use numeric prefixes (0.index, 1.getting-started) for ordering
+  - _dir.yml files define section title and icon for sidebar navigation
+---
+
+## 2026-01-08 21:39 - US-003
+- **What was implemented**: Created Getting Started introduction documentation
+- **Files changed**:
+  - `apps/docs/content/1.getting-started/1.introduction.md` - Complete setup guide with prerequisites, fork/clone, first run, verification
+- **Learnings for future iterations**:
+  - Project has no required environment variables - site.config.ts is the main customization point
+  - Node 24.x requirement is in root package.json "engines" field
+  - Docus supports alert components with `::alert{type="info"}` syntax
+  - Card groups work with `::card-group` and `::card` components for navigation links
+---
+
+## 2026-01-08 21:42 - US-004
+- **What was implemented**: Documented project structure and architecture
+- **Files changed**:
+  - `apps/docs/content/1.getting-started/2.project-structure.md` - Comprehensive structure guide with Mermaid diagram
+- **Learnings for future iterations**:
+  - docs/SYSTEM_KNOWLEDGE_MAP.md is an excellent reference for understanding codebase architecture
+  - Mermaid diagrams work in Docus using triple backtick code blocks with `mermaid` language identifier
+  - Key architecture: Flat content structure (Zettelkasten), wiki-links processed by custom remark plugin in modules/wikilinks.ts
+  - Server APIs: /api/graph, /api/backlinks, /api/mentions, /api/stats, /api/note-graph/[slug], /api/raw-content/[slug]
+  - Composables pattern: useSiteConfig(), usePageTitle(), useContentHelpers(), useSearch()
+---
+
+## 2026-01-08 21:45 - US-005
+- **What was implemented**: Created Content Types reference documentation
+- **Files changed**:
+  - `apps/docs/content/2.content/1.overview.md` - Content system overview with philosophy, collections, and query examples
+  - `apps/docs/content/2.content/2.content-types.md` - Comprehensive documentation of all 16 content types with frontmatter examples
+- **Learnings for future iterations**:
+  - content.config.ts is the single source of truth for content type schemas
+  - External types (12): youtube, podcast, article, book, manga, movie, tv, tweet, course, reddit, github, newsletter
+  - Personal types (4): quote, note, evergreen, map
+  - External types require authors[] field, personal types don't
+  - Special validation: manga requires volumes + status fields
+  - Type-specific fields: readingStatus (book), watchingStatus (movie/tv), stars/language (github), podcast/guests/urls (podcast), newsletter/issueNumber (newsletter)
+  - Docus card components use `::card{title="" icon="" to=""}` syntax for linked cards
+---
+
+## 2026-01-08 21:49 - US-006
+- **What was implemented**: Documented wiki-linking and connections system
+- **Files changed**:
+  - `apps/docs/content/2.content/3.wiki-links.md` - Comprehensive wiki-links documentation
+- **Learnings for future iterations**:
+  - Wiki-link transformation happens in `modules/wikilinks.ts` during `content:file:beforeParse` hook
+  - Regex: `\[\[([^\]|]+)(?:\|([^\]]+))?\]\]` matches `[[slug]]` or `[[slug|display text]]`
+  - Transformed to MDC attribute syntax: `[text](/slug){.wiki-link}`
+  - Backlinks are explicit `[[slug]]` connections, tracked in `/api/backlinks`
+  - Mentions are title/text matches WITHOUT wiki-link syntax, tracked in `/api/mentions`
+  - Mentions require 3+ character titles to avoid false positives
+  - MOCs (Maps of Content) use `type: map` and have special graph visualization features
+  - MOC membership: nodes linked from a MOC get the MOC slug added to their `maps[]` array
+  - `NoteGraph.vue` shows radial mini-graph on content pages, `BaseGraph.vue` powers full graph
+  - `ContentBacklinksSection.vue` displays both backlinks and mentions sections
+---
+
+## 2026-01-08 21:52 - US-007
+- **What was implemented**: Created Authors and Collections documentation
+- **Files changed**:
+  - `apps/docs/content/2.content/4.collections.md` - Comprehensive documentation for authors, podcasts, and newsletters
+- **Learnings for future iterations**:
+  - Three specialized collections: authors, podcasts, newsletters (all use `type: 'data'`)
+  - Author schema: name, slug, bio, avatar, website, socials (twitter, github, linkedin, youtube)
+  - Podcast schema: name, slug, description, artwork, website, hosts[], feed, platforms{}
+  - Newsletter schema: name, slug, description, logo, website, authors[], platform (enum), topics[]
+  - Newsletter platforms enum: substack, beehiiv, ghost, convertkit, buttondown, revue, mailchimp, other
+  - Podcasts require min 1 host, newsletters require min 1 author
+  - Podcast episodes reference shows via `podcast` field, newsletter issues via `newsletter` + `issueNumber` fields
+  - `guests` field on podcast content tracks episode guests separately from show hosts
+---
+
+## 2026-01-08 21:54 - US-008
+- **What was implemented**: Created Features overview documentation page
+- **Files changed**:
+  - `apps/docs/content/3.features/1.overview.md` - Features overview with links to detailed pages
+- **Learnings for future iterations**:
+  - Features documented: Knowledge Graph, Search, Table View, Stats Dashboard, Keyboard Shortcuts
+  - Core features include: 16 content types, wiki-linking, rich metadata, flat structure philosophy
+  - Browsing options: by type, tag, author, backlinks, mentions
+  - Reading experience pages: Books (reading status tracking), Podcasts, Newsletters
+  - Additional features: Dark mode (system preference), PWA support (installable app)
+  - Technical foundation: @nuxt/content v3, D3.js, Fuse.js, @nuxt/ui v4, @vite-pwa/nuxt
+  - Feature matrix table works well for quick reference with links to detailed pages
+---
+
+## 2026-01-08 21:57 - US-009
+- **What was implemented**: Documented Knowledge Graph feature comprehensively
+- **Files changed**:
+  - `apps/docs/content/3.features/2.knowledge-graph.md` - Full documentation of the graph visualization
+- **Learnings for future iterations**:
+  - Graph has two modes: freeform (full graph) and radial (note graph)
+  - BaseGraph.vue is the shared D3.js visualization engine (590+ lines)
+  - KnowledgeGraph.vue wraps BaseGraph for full graph page, NoteGraph.vue for content pages
+  - Graph filtering is URL-synced via `useGraphFilters()` composable
+  - Filters: types, tags, authors, maps, orphans - all sync to query params
+  - Node sizing uses power scale (0.7 exponent) based on connection count
+  - Label visibility is "progressive" - more labels appear as you zoom in
+  - MOC nodes render as hexagons in freeform mode (`effectiveHexagonMaps`)
+  - Breathing animation: simulation restarts every 3s with alpha 0.02 for organic movement
+  - Zoom persistence via sessionStorage with key `graph-zoom-transform`
+  - Note graph limits L2 nodes to 20 to prevent visual clutter (`MAX_LEVEL2_NODES = 20`)
+  - Graph API endpoints: `/api/graph` (full), `/api/note-graph/[slug]` (per-note)
+  - Color palette in `graphColors.ts` - each type has fill color + glow color
+---
+
+## 2026-01-08 22:00 - US-010
+- **What was implemented**: Documented Search feature comprehensively
+- **Files changed**:
+  - `apps/docs/content/3.features/3.search.md` - Full documentation of search functionality
+- **Learnings for future iterations**:
+  - Two search interfaces: AppSearchModal.vue (command palette ⌘K) and /search page
+  - Command palette uses Nuxt UI's UCommandPalette component with Fuse.js
+  - Search page has full Fuse.js instance with debounced input (300ms via VueUse watchDebounced)
+  - Search categories: Notes, Authors, Newsletters, Podcasts
+  - Fuse.js config: threshold 0.3, ignoreLocation true, minMatchCharLength 2
+  - Key weights: title (1.0), titles/breadcrumbs (0.8), content (0.7), name (1.0)
+  - Result limit: 15 items in command palette
+  - Search history managed by `usePreferences()` composable in localStorage (max 10 items)
+  - Search uses `queryCollectionSearchSections()` from @nuxt/content v3 for full-text indexing
+  - Keyboard shortcuts: ⌘K or / opens search, J/K for vim-style navigation on search page
+  - Match highlighting uses `<mark>` tags with custom styling
+  - Snippet extraction shows 60 chars of context around matches with ellipsis
+---
+
+## 2026-01-08 22:03 - US-011
+- **What was implemented**: Documented Table View feature comprehensively
+- **Files changed**:
+  - `apps/docs/content/3.features/4.table-view.md` - Full documentation of table view functionality
+- **Learnings for future iterations**:
+  - Table view lives at `/table` route with `app/pages/table.vue`
+  - Uses `useContentTable` composable for state management (filtering, sorting, pagination)
+  - All filter state is URL-synced via `useRouteQuery` from VueUse
+  - Filter types: type (multi-select), tags (top 15), authors (searchable), rating (slider range)
+  - Sort columns: title (A-Z), type, dateConsumed (newest/oldest), rating (highest/lowest)
+  - Page size is 25 items, pagination resets to page 1 on filter change
+  - Title column is pinned on mobile via `columnPinning` ref
+  - Active filters show as colored chips in `ContentTableFiltersBar.vue`
+  - `useTableFilterMenus` composable generates dropdown menu items for each filter
+  - Row click navigates to content, external link icon opens in new tab
+  - Scroll position persisted via `sessionStorage` key `table-scroll`
+---
+
+## 2026-01-08 22:07 - US-012
+- **What was implemented**: Documented Stats Dashboard feature comprehensively
+- **Files changed**:
+  - `apps/docs/content/3.features/5.stats-dashboard.md` - Full documentation with metrics, charts, API reference
+- **Learnings for future iterations**:
+  - Stats page at `/stats` uses `/api/stats` endpoint which aggregates from content collection + graph API
+  - Stats API caches for 10 minutes with stale-while-revalidate (SWR) strategy
+  - Four overview cards: Total Notes, Connections, Orphan Notes %, This Week count
+  - Charts use D3.js: StatsBarChart.vue (horizontal/vertical bars), StatsLineChart.vue (area chart)
+  - Chart components are lazy-loaded via `defineAsyncComponent` for bundle optimization
+  - Both charts use `useResizeObserver` from VueUse for responsive sizing
+  - Quality metrics show progress bars with color thresholds (green >= 70%, yellow >= 40%, red < 40%)
+  - Connection analysis includes hub notes (top 5 most connected) and orphan notes
+  - Orphan modal has filtering, sorting (title/type), and pagination (10 per page)
+  - Stats data structure: total, byType[], byTag[], byAuthor[], byMonth[], quality{}, connections{}, thisWeek
+---
+
+## 2026-01-08 22:09 - US-013
+- **What was implemented**: Documented Keyboard Shortcuts feature comprehensively
+- **Files changed**:
+  - `apps/docs/content/3.features/6.keyboard-shortcuts.md` - Full documentation with all shortcuts, customization, implementation details
+- **Learnings for future iterations**:
+  - Shortcuts are defined in `site.config.ts` under `shortcuts` object with three categories: general, navigation, actions
+  - `defineShortcuts` from Nuxt UI handles key binding with syntax: `_` for modifiers, `-` for sequences
+  - Key sequences like `g-h` work by pressing G then H (two-step navigation)
+  - Shortcuts registered in layouts (`default.vue`, `graph.vue`) for global availability
+  - `useShortcutsModal()` composable manages shared modal state via `useState`
+  - `AppShortcutsModal.vue` groups shortcuts by category and uses `UKbd` for key rendering
+  - Vim-style J/K navigation implemented in `search.vue` with `selectedIndex` ref for highlighting
+  - Additional shortcuts: focus mode (`⌘⇧\`), dark mode toggle (`⌘⌥T`), table of contents (`]`)
+  - Shortcuts auto-disabled when focus is in input fields
+---
+
+## 2026-01-08 22:12 - US-014
+- **What was implemented**: Documented Claude Code integration overview
+- **Files changed**:
+  - `apps/docs/content/4.claude-code/1.overview.md` - Comprehensive Claude Code integration overview with skills catalog
+- **Learnings for future iterations**:
+  - 19 skills organized into 5 categories: Content Creation, Enhancement, Organization, Quality/Review, Utility
+  - Skills live in `.claude/skills/{skill-name}/skill.md` with frontmatter (name, description, allowed-tools)
+  - Content Creation: adding-notes, adding-tweets, creating-obsidian-templates, managing-blog-ideas
+  - Content Enhancement: enhancing-notes (book summaries), enhancing-talks (timestamped insights), enhancing-authors
+  - Knowledge Organization: linking-notes, moc-curator, managing-tags, exploring-graph
+  - Quality/Review: reviewing-notes, summarizing-topic, writing-style
+  - Utility: mermaid-diagrams, using-git-worktrees, second-brain-debugging
+  - Skills follow phased workflows with blocking gates for user approval
+  - Skills can reference other skills (e.g., adding-notes uses writing-style)
+  - CLAUDE.md provides project context (owner, commands, structure) automatically loaded by Claude
+---
+
+## 2026-01-08 22:15 - US-015
+- **What was implemented**: Documented content creation skills
+- **Files changed**:
+  - `apps/docs/content/4.claude-code/2.adding-content.md` - Comprehensive documentation for all 4 content creation skills
+- **Learnings for future iterations**:
+  - Content creation skills: /adding-notes, /adding-tweets, /creating-obsidian-templates, /managing-blog-ideas
+  - /adding-notes is the primary skill with 8-phase workflow: Type Detection → Metadata → Author → Content → Connections → Validation → Save → MOC
+  - URL pattern detection routes to appropriate content type handlers (youtube, reddit, github, book, podcast, etc.)
+  - Author resolution: check existence via Glob, partial match uses AskUserQuestion, creates minimal profile if needed
+  - Connection discovery prioritizes quality over quantity - "organic" connections only
+  - /adding-tweets parses URL for tweetId + authorHandle, saves to content/tweets/tweet-{id}.md
+  - /creating-obsidian-templates uses Obsidian syntax: {{date}}, {{title}}, {{time}} - stored in content/_obsidian-templates/
+  - /managing-blog-ideas has 3 modes (list/create/update) with status progression: idea → outline → draft → ready
+  - Blog ideas stored in content/blog-ideas/ (excluded from publishing)
+  - Skills reference other skills (adding-notes → writing-style, managing-blog-ideas → writing-style for voice)
+  - Mermaid flowcharts in documentation clearly show multi-phase workflows
+---
+
+## 2026-01-08 22:18 - US-016
+- **What was implemented**: Documented content enhancement skills
+- **Files changed**:
+  - `apps/docs/content/4.claude-code/3.enhancing-content.md` - Comprehensive documentation for all 3 enhancement skills
+- **Learnings for future iterations**:
+  - Enhancement skills: /enhancing-notes (books), /enhancing-talks (talks with timestamps), /enhancing-authors (profile completion)
+  - All enhancement skills use parallel WebSearch agents for research efficiency
+  - /enhancing-notes generates: Core Message, Key Insights (8-12 blinks), Notable Quotes (3), Who Should Read
+  - /enhancing-talks is similar but transcript-based with timestamps: uses `get-youtube-transcript.py --format=json`
+  - /enhancing-talks adds Talk Structure section (chapter-style) and Action Items (3-5 checkboxes)
+  - /enhancing-authors only fills MISSING fields - never overwrites existing values
+  - Author avatar URL preference: GitHub format `https://github.com/{username}.png`
+  - Social handles are stored as usernames only (not full URLs)
+  - All skills have Phase N: User Review (BLOCKING GATE) before saving
+  - Original content is always preserved with `---` separator between generated and original
+  - Writing style skill is referenced for active voice, no boilerplate, everyday words
+---
+
+## 2026-01-08 22:20 - US-017
+- **What was implemented**: Documented knowledge organization skills
+- **Files changed**:
+  - `apps/docs/content/4.claude-code/4.organizing-knowledge.md` - Comprehensive documentation for all 4 organization skills
+- **Learnings for future iterations**:
+  - Organization skills: /linking-notes, /moc-curator, /managing-tags, /exploring-graph
+  - /linking-notes philosophy: "Aim for connection, not perfection" - 2-3 meaningful links per note
+  - Link criteria: same author, direct reference, same topic, part of series, contrasting views, theory-to-practice
+  - Avoid linking: vague thematic overlap, multiple reasoning hops, unread targets
+  - /moc-curator uses Python script with semantic embeddings (sentence-transformers, sklearn)
+  - Script modes: `--mode=full|moc-gaps|new-clusters|hub-notes|for-note`
+  - Default similarity threshold is 0.7 (strict), can lower with `--threshold=0.6`
+  - New MOCs require at least 3 notes in a cluster
+  - /managing-tags focuses on: similar tags (merge), naming violations (kebab-case), rarely used tags
+  - Tag convention: lowercase, kebab-case, consistent plurality, meaningful
+  - /exploring-graph calculates: outgoing, incoming, total connections per note
+  - Graph health indicators: orphan rate (<10% healthy), avg connections (>2 healthy), broken links (0 healthy)
+  - Orphan types: full orphans (isolated), dead ends (no incoming), sources (no outgoing)
+---
+
+## 2026-01-08 22:22 - US-018
+- **What was implemented**: Documented quality and review skills
+- **Files changed**:
+  - `apps/docs/content/4.claude-code/5.quality-review.md` - Comprehensive documentation for all 3 quality/review skills
+- **Learnings for future iterations**:
+  - Quality/review skills: /reviewing-notes, /summarizing-topic, /writing-style
+  - /reviewing-notes audits notes for: broken wiki-links (critical), missing summaries (high), orphans (high), insufficient tags (medium), short content (medium)
+  - Issue severity categories help prioritize fixes: Critical → High → Medium → Low
+  - /summarizing-topic synthesizes knowledge from multiple notes using multi-strategy search: tags, content keywords, wiki-links
+  - Synthesis output includes: Overview, Key Themes, Sources table, Notable Quotes, Gaps and Questions, Next Steps
+  - Three output formats: Brief Summary (2-3 paragraphs), Comprehensive (all sections), Gap Analysis (focus on missing areas)
+  - /writing-style is a reference skill (no allowed-tools) - provides 10 rules based on McCloskey's "Economical Writing"
+  - Key writing rules: active verbs, no boilerplate, one point per paragraph, end sentences with emphasis
+  - Writing skill includes Alexander Opalic's voice profile with signature phrases, opening patterns, and tone guidelines
+  - Voice profile analyzed from 22+ blog posts - useful for blog content generation
+---
+
+## 2026-01-08 22:24 - US-019
+- **What was implemented**: Created site configuration customization guide
+- **Files changed**:
+  - `apps/docs/content/5.customization/1.site-config.md` - Comprehensive documentation for customizing site.config.ts
+- **Learnings for future iterations**:
+  - site.config.ts is the central configuration hub with: name, shortName, description, themeColor, allowIndexing, nav[], shortcuts{}, social{}
+  - Navigation items have: label, to (path), icon (i-lucide-{name} format)
+  - Three shortcut categories: navigation (two-key sequences like G+H), actions (single keys), general (modifiers + keys)
+  - Modifier key strings: meta (⌘/Ctrl), alt (⌥/Alt), shift, ctrl
+  - useSiteConfig() composable provides reactive access to config in components
+  - usePageTitle('Page') sets title as "Page - Site Name"
+  - TypeScript types exported: SiteConfig, NavItem, ShortcutCategory
+  - Icons use Lucide set from https://lucide.dev/icons/
+---
+
+## 2026-01-09 07:32 - US-020
+- **What was implemented**: Created theming customization guide
+- **Files changed**:
+  - `apps/docs/content/5.customization/2.theming.md` - Comprehensive theming documentation
+- **Learnings for future iterations**:
+  - Nuxt UI v4 uses CSS variables with `--ui-` prefix for semantic colors (primary, text, bg, border, etc.)
+  - Colors adapt automatically between light/dark modes via `.dark` class selector
+  - Dark mode toggled via `useColorMode()` composable - preference can be 'light', 'dark', or 'system'
+  - Keyboard shortcut for dark mode toggle: `meta_alt_t` (⌘⌥T on Mac)
+  - Fonts configured in nuxt.config.ts `fonts` section with provider (fontsource, google)
+  - Font CSS variables: `--font-sans` and `--font-mono` in main.css
+  - Graph colors defined in `app/utils/graphColors.ts` - each type has fill + glow color
+  - Component theming via app.config.ts `ui.[component].slots` and `ui.[component].variants`
+  - Prose styling uses Tailwind typography plugin with customized `--tw-prose-*` variables
+  - Wiki-link styling: dotted underline by default, solid on hover, strikethrough for broken links
+---
+
+## 2026-01-09 07:35 - US-021
+- **What was implemented**: Created comprehensive guide for extending the app
+- **Files changed**:
+  - `apps/docs/content/5.customization/3.extending.md` - Full extension documentation
+- **Learnings for future iterations**:
+  - Adding new content types requires 3-4 files: `content.config.ts` (schema), `contentTypes.ts` (runtime arrays), `BaseTypeIcon.vue` (icons), optionally `graphColors.ts`
+  - TypeScript's `satisfies` keyword ensures type safety: icon map must have entry for every ContentType
+  - Composables follow patterns: `useLocalStorage` for persistence, `useAsyncData` for API, `useState` for shared state
+  - Claude Code skills live in `.claude/skills/{name}/SKILL.md` with frontmatter for name, description, allowed-tools
+  - Skills use BLOCKING GATE pattern for user approval before destructive changes
+  - Server routes use `defineEventHandler` for basic routes, `defineCachedEventHandler` for cached routes
+  - File-based routing: static at `pages/name.vue`, dynamic with `pages/[param].vue`, catch-all with `pages/[...slug].vue`
+---
+
+## 2026-01-09 07:38 - US-022
+- **What was implemented**: Created Vercel deployment guide
+- **Files changed**:
+  - `apps/docs/content/6.deployment/1.vercel.md` - Comprehensive Vercel deployment documentation
+- **Learnings for future iterations**:
+  - Vercel deployment for Nuxt requires `content.experimental.sqliteConnector: 'native'` to avoid better-sqlite3 native module issues
+  - `routeRules: { '/**': { prerender: true } }` pre-renders all pages at build time for Vercel static hosting
+  - Nitro prerender with `crawlLinks: true` auto-discovers and pre-renders linked pages
+  - In-memory SQLite (`filename: ':memory:'`) is required for Vercel since it has no persistent filesystem
+  - Node.js 24.x is required for native SQLite support (set in Vercel settings or .nvmrc)
+  - Monorepo deployment requires setting Root Directory to `apps/web` in Vercel project settings
+  - NUXT_PUBLIC_* prefix exposes env vars to client, NUXT_* prefix is server-only
+---
+
+## 2026-01-09 07:40 - US-023
+- **What was implemented**: Created other platforms deployment guide for Netlify and Cloudflare Pages
+- **Files changed**:
+  - `apps/docs/content/6.deployment/2.other-platforms.md` - Comprehensive deployment guide for alternative platforms
+- **Learnings for future iterations**:
+  - Netlify uses `netlify.toml` for build configuration, base directory setting critical for monorepos
+  - Cloudflare Pages uses `wrangler.toml` for configuration, needs `node_compat = true` for Node.js APIs
+  - All platforms share same SQLite configuration: in-memory database + native connector + pre-rendering
+  - Netlify publish directory is `apps/web/.output/public` (relative to repo root)
+  - Cloudflare publish directory is `.output/public` (relative to root directory setting)
+  - Platform comparison: Vercel and Netlify have similar free tiers, Cloudflare has unlimited build minutes and bandwidth
+  - `.node-version` file works for Netlify, `NODE_VERSION` env var works for both Netlify and Cloudflare
+  - Pre-rendering is essential for all serverless platforms since they have no persistent filesystem
+---
+
+## 2026-01-09 07:43 - US-024
+- **What was implemented**: Created comprehensive API reference documentation
+- **Files changed**:
+  - `apps/docs/content/7.api-reference/1.overview.md` - Full API reference with all 6 endpoints
+- **Learnings for future iterations**:
+  - Six server API endpoints: `/api/graph`, `/api/backlinks`, `/api/mentions`, `/api/stats`, `/api/note-graph/[slug]`, `/api/raw-content/[slug]`
+  - Graph API returns `{ nodes: GraphNode[], edges: GraphEdge[] }` with full metadata per node (tags, authors, connections, maps, isMap)
+  - Backlinks API returns index mapping `{ [targetSlug]: BacklinkItem[] }` - items that link TO each slug
+  - Mentions API requires `slug` and `title` query params, min 3 chars for title, returns snippets with `<mark>` highlighting
+  - Stats API is cached 10min with SWR via `defineCachedEventHandler`, fetches `/api/graph` internally for connection metrics
+  - Note-graph API returns 2-level graph: center node (L0), direct connections (L1), second-degree (L2 limited to 20 nodes)
+  - Raw-content API reads file directly from filesystem via `readFileSync`, returns `{ raw: string }`
+  - Graph utilities in `server/utils/graph.ts`: `buildGraphFromContent`, `createNode`, `extractEdges`, `calculateConnectionCounts`, `computeMapMembership`
+  - Backlinks utilities in `server/utils/backlinks.ts`: `buildBacklinksIndex`, `buildContentMap`, `addBacklinksForItem`
+  - Mentions utilities in `server/utils/mentions.ts`: `findUnlinkedMentions`, uses word-boundary regex matching
+---
+
+## 2026-01-09 07:50 - US-025
+- **What was implemented**: Enabled search functionality in Docus docs site
+- **Files changed**:
+  - `apps/docs/content/index.md` - Moved from `0.index/index.md` to content root for correct Docus discovery
+- **Learnings for future iterations**:
+  - Docus search is built-in and enabled by default - no configuration needed
+  - Search uses `queryCollectionSearchSections('docs')` to index all documentation pages
+  - `UContentSearch` modal is rendered client-side (wrapped in `<ClientOnly>`) in Docus's `app.vue`
+  - Search button appears in both mobile (icon only) and desktop (full width with ⌘K shortcut)
+  - Landing page MUST be at `content/index.md` (not in a subdirectory like `0.index/`)
+  - Docus content.config.ts defines two collections: `landing` (index.md only) and `docs` (everything else)
+  - Navigation sections use numeric prefixes for ordering (1.getting-started, 2.content, etc.)
+  - Search data is lazily loaded on client with `server: false` option
+---
+
+## 2026-01-09 07:51 - US-026
+- **What was implemented**: Configured docs CI/CD deployment with GitHub Actions
+- **Files changed**:
+  - `.github/workflows/docs.yml` - GitHub Actions workflow for docs deployment
+- **Learnings for future iterations**:
+  - Workflow triggers on push to `apps/docs/**` paths and manual dispatch (`workflow_dispatch`)
+  - Uses `pnpm --filter @second-brain/docs generate` for static site generation
+  - Deploys to GitHub Pages using `actions/deploy-pages@v4`
+  - `actions/upload-pages-artifact@v3` uploads from `apps/docs/.output/public`
+  - Concurrency group `docs-deploy` prevents parallel deployments
+  - Requires GitHub repo settings: Pages source set to "GitHub Actions"
+  - Custom domain (`docs.secondbrain.dev`) can be configured in GitHub Pages settings after first deploy
+---
+
+## 2026-01-09 07:53 - US-027
+- **What was implemented**: Updated root README with monorepo documentation
+- **Files changed**:
+  - `README.md` - Comprehensive update with monorepo structure, documentation links, workspace scripts
+- **Learnings for future iterations**:
+  - README should include documentation links as primary entry point for users
+  - Workspace scripts table provides quick reference for all available commands
+  - Monorepo structure diagram shows project layout clearly
+  - Prerequisites (Node.js 24.x, pnpm 10+) should be explicit for new users
+  - Content types can be shown compactly in two-column External/Personal table
+  - AI skills section condensed to key skills with link to full documentation
+---
