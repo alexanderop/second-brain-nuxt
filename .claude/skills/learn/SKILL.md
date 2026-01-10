@@ -1,4 +1,5 @@
 ---
+name: learn
 description: Analyze conversation for learnings and save to docs folder
 argument-hint: [optional topic hint]
 model: claude-opus-4-5-20251101

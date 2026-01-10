@@ -1,4 +1,5 @@
 ---
+name: update-system-map
 description: Update the System Knowledge Map documentation
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task
 ---
