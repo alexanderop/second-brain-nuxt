@@ -127,7 +127,7 @@ hooks:                           # Optional: lifecycle hooks
 
 ## The New Mental Model
 
-```
+```text
 Before: "Should I use a skill, slash command, or subagent?"
 After:  "Just make it a skill"
 ```
@@ -167,7 +167,7 @@ Use `context: fork` + `agent` in skill frontmatter. This creates a separate suba
 
 Skills share the context window with your conversation. Keep `SKILL.md` under 500 lines:
 
-```
+```text
 my-skill/
 ├── SKILL.md           # Overview (keep under 500 lines)
 ├── reference.md       # Detailed docs - loaded when needed
@@ -419,7 +419,7 @@ allowed-tools:
 
 A complex skill that keeps SKILL.md light and loads details on demand:
 
-```
+```text
 api-client-generator/
 ├── SKILL.md              # 50 lines - overview only
 ├── openapi-patterns.md   # 200 lines - loaded when generating from OpenAPI

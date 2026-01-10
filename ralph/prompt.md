@@ -29,7 +29,7 @@ You are an autonomous coding agent working on a software project.
 ## Progress Report Format
 
 APPEND to ralph/progress.txt (never replace, always append):
-```
+```markdown
 ## [Date/Time] - [Story ID]
 - What was implemented
 - Files changed
@@ -44,7 +44,7 @@ APPEND to ralph/progress.txt (never replace, always append):
 
 If you discover a **reusable pattern** that future iterations should know, add it to the `## Codebase Patterns` section at the TOP of progress.txt:
 
-```
+```markdown
 ## Codebase Patterns
 - Example: How to query data in this project
 - Example: Component naming conventions

@@ -22,6 +22,7 @@ export const externalContentTypes = [
   'reddit',
   'github',
   'newsletter',
+  'talk',
 ] as const satisfies readonly ContentType[]
 
 export const personalContentTypes = [

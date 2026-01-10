@@ -117,7 +117,7 @@ Comparison of Second Brain features vs Obsidian Publish, with a roadmap for achi
 
 ### Stacked Pages Implementation Ideas
 
-```
+```text
 ┌─────────────┬─────────────┬─────────────┐
 │   Note A    │   Note B    │   Note C    │
 │             │  (clicked   │  (clicked   │
@@ -132,7 +132,7 @@ Comparison of Second Brain features vs Obsidian Publish, with a roadmap for achi
 
 ### OG Image Template
 
-```
+```text
 ┌────────────────────────────────────┐
 │  📖  BOOK                          │
 │                                    │

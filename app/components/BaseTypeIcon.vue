@@ -25,6 +25,7 @@ const iconMap = {
   reddit: 'i-lucide-message-square',
   github: 'i-lucide-github',
   newsletter: 'i-lucide-newspaper',
+  talk: 'i-lucide-presentation',
 } satisfies Record<ContentType, string>
 
 const sizeClasses = {

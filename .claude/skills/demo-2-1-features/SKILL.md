@@ -63,7 +63,7 @@ Use TaskOutput (with block=true) to wait for all 3 agents.
 
 Present findings in a summary:
 
-```
+```markdown
 ## 📊 Knowledge Graph Quick Scan Results
 
 ### Content Breakdown
@@ -93,7 +93,7 @@ If user selects option 4 or after completing a follow-up, proceed to Phase 4.
 
 End by displaying:
 
-```
+```markdown
 ## 2.1 Features Demonstrated
 
 ✓ context: fork - Isolated execution (main conversation unchanged)

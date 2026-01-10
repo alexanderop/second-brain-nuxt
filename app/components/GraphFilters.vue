@@ -43,6 +43,7 @@ const typeLabels: Record<ContentType, string> = {
   reddit: 'Reddit',
   github: 'GitHub',
   newsletter: 'Newsletters',
+  talk: 'Talks',
 }
 
 // Build checkbox items for UCheckboxGroup
@@ -71,6 +72,7 @@ const typeColors: Record<ContentType, string> = {
   reddit: '#ff6b35',
   github: '#a78bfa',
   newsletter: '#4ade80',
+  talk: '#f59e0b',
 }
 
 // Build map items for USelectMenu

@@ -273,7 +273,7 @@ describe('server/utils/mentions', () => {
 
       const mention = result.find(m => m.slug === 'article-three')
       expect(mention).toBeDefined()
-      expect(mention!.highlightedSnippet).toMatch(/<mark[^>]*>/)
+      expect(mention?.highlightedSnippet).toMatch(/<mark[^>]*>/)
     })
   })
 })

@@ -14,6 +14,7 @@ const externalContentTypes = [
   'reddit',
   'github',
   'newsletter',
+  'talk',
 ] as const
 
 // Personal content types have optional authors

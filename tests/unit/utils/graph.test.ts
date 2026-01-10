@@ -140,8 +140,8 @@ describe('server/utils/graph', () => {
     })
 
     it('defaults authors to empty array when not an array', () => {
-       
-      const item: any = { path: '/test', authors: 'not-an-array' }
+      // @ts-expect-error Testing invalid input: authors should be array
+      const item: ContentItem = { path: '/test', authors: 'not-an-array' }
       const node = createNode(item)
 
       expect(node.authors).toEqual([])
@@ -155,8 +155,8 @@ describe('server/utils/graph', () => {
     })
 
     it('defaults tags to empty array when not an array', () => {
-       
-      const item: any = { path: '/test', tags: 'not-an-array' }
+      // @ts-expect-error Testing invalid input: tags should be array
+      const item: ContentItem = { path: '/test', tags: 'not-an-array' }
       const node = createNode(item)
 
       expect(node.tags).toEqual([])

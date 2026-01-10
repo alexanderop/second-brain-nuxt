@@ -26,6 +26,7 @@ const CONTENT_TYPE_COLORS: Record<ContentType, string> = {
   reddit: 'warning',
   github: 'neutral',
   newsletter: 'info',
+  talk: 'primary',
 }
 
 // State interface combines related props

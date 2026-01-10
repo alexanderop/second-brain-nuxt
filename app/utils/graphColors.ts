@@ -22,6 +22,7 @@ export const typeColors: Record<ContentType, ColorConfig> = {
   reddit: { fill: '#ff6b35', glow: 'rgba(255, 107, 53, 0.4)' }, // Reddit orange
   github: { fill: '#a78bfa', glow: 'rgba(167, 139, 250, 0.4)' }, // GitHub purple
   newsletter: { fill: '#4ade80', glow: 'rgba(74, 222, 128, 0.4)' }, // Newsletter green
+  talk: { fill: '#f59e0b', glow: 'rgba(245, 158, 11, 0.4)' }, // Amber for conference talks
 }
 
 export const defaultColor: ColorConfig = { fill: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)' }

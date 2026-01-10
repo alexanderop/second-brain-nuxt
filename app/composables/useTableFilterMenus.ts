@@ -21,6 +21,7 @@ export const CONTENT_TYPE_ICONS: Record<ContentType, string> = {
   reddit: 'i-lucide-message-square',
   github: 'i-lucide-github',
   newsletter: 'i-lucide-newspaper',
+  talk: 'i-lucide-presentation',
 }
 
 interface FilterMenuCallbacks {
