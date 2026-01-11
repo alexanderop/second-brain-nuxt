@@ -24,7 +24,7 @@ import {
   toStringArray,
   buildAuthorMap,
   enrichContentWithAuthors,
-} from '~/composables/useContentTable'
+} from '~/utils/contentTableLogic'
 import type { FilterState, TableContentItem } from '~/types/table'
 
 describe('useContentTable', () => {
