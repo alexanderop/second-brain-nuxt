@@ -48,20 +48,19 @@ Only use scripts that fetch external data or perform complex processing:
 
 | Script | Purpose |
 |--------|---------|
-| `get-youtube-metadata.sh URL` | Fetch video title, channel |
-| `get-youtube-transcript.py URL` | Fetch video transcript |
-| `get-podcast-transcript.py [opts]` | Multi-source podcast transcript |
-| `get-reddit-thread.py URL --comments N` | Fetch thread and top comments |
-| `get-goodreads-metadata.sh URL` | Fetch book title, author, cover |
-| `get-manga-metadata.sh URL` | Fetch series metadata |
-| `get-github-metadata.sh URL` | Fetch repo name, stars, language |
-| `find-related-notes.py FILE --limit N` | Find semantically related notes |
+| `get-youtube-metadata.sh URL` | Video title, channel |
+| `get-youtube-transcript.py URL` | Video transcript |
+| `get-podcast-transcript.py [opts]` | Podcast transcript |
+| `get-reddit-thread.py URL --comments N` | Thread + comments |
+| `get-goodreads-metadata.sh URL` | Book metadata |
+| `get-manga-metadata.sh URL` | Manga series data |
+| `get-github-metadata.sh URL` | Repo stats |
+| `find-related-notes.py FILE --limit N` | Semantic search |
 
-**Do NOT use scripts for these trivial operations — do them inline:**
-- Slug generation: `"My Title Here"` → `my-title-here` (lowercase, spaces to hyphens)
-- Author check: Use `Glob` tool with `content/authors/*{lastname}*.md`
-- Frontmatter templates: Write YAML directly
-- Tag lookup: Use `Grep` tool or rely on knowledge from prior notes
+**Do NOT use scripts for trivial operations** — do them inline:
+- Author check: `Glob` with `content/authors/*{lastname}*.md`
+- Frontmatter: Write YAML directly
+- Tag lookup: `Grep` or knowledge from prior notes
 
 ---
 
@@ -97,56 +96,15 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 
 ### Phase 3: Author Creation
 
-For external content types, authors are **required**. Check existence with Glob (no script needed):
+For external content, check if author exists:
 
 ```text
 Glob: content/authors/*{lastname}*.md
 ```
 
-**Handle by result:**
-
-| Result | Action |
-|--------|--------|
-| Exact match found | Use the existing author's slug |
-| Partial match | Read matched files, use `AskUserQuestion` to verify |
-| No matches | Create new author (see below) |
-
-**For partial matches**, use the `AskUserQuestion` tool:
-
-```yaml
-question: "Is [Author Name] the same person as this existing author?"
-header: "Author Match"
-multiSelect: false
-options:
-  - label: "Yes, use existing"
-    description: "Use the existing author profile"
-  - label: "No, create new"
-    description: "Create a new author profile"
-```
-
-**Quick creation flow:**
-1. WebSearch: `[Author Name] official site bio`
-2. Extract: bio, avatar, website, socials
-3. Write author file directly (no script):
-
-```yaml
----
-name: "Author Name"
-slug: "author-name"
-bio: "1-2 sentence description"
-avatar: ""
-website: ""
-socials:
-  twitter: ""
-  github: ""
-  linkedin: ""
-  youtube: ""
----
-```
-
-4. Save to `content/authors/{slug}.md` (slug = lowercase name, spaces to hyphens)
-
-**Tip:** Add `aliases` field to authors who go by multiple names (e.g., "DHH" → aliases: ["David Heinemeier Hansson"]).
+- **Match found:** Use existing slug
+- **Partial match:** Use AskUserQuestion to confirm identity
+- **No match:** Create new author per `references/author-creation.md`
 
 ### Phase 4: Content Generation
 
@@ -162,58 +120,21 @@ socials:
 
 ### Phase 4.25: Diagram Evaluation (REQUIRED)
 
-**Every note must have an explicit diagram decision logged.**
-
-1. **Load the diagram guide**: `Read references/diagrams-guide.md`
-2. **Apply the decision tree** from the guide based on content type priority
-3. **Evaluate the content** for diagram candidates:
-   - Does the content present a named framework with spatial structure?
-   - Is there a process flow or step sequence?
-   - Are there system relationships or feedback loops?
-   - Is there a timeline or progression?
-
-4. **Log the outcome** (REQUIRED - one of these must appear):
-
-**If adding a diagram:**
-```text
-✓ Diagram added: [mermaid-type] - [description]
-  Example: "✓ Diagram added: graph LR - Habit Loop cycle"
-```
-
-**If no diagram needed:**
-```text
-✓ No diagram needed: [specific reason]
-  Examples:
-  - "✓ No diagram needed: Content is list-based, no spatial structure"
-  - "✓ No diagram needed: Quote type - minimal content"
-  - "✓ No diagram needed: Discussion thread without visual concepts"
-```
+1. Load `references/diagrams-guide.md`
+2. Apply the decision tree based on content type priority
+3. Log outcome (REQUIRED):
+   - Adding: `✓ Diagram added: [mermaid-type] - [description]`
+   - Skipping: `✓ No diagram needed: [specific reason]`
 
 ### Phase 4.5: Connection Discovery
 
-Before finalizing content, search for genuinely related notes. **Only add connections that organically make sense.**
+Load `references/linking-philosophy.md` and follow the discovery checklist:
 
-1. **Same author check** (highest priority): If author exists, find their other works:
-   ```text
-   Grep pattern: "authors:.*{author-slug}" glob: "content/*.md"
-   ```
+1. **Same-author check** (highest priority): `Grep pattern: "authors:.*{author-slug}" glob: "content/*.md"`
+2. **Tag-based discovery**: `Grep pattern: "tags:.*{tag}" glob: "content/*.md" limit: 5`
+3. **Evaluate**: "Would I naturally reference this when discussing the topic?"
 
-2. **Tag-based discovery:** For each tag, find notes with that tag:
-   ```text
-   Grep pattern: "tags:.*{tag}" glob: "content/*.md" limit: 5
-   ```
-
-3. **Evaluate candidates:** For each potential connection, ask: "Would I naturally reference this when discussing the topic?" If the answer is no, don't force the link.
-
-**Connection quality over quantity:**
-- Add links only when the relationship is genuine and useful
-- If no notes genuinely relate, save as an orphan—that's fine
-- Forced connections create noise and reduce trust in the link graph
-- A well-explained single link beats two tenuous ones
-
-**When adding links**, explain the relationship:
-- `[[note]] - Same author explores this from a different angle`
-- `[[note]] - Provides the theoretical foundation for these ideas`
+Only add genuine connections with explanatory context. Orphans are acceptable.
 
 ### Phase 5: Quality Validation
 
@@ -229,22 +150,8 @@ Spawn parallel validators:
 
 **Wiki-link note:** Readwise highlights (`content/readwise/`) are excluded from Nuxt Content and won't resolve as valid wiki-links. Use plain text or italics for books/articles that only exist in Readwise.
 
-**IF issues found:** Use the `AskUserQuestion` tool:
-
-```yaml
-question: "Validation found issues. How should I proceed?"
-header: "Validation"
-multiSelect: false
-options:
-  - label: "Fix issues"
-    description: "Let me fix the issues before saving"
-  - label: "Save anyway"
-    description: "Proceed despite validation warnings"
-  - label: "Cancel"
-    description: "Don't save the note"
-```
-
-**IF no issues:** Log "✓ Validation passed" and proceed.
+**If issues found:** Use AskUserQuestion to offer: Fix issues / Save anyway / Cancel.
+**If no issues:** Log "✓ Validation passed" and proceed.
 
 ### Phase 6: Save Note
 
@@ -273,37 +180,9 @@ Save to `content/{slug}.md`. Confirm with link density status:
 
 ### Phase 7: MOC Placement (Non-blocking)
 
-#### 7.1 Suggest Existing MOC Placement
-
-```bash
-python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=for-note --note={slug}
-```
-
-If suggestions score >= 0.7, present to user. Apply selections to MOC's `## Suggested` section.
-
-#### 7.2 Check MOC Creation Threshold
-
-After saving, check if any of the note's tags exceed the threshold:
-
-```bash
-# For each tag on the new note, count notes with that tag
-Grep pattern: "tags:.*{tag}" glob: "content/*.md" output_mode: "count"
-```
-
-**IF tag count >= 15 AND no existing MOC for that tag:**
-
-```yaml
-question: "The tag '{tag}' now has {count} notes. Would you like to create a MOC?"
-header: "MOC Opportunity"
-multiSelect: false
-options:
-  - label: "Create MOC"
-    description: "Generate a '{tag}' guide/roadmap to organize these notes"
-  - label: "Skip for now"
-    description: "Don't create a MOC yet"
-```
-
-If "Create MOC" selected: Invoke moc-curator skill with `--mode=new-clusters --tag={tag}`.
+See `references/moc-placement.md` for detailed workflow:
+1. Suggest existing MOC placement via cluster script
+2. Check if any tag exceeds 15-note threshold for new MOC creation
 
 ### Phase 8: Quality Check
 
@@ -336,7 +215,9 @@ If errors are found, fix them before completing the task.
 |------|---------|
 | `references/author-creation.md` | Author profile workflow |
 | `references/diagrams-guide.md` | When/how to add mermaid diagrams |
+| `references/linking-philosophy.md` | Connection quality standards |
+| `references/moc-placement.md` | MOC suggestion and creation |
 | `references/code-extraction.md` | Technical content code snippets |
-| `references/podcast-profile-creation.md` | Creating podcast show profiles |
-| `references/newsletter-profile-creation.md` | Creating newsletter publication profiles |
-| `references/content-types/*.md` | Type-specific templates and handling |
+| `references/podcast-profile-creation.md` | Podcast show profiles |
+| `references/newsletter-profile-creation.md` | Newsletter publication profiles |
+| `references/content-types/*.md` | Type-specific templates |

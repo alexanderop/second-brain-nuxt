@@ -14,7 +14,7 @@ authors:
 summary: "A practitioner's guide to building applications on foundation models, covering prompt engineering, RAG, finetuning, agents, and evaluation."
 readingStatus: finished
 finishedReading: 2025-01-01
-rating: 7
+rating: 10
 date: 2026-01-04
 ---
 

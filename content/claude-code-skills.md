@@ -10,7 +10,7 @@ tags:
 authors:
   - anthropic
 summary: "Official documentation on Skills—markdown files that extend Claude Code with specialized knowledge and workflows, triggered automatically based on semantic matching."
-date: 2026-01-03
+date: 2026-01-11
 ---
 
 Skills are markdown files that teach Claude how to do something specific. Unlike slash commands requiring explicit invocation, Skills activate automatically when Claude determines a request matches the Skill's description.
@@ -87,6 +87,18 @@ Scripts in the `scripts/` directory execute with zero context cost—their code 
 
 Use Skills for guidance that should apply automatically. Use subagents when isolation matters.
 
-## Related
+## New in 2.1 (January 2026)
 
-See also [[understanding-claude-code-full-stack-mcp-skills-subagents-hooks]] for a broader view of Claude Code's extensibility layers.
+Claude Code 2.1 brought major skill improvements:
+
+- **Hot-reload**: Skills created or modified in `~/.claude/skills` or `.claude/skills` are immediately available without restarting the session
+- **Forked context**: Run skills in isolated sub-agent context using `context: fork` in frontmatter
+- **Agent specification**: New `agent` field to specify agent type for execution
+- **YAML-style allowed-tools**: Cleaner declarations using list syntax in frontmatter
+- **Progress display**: Skills show tool uses as they happen during execution
+- **Scoped hooks**: Hooks for `PreToolUse`, `PostToolUse`, and `Stop` events, enabling fine-grained state management and audit logging
+
+## Connections
+
+- [[understanding-claude-code-full-stack-mcp-skills-subagents-hooks]] - Broader view of Claude Code's extensibility layers including skills, subagents, and hooks
+- [[claude-code-2-1-new-update-is-huge]] - Coverage of the 2.1 release that introduced these skill improvements
