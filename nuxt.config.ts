@@ -144,9 +144,72 @@ export default defineNuxtConfig({
           purpose: 'maskable',
         },
       ],
+      shortcuts: [
+        {
+          name: 'Search',
+          url: '/search',
+          icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }],
+        },
+        {
+          name: 'Books',
+          url: '/books',
+          icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }],
+        },
+        {
+          name: 'Podcasts',
+          url: '/podcasts',
+          icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }],
+        },
+      ],
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+      // Only precache app shell (JS/CSS/fonts), not all HTML pages
+      globPatterns: ['**/*.{js,css,woff2}'],
+      globIgnores: ['**/_payload.json'],
+
+      // Offline fallback page
+      navigateFallback: '/offline',
+      navigateFallbackDenylist: [/^\/api\//],
+
+      // Runtime caching strategies
+      runtimeCaching: [
+        {
+          // HTML pages: fresh when online, cached fallback offline
+          urlPattern: ({ request }: { request: Request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+          },
+        },
+        {
+          // API routes: instant from cache, refresh in background
+          urlPattern: /^\/api\//,
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'api',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24, // 1 day
+            },
+          },
+        },
+        {
+          // Images: cache first for speed
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images',
+            expiration: {
+              maxEntries: 200,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+          },
+        },
+      ],
     },
     client: {
       installPrompt: true,
