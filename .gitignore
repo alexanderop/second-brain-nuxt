@@ -44,8 +44,9 @@ content/Readwise/
 .obsidian/
 content/.obsidian/
 
-# Generated Excalidraw SVGs
+# Generated assets (build-time)
 public/excalidraw/
+public/og/
 
 # Ralph working files (generated during runs)
 scripts/ralph/prd.json

@@ -13,7 +13,8 @@
   "scripts": {
     "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
     "build:excalidraw": "npx tsx scripts/build-excalidraw.ts",
-    "build": "pnpm build:excalidraw && nuxt build",
+    "build:og": "npx tsx scripts/build-og-images.ts",
+    "build": "pnpm build:excalidraw && pnpm build:og && nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
@@ -92,6 +93,7 @@
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
     "happy-dom": "^20.0.11",
     "husky": "^9.1.7",
+    "lucide-static": "^0.562.0",
     "markdownlint-cli2": "^0.20.0",
     "nitropack": "^2.12.9",
     "oxlint": "^1.0.0",

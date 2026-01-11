@@ -166,12 +166,12 @@ useSeoMeta({
   description: () => page.value?.summary ?? '',
   ogTitle: () => page.value?.title ?? 'Second Brain',
   ogDescription: () => page.value?.summary ?? '',
-  ogImage: () => `${requestUrl.origin}/api/og/${slug.value}`,
+  ogImage: () => `${requestUrl.origin}/og/${slug.value}.png`,
   ogType: 'article',
   twitterCard: 'summary_large_image',
   twitterTitle: () => page.value?.title ?? 'Second Brain',
   twitterDescription: () => page.value?.summary ?? '',
-  twitterImage: () => `${requestUrl.origin}/api/og/${slug.value}`,
+  twitterImage: () => `${requestUrl.origin}/og/${slug.value}.png`,
 })
 
 defineShortcuts({
