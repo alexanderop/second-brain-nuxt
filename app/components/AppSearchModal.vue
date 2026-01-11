@@ -158,7 +158,7 @@ function onSelect(item: CommandPaletteItem) {
 </script>
 
 <template>
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" title="Search" description="Search notes, authors, newsletters, and podcasts">
     <template #content>
       <UCommandPalette
         :groups="groups"
@@ -201,7 +201,7 @@ function onSelect(item: CommandPaletteItem) {
 
         <template #empty>
           <div class="flex flex-col items-center justify-center py-6 text-[var(--ui-text-muted)]">
-            <span class="i-lucide-search-x size-8 mb-2" />
+            <span class="i-lucide-search-x size-8 mb-2" aria-hidden="true" />
             <p>No results found</p>
           </div>
         </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection, defineShortcuts } from '#imports'
+import { useRoute, useRouter, useAsyncData, useSeoMeta, createError, queryCollection, defineShortcuts, useRequestURL } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { ContentRenderer, UContentToc } from '#components'
 import ContentHeader from '~/components/ContentHeader.vue'
@@ -44,6 +44,7 @@ function hasPageNewsletterFields(p: unknown): p is PageWithNewsletter {
 
 const route = useRoute()
 const router = useRouter()
+const requestUrl = useRequestURL()
 const { isFocusMode } = useFocusMode()
 const { isTocVisible, toggle: toggleToc } = useTocVisibility()
 const authorPickerOpen = ref(false)
@@ -163,6 +164,14 @@ usePageTitle(() => page.value?.title ?? '')
 
 useSeoMeta({
   description: () => page.value?.summary ?? '',
+  ogTitle: () => page.value?.title ?? 'Second Brain',
+  ogDescription: () => page.value?.summary ?? '',
+  ogImage: () => `${requestUrl.origin}/api/og/${slug.value}`,
+  ogType: 'article',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => page.value?.title ?? 'Second Brain',
+  twitterDescription: () => page.value?.summary ?? '',
+  twitterImage: () => `${requestUrl.origin}/api/og/${slug.value}`,
 })
 
 defineShortcuts({

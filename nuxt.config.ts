@@ -2,7 +2,8 @@ import { siteConfig } from './site.config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks', '@vite-pwa/nuxt'],
+  modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks', '@vite-pwa/nuxt', '@nuxt/a11y'],
+
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
@@ -98,6 +99,9 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
       title: siteConfig.name,
       meta: [
         { name: 'description', content: siteConfig.description },

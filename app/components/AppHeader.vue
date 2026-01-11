@@ -19,7 +19,7 @@ const mobileMenuOpen = ref(false)
         <NuxtLink to="/" class="text-xl font-semibold">
           {{ siteName }}
         </NuxtLink>
-        <nav class="hidden md:flex items-center gap-1">
+        <nav aria-label="Main" class="hidden md:flex items-center gap-1">
           <UButton
             v-for="link in links"
             :key="link.to"
@@ -72,7 +72,7 @@ const mobileMenuOpen = ref(false)
 
         <USlideover v-model:open="mobileMenuOpen" side="right" title="Navigation">
           <template #body>
-            <nav class="flex flex-col gap-1">
+            <nav aria-label="Mobile" class="flex flex-col gap-1">
               <UButton
                 v-for="link in links"
                 :key="link.to"

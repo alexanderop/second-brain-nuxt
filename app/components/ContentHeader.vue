@@ -171,6 +171,7 @@ function formatDate(date?: Date | string) {
           color="neutral"
           size="sm"
           :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+          aria-label="Copy options"
         />
       </UDropdownMenu>
       <UButton
