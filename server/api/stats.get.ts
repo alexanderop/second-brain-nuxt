@@ -116,14 +116,22 @@ function aggregateByMonth(items: ContentItem[]): MonthCount[] {
   const counts = new Map<string, number>()
   for (const item of items) {
     if (item.date) {
-      // Extract YYYY-MM from date string
       const month = item.date.substring(0, 7)
       counts.set(month, (counts.get(month) || 0) + 1)
     }
   }
-  return Array.from(counts.entries())
+
+  // Sort by month chronologically
+  const sorted = Array.from(counts.entries())
     .map(([month, count]) => ({ month, count }))
     .sort((a, b) => a.month.localeCompare(b.month))
+
+  // Convert to cumulative counts for growth chart
+  let cumulative = 0
+  return sorted.map(({ month, count }) => {
+    cumulative += count
+    return { month, count: cumulative }
+  })
 }
 
 function countThisWeek(items: ContentItem[]): number {
