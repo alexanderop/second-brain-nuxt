@@ -56,6 +56,8 @@ interface StatsData {
   byTag: Array<{ tag: string, count: number }>
   byAuthor: Array<{ author: string, count: number }>
   byMonth: Array<{ month: string, count: number }>
+  byDay: Array<{ date: string, count: number }>
+  startDate: string | null
   quality: {
     withSummary: number
     withNotes: number
@@ -74,6 +76,25 @@ interface StatsData {
 
 const { data: stats, status } = await useFetch<StatsData>('/api/stats')
 
+// Growth chart filters
+type TimeRange = '7d' | '30d' | '1y' | 'all'
+type ChartMode = 'cumulative' | 'daily'
+
+const timeRange = ref<TimeRange>('all')
+const chartMode = ref<ChartMode>('cumulative')
+
+const timeRangeOptions = [
+  { value: '7d' as const, label: '7D' },
+  { value: '30d' as const, label: '30D' },
+  { value: '1y' as const, label: '1Y' },
+  { value: 'all' as const, label: 'All' },
+]
+
+const chartModeOptions = [
+  { value: 'cumulative' as const, label: 'Cumulative' },
+  { value: 'daily' as const, label: 'Daily' },
+]
+
 const typeChartData = computed(() => {
   return (stats.value?.byType ?? []).map(item => ({
     label: item.type,
@@ -88,11 +109,59 @@ const tagChartData = computed(() => {
   }))
 })
 
-const growthChartData = computed(() => {
-  return (stats.value?.byMonth ?? []).map(item => ({
+function getCutoffDate(range: TimeRange, startDate: string | null): Date {
+  const now = new Date()
+  const dayMs = 24 * 60 * 60 * 1000
+
+  if (range === '7d') return new Date(now.getTime() - 7 * dayMs)
+  if (range === '30d') return new Date(now.getTime() - 30 * dayMs)
+  if (range === '1y') return new Date(now.getTime() - 365 * dayMs)
+  return startDate ? new Date(startDate) : new Date(0)
+}
+
+function getDailyChartData(byDay: StatsData['byDay'], cutoffStr: string) {
+  return byDay.filter(d => d.date >= cutoffStr).map(item => ({
+    label: item.date,
+    value: item.count,
+  }))
+}
+
+function getCumulativeDailyData(byDay: StatsData['byDay'], cutoffStr: string) {
+  const priorCount = byDay.filter(d => d.date < cutoffStr).reduce((sum, d) => sum + d.count, 0)
+  let cumulative = priorCount
+
+  return byDay.filter(d => d.date >= cutoffStr).map(item => {
+    cumulative += item.count
+    return { label: item.date, value: cumulative }
+  })
+}
+
+function getCumulativeMonthlyData(byMonth: StatsData['byMonth'], cutoffStr: string) {
+  const cutoffMonth = cutoffStr.substring(0, 7)
+  return byMonth.filter(m => m.month >= cutoffMonth).map(item => ({
     label: item.month,
     value: item.count,
   }))
+}
+
+const growthChartData = computed(() => {
+  if (!stats.value) return []
+
+  const cutoffDate = getCutoffDate(timeRange.value, stats.value.startDate)
+  const cutoffStr = cutoffDate.toISOString().substring(0, 10)
+  const byDay = stats.value.byDay ?? []
+  const byMonth = stats.value.byMonth ?? []
+
+  if (chartMode.value === 'daily') {
+    return getDailyChartData(byDay, cutoffStr)
+  }
+
+  const useDaily = timeRange.value === '7d' || timeRange.value === '30d'
+  if (useDaily) {
+    return getCumulativeDailyData(byDay, cutoffStr)
+  }
+
+  return getCumulativeMonthlyData(byMonth, cutoffStr)
 })
 
 const qualityMetrics = computed(() => {
@@ -224,11 +293,47 @@ usePageTitle('Stats')
       </div>
 
       <!-- Growth Over Time -->
-      <div v-if="growthChartData.length > 1" class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
-        <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] mb-4 uppercase tracking-wider">
-          Growth Over Time
-        </h2>
-        <StatsLineChart :data="growthChartData" :height="180" />
+      <div v-if="stats?.byDay?.length" class="stats-card p-5 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg)]">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xs font-semibold text-[var(--ui-text-muted)] uppercase tracking-wider">
+            Growth Over Time
+          </h2>
+          <div class="flex items-center gap-3">
+            <!-- Chart Mode Toggle -->
+            <div class="flex rounded-lg border border-[var(--ui-border)] overflow-hidden">
+              <button
+                v-for="option in chartModeOptions"
+                :key="option.value"
+                class="px-3 py-1 text-xs font-medium transition-colors"
+                :class="chartMode === option.value
+                  ? 'bg-[var(--ui-bg-elevated)] text-[var(--ui-text)]'
+                  : 'text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:bg-[var(--ui-bg-muted)]'"
+                @click="chartMode = option.value"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+            <!-- Time Range Tabs -->
+            <div class="flex rounded-lg border border-[var(--ui-border)] overflow-hidden">
+              <button
+                v-for="option in timeRangeOptions"
+                :key="option.value"
+                class="px-3 py-1 text-xs font-medium transition-colors"
+                :class="timeRange === option.value
+                  ? 'bg-[var(--ui-bg-elevated)] text-[var(--ui-text)]'
+                  : 'text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:bg-[var(--ui-bg-muted)]'"
+                @click="timeRange = option.value"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <StatsLineChart v-if="growthChartData.length > 1" :data="growthChartData" :height="180" />
+        <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
+          <UIcon name="i-heroicons-chart-bar" class="size-8 mb-2 opacity-50" />
+          <p class="text-sm">No data for selected period</p>
+        </div>
       </div>
 
       <!-- Bottom Row: Hubs, Orphans & Quality -->

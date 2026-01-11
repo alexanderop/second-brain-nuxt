@@ -144,15 +144,28 @@ function drawChart() {
 }
 
 function formatLabel(label: string): string {
-  // Convert "2024-01" to "Jan 24"
-  const parts = label.split('-')
-  if (parts.length < 2) return label
-  const year = parts[0] ?? ''
-  const month = parts[1] ?? ''
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  const monthIndex = Number.parseInt(month) - 1
-  const monthName = monthNames[monthIndex] ?? month
-  return `${monthName} ${year.slice(2)}`
+  const parts = label.split('-')
+
+  if (parts.length === 3) {
+    // Daily format: "2024-01-15" -> "Jan 15"
+    const month = parts[1] ?? ''
+    const day = parts[2] ?? ''
+    const monthIndex = Number.parseInt(month) - 1
+    const monthName = monthNames[monthIndex] ?? month
+    return `${monthName} ${Number.parseInt(day)}`
+  }
+
+  if (parts.length === 2) {
+    // Monthly format: "2024-01" -> "Jan 24"
+    const year = parts[0] ?? ''
+    const month = parts[1] ?? ''
+    const monthIndex = Number.parseInt(month) - 1
+    const monthName = monthNames[monthIndex] ?? month
+    return `${monthName} ${year.slice(2)}`
+  }
+
+  return label
 }
 
 onMounted(() => drawChart())

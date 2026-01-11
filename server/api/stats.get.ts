@@ -43,6 +43,11 @@ interface MonthCount {
   count: number
 }
 
+interface DailyCount {
+  date: string
+  count: number
+}
+
 interface HubNode {
   id: string
   title: string
@@ -62,6 +67,8 @@ interface StatsData {
   byTag: TagCount[]
   byAuthor: AuthorCount[]
   byMonth: MonthCount[]
+  byDay: DailyCount[]
+  startDate: string | null
   quality: {
     withSummary: number
     withNotes: number
@@ -145,6 +152,30 @@ function countThisWeek(items: ContentItem[]): number {
   }).length
 }
 
+function aggregateByDay(items: ContentItem[]): DailyCount[] {
+  const counts = new Map<string, number>()
+  for (const item of items) {
+    if (item.date) {
+      const date = item.date.substring(0, 10)
+      counts.set(date, (counts.get(date) || 0) + 1)
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([date, count]) => ({ date, count }))
+    .sort((a, b) => a.date.localeCompare(b.date))
+}
+
+function getStartDate(items: ContentItem[]): string | null {
+  let earliest: string | null = null
+  for (const item of items) {
+    if (item.date && (!earliest || item.date < earliest)) {
+      earliest = item.date
+    }
+  }
+  return earliest
+}
+
 async function fetchGraphData(_event: H3Event): Promise<GraphData> {
   // Fetch from internal API endpoint using relative path
   try {
@@ -198,6 +229,8 @@ export default defineCachedEventHandler(async (event): Promise<StatsData> => {
     byTag: aggregateByTag(allContent),
     byAuthor: aggregateByAuthor(allContent),
     byMonth: aggregateByMonth(allContent),
+    byDay: aggregateByDay(allContent),
+    startDate: getStartDate(allContent),
     quality: {
       withSummary: allContent.filter(c => c.summary).length,
       withNotes: allContent.filter(c => c.notes).length,
