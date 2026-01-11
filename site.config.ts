@@ -7,6 +7,12 @@
 
 export const siteConfig = {
   /**
+   * Production URL for the site (used for OG images, canonical URLs)
+   * Set via NUXT_PUBLIC_SITE_URL environment variable on Vercel
+   */
+  url: 'https://second-brain-nuxt.vercel.app',
+
+  /**
    * Site name displayed in header, page titles, and PWA manifest
    */
   name: 'Second Brain',
