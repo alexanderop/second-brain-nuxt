@@ -150,3 +150,22 @@ describe('buildGraphFromContent', () => {
 - Handler becomes a thin wrapper that only fetches data
 - Tests don't break when Nuxt Content internals change
 - For component tests that need API responses, use `registerEndpoint` from `@nuxt/test-utils/runtime` to mock at HTTP level
+
+## Wiki-links to Data Collections Require Path Prefix
+
+The wiki-link transformer (`[[slug]]` → `/slug`) doesn't resolve collection paths automatically. For collections with `type: 'data'` that have dedicated page routes, you must include the path prefix:
+
+```markdown
+<!-- ✗ Broken: resolves to /geoffrey-huntley (404) -->
+[[geoffrey-huntley|Geoffrey Huntley]]
+
+<!-- ✓ Works: resolves to /authors/geoffrey-huntley -->
+[[authors/geoffrey-huntley|Geoffrey Huntley]]
+```
+
+**Affected collections:**
+- `authors` → use `[[authors/slug|Name]]`
+- `podcasts` → use `[[podcasts/slug|Name]]`
+- `newsletters` → use `[[newsletters/slug|Name]]`
+
+**Why this happens:** These collections use `type: 'data'` in `content.config.ts`, meaning they're data records, not routable pages. Their routes come from explicit page components (`app/pages/authors/[name].vue`), not auto-generated content routes.
