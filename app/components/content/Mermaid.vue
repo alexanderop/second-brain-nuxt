@@ -2,7 +2,7 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useColorMode } from '#imports'
 import type { Mermaid } from 'mermaid'
-import { tryCatchAsync } from '../../../shared/utils/tryCatch'
+import { tryCatchAsync } from '#shared/utils/tryCatch'
 
 const colorMode = useColorMode()
 const mermaidContainer = ref<HTMLDivElement | null>(null)

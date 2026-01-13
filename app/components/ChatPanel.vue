@@ -4,7 +4,7 @@ import { USlideover, UButton, UTextarea, UIcon } from '#components'
 import { useChatHistory, type ChatMessage, type ToolCall } from '~/composables/useChatHistory'
 import ChatMessageComponent from '~/components/ChatMessage.vue'
 import ToolCallItem from '~/components/ToolCallItem.vue'
-import { tryCatch, tryAsync, tryCatchAsync } from '../../shared/utils/tryCatch'
+import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch'
 
 type ChatStatus = 'ready' | 'streaming' | 'error'
 

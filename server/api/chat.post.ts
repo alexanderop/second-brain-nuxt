@@ -3,7 +3,7 @@ import { queryCollection } from '@nuxt/content/server'
 import { useRuntimeConfig } from '#imports'
 import { consola } from 'consola'
 import Anthropic from '@anthropic-ai/sdk'
-import { tryCatch, tryAsync, tryCatchAsync } from '../../shared/utils/tryCatch'
+import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch'
 import {
   MODEL,
   MAX_TOKENS,

@@ -1,7 +1,7 @@
 import { defineEventHandler, getRouterParam } from 'h3'
 import { queryCollection } from '@nuxt/content/server'
 import { extractLinksFromBody } from '../../utils/minimark'
-import { tryCatchAsync } from '../../../shared/utils/tryCatch'
+import { tryCatchAsync } from '#shared/utils/tryCatch'
 
 interface NoteGraphNode {
   id: string

@@ -1,7 +1,7 @@
 import { defineEventHandler, getQuery } from 'h3'
 import { queryCollection, queryCollectionSearchSections } from '@nuxt/content/server'
 import { findUnlinkedMentions, type MentionItem } from '../utils/mentions'
-import { tryCatchAsync } from '../../shared/utils/tryCatch'
+import { tryCatchAsync } from '#shared/utils/tryCatch'
 
 export default defineEventHandler(async (event): Promise<MentionItem[]> => {
   const query = getQuery(event)
