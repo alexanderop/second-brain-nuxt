@@ -44,6 +44,10 @@ content/Readwise/
 .obsidian/
 content/.obsidian/
 
+# Private notes (daily journal, personal content)
+content/private/*
+!content/private/.gitkeep
+
 # Generated assets (build-time)
 public/excalidraw/
 public/og/
