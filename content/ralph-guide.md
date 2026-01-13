@@ -10,7 +10,7 @@ summary: "The Ralph Wiggum technique: a bash loop that runs AI agents autonomous
 date: 2026-01-11
 ---
 
-Ralph ships code while you sleep. Created by [[authors/geoffrey-huntley|Geoffrey Huntley]], this technique runs AI coding agents in a loop—each iteration gets fresh context, implements one task, commits, and repeats. Results: $50K contracts completed for $297 in API costs, 6 repos shipped overnight, entire programming languages built autonomously.
+Ralphs ships code while you sleep. Created by [[authors/geoffrey-huntley|Geoffrey Huntley]], this technique runs AI coding agents in a loop—each iteration gets fresh context, implements one task, commits, and repeats. Results: $50K contracts completed for $297 in API costs, 6 repos shipped overnight, entire programming languages built autonomously.
 
 ## The Core Insight
 
