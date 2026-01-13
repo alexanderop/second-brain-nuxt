@@ -202,5 +202,42 @@ describe('server/utils/backlinks', () => {
         type: 'book',
       })
     })
+
+    it('handles items with empty slug gracefully', () => {
+      // Item with empty path returns empty slug
+      const content: ContentItem[] = [
+        {
+          path: '',
+          body: { type: 'minimark', value: [['p', {}, ['a', { href: '/target' }, 'link']]] },
+        },
+        { path: '/target', title: 'Target', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+
+      // Should process without crashing, empty slug item links to target
+      const result = buildBacklinksIndex(content)
+      expect(result['target']).toBeDefined()
+      expect(result['target'][0].slug).toBe('')
+    })
+
+    it('deduplicates links from same source to same target', () => {
+      const content: ContentItem[] = [
+        {
+          path: '/note-a',
+          title: 'Note A',
+          body: {
+            type: 'minimark',
+            value: [
+              ['p', {}, ['a', { href: '/target' }, 'link1'], ['a', { href: '/target' }, 'link2']],
+            ],
+          },
+        },
+        { path: '/target', title: 'Target', body: { type: 'minimark', value: [] } },
+      ]
+
+      const result = buildBacklinksIndex(content)
+
+      // Should only have one backlink entry despite two links
+      expect(result['target']).toHaveLength(1)
+    })
   })
 })

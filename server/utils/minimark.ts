@@ -8,8 +8,9 @@ function isInternalLink(href: unknown): href is string {
 
 // Helper: Extract slug from internal href
 function extractSlugFromHref(href: string): string | null {
-  const slugParts = href.slice(1).split('#')[0]?.split('?')[0]
-  return slugParts || null
+  // Split on # or ? in one pass - first element is always the slug portion
+  const slug = href.slice(1).split(/[#?]/)[0]
+  return slug || null
 }
 
 // Helper: Extract link from anchor node if valid

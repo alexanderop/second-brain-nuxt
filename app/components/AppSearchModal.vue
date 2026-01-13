@@ -32,6 +32,21 @@ const { data: podcasts } = await useAsyncData(
   () => queryCollection('podcasts').select('name', 'slug', 'artwork').all(),
 )
 
+// Fetch content metadata for enriching search (tags, type, authors)
+const { data: contentMetadata } = await useAsyncData(
+  'search-modal-metadata',
+  () => queryCollection('content').select('stem', 'tags', 'type', 'authors').all(),
+)
+
+// Build metadata lookup map
+const metadataMap = computed(() => {
+  if (!contentMetadata.value) return new Map<string, { tags: string[], type: string, authors: string[] }>()
+  return new Map(contentMetadata.value.map(c => [
+    `/${c.stem}`,
+    { tags: c.tags ?? [], type: c.type, authors: c.authors ?? [] },
+  ]))
+})
+
 // Close modal when route changes
 watch(() => route.fullPath, () => {
   open.value = false
@@ -53,10 +68,17 @@ const contentItems = computed<CommandPaletteItem[]>(() => {
     const breadcrumb = [...(section.titles || []), section.title].filter(Boolean).join(' › ')
     const snippet = section.content?.slice(0, 100) || ''
 
+    // Get metadata for searchable keywords
+    const meta = metadataMap.value.get(path)
+    const keywords = meta
+      ? [...meta.tags, meta.type, ...meta.authors].filter(Boolean).join(' ')
+      : ''
+
     items.push({
       id: section.id,
       label: breadcrumb,
       description: snippet,
+      keywords,
       icon: 'i-lucide-file-text',
       to: path,
     })
@@ -143,7 +165,11 @@ const groups = computed<CommandPaletteGroup[]>(() => {
 // Fuse.js configuration
 const fuseOptions = {
   fuseOptions: {
-    keys: ['label', 'description'],
+    keys: [
+      { name: 'label', weight: 1 },
+      { name: 'description', weight: 0.7 },
+      { name: 'keywords', weight: 0.9 }, // tags, type, authors
+    ],
     threshold: 0.3,
     ignoreLocation: true,
   },

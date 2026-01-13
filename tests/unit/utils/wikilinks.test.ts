@@ -132,6 +132,18 @@ describe('transformWikiLink', () => {
   it('normalizes heading in URL but preserves in display', () => {
     expect(transformWikiLink('atomic-habits', 'Key Insights')).toBe('[atomic-habits#Key Insights](/atomic-habits#key-insights){.wiki-link}')
   })
+
+  it('trims whitespace from slug in display text when no custom display', () => {
+    expect(transformWikiLink('  slug  ')).toBe('[slug](/slug){.wiki-link}')
+  })
+
+  it('trims whitespace from slug and heading in display', () => {
+    expect(transformWikiLink('  slug  ', '  heading  ')).toBe('[slug#heading](/slug#heading){.wiki-link}')
+  })
+
+  it('handles whitespace-only display text by falling back to slug', () => {
+    expect(transformWikiLink('slug', undefined, '   ')).toBe('[slug](/slug){.wiki-link}')
+  })
 })
 
 describe('transformWikiLinks', () => {

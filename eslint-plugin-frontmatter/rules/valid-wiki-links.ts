@@ -41,12 +41,20 @@ const rule: Rule.RuleModule = {
     function checkWikiLinks(text: string, node: MdastNode): void {
       let match
       while ((match = WIKI_LINK_REGEX.exec(text)) !== null) {
-        const slug = match[1].trim()
-        if (reportedSlugs.has(slug)) continue
+        const rawSlug = match[1].trim()
+        // Strip anchor (e.g., "atomic-habits#Key Insights" -> "atomic-habits")
+        const slug = rawSlug.split('#')[0]
+        if (reportedSlugs.has(rawSlug)) continue
+
+        // Check notes first
         if (cache.notes.has(slug)) continue
 
-        reportedSlugs.add(slug)
-        reportBrokenLink(node, slug)
+        // Check authors (handles both "andy-matuschak" and "authors/andy-matuschak")
+        const authorSlug = slug.startsWith('authors/') ? slug.slice(8) : slug
+        if (cache.authors.has(authorSlug)) continue
+
+        reportedSlugs.add(rawSlug)
+        reportBrokenLink(node, rawSlug)
       }
     }
 

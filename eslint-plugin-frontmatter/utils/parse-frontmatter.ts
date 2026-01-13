@@ -6,6 +6,7 @@ import type { FrontmatterData, YamlNode } from './types.ts'
  * Returns null if parsing fails (invalid YAML)
  */
 export function parseFrontmatter(node: YamlNode): FrontmatterData | null {
+  // eslint-disable-next-line error-handling/no-try-catch -- yaml parse() throws on invalid YAML, no non-throwing alternative
   try {
     const data = parseYaml(node.value)
     if (!data || typeof data !== 'object') {

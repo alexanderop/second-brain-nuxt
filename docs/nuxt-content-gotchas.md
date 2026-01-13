@@ -169,3 +169,27 @@ The wiki-link transformer (`[[slug]]` → `/slug`) doesn't resolve collection pa
 - `newsletters` → use `[[newsletters/slug|Name]]`
 
 **Why this happens:** These collections use `type: 'data'` in `content.config.ts`, meaning they're data records, not routable pages. Their routes come from explicit page components (`app/pages/authors/[name].vue`), not auto-generated content routes.
+
+## Content Hooks and Caching
+
+The `content:file:beforeParse` hook only runs when files are **actually parsed**, not on every request. Nuxt Content v3 aggressively caches parsed content in the `.data` directory.
+
+**Symptom**: Your transformation logic isn't working, even though the hook is correctly registered in `nuxt.config.ts`.
+
+**Diagnosis**: Check the dev server output:
+```text
+[@nuxt/content] ✔ Processed 7 collections and 437 files in 219.83ms (437 cached, 0 parsed)
+```
+
+`0 parsed` means no files went through your `beforeParse` hook—all content was served from cache.
+
+**Solution**: Clear both cache directories to force re-parsing:
+```bash
+rm -rf .nuxt .data && pnpm dev
+```
+
+**Why both directories?**
+- `.nuxt` — Nuxt build cache (most developers know this one)
+- `.data` — Content database cache (SQLite, often overlooked)
+
+**When this bites you**: Any time you modify transformation logic in `nuxt.config.ts` hooks (callouts, wiki-links, etc.), you must clear the cache to test changes.

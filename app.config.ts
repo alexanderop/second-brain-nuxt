@@ -1,5 +1,17 @@
+import { defineAppConfig } from 'nuxt/app'
+
 export default defineAppConfig({
   ui: {
+    // Configure semantic colors for Alert components
+    colors: {
+      primary: 'indigo',
+      secondary: 'slate',
+      success: 'green',
+      info: 'blue',
+      warning: 'amber',
+      error: 'red',
+      neutral: 'zinc',
+    },
     contentToc: {
       slots: {
         // Fixed height instead of dynamic h-(--indicator-size) for single-item highlight

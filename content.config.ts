@@ -48,7 +48,7 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**', 'newsletters/**', 'Readwise/**', 'blog/**', 'Excalidraw/**', 'newsletter-drafts/**', 'blog-ideas/**', '_obsidian-templates/**'] },
+      source: { include: '**/*.md', exclude: ['authors/**', 'pages/**', 'podcasts/**', 'tweets/**', 'newsletters/**', 'Readwise/**', 'blog/**', 'Excalidraw/**', 'newsletter-drafts/**', 'blog-ideas/**', '_obsidian-templates/**', 'private/**'] },
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
       schema: z.object({
         title: z.string(),

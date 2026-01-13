@@ -178,13 +178,11 @@ function getStartDate(items: ContentItem[]): string | null {
 
 async function fetchGraphData(_event: H3Event): Promise<GraphData> {
   // Fetch from internal API endpoint using relative path
-  try {
-    return await $fetch<GraphData>('/api/graph')
-  }
-  catch (error) {
+  const result = await $fetch<GraphData>('/api/graph').catch((error) => {
     console.error('Error fetching graph data:', error)
-    return { nodes: [], edges: [] }
-  }
+    return null
+  })
+  return result ?? { nodes: [], edges: [] }
 }
 
 export default defineCachedEventHandler(async (event): Promise<StatsData> => {

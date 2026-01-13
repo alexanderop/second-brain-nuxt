@@ -29,6 +29,10 @@ interface SearchableItem {
   content?: string
   titles?: string[]
   level?: number
+  // Metadata fields (enriched from content collection)
+  tags?: string[]
+  contentType?: string
+  authorSlugs?: string[]
   // Author fields
   name?: string
   slug?: string
@@ -75,38 +79,58 @@ const { data: allContent } = await useAsyncData('all-content', () => {
   return queryCollection('content').order('date', 'DESC').all()
 })
 
+// Build a lookup map: path → { tags, type, authors }
+const contentMetadata = computed(() => {
+  if (!allContent.value) return new Map<string, { tags: string[], type: string, authors: string[] }>()
+  return new Map(allContent.value.map(c => [
+    `/${c.stem}`,
+    { tags: c.tags ?? [], type: c.type, authors: c.authors ?? [] },
+  ]))
+})
+
+// Fuse.js configuration for full-text search
+const FUSE_OPTIONS = {
+  keys: [
+    { name: 'title', weight: 1 },
+    { name: 'content', weight: 0.7 },
+    { name: 'titles', weight: 0.8 },
+    { name: 'name', weight: 1 }, // Author name
+    { name: 'tags', weight: 0.9 },
+    { name: 'contentType', weight: 0.6 },
+    { name: 'authorSlugs', weight: 0.8 },
+  ],
+  includeMatches: true,
+  threshold: 0.3,
+  ignoreLocation: true,
+  minMatchCharLength: 2,
+}
+
+// Helper to enrich section with metadata
+function enrichSection(
+  section: SearchSection,
+  metadataMap: Map<string, { tags: string[], type: string, authors: string[] }>,
+): SearchableItem {
+  const path = (section.id ?? '').split('#')[0] ?? ''
+  const meta = metadataMap.get(path)
+  return {
+    type: 'content',
+    ...section,
+    tags: meta?.tags,
+    contentType: meta?.type,
+    authorSlugs: meta?.authors,
+  }
+}
+
 // Create Fuse instance for full-text search (content + authors)
 const fuse = computed(() => {
-  const items: SearchableItem[] = []
+  const sections = searchSections.value ?? []
+  const authorList = authors.value ?? []
 
-  // Add content sections
-  if (searchSections.value) {
-    for (const section of searchSections.value) {
-      items.push({ type: 'content', ...section })
-    }
-  }
+  const contentItems = sections.map(s => enrichSection(s, contentMetadata.value))
+  const authorItems: SearchableItem[] = authorList.map(a => ({ type: 'author', ...a }))
+  const items = [...contentItems, ...authorItems]
 
-  // Add authors
-  if (authors.value) {
-    for (const author of authors.value) {
-      items.push({ type: 'author', ...author })
-    }
-  }
-
-  if (items.length === 0) return null
-
-  return new Fuse(items, {
-    keys: [
-      { name: 'title', weight: 1 },
-      { name: 'content', weight: 0.7 },
-      { name: 'titles', weight: 0.8 },
-      { name: 'name', weight: 1 }, // Author name
-    ],
-    includeMatches: true,
-    threshold: 0.3,
-    ignoreLocation: true,
-    minMatchCharLength: 2,
-  })
+  return items.length > 0 ? new Fuse(items, FUSE_OPTIONS) : null
 })
 
 // Extract snippet around match with context

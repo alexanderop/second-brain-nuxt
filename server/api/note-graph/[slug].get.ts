@@ -1,6 +1,7 @@
 import { defineEventHandler, getRouterParam } from 'h3'
 import { queryCollection } from '@nuxt/content/server'
 import { extractLinksFromBody } from '../../utils/minimark'
+import { tryCatchAsync } from '../../../shared/utils/tryCatch'
 
 interface NoteGraphNode {
   id: string
@@ -247,7 +248,7 @@ export default defineEventHandler(async (event): Promise<NoteGraphData | null> =
   const slug = getRouterParam(event, 'slug')
   if (!slug) return null
 
-  try {
+  const [error, result] = await tryCatchAsync(async () => {
     const currentNote = await queryCollection(event, 'content')
       .select('path', 'stem', 'title', 'type', 'body')
       .where('path', '=', `/${slug}`)
@@ -261,9 +262,12 @@ export default defineEventHandler(async (event): Promise<NoteGraphData | null> =
 
     const centerSlug = getSlug(currentNote) || slug
     return buildGraphData(currentNote, centerSlug, allContent)
-  }
-  catch (error) {
+  })
+
+  if (error) {
     console.error('Error building note graph data:', error)
     return null
   }
+
+  return result
 })

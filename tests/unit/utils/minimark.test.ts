@@ -83,6 +83,56 @@ describe('extractLinksFromMinimark', () => {
     const node = ['a', { href: 123 }, 'Number href']
     expect(extractLinksFromMinimark(node)).toEqual([])
   })
+
+  it('handles href with empty string after processing', () => {
+    const node = ['a', { href: '/#' }, 'Hash only']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('returns empty for array with length 0', () => {
+    const node: unknown[] = []
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('returns empty for array with length 1', () => {
+    const node = ['a'] // Only tag, no props
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('extracts from array with exactly length 2', () => {
+    const node = ['a', { href: '/valid' }] // tag + props, no children
+    expect(extractLinksFromMinimark(node)).toEqual(['valid'])
+  })
+
+  it('correctly handles boundary between length 1 and 2', () => {
+    // Length 1 - should return empty (no props to check)
+    const length1 = ['a']
+    expect(extractLinksFromMinimark(length1)).toEqual([])
+
+    // Length 2 - should process (has tag and props)
+    const length2 = ['a', { href: '/valid' }]
+    expect(extractLinksFromMinimark(length2)).toEqual(['valid'])
+  })
+
+  it('ignores non-anchor tags with href-like props', () => {
+    const node = ['div', { href: '/fake' }, 'Not an anchor']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('handles anchor with null props', () => {
+    const node = ['a', null, 'Null props']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('handles anchor with array props (wrong type)', () => {
+    const node = ['a', ['/link'], 'Array props']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
+
+  it('handles anchor with undefined props', () => {
+    const node = ['a', undefined, 'Undefined props']
+    expect(extractLinksFromMinimark(node)).toEqual([])
+  })
 })
 
 describe('extractLinksFromBody', () => {
@@ -159,5 +209,35 @@ describe('extractLinksFromBody', () => {
       value: [['p', {}, ['a', { href: '/from-value' }, 'Value']]],
     }
     expect(extractLinksFromBody(body)).toEqual(['from-children'])
+  })
+
+  it('returns empty for body with children: null', () => {
+    const body = { type: 'root', children: null }
+    expect(extractLinksFromBody(body)).toEqual([])
+  })
+
+  it('returns empty for body with children as string', () => {
+    const body = { type: 'root', children: 'not an array' }
+    expect(extractLinksFromBody(body)).toEqual([])
+  })
+
+  it('returns empty for body with type minimark but no value', () => {
+    const body = { type: 'minimark' }
+    expect(extractLinksFromBody(body)).toEqual([])
+  })
+
+  it('returns empty for body with value but wrong type', () => {
+    const body = { type: 'other', value: [['a', { href: '/test' }, 'Test']] }
+    expect(extractLinksFromBody(body)).toEqual([])
+  })
+
+  it('returns empty for body with value as non-array', () => {
+    const body = { type: 'minimark', value: 'not array' }
+    expect(extractLinksFromBody(body)).toEqual([])
+  })
+
+  it('returns empty for body without type property', () => {
+    const body = { value: [['a', { href: '/test' }, 'Test']] }
+    expect(extractLinksFromBody(body)).toEqual([])
   })
 })

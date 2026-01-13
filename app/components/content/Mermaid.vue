@@ -2,6 +2,7 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useColorMode } from '#imports'
 import type { Mermaid } from 'mermaid'
+import { tryCatchAsync } from '../../../shared/utils/tryCatch'
 
 const colorMode = useColorMode()
 const mermaidContainer = ref<HTMLDivElement | null>(null)
@@ -22,23 +23,25 @@ async function loadMermaid(): Promise<Mermaid> {
 }
 
 async function renderMermaid() {
-  if (!mermaidContainer.value || !mermaidDefinition)
+  const container = mermaidContainer.value
+  if (!container || !mermaidDefinition)
     return
 
-  try {
+  const [error] = await tryCatchAsync(async () => {
     const mermaid = await loadMermaid()
-    mermaidContainer.value.removeAttribute('data-processed')
-    mermaidContainer.value.textContent = mermaidDefinition
+    container.removeAttribute('data-processed')
+    container.textContent = mermaidDefinition
     await nextTick()
 
     mermaid.initialize({ startOnLoad: false, theme: mermaidTheme.value })
     await mermaid.run({
-      nodes: [mermaidContainer.value],
+      nodes: [container],
     })
     hasRenderedOnce.value = true
-  }
-  catch (e) {
-    console.error('Error running Mermaid:', e)
+  })
+
+  if (error) {
+    console.error('Error running Mermaid:', error)
     if (mermaidContainer.value) {
       mermaidContainer.value.innerHTML = 'Mermaid Chart Syntax Error'
     }

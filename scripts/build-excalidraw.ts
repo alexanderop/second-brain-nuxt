@@ -42,13 +42,12 @@ async function main() {
   await mkdir(OUTPUT_DIR, { recursive: true })
 
   // Find all .svg files (auto-exported by Obsidian)
-  let files: string[]
-  try {
-    files = (await readdir(CONTENT_DIR)).filter((f) => f.endsWith('.svg'))
-  } catch {
+  const dirEntries = await readdir(CONTENT_DIR).catch(() => null)
+  if (!dirEntries) {
     console.log('No Excalidraw directory found, skipping.')
     return
   }
+  const files = dirEntries.filter((f) => f.endsWith('.svg'))
 
   if (files.length === 0) {
     console.log('No SVG files found. Enable auto-export in Obsidian Excalidraw settings.')
@@ -64,13 +63,14 @@ async function main() {
 
     console.log(`  Processing: ${file} -> ${slug}.svg`)
 
-    try {
-      const content = await readFile(inputPath, 'utf-8')
-      const processed = processSvg(content)
-      await writeFile(outputPath, processed)
-    } catch (error) {
+    const content = await readFile(inputPath, 'utf-8').catch((error) => {
       console.error(`    Error processing ${file}:`, error)
-    }
+      return null
+    })
+    if (!content) continue
+
+    const processed = processSvg(content)
+    await writeFile(outputPath, processed)
   }
 
   console.log('Done!')

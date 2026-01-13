@@ -1,13 +1,66 @@
 import { siteConfig } from './site.config'
 
+// Regex patterns for content transformation
+const WIKI_LINK_REGEX = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
+const EXCALIDRAW_EMBED_REGEX = /!\[\[([^\]]+\.excalidraw(?:\.md)?)\]\]/g
+
+/**
+ * Generate a URL-friendly slug from Excalidraw filename
+ */
+function slugifyExcalidraw(filename: string): string {
+  return filename
+    .replace(/\.excalidraw(?:\.md)?$/, '')
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]/g, '')
+}
+
+/**
+ * Transform wiki-links and Excalidraw embeds
+ */
+function transformWikiLinks(content: string): string {
+  // Transform Excalidraw embeds first
+  let result = content.replace(EXCALIDRAW_EMBED_REGEX, (_, filename: string) => {
+    const slug = slugifyExcalidraw(filename)
+    return `![${filename}](/excalidraw/${slug}.svg){.excalidraw-diagram}`
+  })
+
+  // Transform regular wiki-links
+  result = result.replace(WIKI_LINK_REGEX, (_, slug: string, displayText?: string) => {
+    const normalizedSlug = slug.trim().toLowerCase().replace(/\s+/g, '-')
+    const text = displayText?.trim() ?? slug.trim()
+    return `[${text}](/${normalizedSlug}){.wiki-link}`
+  })
+
+  return result
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', './modules/wikilinks', '@vite-pwa/nuxt', '@nuxt/a11y'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', '@vite-pwa/nuxt', '@nuxt/a11y', '@nuxt/content'],
 
   devtools: { enabled: true },
+
+  // Configure Nuxt UI theme colors - enables semantic color aliases for components
+  ui: {
+    theme: {
+      colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error', 'neutral'],
+    },
+  },
+
+  // Content transformation hooks - must be at config level per Nuxt Content v3 docs
+  hooks: {
+    'content:file:beforeParse'(ctx: { file: { id?: string, body: string } }) {
+      if (ctx.file?.id?.endsWith('.md') && typeof ctx.file.body === 'string') {
+        // Transform wiki-links and Excalidraw embeds
+        ctx.file.body = transformWikiLinks(ctx.file.body)
+      }
+    },
+  },
   compatibilityDate: '2024-04-03',
 
   runtimeConfig: {
+    anthropicApiKey: '', // Set via NUXT_ANTHROPIC_API_KEY
     public: {
       siteUrl: siteConfig.url,
     },
@@ -18,7 +71,14 @@ export default defineNuxtConfig({
     autoImport: false,
   },
   components: {
-    dirs: [],
+    dirs: [
+      { path: '~/components/content', prefix: '', global: true },
+    ],
+  },
+
+  // Required for custom MDC components to work in static generation
+  build: {
+    transpile: ['@nuxt/content'],
   },
 
   // Reduce file watchers to prevent EMFILE errors

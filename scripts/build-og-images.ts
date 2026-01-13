@@ -500,46 +500,49 @@ async function main() {
     const slug = getSlugFromPath(filePath)
     const outputPath = join(OUTPUT_DIR, `${slug}.png`)
 
-    try {
-      // Check if OG image already exists and is newer than source
-      try {
-        const [sourceStat, outputStat] = await Promise.all([
-          stat(filePath),
-          stat(outputPath),
-        ])
-        if (outputStat.mtime > sourceStat.mtime) {
-          skipped++
-          continue
-        }
-      } catch {
-        // Output doesn't exist, will generate
-      }
+    // Check if OG image already exists and is newer than source
+    const stats = await Promise.all([
+      stat(filePath),
+      stat(outputPath).catch(() => null),
+    ])
+    const [sourceStat, outputStat] = stats
+    if (outputStat && outputStat.mtime > sourceStat.mtime) {
+      skipped++
+      continue
+    }
 
-      const content = await readFile(filePath, 'utf-8')
-      const frontmatter = parseFrontmatter(content)
+    const content = await readFile(filePath, 'utf-8').catch((error) => {
+      console.error(`  Error reading ${slug}:`, error)
+      errors++
+      return null
+    })
+    if (!content) continue
 
-      if (!frontmatter.title) {
-        console.log(`  Skipping ${slug}: no title`)
-        skipped++
-        continue
-      }
+    const frontmatter = parseFrontmatter(content)
 
-      const png = await generateOgImage(
-        frontmatter.title,
-        frontmatter.summary || '',
-        frontmatter.type || 'note',
-        fonts,
-      )
+    if (!frontmatter.title) {
+      console.log(`  Skipping ${slug}: no title`)
+      skipped++
+      continue
+    }
 
-      await writeFile(outputPath, png)
-      generated++
-
-      if (generated % 50 === 0) {
-        console.log(`  Generated ${generated} images...`)
-      }
-    } catch (error) {
+    const png = await generateOgImage(
+      frontmatter.title,
+      frontmatter.summary || '',
+      frontmatter.type || 'note',
+      fonts,
+    ).catch((error) => {
       console.error(`  Error generating OG image for ${slug}:`, error)
       errors++
+      return null
+    })
+    if (!png) continue
+
+    await writeFile(outputPath, png)
+    generated++
+
+    if (generated % 50 === 0) {
+      console.log(`  Generated ${generated} images...`)
     }
   }
 

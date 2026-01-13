@@ -4,6 +4,7 @@ import vuePlugin from 'eslint-plugin-vue'
 import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 import markdown from '@eslint/markdown'
 import frontmatter from './eslint-plugin-frontmatter/index.ts'
+import errorHandling from './eslint-plugin-error-handling/index.ts'
 
 // Content type directories (profiles/meta content, not notes)
 const PROFILE_DIRS = ['authors', 'newsletters', 'pages', 'podcasts', 'tweets']
@@ -48,8 +49,11 @@ export default tseslint.config(
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
+      'error-handling': errorHandling,
     },
     rules: {
+      // Enforce tryCatch helper instead of try-catch blocks
+      'error-handling/no-try-catch': 'error',
       // Cyclomatic complexity - fail build if function exceeds threshold
       'complexity': ['error', 10],
       // Block reactive() in favor of ref() - oxlint doesn't support this
@@ -85,8 +89,11 @@ export default tseslint.config(
       '@typescript-eslint': tseslint.plugin,
       'vue': vuePlugin,
       'vuejs-accessibility': vuejsAccessibility,
+      'error-handling': errorHandling,
     },
     rules: {
+      // Enforce tryCatch helper instead of try-catch blocks
+      'error-handling/no-try-catch': 'error',
       // Limit component file length for maintainability
       'max-lines': ['warn', { max: 600, skipBlankLines: true, skipComments: true }],
       // Limit template nesting depth for maintainability
@@ -136,10 +143,37 @@ export default tseslint.config(
     },
   },
   {
+    // Prevent barrel files in Nuxt auto-import directories (causes duplicate import warnings)
+    files: ['server/utils/**/*.ts', 'app/composables/**/*.ts', 'app/utils/**/*.ts'],
+    rules: {
+      'no-restricted-syntax': ['error',
+        {
+          selector: 'IfStatement > .alternate',
+          message: 'Use early return or ternary instead of else.',
+        },
+        {
+          selector: 'ExportAllDeclaration',
+          message: 'Barrel exports cause duplicate auto-imports in Nuxt. Export from the original file.',
+        },
+        {
+          selector: 'ExportNamedDeclaration[source]',
+          message: 'Re-exports cause duplicate auto-imports in Nuxt. Import and use directly instead.',
+        },
+      ],
+    },
+  },
+  {
     // Allow reactive() in stores
     files: ['**/stores/**'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  {
+    // Allow try-catch in tryCatch helper - it implements the abstraction
+    files: ['**/shared/utils/tryCatch.ts'],
+    rules: {
+      'error-handling/no-try-catch': 'off',
     },
   },
   {

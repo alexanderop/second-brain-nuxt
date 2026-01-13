@@ -1,4 +1,4 @@
-import { globSync } from 'node:fs'
+import { globSync, existsSync } from 'node:fs'
 import { basename, resolve } from 'node:path'
 import type { SlugCache } from './types.ts'
 
@@ -21,32 +21,27 @@ export function getSlugCache(contentPath: string = 'content'): SlugCache {
   const authors = new Set<string>()
   const notes = new Set<string>()
 
-  // Glob author files
-  try {
-    const authorFiles = globSync(`${resolvedPath}/authors/*.md`)
+  // Glob author files (check if directory exists first)
+  const authorsDir = `${resolvedPath}/authors`
+  if (existsSync(authorsDir)) {
+    const authorFiles = globSync(`${authorsDir}/*.md`)
     for (const file of authorFiles) {
       authors.add(basename(file, '.md'))
     }
   }
-  catch {
-    // Directory might not exist
-  }
 
-  // Glob all content files (excluding authors, pages, podcasts)
-  try {
-    const noteFiles = globSync(`${resolvedPath}/**/*.md`, {
-      ignore: [
-        `${resolvedPath}/authors/**`,
-        `${resolvedPath}/pages/**`,
-        `${resolvedPath}/podcasts/**`,
-      ],
-    })
-    for (const file of noteFiles) {
+  // Glob all content files and filter out excluded directories
+  const allFiles = globSync(`${resolvedPath}/**/*.md`)
+  const excludedPrefixes = [
+    `${resolvedPath}/authors/`,
+    `${resolvedPath}/pages/`,
+    `${resolvedPath}/podcasts/`,
+  ]
+  for (const file of allFiles) {
+    const isExcluded = excludedPrefixes.some(prefix => file.startsWith(prefix))
+    if (!isExcluded) {
       notes.add(basename(file, '.md'))
     }
-  }
-  catch {
-    // Directory might not exist
   }
 
   cache = {

@@ -58,10 +58,7 @@ const rule: Rule.RuleModule = {
           }
 
           // Validate URL structure
-          try {
-            new URL(value)
-          }
-          catch {
+          if (!URL.canParse(value)) {
             context.report({
               loc: node.position,
               messageId: 'invalidUrl',

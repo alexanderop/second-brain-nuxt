@@ -150,6 +150,14 @@ describe('server/utils/mentions', () => {
       const section: SearchSection = { id: '/article-two#main', content: '' }
       expect(shouldIncludeSection(section, 'atomic-habits', contentMap, titleRegex)).toBe(false)
     })
+
+    it('handles section from unknown path not in content map', () => {
+      const emptyContentMap = new Map<string, ContentMeta>()
+      const section: SearchSection = { id: '/unknown#section', content: 'Atomic Habits here' }
+
+      // Should not crash and should return true (path not in map means no links info to exclude)
+      expect(shouldIncludeSection(section, 'atomic-habits', emptyContentMap, titleRegex)).toBe(true)
+    })
   })
 
   describe('buildMentionsMap', () => {
@@ -274,6 +282,83 @@ describe('server/utils/mentions', () => {
       const mention = result.find(m => m.slug === 'article-three')
       expect(mention).toBeDefined()
       expect(mention?.highlightedSnippet).toMatch(/<mark[^>]*>/)
+    })
+
+    it('proceeds for title with exactly 3 characters', () => {
+      const content: ContentItem[] = [
+        { path: '/article', title: 'Article', type: 'article', body: { type: 'minimark', value: [] } },
+        { path: '/abc', title: 'ABC', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const sections: SearchSection[] = [
+        { id: '/article#section', content: 'This mentions ABC in the text' },
+      ]
+
+      // Title "ABC" has length 3, which is >= 3, so should proceed (not return early)
+      const result = findUnlinkedMentions(content, sections, 'abc', 'ABC')
+      expect(result.length).toBe(1)
+    })
+
+    it('returns empty for title with exactly 2 characters', () => {
+      const result = findUnlinkedMentions(contentFixtures, searchSectionFixtures, 'ab', 'AB')
+      expect(result).toEqual([])
+    })
+
+    it('matches title case-insensitively', () => {
+      const contentWithLowercase: ContentItem[] = [
+        { path: '/article', title: 'Article', type: 'article', body: { type: 'minimark', value: [] } },
+        { path: '/target', title: 'Target', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const sections: SearchSection[] = [
+        { id: '/article#section', content: 'This mentions TARGET in uppercase' },
+      ]
+
+      const result = findUnlinkedMentions(contentWithLowercase, sections, 'target', 'Target')
+      expect(result.length).toBe(1)
+      expect(result[0].slug).toBe('article')
+    })
+
+    it('only matches whole words not partial matches', () => {
+      const content: ContentItem[] = [
+        { path: '/article', title: 'Article', type: 'article', body: { type: 'minimark', value: [] } },
+        { path: '/cat', title: 'Cat', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const sections: SearchSection[] = [
+        { id: '/article#section', content: 'I love my category of cats' },
+      ]
+
+      // "Cat" should not match "category" or "cats"
+      const result = findUnlinkedMentions(content, sections, 'cat', 'Cat')
+      expect(result).toEqual([])
+    })
+
+    it('returns empty for title with length 1', () => {
+      const result = findUnlinkedMentions(contentFixtures, searchSectionFixtures, 'x', 'X')
+      expect(result).toEqual([])
+    })
+
+    it('differentiates between 2-char and 3-char titles at boundary', () => {
+      const content: ContentItem[] = [
+        { path: '/article', title: 'Article', type: 'article', body: { type: 'minimark', value: [] } },
+        { path: '/ab', title: 'AB', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const sections: SearchSection[] = [
+        { id: '/article#section', content: 'This mentions AB in text' },
+      ]
+
+      // 2-char title should NOT search (too short, returns early)
+      const result2 = findUnlinkedMentions(content, sections, 'ab', 'AB')
+      expect(result2).toEqual([])
+
+      // 3-char title SHOULD find mentions
+      const contentWith3Char: ContentItem[] = [
+        { path: '/article', title: 'Article', type: 'article', body: { type: 'minimark', value: [] } },
+        { path: '/abc', title: 'ABC', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const sectionsFor3: SearchSection[] = [
+        { id: '/article#section', content: 'This mentions ABC in text' },
+      ]
+      const result3 = findUnlinkedMentions(contentWith3Char, sectionsFor3, 'abc', 'ABC')
+      expect(result3.length).toBe(1)
     })
   })
 })

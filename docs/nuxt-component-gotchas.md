@@ -27,3 +27,45 @@ Common pitfalls when building Vue components in Nuxt.
 - `v-slot="{ navigate }"` exposes the navigation function
 - Inner links use `@click.stop` to prevent triggering card navigation
 - Add `cursor-pointer` since the wrapper is now a `<div>`
+
+## Feature Toggles with `import.meta.dev`
+
+**Problem:** Need to enable features only in development (e.g., chat, debug panels). Using `runtimeConfig.public` with booleans fails because Nuxt expects strings for environment variable overrides:
+
+```typescript
+// ✗ Fails: Type 'boolean' is not assignable to type 'RuntimeValue<string, ...>'
+runtimeConfig: {
+  public: {
+    featureEnabled: import.meta.dev,
+  },
+}
+```
+
+**Solution:** Use `import.meta.dev` directly in components and server code:
+
+```vue
+<!-- Client-side (Vue) -->
+<script setup>
+const featureEnabled = import.meta.dev
+</script>
+
+<template>
+  <DebugPanel v-if="featureEnabled" />
+</template>
+```
+
+```typescript
+// Server-side (Nitro)
+export default defineEventHandler((event) => {
+  if (!import.meta.dev) {
+    throw createError({ statusCode: 404 })
+  }
+  // Dev-only logic...
+})
+```
+
+**Benefits:**
+- Build-time constant - dead code eliminated in production
+- No environment variables needed
+- Works on both client and server
+- Tree-shaking removes dev-only code from production bundle

@@ -98,17 +98,25 @@ function saveZoomTransform(transform: ZoomTransform) {
   }))
 }
 
+interface ZoomData {
+  k: number
+  x: number
+  y: number
+}
+
+function isZoomData(data: unknown): data is ZoomData {
+  if (typeof data !== 'object' || data === null) return false
+  const obj = data as Record<string, unknown> // eslint-disable-line @typescript-eslint/consistent-type-assertions -- Type guard narrowing
+  return typeof obj.k === 'number' && typeof obj.x === 'number' && typeof obj.y === 'number'
+}
+
 function loadZoomTransform(): ZoomTransform | null {
   if (!effectivePersistZoom.value) return null
   const stored = sessionStorage.getItem(effectiveZoomStorageKey.value)
   if (!stored) return null
-  try {
-    const { k, x, y } = JSON.parse(stored)
-    return zoomIdentity.translate(x, y).scale(k)
-  }
-  catch {
-    return null
-  }
+  const parsed: unknown = JSON.parse(stored)
+  if (!isZoomData(parsed)) return null
+  return zoomIdentity.translate(parsed.x, parsed.y).scale(parsed.k)
 }
 
 // Hexagon path for map nodes

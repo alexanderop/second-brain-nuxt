@@ -8,6 +8,7 @@ import {
   buildGraphFromContent,
   type ContentItem,
   type GraphNode,
+  type GraphEdge,
 } from '../../../server/utils/graph'
 
 // Test fixtures with proper typing
@@ -248,6 +249,32 @@ describe('server/utils/graph', () => {
       expect(nodes[1].connections).toBe(2) // 1 incoming + 1 outgoing
       expect(nodes[2].connections).toBe(1) // 1 incoming
     })
+
+    it('returns 0 connections for isolated node', () => {
+      const nodes: GraphNode[] = [
+        { id: 'orphan', title: 'Orphan', type: 'note', tags: [], authors: [], connections: 5, maps: [], isMap: false },
+      ]
+      const edges: GraphEdge[] = []
+
+      calculateConnectionCounts(nodes, edges)
+
+      expect(nodes[0].connections).toBe(0) // Must be reset to 0
+    })
+
+    it('resets existing connection counts to 0 for all nodes', () => {
+      // Nodes with pre-existing connection counts should be reset
+      const nodes: GraphNode[] = [
+        { id: 'a', title: 'A', type: 'note', tags: [], authors: [], connections: 999, maps: [], isMap: false },
+        { id: 'b', title: 'B', type: 'note', tags: [], authors: [], connections: 888, maps: [], isMap: false },
+      ]
+      const edges: GraphEdge[] = [] // No edges
+
+      calculateConnectionCounts(nodes, edges)
+
+      // Both must be reset to 0 (not stay at 999 and 888)
+      expect(nodes[0].connections).toBe(0)
+      expect(nodes[1].connections).toBe(0)
+    })
   })
 
   describe('computeMapMembership', () => {
@@ -273,6 +300,52 @@ describe('server/utils/graph', () => {
       computeMapMembership(mapContent, nodeMap)
 
       expect(nodes[1].maps).toEqual(['my-map'])
+    })
+
+    it('only processes map items for membership', () => {
+      const content: ContentItem[] = [
+        { path: '/note-a', type: 'note', body: { type: 'minimark', value: [['p', {}, ['a', { href: '/note-b' }, 'B']]] } },
+        { path: '/note-b', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+      const nodes: GraphNode[] = [
+        { id: 'note-a', title: 'A', type: 'note', tags: [], authors: [], connections: 0, maps: [], isMap: false },
+        { id: 'note-b', title: 'B', type: 'note', tags: [], authors: [], connections: 0, maps: [], isMap: false },
+      ]
+      const nodeMap = new Map(nodes.map(n => [n.id, n]))
+
+      computeMapMembership(content, nodeMap)
+
+      // note-b should NOT have note-a as a map (note-a is not type: 'map')
+      expect(nodes[1].maps).toEqual([])
+    })
+
+    it('prevents map from adding itself to its own maps', () => {
+      const content: ContentItem[] = [
+        { path: '/my-map', type: 'map', body: { type: 'minimark', value: [['p', {}, ['a', { href: '/my-map' }, 'Self']]] } },
+      ]
+      const nodes: GraphNode[] = [
+        { id: 'my-map', title: 'My Map', type: 'map', tags: [], authors: [], connections: 0, maps: [], isMap: true },
+      ]
+      const nodeMap = new Map(nodes.map(n => [n.id, n]))
+
+      computeMapMembership(content, nodeMap)
+
+      expect(nodes[0].maps).toEqual([]) // Should not contain itself
+    })
+
+    it('ignores links to non-existent nodes in map', () => {
+      const content: ContentItem[] = [
+        { path: '/my-map', type: 'map', body: { type: 'minimark', value: [['p', {}, ['a', { href: '/ghost' }, 'Ghost']]] } },
+      ]
+      const nodes: GraphNode[] = [
+        { id: 'my-map', title: 'My Map', type: 'map', tags: [], authors: [], connections: 0, maps: [], isMap: true },
+      ]
+      const nodeMap = new Map(nodes.map(n => [n.id, n]))
+
+      computeMapMembership(content, nodeMap)
+
+      // Should not crash, maps stays empty
+      expect(nodes[0].maps).toEqual([])
     })
   })
 
@@ -342,6 +415,21 @@ describe('server/utils/graph', () => {
         tags: ['productivity', 'habits'],
         summary: 'Build better habits',
       })
+    })
+
+    it('correctly uses nodeMap for map membership lookups', () => {
+      const content: ContentItem[] = [
+        { path: '/map-one', type: 'map', body: { type: 'minimark', value: [['p', {}, ['a', { href: '/note-a' }, 'A']]] } },
+        { path: '/map-two', type: 'map', body: { type: 'minimark', value: [['p', {}, ['a', { href: '/note-a' }, 'A']]] } },
+        { path: '/note-a', type: 'note', body: { type: 'minimark', value: [] } },
+      ]
+
+      const result = buildGraphFromContent(content)
+      const noteA = result.nodes.find(n => n.id === 'note-a')
+
+      expect(noteA?.maps).toContain('map-one')
+      expect(noteA?.maps).toContain('map-two')
+      expect(noteA?.maps).toHaveLength(2)
     })
   })
 })

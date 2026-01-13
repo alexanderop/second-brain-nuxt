@@ -64,14 +64,14 @@ export function addBacklinksForItem(
  */
 export function buildBacklinksIndex(allContent: ContentItem[]): BacklinksIndex {
   const backlinksIndex: BacklinksIndex = {}
-  const contentMap = buildContentMap(allContent)
 
   for (const item of allContent) {
     const sourceSlug = getSlug(item)
-    const sourceMeta = contentMap.get(sourceSlug)
-    if (sourceMeta) {
-      addBacklinksForItem(item, sourceMeta, sourceSlug, backlinksIndex)
+    const sourceMeta = {
+      title: item.title || sourceSlug,
+      type: item.type || 'note',
     }
+    addBacklinksForItem(item, sourceMeta, sourceSlug, backlinksIndex)
   }
 
   return backlinksIndex
