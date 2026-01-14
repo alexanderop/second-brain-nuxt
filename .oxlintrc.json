@@ -42,6 +42,12 @@
       "rules": {
         "@typescript-eslint/no-explicit-any": "warn"
       }
+    },
+    {
+      "files": ["eslint-plugin-*/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ],
   "ignorePatterns": [

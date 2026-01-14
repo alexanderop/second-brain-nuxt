@@ -193,3 +193,34 @@ rm -rf .nuxt .data && pnpm dev
 - `.data` — Content database cache (SQLite, often overlooked)
 
 **When this bites you**: Any time you modify transformation logic in `nuxt.config.ts` hooks (callouts, wiki-links, etc.), you must clear the cache to test changes.
+
+## queryCollection in User-Triggered Composables
+
+When using `queryCollection()` inside composables that run on user interaction (keyboard shortcuts, button clicks), wrap it with `useAsyncData()` to enable caching:
+
+```typescript
+// ✗ Bad: Queries database on every call
+export function useRandomNote() {
+  async function navigateToRandomNote() {
+    const items = await queryCollection('content').select('stem').all() // Called every time!
+    // ...
+  }
+  return { navigateToRandomNote }
+}
+
+// ✓ Good: Queries once, cached for subsequent calls
+export function useRandomNote() {
+  const { data: stems } = useAsyncData(
+    'random-note-stems',
+    () => queryCollection('content').select('stem').all(),
+  )
+
+  async function navigateToRandomNote() {
+    if (!stems.value) return
+    // Use cached stems.value
+  }
+  return { navigateToRandomNote }
+}
+```
+
+**Why this matters:** Composables called on user actions don't benefit from SSR prefetching. Without `useAsyncData`, every invocation triggers a fresh database query—causing slow/broken behavior on first visit (before PWA caching kicks in).
