@@ -1,16 +1,16 @@
 ---
 title: "Obsidian + Claude Code Workflows"
-type: article
-url: "https://x.com/kepano/status/2007223691315499199"
+type: tweet
+tweetId: "2007223691315499199"
+tweetUrl: "https://x.com/kepano/status/2007223691315499199"
+tweetText: "if you're using Obsidian with Claude Code, tell me about your workflow, and what you've used it for"
+author: steph-ango
+tweetedAt: 2026-01-02
 tags:
   - claude-code
   - knowledge-management
   - ai-tools
   - productivity
-authors:
-  - steph-ango
-summary: "Community-sourced patterns for combining Obsidian vaults with Claude Code: master context files, batch editing, backlink discovery, and metadata management."
-date: 2026-01-02
 ---
 
 ## Original Thread
