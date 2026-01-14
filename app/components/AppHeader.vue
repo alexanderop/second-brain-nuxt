@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NuxtLink, UButton, UKbd, USlideover } from '#components'
+import { NuxtLink, UButton, UColorModeButton, UKbd, USlideover } from '#components'
 import { useSiteConfig } from '~/composables/useSiteConfig'
 import { useRandomNote } from '~/composables/useRandomNote'
 
@@ -32,6 +32,7 @@ const mobileMenuOpen = ref(false)
         </nav>
       </div>
       <div class="flex items-center gap-2">
+        <UColorModeButton variant="ghost" color="neutral" />
         <UButton
           variant="ghost"
           color="neutral"

@@ -13,82 +13,56 @@ const groupedShortcuts = computed(() => ({
 </script>
 
 <template>
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" :ui="{ content: 'w-full max-w-2xl' }">
     <template #content>
       <div class="p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg font-semibold">
-            Keyboard Shortcuts
-          </h2>
-          <UButton
-            icon="i-lucide-x"
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            @click="open = false"
-          />
-        </div>
+        <header class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-semibold">Keyboard Shortcuts</h2>
+          <UButton icon="i-lucide-x" variant="ghost" color="neutral" size="sm" @click="open = false" />
+        </header>
 
-        <div class="space-y-6">
-          <div>
-            <h3 class="text-sm font-medium text-[var(--ui-text-muted)] mb-3">
-              General
-            </h3>
-            <div class="space-y-2">
-              <div
-                v-for="shortcut in groupedShortcuts.general"
-                :key="shortcut.description"
-                class="flex items-center justify-between py-1"
-              >
+        <div class="max-h-[70vh] overflow-y-auto grid md:grid-cols-2 gap-4">
+          <!-- Left column -->
+          <div class="space-y-4">
+            <!-- General section -->
+            <section class="bg-[var(--ui-bg-elevated)]/50 rounded-lg p-4 space-y-1.5">
+              <h3 class="text-sm font-medium text-[var(--ui-text-muted)] pb-2 border-b border-[var(--ui-border)]">General</h3>
+              <div v-for="shortcut in groupedShortcuts.general" :key="shortcut.description" class="flex items-center justify-between py-1">
                 <span class="text-sm">{{ shortcut.description }}</span>
-                <div class="flex items-center gap-1">
+                <span class="flex items-center gap-1 shrink-0 ml-2">
                   <template v-for="(key, idx) in shortcut.keys" :key="key">
                     <span v-if="idx > 0" class="text-[var(--ui-text-muted)] text-xs">+</span>
                     <UKbd>{{ key }}</UKbd>
                   </template>
-                </div>
+                </span>
               </div>
-            </div>
-          </div>
+            </section>
 
-          <div>
-            <h3 class="text-sm font-medium text-[var(--ui-text-muted)] mb-3">
-              Navigation
-            </h3>
-            <div class="space-y-2">
-              <div
-                v-for="shortcut in groupedShortcuts.navigation"
-                :key="shortcut.description"
-                class="flex items-center justify-between py-1"
-              >
+            <!-- Actions section -->
+            <section class="bg-[var(--ui-bg-elevated)]/50 rounded-lg p-4 space-y-1.5">
+              <h3 class="text-sm font-medium text-[var(--ui-text-muted)] pb-2 border-b border-[var(--ui-border)]">Actions</h3>
+              <div v-for="shortcut in groupedShortcuts.actions" :key="shortcut.description" class="flex items-center justify-between py-1">
                 <span class="text-sm">{{ shortcut.description }}</span>
-                <div class="flex items-center gap-1">
-                  <template v-for="(key, idx) in shortcut.keys" :key="key">
-                    <span v-if="idx > 0" class="text-[var(--ui-text-muted)] text-xs mx-0.5">then</span>
-                    <UKbd>{{ key }}</UKbd>
-                  </template>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-[var(--ui-text-muted)] mb-3">
-              Actions
-            </h3>
-            <div class="space-y-2">
-              <div
-                v-for="shortcut in groupedShortcuts.actions"
-                :key="shortcut.description"
-                class="flex items-center justify-between py-1"
-              >
-                <span class="text-sm">{{ shortcut.description }}</span>
-                <div class="flex items-center gap-1">
+                <span class="flex items-center gap-1 shrink-0 ml-2">
                   <UKbd v-for="key in shortcut.keys" :key="key">{{ key }}</UKbd>
-                </div>
+                </span>
               </div>
-            </div>
+            </section>
           </div>
+
+          <!-- Right column: Navigation -->
+          <section class="bg-[var(--ui-bg-elevated)]/50 rounded-lg p-4 space-y-1.5 h-fit">
+            <h3 class="text-sm font-medium text-[var(--ui-text-muted)] pb-2 border-b border-[var(--ui-border)]">Navigation</h3>
+            <div v-for="shortcut in groupedShortcuts.navigation" :key="shortcut.description" class="flex items-center justify-between py-1">
+              <span class="text-sm">{{ shortcut.description }}</span>
+              <span class="flex items-center gap-1 shrink-0 ml-2">
+                <template v-for="(key, idx) in shortcut.keys" :key="key">
+                  <span v-if="idx > 0" class="text-[var(--ui-text-muted)] text-xs mx-0.5">then</span>
+                  <UKbd>{{ key }}</UKbd>
+                </template>
+              </span>
+            </div>
+          </section>
         </div>
       </div>
     </template>
