@@ -3,13 +3,20 @@ import { NuxtLink } from '#components'
 import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
 import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
+import { usePrefetchContent } from '~/composables/usePrefetchContent'
 import type { ContentItem } from '~/types/content'
 
-defineProps<{
+const props = defineProps<{
   content: ContentItem
   selected?: boolean
   podcastName?: string
 }>()
+
+const { prefetch } = usePrefetchContent()
+
+function handleMouseEnter() {
+  prefetch(`/${props.content.slug}`)
+}
 
 function formatDate(date?: Date | string) {
   if (!date)
@@ -27,7 +34,7 @@ function formatDate(date?: Date | string) {
     class="py-4 border-b border-[var(--ui-border)] last:border-b-0 -mx-2 px-2 rounded-lg transition-colors"
     :class="{ 'bg-[var(--ui-bg-muted)]': selected }"
   >
-    <NuxtLink :to="`/${content.slug}`" class="group block">
+    <NuxtLink :to="`/${content.slug}`" class="group block" @mouseenter="handleMouseEnter" @focus="handleMouseEnter">
       <div class="flex items-start gap-3">
         <div class="mt-1 text-[var(--ui-text-muted)]">
           <BaseTypeIcon :type="content.type" size="md" />

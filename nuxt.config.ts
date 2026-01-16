@@ -59,6 +59,15 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2024-04-03',
 
+  // Prefetch route components on hover/focus for faster navigation
+  experimental: {
+    defaults: {
+      nuxtLink: {
+        prefetchOn: { interaction: true },
+      },
+    },
+  },
+
   runtimeConfig: {
     anthropicApiKey: '', // Set via NUXT_ANTHROPIC_API_KEY
     public: {

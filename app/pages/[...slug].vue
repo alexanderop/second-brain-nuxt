@@ -54,9 +54,15 @@ function isYouTubeUrl(url: string): boolean {
   return url.includes('youtube.com') || url.includes('youtu.be')
 }
 
-const { data: page } = await useAsyncData(`page-${route.path}`, () => {
-  return queryCollection('content').path(route.path).first()
-})
+const { data: page } = await useAsyncData(
+  `page-${route.path}`,
+  () => queryCollection('content').path(route.path).first(),
+  {
+    // Use prefetched data from cache if available (from hover prefetch)
+    getCachedData: (key, nuxtApp) =>
+      nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
+  },
+)
 
 const tocLinks = computed(() => page.value?.body?.toc?.links ?? [])
 

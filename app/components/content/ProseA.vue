@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useAsyncData, queryCollection } from '#imports'
 import { NuxtLink, UPopover, UBadge } from '#components'
+import { usePrefetchContent } from '~/composables/usePrefetchContent'
 import type { ContentType } from '~/constants/contentTypes'
 
 const props = defineProps<{
@@ -208,6 +209,15 @@ const previewData = computed((): PreviewData | null => {
   if (!linkData.value || !isRecord(linkData.value)) return null
   return previewBuilders[collectionType.value](linkData.value)
 })
+
+// Prefetch full page data on hover (before popover opens)
+const { prefetch } = usePrefetchContent()
+
+function handleMouseEnter() {
+  if (isWikiLink.value && props.href) {
+    prefetch(props.href)
+  }
+}
 </script>
 
 <template>
@@ -218,6 +228,8 @@ const previewData = computed((): PreviewData | null => {
     :open-delay="350"
     :close-delay="150"
     :ui="{ content: 'p-0' }"
+    @mouseenter="handleMouseEnter"
+    @focus="handleMouseEnter"
   >
     <NuxtLink
       :to="href"
