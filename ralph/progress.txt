@@ -107,3 +107,29 @@ Started: 2026-01-17
 
 ---
 
+## US-005: Integrate Semantic Search into Search Page (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files modified:**
+- `app/pages/search.vue` - Integrated useSemanticSearch composable and hybrid scoring
+
+**Implementation notes:**
+- Added imports for `useSemanticSearch` and `mergeSearchResults`
+- Created reactive refs to track semantic search results and loading state
+- Added watch on debouncedSearch to trigger semantic search alongside Fuse.js
+- Converted Fuse.js results to KeywordResult format (normalizing 0-1 score to 1-0 scale)
+- Uses `mergeSearchResults` to combine keyword and semantic results with hybrid scoring
+- Falls back to keyword-only results if semantic search hasn't completed or fails
+- Added loading indicator showing "Loading semantic search..." while model initializes
+- Shows inline "(semantic search loading...)" in results count during model load
+- Author results handled separately (not part of hybrid scoring)
+- Existing keyboard navigation (j/k/enter) continues to work unchanged
+- All tests pass (521), typecheck passes
+
+**Next steps:**
+- US-006 will integrate semantic search into the command palette (AppSearchModal.vue)
+- US-007 will add embeddings generation to build pipeline
+
+---
+

@@ -93,7 +93,7 @@
         "Verify in browser"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-003 (composable), US-004 (hybrid scoring). Main integration point."
     },
     {
