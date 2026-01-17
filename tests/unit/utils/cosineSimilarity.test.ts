@@ -1,5 +1,37 @@
 import { describe, expect, it } from 'vitest'
-import { cosineSimilarity } from '../../../app/utils/cosineSimilarity'
+import { cosineSimilarity, dotProduct } from '../../../app/utils/cosineSimilarity'
+
+describe('dotProduct', () => {
+  it('computes dot product of identical vectors', () => {
+    const vector = [1, 2, 3, 4, 5]
+    const result = dotProduct(vector, vector)
+    expect(result).toBe(55) // 1 + 4 + 9 + 16 + 25
+  })
+
+  it('computes dot product of orthogonal vectors', () => {
+    const a = [1, 0, 0]
+    const b = [0, 1, 0]
+    expect(dotProduct(a, b)).toBe(0)
+  })
+
+  it('computes dot product of arbitrary vectors', () => {
+    const a = [1, 2, 3]
+    const b = [4, 5, 6]
+    expect(dotProduct(a, b)).toBe(32) // 4 + 10 + 18
+  })
+
+  it('handles negative values', () => {
+    const a = [1, -2, 3]
+    const b = [-4, 5, -6]
+    expect(dotProduct(a, b)).toBe(-32) // -4 + -10 + -18
+  })
+
+  it('throws error for mismatched vector lengths', () => {
+    const a = [1, 2, 3]
+    const b = [1, 2]
+    expect(() => dotProduct(a, b)).toThrow('Vector length mismatch: 3 vs 2')
+  })
+})
 
 describe('cosineSimilarity', () => {
   it('returns 1 for identical vectors', () => {
