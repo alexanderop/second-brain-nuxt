@@ -133,3 +133,29 @@ Started: 2026-01-17
 
 ---
 
+## US-006: Integrate Semantic Search into Command Palette (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files modified:**
+- `app/components/AppSearchModal.vue` - Integrated useSemanticSearch composable and hybrid scoring
+
+**Implementation notes:**
+- Added imports for `useSemanticSearch`, `mergeSearchResults`, and `Fuse`
+- Added `searchTerm` ref bound to `v-model:search-term` on UCommandPalette
+- Used `watchDebounced` to debounce search term (200ms) before triggering semantic search
+- Created internal Fuse.js instance for content items to compute keyword scores
+- Converted Fuse.js results to KeywordResult format (normalizing 0-1 score to 1-0 scale)
+- Uses `mergeSearchResults` to combine keyword and semantic results with hybrid scoring
+- Content group uses `ignoreFilter: true` when searching to bypass UCommandPalette's built-in Fuse.js
+- Shows loading indicator in group label: "Notes (loading semantic...)" during model initialization
+- Falls back to keyword-only results if semantic search hasn't completed or fails
+- Resets search state when modal closes
+- Authors, newsletters, and podcasts continue using built-in Fuse.js search (not semantic)
+- All tests pass (521), typecheck passes
+
+**Next steps:**
+- US-007 will add embeddings generation to build pipeline
+
+---
+

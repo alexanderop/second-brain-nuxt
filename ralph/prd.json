@@ -111,7 +111,7 @@
         "Verify in browser"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-003 (composable), US-004 (hybrid scoring). Uses same composable as search page."
     },
     {
