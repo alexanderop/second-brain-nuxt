@@ -57,3 +57,29 @@ Started: 2026-01-17
 
 ---
 
+## US-003: Semantic Search Composable (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files created:**
+- `app/composables/useSemanticSearch.ts` - Composable for semantic search against pre-computed embeddings
+
+**Implementation notes:**
+- Lazy-loads Transformers.js only when search is first performed
+- Fetches and caches embeddings.json on first search
+- Converts search query to embedding using bge-small-en-v1.5 model
+- Computes cosine similarity against all pre-computed embeddings
+- Returns top N results (default 20) sorted by similarity score
+- Caches model instance at module level after first load
+- Exposes `isLoading` ref for model initialization state
+- Exposes `error` ref for failure handling
+- Uses Promise-based caching to prevent duplicate model loading
+- All tests pass, typecheck passes
+
+**Next steps:**
+- US-004 (hybrid search) will combine keyword and semantic scores
+- US-005 will integrate this into the search page
+- US-006 will integrate this into the command palette
+
+---
+

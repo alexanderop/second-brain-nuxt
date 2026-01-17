@@ -55,7 +55,7 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-001 (cosine similarity), US-002 (embeddings.json must exist). Core search logic."
     },
     {
