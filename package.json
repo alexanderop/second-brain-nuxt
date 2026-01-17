@@ -15,6 +15,7 @@
     "build:excalidraw": "npx tsx scripts/build-excalidraw.ts",
     "build:og": "npx tsx scripts/build-og-images.ts",
     "generate:embeddings": "npx tsx scripts/generate-embeddings.ts",
+    "prebuild": "pnpm generate:embeddings",
     "build": "pnpm build:excalidraw && pnpm build:og && nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",

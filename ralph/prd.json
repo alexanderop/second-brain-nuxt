@@ -125,7 +125,7 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
+      "passes": true,
       "notes": "Final integration story. Ensures embeddings stay up-to-date with content."
     }
   ]

@@ -9,10 +9,11 @@ This Second Brain belongs to **Alexander Opalic**. When creating personal notes,
 ## Commands
 
 ```bash
-pnpm dev          # Start dev server at localhost:3000
-pnpm build        # Build for production
-pnpm lint:fix     # Auto-fix linting issues
-pnpm typecheck    # Verify type safety
+pnpm dev                  # Start dev server at localhost:3000
+pnpm build                # Build for production
+pnpm lint:fix             # Auto-fix linting issues
+pnpm typecheck            # Verify type safety
+pnpm generate:embeddings  # Regenerate semantic search embeddings
 ```
 
 Run `pnpm lint:fix && pnpm typecheck` after code changes.

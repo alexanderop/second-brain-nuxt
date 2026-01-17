@@ -159,3 +159,24 @@ Started: 2026-01-17
 
 ---
 
+## US-007: Add Embeddings Generation to Build Pipeline (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files modified:**
+- `package.json` - Added prebuild script that runs generate:embeddings before build
+- `CLAUDE.md` - Documented pnpm generate:embeddings command
+
+**Implementation notes:**
+- Added `"prebuild": "pnpm generate:embeddings"` script to package.json
+- The prebuild hook runs automatically before `pnpm build`
+- Documented the generate:embeddings command in CLAUDE.md Commands section
+- embeddings.json was already generated and committed in US-002
+- All tests pass (521), typecheck passes
+
+**PRD Status:**
+- All 7 user stories are now complete
+- Semantic search feature is fully implemented
+
+---
+
