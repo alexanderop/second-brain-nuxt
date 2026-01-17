@@ -83,3 +83,27 @@ Started: 2026-01-17
 
 ---
 
+## US-004: Hybrid Search Scoring (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files created:**
+- `app/utils/hybridSearch.ts` - Utility for combining keyword and semantic search scores
+- `tests/unit/utils/hybridSearch.test.ts` - 16 unit tests covering all acceptance criteria
+
+**Implementation notes:**
+- Weights: KEYWORD_WEIGHT = 0.4, SEMANTIC_WEIGHT = 0.6
+- `computeHybridScore(keywordScore, semanticScore)` - applies weight formula
+- `mergeSearchResults(keywordResults, semanticResults)` - merges and deduplicates by slug
+- Keyword-only results get semanticScore = 0
+- Semantic-only results get keywordScore = 0
+- Results sorted by hybrid score descending
+- Type information preserved from semantic results
+- All tests pass (521 total), typecheck passes
+
+**Next steps:**
+- US-005 will integrate this into the search page with useSemanticSearch
+- US-006 will integrate this into the command palette
+
+---
+
