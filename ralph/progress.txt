@@ -2,7 +2,30 @@
 Started: 2026-01-17
 
 ## Codebase Patterns
-(To be discovered during implementation)
+- Utils go in `app/utils/` as pure TypeScript functions
+- Unit tests follow pattern `tests/unit/utils/<name>.test.ts`
+- Tests use vitest with `describe`, `expect`, `it` imports
+- Non-null assertions (`!`) used for array index access in strict mode
+
+---
+
+## US-001: Cosine Similarity Function (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files created:**
+- `app/utils/cosineSimilarity.ts` - Pure function for computing cosine similarity between vectors
+- `tests/unit/utils/cosineSimilarity.test.ts` - 11 unit tests covering all acceptance criteria
+
+**Implementation notes:**
+- Function handles 384-dimension vectors efficiently (under 10ms)
+- Returns 0 for zero vectors instead of NaN
+- Throws descriptive error for vector length mismatch
+- All tests pass, typecheck passes
+
+**Next steps:**
+- US-002 depends on this for computing embeddings similarity
+- US-003 will use this function in the semantic search composable
 
 ---
 
