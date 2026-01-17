@@ -1,124 +1,132 @@
 {
   "project": "SecondBrain",
-  "branchName": "ralph/table-improvements",
-  "description": "Table View Improvements - Add card/grid view and content grouping capabilities",
+  "branchName": "ralph/semantic-search-transformers-js",
+  "description": "Semantic Search with Transformers.js - Enable meaning-based content discovery using pre-computed embeddings and hybrid scoring",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Update URL schema and composable for view/group params",
-      "description": "As a developer, I need the URL params and composable to support new view/group options before building the UI.",
+      "title": "Implement cosine similarity function",
+      "description": "As a developer, I need an efficient cosine similarity function to compare embedding vectors.",
       "acceptanceCriteria": [
-        "Add 'view' param to tableParamsSchema (enum: 'table' | 'cards', default 'table')",
-        "Add 'group' param to tableParamsSchema (enum: 'none' | 'type' | 'year' | 'author', default 'none')",
-        "useContentTable exposes 'view' and 'groupBy' refs with URL sync",
-        "Add groupItems(items, groupBy) pure function that returns { label: string, items: ContentItem[] }[]",
-        "Add unit tests for groupItems function covering all group types",
+        "Create pure TypeScript function at app/utils/cosineSimilarity.ts",
+        "Function accepts two number[] vectors and returns similarity score between -1 and 1",
+        "Handles 384-dimension vectors efficiently",
+        "No external dependencies",
+        "Unit tests for: identical vectors (returns 1), orthogonal vectors (returns 0), zero vectors (handles gracefully)",
         "Typecheck passes"
       ],
       "priority": 1,
       "passes": false,
-      "notes": "Foundation story - schema and composable changes must come first. Group by year extracts from date field, group by author uses first author."
+      "notes": "Foundation utility - no dependencies on other stories. Simple pure function."
     },
     {
       "id": "US-002",
-      "title": "Add view toggle component to filter bar",
-      "description": "As a user, I want to switch between table and card views so I can choose the layout that works best.",
+      "title": "Create embedding generation script",
+      "description": "As a developer, I need a script to generate embeddings for all content at build time.",
       "acceptanceCriteria": [
-        "Add UButtonGroup with 'Table' and 'Cards' options to ContentTableFiltersBar",
-        "Toggle buttons use appropriate icons (list icon for table, grid icon for cards)",
-        "Clicking toggle updates URL param via useContentTable view ref",
-        "Active view visually highlighted in toggle group",
-        "View toggle preserves all other active filters",
-        "Typecheck passes",
-        "Verify in browser"
+        "Script at scripts/generate-embeddings.ts using @huggingface/transformers",
+        "Uses Xenova/bge-small-en-v1.5 model",
+        "Processes all markdown files in content/ directory",
+        "Generates embeddings from title + summary + first 512 chars of body",
+        "Outputs JSON structure: { version: string, model: string, embeddings: { [slug]: { vector: number[], title: string, type: string } } }",
+        "Outputs to public/embeddings.json",
+        "Add generate:embeddings script to package.json",
+        "Script runs successfully via pnpm generate:embeddings",
+        "Typecheck passes"
       ],
       "priority": 2,
       "passes": false,
-      "notes": "Depends on US-001 for view param support."
+      "notes": "Run pnpm add @huggingface/transformers first. Script runs in Node with Transformers.js."
     },
     {
       "id": "US-003",
-      "title": "Add grouping dropdown to filter bar",
-      "description": "As a user, I want to group content by a field so I can see related items together.",
+      "title": "Create semantic search composable",
+      "description": "As a developer, I need a composable to perform semantic search queries against pre-computed embeddings.",
       "acceptanceCriteria": [
-        "Add USelectMenu dropdown to filter bar with options: None, Type, Year, Author",
-        "Dropdown uses appropriate icon (layers icon)",
-        "Selection updates URL param via useContentTable groupBy ref",
-        "Default shows 'None' when no grouping active",
-        "Grouping selection preserved when switching views",
-        "Typecheck passes",
-        "Verify in browser"
+        "Composable at app/composables/useSemanticSearch.ts",
+        "Lazy-loads Transformers.js only when search is first performed",
+        "Fetches and caches embeddings.json on first search",
+        "Converts search query to embedding using bge-small-en-v1.5",
+        "Computes cosine similarity against all pre-computed embeddings",
+        "Returns top N results (default 20) sorted by similarity score",
+        "Caches model instance after first load",
+        "Exposes loading state ref for model initialization",
+        "Exposes error state ref for failures",
+        "Typecheck passes"
       ],
       "priority": 3,
       "passes": false,
-      "notes": "Depends on US-001 for groupBy param support."
+      "notes": "Depends on US-001 (cosine similarity), US-002 (embeddings.json must exist). Core search logic."
     },
     {
       "id": "US-004",
-      "title": "Create ContentCardsGrid component for card view",
-      "description": "As a user, I want to see content in a card grid layout so I can scan items visually.",
+      "title": "Create hybrid search scoring",
+      "description": "As a developer, I need a function to combine keyword and semantic search scores.",
       "acceptanceCriteria": [
-        "Create ContentCardsGrid.vue component",
-        "Responsive grid: 1 column mobile, 2 tablet, 3 desktop using Tailwind grid",
-        "Each card shows: title, type badge, author avatars (max 2), tags (max 3), date, rating",
-        "Cards are clickable to navigate to content page",
-        "Empty state matches table empty state message",
-        "Typecheck passes",
-        "Verify in browser"
+        "Create hybrid scoring function in app/utils/hybridSearch.ts",
+        "Hybrid score formula: (keyword_score * 0.4) + (semantic_score * 0.6)",
+        "Weights defined as named constants at top of file",
+        "Function merges keyword results and semantic results by slug",
+        "Results sorted by hybrid score descending",
+        "Keyword-only results included with semantic_score = 0",
+        "Semantic-only results included with keyword_score = 0",
+        "Returns deduplicated array sorted by hybrid score",
+        "Unit tests for merge and deduplication logic",
+        "Typecheck passes"
       ],
       "priority": 4,
       "passes": false,
-      "notes": "Can reuse ContentCard.vue patterns if one exists, otherwise create minimal card design."
+      "notes": "Pure utility function. Can be tested without semantic search running."
     },
     {
       "id": "US-005",
-      "title": "Integrate card view into table page",
-      "description": "As a user, I want the table page to show cards when card view is selected.",
+      "title": "Integrate semantic search into search page",
+      "description": "As a user, I want the search page to use hybrid semantic+keyword search.",
       "acceptanceCriteria": [
-        "Table page conditionally renders ContentCardsGrid when view='cards'",
-        "Table page renders existing table when view='table'",
-        "Switching views preserves current filters and pagination",
-        "Loading and error states work for both views",
+        "Search page (app/pages/search.vue) uses useSemanticSearch composable",
+        "Shows 'Loading semantic search...' indicator while model initializes on first search",
+        "Uses hybrid scoring to merge Fuse.js results with semantic results",
+        "Falls back to keyword-only search if embeddings.json fails to load",
+        "Falls back to keyword-only search if Transformers.js fails to load",
+        "Existing keyboard navigation (j/k/enter) continues to work",
         "Typecheck passes",
         "Verify in browser"
       ],
       "priority": 5,
       "passes": false,
-      "notes": "Depends on US-002 (toggle), US-004 (card component)."
+      "notes": "Depends on US-003 (composable), US-004 (hybrid scoring). Main integration point."
     },
     {
       "id": "US-006",
-      "title": "Render grouped table view with section headers",
-      "description": "As a user, I want the table to show section headers when grouping is active.",
+      "title": "Integrate semantic search into command palette",
+      "description": "As a user, I want the Cmd+K search modal to also use semantic search.",
       "acceptanceCriteria": [
-        "When groupBy is active, table renders items within collapsible section groups",
-        "Section headers show group name and item count (e.g., 'Articles (12)')",
-        "Items within each group maintain current sort order",
-        "Empty groups are hidden",
-        "Collapsible sections start expanded by default",
+        "Command palette (app/components/AppSearchModal.vue) uses useSemanticSearch composable",
+        "Model loaded lazily on first search query typed",
+        "Results merged with existing Fuse.js results using hybrid scoring",
+        "Loading indicator shown subtly during model initialization",
+        "No visual regression to command palette UI",
+        "Graceful fallback to keyword-only if semantic search fails",
         "Typecheck passes",
         "Verify in browser"
       ],
       "priority": 6,
       "passes": false,
-      "notes": "Depends on US-001 (groupItems function). May need to refactor table structure for grouped rows."
+      "notes": "Depends on US-003 (composable), US-004 (hybrid scoring). Uses same composable as search page."
     },
     {
       "id": "US-007",
-      "title": "Render grouped card view with section headers",
-      "description": "As a user, I want cards organized under group headers so I can visually scan by category.",
+      "title": "Add embeddings generation to build pipeline",
+      "description": "As a developer, I need embeddings regenerated when content changes.",
       "acceptanceCriteria": [
-        "When groupBy is active, ContentCardsGrid renders section headers above each group",
-        "Section headers show group name and count",
-        "Cards within each group flow in responsive grid",
-        "Groups sorted appropriately: Type (alphabetically), Year (newest first), Author (alphabetically)",
-        "Items with missing group field shown in 'Unknown' group",
-        "Typecheck passes",
-        "Verify in browser"
+        "Add prebuild script to package.json that runs generate:embeddings before build",
+        "Document pnpm generate:embeddings command in CLAUDE.md",
+        "Generate initial embeddings.json file and commit to repo",
+        "Typecheck passes"
       ],
       "priority": 7,
       "passes": false,
-      "notes": "Depends on US-001 (groupItems), US-004 (card component)."
+      "notes": "Final integration story. Ensures embeddings stay up-to-date with content."
     }
   ]
 }

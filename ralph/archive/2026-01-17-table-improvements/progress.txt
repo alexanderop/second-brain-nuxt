@@ -1,0 +1,12 @@
+# Ralph Progress Log
+Started: Fri Jan 10 2026
+
+## Codebase Patterns
+- Root workspace scripts delegate to apps/web via `pnpm --filter @second-brain/web <command>`
+- Pre-commit hook runs: `pnpm lint:fix && pnpm typecheck && pnpm test:unit`
+- Table view state managed by `useContentTable` composable with URL-synced params
+- Filter bar lives in `ContentTableFiltersBar.vue`
+- Table page at `app/pages/table.vue`
+
+---
+
