@@ -6,8 +6,9 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UInput, UKbd, UAvatar } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
-import { useSemanticSearch } from '~/composables/useSemanticSearch'
+import { useDebouncedSemanticSearch } from '~/composables/useDebouncedSemanticSearch'
 import { mergeSearchResults, type KeywordResult, type HybridResult } from '~/utils/hybridSearch'
+import { getSnippet, highlightMatch } from '~/utils/searchResultTransformers'
 
 interface SearchSection {
   id: string
@@ -61,27 +62,16 @@ watchDebounced(
   (value) => {
     debouncedSearch.value = value
   },
-  { debounce: 300 },
+  { debounce: 250 },
 )
 
-// Semantic search composable
-const { search: semanticSearch, isLoading: semanticLoading, error: semanticError } = useSemanticSearch()
-
-// Track semantic search results separately
-const semanticResults = ref<Awaited<ReturnType<typeof semanticSearch>>>([])
-const hasSemanticSearchRun = ref(false)
-
-// Run semantic search when debounced search changes
-watch(debouncedSearch, async (query) => {
-  if (!query) {
-    semanticResults.value = []
-    hasSemanticSearchRun.value = false
-    return
-  }
-  const results = await semanticSearch(query)
-  semanticResults.value = results
-  hasSemanticSearchRun.value = true
-})
+// Semantic search with debouncing and proper async handling
+const {
+  results: semanticResults,
+  hasSearchRun: hasSemanticSearchRun,
+  isLoading: semanticLoading,
+  error: semanticError,
+} = useDebouncedSemanticSearch(debouncedSearch)
 
 // Fetch search sections with full body content
 const { data: searchSections } = await useAsyncData(
@@ -121,7 +111,7 @@ const FUSE_OPTIONS = {
     { name: 'authorSlugs', weight: 0.8 },
   ],
   includeMatches: true,
-  threshold: 0.3,
+  threshold: 0.4,
   ignoreLocation: true,
   minMatchCharLength: 2,
 }
@@ -153,31 +143,6 @@ const fuse = computed(() => {
 
   return items.length > 0 ? new Fuse(items, FUSE_OPTIONS) : null
 })
-
-// Extract snippet around match with context
-function getSnippet(content: string, term: string, contextChars = 60): string {
-  const lowerContent = content.toLowerCase()
-  const lowerTerm = term.toLowerCase()
-  const index = lowerContent.indexOf(lowerTerm)
-
-  if (index === -1) return content.slice(0, 150)
-
-  const start = Math.max(0, index - contextChars)
-  const end = Math.min(content.length, index + term.length + contextChars)
-
-  let snippet = content.slice(start, end)
-  if (start > 0) snippet = '...' + snippet
-  if (end < content.length) snippet += '...'
-
-  return snippet
-}
-
-// Highlight matched terms in text
-function highlightMatch(text: string, term: string): string {
-  if (!term) return text
-  const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
-  return text.replace(regex, '<mark class="bg-[var(--ui-primary)]/20 text-[var(--ui-primary)] rounded px-0.5">$1</mark>')
-}
 
 // Helper: Extract snippet and highlighted version from match results
 function extractSnippetFromMatch(

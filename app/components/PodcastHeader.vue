@@ -89,7 +89,7 @@ function handleImageError(event: Event) {
           <template v-for="(host, index) in hosts" :key="host.slug">
             <NuxtLink
               :to="`/authors/${encodeURIComponent(host.slug)}`"
-              class="hover:underline text-[var(--ui-text)]"
+              class="underline text-[var(--ui-text)]"
             >
               {{ host.name }}
             </NuxtLink>

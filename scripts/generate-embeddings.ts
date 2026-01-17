@@ -3,20 +3,34 @@
  * Build script to generate embeddings for semantic search
  *
  * Uses Transformers.js with bge-small-en-v1.5 to generate 384-dimension
- * embeddings from content (title + summary + first 512 chars of body).
+ * embeddings from content (title + summary + first 1500 chars of body).
  * Outputs to public/embeddings.json for client-side semantic search.
+ *
+ * Features:
+ * - Incremental generation via content hashing (skips unchanged files)
+ * - Batch processing for better throughput
+ * - Reduced precision for smaller output (~40% size reduction)
  */
 
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
-import { join, basename } from 'node:path'
-import { pipeline } from '@huggingface/transformers'
+import { createHash } from 'node:crypto'
+import { existsSync } from 'node:fs'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { basename, join } from 'node:path'
+import { pipeline, type FeatureExtractionPipeline } from '@huggingface/transformers'
+import { parse as parseYaml } from 'yaml'
+import { tryCatch } from '../shared/utils/tryCatch'
 
 const CONTENT_DIR = join(process.cwd(), 'content')
 const OUTPUT_PATH = join(process.cwd(), 'public', 'embeddings.json')
 
 // Use bge-small-en-v1.5 for 384-dimension embeddings
 const MODEL_NAME = 'Xenova/bge-small-en-v1.5'
-const EMBEDDING_VERSION = '1.0.0'
+const EMBEDDING_VERSION = '1.1.0'
+
+// Processing configuration
+const BATCH_SIZE = 16
+const TEXT_MAX_LENGTH = 1500
+const VECTOR_SIZE = 384
 
 // Excluded directories that don't need embeddings
 const EXCLUDED_DIRS = [
@@ -44,37 +58,50 @@ interface EmbeddingEntry {
   vector: number[]
   title: string
   type: string
+  hash: string
 }
 
 interface EmbeddingsOutput {
   version: string
   model: string
+  generatedAt: string
+  textMaxLength: number
   embeddings: Record<string, EmbeddingEntry>
 }
 
+interface FileToProcess {
+  slug: string
+  text: string
+  title: string
+  type: string
+  hash: string
+}
+
+interface ProcessingStats {
+  cached: number
+  skipped: number
+  errors: number
+}
+
 /**
- * Parse frontmatter from markdown content
+ * Create a short hash of content for change detection
+ */
+function hashContent(text: string): string {
+  return createHash('sha256').update(text).digest('hex').slice(0, 16)
+}
+
+/**
+ * Parse frontmatter from markdown content using YAML parser
  */
 function parseFrontmatter(content: string): Frontmatter {
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/)
-  if (!frontmatterMatch) return {}
+  const match = content.match(/^---\n([\s\S]*?)\n---/)
+  if (!match) return {}
 
-  const frontmatter: Frontmatter = {}
-  const lines = frontmatterMatch[1].split('\n')
+  const [parseError, parsed] = tryCatch(() => parseYaml(match[1]))
+  if (parseError || typeof parsed !== 'object' || parsed === null) return {}
 
-  for (const line of lines) {
-    const match = line.match(/^(\w+):\s*(.+)$/)
-    if (match) {
-      const [, key, value] = match
-      // Remove quotes if present
-      const cleanValue = value.replace(/^["']|["']$/g, '')
-      if (key === 'title') frontmatter.title = cleanValue
-      if (key === 'type') frontmatter.type = cleanValue
-      if (key === 'summary') frontmatter.summary = cleanValue
-    }
-  }
-
-  return frontmatter
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- YAML parser returns unknown, we validate object above
+  return parsed as Frontmatter
 }
 
 /**
@@ -114,9 +141,9 @@ function createEmbeddingText(frontmatter: Frontmatter, body: string): string {
     parts.push(frontmatter.summary)
   }
 
-  // Take first 512 chars of body
+  // Take first TEXT_MAX_LENGTH chars of body
   if (body) {
-    const truncatedBody = body.slice(0, 512)
+    const truncatedBody = body.slice(0, TEXT_MAX_LENGTH)
     parts.push(truncatedBody)
   }
 
@@ -156,12 +183,127 @@ function getSlugFromPath(filePath: string): string {
   return basename(relativePath, '.md')
 }
 
+/**
+ * Load existing embeddings file if it exists
+ */
+async function loadExistingEmbeddings(): Promise<EmbeddingsOutput | null> {
+  if (!existsSync(OUTPUT_PATH)) return null
+
+  const content = await readFile(OUTPUT_PATH, 'utf-8').catch(() => null)
+  if (!content) return null
+
+  const [parseError, parsed] = tryCatch(() => JSON.parse(content))
+  if (parseError) return null
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- JSON.parse returns unknown, structure validated by usage
+  return parsed as EmbeddingsOutput
+}
+
+/**
+ * Round vector values to 5 decimal places for smaller output
+ */
+function roundVector(vector: Float32Array): number[] {
+  return Array.from(vector).map((v) => Math.round(v * 100000) / 100000)
+}
+
+/**
+ * Process a single file and determine if it needs embedding generation
+ */
+async function processFile(
+  filePath: string,
+  existingOutput: EmbeddingsOutput | null,
+  embeddings: Record<string, EmbeddingEntry>,
+  toProcess: FileToProcess[],
+  stats: ProcessingStats,
+): Promise<void> {
+  const slug = getSlugFromPath(filePath)
+
+  const content = await readFile(filePath, 'utf-8').catch((error) => {
+    console.error(`  Error reading ${slug}:`, error)
+    stats.errors++
+    return null
+  })
+  if (!content) return
+
+  const frontmatter = parseFrontmatter(content)
+
+  if (!frontmatter.title) {
+    console.log(`  Skipping ${slug}: no title`)
+    stats.skipped++
+    return
+  }
+
+  const body = extractBody(content)
+  const text = createEmbeddingText(frontmatter, body)
+  const contentHash = hashContent(text)
+
+  // Check if we can reuse existing embedding
+  const existing = existingOutput?.embeddings[slug]
+  if (existing?.hash === contentHash) {
+    embeddings[slug] = existing
+    stats.cached++
+    console.log(`[cached] ${slug}`)
+    return
+  }
+
+  toProcess.push({
+    slug,
+    text,
+    title: frontmatter.title,
+    type: frontmatter.type || 'note',
+    hash: contentHash,
+  })
+}
+
+/**
+ * Process a batch of files and generate embeddings
+ */
+async function processBatch(
+  batch: FileToProcess[],
+  extractor: FeatureExtractionPipeline,
+  embeddings: Record<string, EmbeddingEntry>,
+): Promise<void> {
+  const texts = batch.map((item) => item.text)
+
+  // Generate embeddings for batch
+  const outputs = await extractor(texts, { pooling: 'mean', normalize: true })
+
+  // Handle batch results
+  for (let j = 0; j < batch.length; j++) {
+    const item = batch[j]
+    if (!item) continue
+
+    // For batched input, outputs.data contains all vectors concatenated
+    const start = j * VECTOR_SIZE
+    const end = start + VECTOR_SIZE
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Transformers.js returns Float32Array for fp32
+    const vectorData = (outputs.data as Float32Array).slice(start, end)
+    const vector = roundVector(vectorData)
+
+    embeddings[item.slug] = {
+      vector,
+      title: item.title,
+      type: item.type,
+      hash: item.hash,
+    }
+
+    console.log(`[generated] ${item.slug}`)
+  }
+}
+
 async function main() {
+  const startTime = Date.now()
   console.log('Generating embeddings for semantic search...')
   console.log(`Model: ${MODEL_NAME}`)
 
   // Ensure public directory exists
   await mkdir(join(process.cwd(), 'public'), { recursive: true })
+
+  // Load existing embeddings for incremental generation
+  const existingOutput = await loadExistingEmbeddings()
+  if (existingOutput) {
+    console.log('Found existing embeddings, will use incremental generation')
+  }
 
   // Initialize the embedding pipeline
   console.log('Loading embedding model...')
@@ -172,64 +314,47 @@ async function main() {
 
   // Find all markdown files
   const files = await findMarkdownFiles(CONTENT_DIR)
-  console.log(`Found ${files.length} content file(s)`)
+  console.log(`Found ${files.length} content file(s)\n`)
 
   const embeddings: Record<string, EmbeddingEntry> = {}
-  let processed = 0
-  let skipped = 0
-  let errors = 0
+  const toProcess: FileToProcess[] = []
+  const stats: ProcessingStats = { cached: 0, skipped: 0, errors: 0 }
 
+  // First pass: identify files needing processing
   for (const filePath of files) {
-    const slug = getSlugFromPath(filePath)
+    await processFile(filePath, existingOutput, embeddings, toProcess, stats)
+  }
 
-    const content = await readFile(filePath, 'utf-8').catch((error) => {
-      console.error(`  Error reading ${slug}:`, error)
-      errors++
-      return null
-    })
-    if (!content) continue
+  console.log(`\nTo process: ${toProcess.length}, Cached: ${stats.cached}, Skipped: ${stats.skipped}`)
 
-    const frontmatter = parseFrontmatter(content)
+  // Process files in batches
+  if (toProcess.length > 0) {
+    console.log(`\nProcessing ${toProcess.length} file(s) in batches of ${BATCH_SIZE}...`)
 
-    if (!frontmatter.title) {
-      console.log(`  Skipping ${slug}: no title`)
-      skipped++
-      continue
-    }
+    for (let i = 0; i < toProcess.length; i += BATCH_SIZE) {
+      const batch = toProcess.slice(i, i + BATCH_SIZE)
+      await processBatch(batch, extractor, embeddings)
 
-    const body = extractBody(content)
-    const text = createEmbeddingText(frontmatter, body)
-
-    // Generate embedding
-    const output = await extractor(text, { pooling: 'mean', normalize: true })
-
-    // Convert to plain array - output.data is typed as DataArray (Float32Array | etc.)
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Transformers.js returns Float32Array for fp32
-    const vector = Array.from(output.data as Float32Array)
-
-    embeddings[slug] = {
-      vector,
-      title: frontmatter.title,
-      type: frontmatter.type || 'note',
-    }
-
-    processed++
-
-    if (processed % 50 === 0) {
-      console.log(`  Processed ${processed} files...`)
+      const progress = Math.min(i + BATCH_SIZE, toProcess.length)
+      console.log(`  Progress: ${progress}/${toProcess.length}`)
     }
   }
 
-  // Write output
+  // Write output with metadata
   const output: EmbeddingsOutput = {
     version: EMBEDDING_VERSION,
     model: MODEL_NAME,
+    generatedAt: new Date().toISOString(),
+    textMaxLength: TEXT_MAX_LENGTH,
     embeddings,
   }
 
   await writeFile(OUTPUT_PATH, JSON.stringify(output))
-  console.log(`\nDone! Processed: ${processed}, Skipped: ${skipped}, Errors: ${errors}`)
-  console.log(`Output: ${OUTPUT_PATH}`)
+
+  const duration = ((Date.now() - startTime) / 1000).toFixed(1)
+  console.log(`\nDone in ${duration}s!`)
+  console.log(`  Generated: ${toProcess.length}, Cached: ${stats.cached}, Skipped: ${stats.skipped}, Errors: ${stats.errors}`)
+  console.log(`  Output: ${OUTPUT_PATH}`)
 }
 
 main().catch(console.error)

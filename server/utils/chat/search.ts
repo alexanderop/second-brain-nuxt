@@ -1,4 +1,5 @@
 import type { NoteContext, NoteContent } from './tools'
+import { semanticSearch } from './semanticSearch'
 
 // Raw note type from database query
 export interface RawNote {
@@ -9,6 +10,8 @@ export interface RawNote {
   stem?: string
   tags?: string[]
   type?: string
+  url?: string
+  rawbody?: string
 }
 
 // Common stop words to filter out from search
@@ -86,18 +89,31 @@ export function filterAndScoreNotes(
     }))
 }
 
+/** Get displayable title from a note, with fallbacks */
+function getNoteTitle(note: RawNote): string {
+  return note.title ?? note.stem ?? 'Untitled'
+}
+
+/** Get note path with stem fallback */
+function getNotePath(note: RawNote): string {
+  return note.path ?? `/${note.stem}`
+}
+
 /**
  * Format a raw note into the NoteContent shape.
  * Pure function - no side effects.
  */
 export function formatNoteContent(note: RawNote): NoteContent {
+  const content = note.rawbody?.slice(0, 3000) // First 3000 chars for token efficiency
   return {
-    title: note.title ?? note.stem ?? 'Untitled',
+    title: getNoteTitle(note),
     summary: note.summary ?? null,
     notes: note.notes ?? null,
     tags: note.tags ?? [],
     type: note.type ?? 'note',
-    path: note.path ?? `/${note.stem}`,
+    path: getNotePath(note),
+    url: note.url ?? null,
+    content: content ?? null,
   }
 }
 
@@ -111,4 +127,142 @@ export function formatSearchResults(notes: RawNote[]): NoteContext[] {
     summary: note.summary ?? null,
     path: note.path ?? `/${note.stem}`,
   }))
+}
+
+// Scoring weights for hybrid search (matches client-side)
+const KEYWORD_WEIGHT = 0.4
+const SEMANTIC_WEIGHT = 0.6
+
+// Minimum hybrid score to include in results (filters out very low-relevance matches)
+const MIN_HYBRID_SCORE = 0.15
+
+export interface HybridSearchResult extends NoteContext {
+  keywordScore: number
+  semanticScore: number
+  hybridScore: number
+}
+
+/**
+ * Performs hybrid search combining keyword and semantic search.
+ *
+ * - Keyword search: exact matches in title, summary, tags
+ * - Semantic search: conceptual similarity via embeddings
+ * - Final score: 40% keyword + 60% semantic
+ *
+ * @param query - Search query text
+ * @param notes - All notes from database
+ * @param options - Search options (limit, type filter)
+ * @returns Hybrid-scored search results
+ */
+export async function hybridSearch(
+  query: string,
+  notes: RawNote[],
+  options: { limit?: number; type?: string } = {},
+): Promise<NoteContext[]> {
+  const { limit = 5, type } = options
+  const maxLimit = Math.min(limit, 10)
+  const keywords = extractKeywords(query)
+
+  // Filter by type if specified
+  const filteredNotes = type
+    ? notes.filter(n => n.type === type)
+    : notes
+
+  // Run keyword and semantic search in parallel
+  const [keywordResults, semanticResults] = await Promise.all([
+    // Keyword search (synchronous, wrap in promise for parallel execution)
+    Promise.resolve(
+      filteredNotes
+        .map(note => ({
+          slug: note.stem ?? '',
+          title: note.title ?? note.stem ?? 'Untitled',
+          summary: note.summary ?? null,
+          path: note.path ?? `/${note.stem}`,
+          score: scoreNote(note, keywords),
+        }))
+        .filter(item => item.score > 0),
+    ),
+    // Semantic search
+    semanticSearch(query, 50),
+  ])
+
+  // Normalize keyword scores to 0-1 range
+  const maxKeywordScore = Math.max(...keywordResults.map(r => r.score), 1)
+  const normalizedKeyword = keywordResults.map(r => ({
+    ...r,
+    score: r.score / maxKeywordScore,
+  }))
+
+  // Build result map for merging
+  const resultMap = new Map<string, HybridSearchResult>()
+
+  // Add keyword results
+  for (const kr of normalizedKeyword) {
+    resultMap.set(kr.slug, {
+      title: kr.title,
+      summary: kr.summary,
+      path: kr.path,
+      keywordScore: kr.score,
+      semanticScore: 0,
+      hybridScore: kr.score * KEYWORD_WEIGHT,
+    })
+  }
+
+  // Merge semantic results (filter by type if needed)
+  const filteredSemantic = type
+    ? semanticResults.filter(sr => sr.type === type)
+    : semanticResults
+
+  for (const sr of filteredSemantic) {
+    const existing = resultMap.get(sr.slug)
+    if (existing) {
+      existing.semanticScore = sr.score
+      existing.hybridScore = existing.keywordScore * KEYWORD_WEIGHT + sr.score * SEMANTIC_WEIGHT
+      continue
+    }
+
+    // Semantic-only result: find the note to get summary
+    const note = filteredNotes.find(n => n.stem === sr.slug)
+    resultMap.set(sr.slug, {
+      title: sr.title,
+      summary: note?.summary ?? null,
+      path: `/${sr.slug}`,
+      keywordScore: 0,
+      semanticScore: sr.score,
+      hybridScore: sr.score * SEMANTIC_WEIGHT,
+    })
+  }
+
+  // Sort by hybrid score and return top results
+  const results = Array.from(resultMap.values())
+  results.sort((a, b) => b.hybridScore - a.hybridScore)
+
+  // Filter out low-confidence results
+  const filteredResults = results.filter(r => r.hybridScore >= MIN_HYBRID_SCORE)
+
+  // Return as NoteContext (strip internal scores)
+  return filteredResults.slice(0, maxLimit).map(r => ({
+    title: r.title,
+    summary: r.summary,
+    path: r.path,
+  }))
+}
+
+/**
+ * Keyword-only search (for mode='keyword').
+ * Wrapper around filterAndScoreNotes with consistent interface.
+ */
+export function keywordSearch(
+  query: string,
+  notes: RawNote[],
+  options: { limit?: number; type?: string } = {},
+): NoteContext[] {
+  const { limit = 5, type } = options
+  const keywords = extractKeywords(query)
+
+  const filteredNotes = type
+    ? notes.filter(n => n.type === type)
+    : notes
+
+  return filterAndScoreNotes(filteredNotes, keywords, limit)
 }

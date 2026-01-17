@@ -46,7 +46,7 @@ function formatDate(date?: Date | string) {
           <p v-if="content.podcast && podcastName" class="text-sm text-[var(--ui-text-muted)]">
             <NuxtLink
               :to="`/podcasts/${content.podcast}`"
-              class="hover:underline text-[var(--ui-text)]"
+              class="underline text-[var(--ui-text)]"
               @click.stop
             >{{ podcastName }}</NuxtLink>
             <template v-if="content.guests?.length">

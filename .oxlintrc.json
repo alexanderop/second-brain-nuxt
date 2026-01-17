@@ -54,6 +54,7 @@
     "node_modules",
     ".nuxt",
     ".output",
+    ".claude",
     "dist",
     "playwright-report",
     "test-results",

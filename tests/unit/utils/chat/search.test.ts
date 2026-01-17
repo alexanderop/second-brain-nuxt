@@ -179,6 +179,8 @@ describe('formatNoteContent', () => {
       tags: ['vue', 'javascript'],
       type: 'article',
       path: '/vue-guide',
+      url: 'https://vuejs.org/guide',
+      rawbody: 'Full markdown content here',
     }
     const result = formatNoteContent(note)
     expect(result).toEqual({
@@ -188,6 +190,8 @@ describe('formatNoteContent', () => {
       tags: ['vue', 'javascript'],
       type: 'article',
       path: '/vue-guide',
+      url: 'https://vuejs.org/guide',
+      content: 'Full markdown content here',
     })
   })
 
@@ -200,6 +204,8 @@ describe('formatNoteContent', () => {
     expect(result.tags).toEqual([])
     expect(result.type).toBe('note')
     expect(result.path).toBe('/test-note')
+    expect(result.url).toBeNull()
+    expect(result.content).toBeNull()
   })
 
   it('uses Untitled for completely empty note', () => {

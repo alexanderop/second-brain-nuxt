@@ -127,7 +127,7 @@ function formatDate(date?: Date | string) {
         <template v-for="(guest, index) in content.guests" :key="guest">
           <NuxtLink
             :to="`/authors/${encodeURIComponent(guest)}`"
-            class="hover:underline text-[var(--ui-text)]"
+            class="underline text-[var(--ui-text)]"
           >
             {{ guest }}
           </NuxtLink>
@@ -140,7 +140,7 @@ function formatDate(date?: Date | string) {
         <template v-for="(host, index) in hosts" :key="host.slug">
           <NuxtLink
             :to="`/authors/${encodeURIComponent(host.slug)}`"
-            class="hover:underline text-[var(--ui-text)]"
+            class="underline text-[var(--ui-text)]"
           >
             {{ host.name }}
           </NuxtLink>
@@ -155,7 +155,7 @@ function formatDate(date?: Date | string) {
       <template v-for="(author, index) in content.authors" :key="author">
         <NuxtLink
           :to="`/authors/${encodeURIComponent(author)}`"
-          class="hover:underline text-[var(--ui-text)]"
+          class="underline text-[var(--ui-text)]"
         >
           {{ author }}
         </NuxtLink>

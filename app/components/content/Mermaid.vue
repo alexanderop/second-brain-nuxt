@@ -43,7 +43,7 @@ async function renderMermaid() {
   if (error) {
     console.error('Error running Mermaid:', error)
     if (mermaidContainer.value) {
-      mermaidContainer.value.innerHTML = 'Mermaid Chart Syntax Error'
+      mermaidContainer.value.textContent = 'Mermaid Chart Syntax Error'
     }
   }
 }

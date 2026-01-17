@@ -64,7 +64,7 @@ function handleImageError(event: Event) {
           <template v-for="(authorSlug, index) in newsletter.authors" :key="authorSlug">
             <NuxtLink
               :to="`/authors/${encodeURIComponent(authorSlug)}`"
-              class="hover:underline text-[var(--ui-text)]"
+              class="underline text-[var(--ui-text)]"
             >
               {{ authorNames?.[authorSlug] || authorSlug }}
             </NuxtLink>

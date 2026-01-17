@@ -11,14 +11,17 @@ import {
   TOOLS,
   isSearchNotesInput,
   isGetNoteContentInput,
+  isGetNoteDetailsInput,
+  isFetchSourceInput,
 } from '../utils/chat/tools'
 import type { ChatRequest, NoteContext } from '../utils/chat/tools'
 import {
-  extractKeywords,
-  filterAndScoreNotes,
   formatNoteContent,
+  hybridSearch,
+  keywordSearch,
 } from '../utils/chat/search'
 import type { RawNote } from '../utils/chat/search'
+import { semanticSearch, findSimilarNotes } from '../utils/chat/semanticSearch'
 import {
   buildInitialMessages,
   appendAssistantMessage,
@@ -46,11 +49,17 @@ async function fetchAllNotes(httpEvent: HttpEvent, type?: string): Promise<RawNo
 
 async function fetchNoteBySlug(httpEvent: HttpEvent, slug: string): Promise<RawNote | null> {
   const note = await queryCollection(httpEvent, 'content')
-    .select('title', 'summary', 'path', 'stem', 'tags', 'type', 'notes')
+    .select('title', 'summary', 'path', 'stem', 'tags', 'type', 'notes', 'url', 'rawbody')
     .where('stem', '=', slug)
     .first()
 
-  return note ?? null
+  if (!note) return null
+
+  // Cast rawbody to string since Nuxt Content types it as unknown
+  return {
+    ...note,
+    rawbody: typeof note.rawbody === 'string' ? note.rawbody : undefined,
+  }
 }
 
 // Tool execution (bridges shell and core)
@@ -59,16 +68,44 @@ async function executeSearchNotes(
   query: string,
   type?: string,
   limit = 5,
+  mode: 'keyword' | 'semantic' | 'hybrid' = 'hybrid',
   requestId = '',
 ): Promise<NoteContext[]> {
-  const keywords = extractKeywords(query)
-  log.info(`[${requestId}] Tool: search_notes`, { query, type, limit, keywords })
+  log.info(`[${requestId}] Tool: search_notes`, { query, type, limit, mode })
 
-  const allNotes = await fetchAllNotes(httpEvent, type)
-  const notes = filterAndScoreNotes(allNotes, keywords, limit)
+  const allNotes = await fetchAllNotes(httpEvent)
 
-  log.info(`[${requestId}] search_notes found ${notes.length} results:`, notes.map(n => n.title))
+  const notes = await executeSearchByMode(query, allNotes, { limit, type }, mode)
+  log.info(`[${requestId}] ${mode} search found ${notes.length} results:`, notes.map(n => n.title))
   return notes
+}
+
+async function executeSearchByMode(
+  query: string,
+  allNotes: RawNote[],
+  options: { limit: number; type?: string },
+  mode: 'keyword' | 'semantic' | 'hybrid',
+): Promise<NoteContext[]> {
+  const { limit, type } = options
+
+  if (mode === 'keyword') {
+    return keywordSearch(query, allNotes, { limit, type })
+  }
+
+  if (mode === 'semantic') {
+    const semanticResults = await semanticSearch(query, limit * 2)
+    const filtered = type
+      ? semanticResults.filter(r => r.type === type)
+      : semanticResults
+    return filtered.slice(0, limit).map(r => ({
+      title: r.title,
+      summary: allNotes.find(n => n.stem === r.slug)?.summary ?? null,
+      path: `/${r.slug}`,
+    }))
+  }
+
+  // Default: hybrid search
+  return hybridSearch(query, allNotes, { limit, type })
 }
 
 async function executeGetNoteContent(
@@ -90,35 +127,264 @@ async function executeGetNoteContent(
   return result
 }
 
+// Wiki-link pattern to extract forward links from note content
+const WIKI_LINK_PATTERN = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g
+
+/**
+ * Parse wiki-links from note content to find forward links.
+ */
+function parseWikiLinks(content: string | null | undefined): string[] {
+  if (!content) return []
+  const links: string[] = []
+  let match
+  while ((match = WIKI_LINK_PATTERN.exec(content)) !== null) {
+    if (match[1]) {
+      links.push(match[1])
+    }
+  }
+  return [...new Set(links)] // Deduplicate
+}
+
+/**
+ * Find all notes that link to the given slug (backlinks).
+ */
+async function findBacklinks(httpEvent: HttpEvent, slug: string): Promise<Array<{ title: string; path: string }>> {
+  // Query all notes and check their content for wiki-links to this slug
+  const allNotes = await queryCollection(httpEvent, 'content')
+    .select('title', 'path', 'stem', 'notes')
+    .limit(500)
+    .all()
+
+  const backlinks: Array<{ title: string; path: string }> = []
+
+  for (const note of allNotes) {
+    if (note.stem === slug) continue // Skip self
+    const links = parseWikiLinks(note.notes)
+    if (links.includes(slug)) {
+      backlinks.push({
+        title: note.title ?? note.stem ?? 'Untitled',
+        path: note.path ?? `/${note.stem}`,
+      })
+    }
+  }
+
+  return backlinks
+}
+
+interface NoteDetails {
+  title: string
+  summary: string | null
+  notes: string | null
+  tags: string[]
+  type: string
+  path: string
+  url: string | null
+  backlinks: Array<{ title: string; path: string }>
+  forwardLinks: string[]
+  related: Array<{ title: string; path: string; score: number }>
+}
+
+interface RelatedNote {
+  title: string
+  slug: string
+  score: number
+}
+
+function buildNoteDetails(
+  note: RawNote,
+  backlinks: Array<{ title: string; path: string }>,
+  forwardLinks: string[],
+  related: RelatedNote[],
+): NoteDetails {
+  return {
+    title: note.title ?? note.stem ?? 'Untitled',
+    summary: note.summary ?? null,
+    notes: note.notes ?? null,
+    tags: note.tags ?? [],
+    type: note.type ?? 'note',
+    path: note.path ?? `/${note.stem}`,
+    url: note.url ?? null,
+    backlinks,
+    forwardLinks,
+    related: related.map(r => ({ title: r.title, path: `/${r.slug}`, score: r.score })),
+  }
+}
+
+async function executeGetNoteDetails(
+  httpEvent: HttpEvent,
+  slug: string,
+  includeRelated = true,
+  requestId = '',
+): Promise<NoteDetails | null> {
+  log.info(`[${requestId}] Tool: get_note_details`, { slug, includeRelated })
+
+  const note = await fetchNoteBySlug(httpEvent, slug)
+  if (!note) {
+    log.warn(`[${requestId}] get_note_details: note not found for slug "${slug}"`)
+    return null
+  }
+
+  const [backlinks, related] = await Promise.all([
+    findBacklinks(httpEvent, slug),
+    includeRelated ? findSimilarNotes(slug, 5) : Promise.resolve([]),
+  ])
+
+  const forwardLinks = parseWikiLinks(note.notes)
+  const result = buildNoteDetails(note, backlinks, forwardLinks, related)
+
+  log.info(`[${requestId}] get_note_details found:`, {
+    title: result.title,
+    backlinks: backlinks.length,
+    forwardLinks: forwardLinks.length,
+    related: related.length,
+  })
+
+  return result
+}
+
+interface FetchSourceResult {
+  url: string
+  content: string
+  error?: string
+}
+
+async function executeFetchSource(
+  httpEvent: HttpEvent,
+  slug: string,
+  requestId = '',
+): Promise<FetchSourceResult> {
+  log.info(`[${requestId}] Tool: fetch_source`, { slug })
+
+  const note = await fetchNoteBySlug(httpEvent, slug)
+
+  if (!note) {
+    log.warn(`[${requestId}] fetch_source: note not found for slug "${slug}"`)
+    return { url: '', content: '', error: 'Note not found' }
+  }
+
+  if (!note.url) {
+    log.warn(`[${requestId}] fetch_source: note "${slug}" has no source URL`)
+    return { url: '', content: '', error: 'Note has no source URL' }
+  }
+
+  const noteUrl = note.url
+
+  // Fetch the URL content
+  const [fetchError, response] = await tryCatchAsync(async () => {
+    const res = await fetch(noteUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; SecondBrain/1.0)',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+    })
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+    }
+    return res.text()
+  })
+
+  if (fetchError) {
+    log.error(`[${requestId}] fetch_source: failed to fetch URL`, { url: note.url, error: fetchError.message })
+    return { url: note.url, content: '', error: `Failed to fetch: ${fetchError.message}` }
+  }
+
+  // Convert HTML to simple text (basic extraction)
+  // Remove scripts, styles, and HTML tags
+  const textContent = response
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 10000) // Limit content length
+
+  log.info(`[${requestId}] fetch_source: fetched ${textContent.length} chars from ${note.url}`)
+
+  return {
+    url: note.url,
+    content: textContent,
+  }
+}
+
+// Tool result type
+interface ToolResult {
+  result: string
+  notes: NoteContext[]
+}
+
+// Individual tool handlers
+async function handleSearchNotes(
+  httpEvent: HttpEvent,
+  input: { query: string; type?: string; limit?: number; mode?: 'keyword' | 'semantic' | 'hybrid' },
+  requestId: string,
+): Promise<ToolResult> {
+  const notes = await executeSearchNotes(httpEvent, input.query, input.type, input.limit, input.mode, requestId)
+
+  if (notes.length === 0) {
+    return {
+      result: JSON.stringify({
+        results: [],
+        found: false,
+        message: `No notes found about "${input.query}". You MUST tell the user: "I couldn't find anything about ${input.query} in your Second Brain." Do NOT provide information from general knowledge.`,
+      }),
+      notes: [],
+    }
+  }
+
+  return { result: JSON.stringify({ results: notes, found: true }), notes }
+}
+
+async function handleGetNoteContent(httpEvent: HttpEvent, slug: string, requestId: string): Promise<ToolResult> {
+  const content = await executeGetNoteContent(httpEvent, slug, requestId)
+  if (!content) {
+    return { result: JSON.stringify({ error: 'Note not found' }), notes: [] }
+  }
+  return {
+    result: JSON.stringify(content),
+    notes: [{ title: content.title, summary: content.summary, path: content.path }],
+  }
+}
+
+async function handleGetNoteDetails(
+  httpEvent: HttpEvent,
+  slug: string,
+  includeRelated: boolean,
+  requestId: string,
+): Promise<ToolResult> {
+  const details = await executeGetNoteDetails(httpEvent, slug, includeRelated, requestId)
+  if (!details) {
+    return { result: JSON.stringify({ error: 'Note not found' }), notes: [] }
+  }
+  return {
+    result: JSON.stringify(details),
+    notes: [{ title: details.title, summary: details.summary, path: details.path }],
+  }
+}
+
+async function handleFetchSource(httpEvent: HttpEvent, slug: string, requestId: string): Promise<ToolResult> {
+  const sourceResult = await executeFetchSource(httpEvent, slug, requestId)
+  return { result: JSON.stringify(sourceResult), notes: [] }
+}
+
 // Tool dispatcher
 async function executeTool(
   httpEvent: HttpEvent,
   toolName: string,
   toolInput: unknown,
   requestId: string,
-): Promise<{ result: string; notes: NoteContext[] }> {
+): Promise<ToolResult> {
   if (toolName === 'search_notes' && isSearchNotesInput(toolInput)) {
-    const notes = await executeSearchNotes(
-      httpEvent,
-      toolInput.query,
-      toolInput.type,
-      toolInput.limit,
-      requestId,
-    )
-    return { result: JSON.stringify(notes), notes }
+    return handleSearchNotes(httpEvent, toolInput, requestId)
   }
-
   if (toolName === 'get_note_content' && isGetNoteContentInput(toolInput)) {
-    const content = await executeGetNoteContent(httpEvent, toolInput.slug, requestId)
-    if (content) {
-      return {
-        result: JSON.stringify(content),
-        notes: [{ title: content.title, summary: content.summary, path: content.path }],
-      }
-    }
-    return { result: JSON.stringify({ error: 'Note not found' }), notes: [] }
+    return handleGetNoteContent(httpEvent, toolInput.slug, requestId)
   }
-
+  if (toolName === 'get_note_details' && isGetNoteDetailsInput(toolInput)) {
+    return handleGetNoteDetails(httpEvent, toolInput.slug, toolInput.include_related ?? true, requestId)
+  }
+  if (toolName === 'fetch_source' && isFetchSourceInput(toolInput)) {
+    return handleFetchSource(httpEvent, toolInput.slug, requestId)
+  }
   return { result: JSON.stringify({ error: `Unknown tool: ${toolName}` }), notes: [] }
 }
 

@@ -87,6 +87,8 @@ export default defineContentConfig({
         newsletter: z.string().optional(),
         issueNumber: z.number().optional(),
         guest_author: z.string().optional(),
+        // Raw markdown body (populated by Nuxt Content)
+        rawbody: z.string().optional(),
       }).passthrough().superRefine((data, ctx) => {
         // Authors required for external content types
         const external: readonly string[] = externalContentTypes

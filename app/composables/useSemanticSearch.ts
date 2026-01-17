@@ -1,31 +1,45 @@
 import type { FeatureExtractionPipeline } from '@huggingface/transformers'
 import { ref, shallowRef } from 'vue'
+import { z } from 'zod'
 import { tryCatchAsync } from '#shared/utils/tryCatch'
-import { cosineSimilarity } from '~/utils/cosineSimilarity'
+import { dotProduct } from '~/utils/cosineSimilarity'
+import type { EmbeddingsData, SemanticSearchResult } from '~/types/embeddings'
 
-interface EmbeddingEntry {
-  vector: number[]
-  title: string
-  type: string
-}
+/**
+ * Zod schema for runtime validation of embeddings.json.
+ * Ensures the fetched data matches the expected structure.
+ */
+const EmbeddingEntrySchema = z.object({
+  vector: z.array(z.number()),
+  title: z.string(),
+  type: z.string(),
+})
 
-interface EmbeddingsData {
-  version: string
-  model: string
-  embeddings: Record<string, EmbeddingEntry>
-}
+const EmbeddingsDataSchema = z.object({
+  version: z.string(),
+  model: z.string(),
+  embeddings: z.record(z.string(), EmbeddingEntrySchema),
+})
 
-export interface SemanticSearchResult {
-  slug: string
-  title: string
-  type: string
-  score: number
-}
-
-// Module-level cache for embeddings and model
+/**
+ * Module-level cache for embeddings and model.
+ * This is intentionally a singleton pattern to avoid re-loading
+ * the embeddings file and ML model on every component mount.
+ * The cache persists for the lifetime of the page session.
+ */
 let embeddingsCache: EmbeddingsData | null = null
 let modelCache: FeatureExtractionPipeline | null = null
 let modelLoadingPromise: Promise<FeatureExtractionPipeline | null> | null = null
+
+/**
+ * Clears the semantic search cache.
+ * Useful for testing or when embeddings need to be reloaded.
+ */
+export function clearSemanticSearchCache(): void {
+  embeddingsCache = null
+  modelCache = null
+  modelLoadingPromise = null
+}
 
 export function useSemanticSearch() {
   const isLoading = ref(false)
@@ -41,8 +55,11 @@ export function useSemanticSearch() {
       if (!res.ok) {
         throw new Error(`Failed to load embeddings: ${res.status}`)
       }
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- fetch.json() returns unknown, trusted embeddings.json structure
-      return res.json() as Promise<EmbeddingsData>
+      const data: unknown = await res.json()
+
+      // Validate the structure at runtime
+      const parsed = EmbeddingsDataSchema.parse(data)
+      return parsed
     })
 
     if (fetchError) {
@@ -108,10 +125,11 @@ export function useSemanticSearch() {
       const queryVector = Array.from(output.data)
 
       // Compute similarity against all embeddings
+      // Using dotProduct since both query and stored embeddings are normalized
       const searchResults: SemanticSearchResult[] = []
 
       for (const [slug, entry] of Object.entries(embeddings.embeddings)) {
-        const score = cosineSimilarity(queryVector, entry.vector)
+        const score = dotProduct(queryVector, entry.vector)
         searchResults.push({
           slug,
           title: entry.title,

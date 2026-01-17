@@ -1,9 +1,7 @@
 /**
- * Escape special regex characters in a string.
+ * Search result transformation utilities.
+ * Includes HTML escaping, snippet extraction, and match highlighting.
  */
-export function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
 
 /**
  * Escape HTML special characters to prevent XSS attacks.
@@ -15,6 +13,13 @@ export function escapeHtml(text: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
+}
+
+/**
+ * Escape special regex characters in a string.
+ */
+export function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /**

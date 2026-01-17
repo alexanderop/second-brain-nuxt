@@ -5,6 +5,8 @@
  * to produce a unified ranking of search results.
  */
 
+import type { SemanticSearchResult } from '~/types/embeddings'
+
 // Scoring weights - keyword matches are precise, semantic captures meaning
 export const KEYWORD_WEIGHT = 0.4
 export const SEMANTIC_WEIGHT = 0.6
@@ -15,12 +17,8 @@ export interface KeywordResult {
   score: number
 }
 
-export interface SemanticResult {
-  slug: string
-  title: string
-  type: string
-  score: number
-}
+// Re-export SemanticSearchResult as SemanticResult for backwards compatibility
+export type SemanticResult = SemanticSearchResult
 
 export interface HybridResult {
   slug: string

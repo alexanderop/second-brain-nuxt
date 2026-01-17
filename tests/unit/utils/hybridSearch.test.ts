@@ -139,11 +139,15 @@ describe('hybridSearch', () => {
 
       // Verify sorted by hybrid score descending
       for (let i = 0; i < result.length - 1; i++) {
-        expect(result[i]!.hybridScore).toBeGreaterThanOrEqual(result[i + 1]!.hybridScore)
+        const current = result[i]
+        const next = result[i + 1]
+        if (current && next) {
+          expect(current.hybridScore).toBeGreaterThanOrEqual(next.hybridScore)
+        }
       }
 
       // High semantic (0.6) should beat high keyword (0.4)
-      expect(result[0]!.slug).toBe('high-semantic')
+      expect(result[0]?.slug).toBe('high-semantic')
     })
 
     it('handles mixed results correctly', () => {

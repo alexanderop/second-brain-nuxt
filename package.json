@@ -36,7 +36,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:mutation": "stryker run",
     "prepare": "husky",
-    "ralph": "./ralph/ralph.sh"
+    "ralph": "./ralph/ralph.sh",
+    "fix-e2e": "./ralph/fix-e2e.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

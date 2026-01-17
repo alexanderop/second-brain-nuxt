@@ -5,7 +5,7 @@ import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections, quer
 import { UModal, UCommandPalette, UAvatar } from '#components'
 import type { CommandPaletteItem, CommandPaletteGroup } from '@nuxt/ui'
 import { transformPodcastToSearchItem } from '~/utils/searchHelpers'
-import { useSemanticSearch } from '~/composables/useSemanticSearch'
+import { useDebouncedSemanticSearch } from '~/composables/useDebouncedSemanticSearch'
 import { mergeSearchResults, type KeywordResult } from '~/utils/hybridSearch'
 import Fuse from 'fuse.js'
 
@@ -13,33 +13,22 @@ const open = defineModel<boolean>('open', { default: false })
 const searchTerm = ref('')
 const debouncedSearchTerm = ref('')
 
-// Debounce search term for semantic search
+// Debounce search term for semantic search (consistent 250ms across app)
 watchDebounced(
   searchTerm,
   (value) => {
     debouncedSearchTerm.value = value
   },
-  { debounce: 200 },
+  { debounce: 250 },
 )
 
-// Semantic search composable
-const { search: semanticSearch, isLoading: semanticLoading, error: semanticError } = useSemanticSearch()
-
-// Track semantic search results
-const semanticResults = ref<Awaited<ReturnType<typeof semanticSearch>>>([])
-const hasSemanticSearchRun = ref(false)
-
-// Run semantic search when debounced search term changes
-watch(debouncedSearchTerm, async (query) => {
-  if (!query) {
-    semanticResults.value = []
-    hasSemanticSearchRun.value = false
-    return
-  }
-  const results = await semanticSearch(query)
-  semanticResults.value = results
-  hasSemanticSearchRun.value = true
-})
+// Semantic search with debouncing and proper async handling
+const {
+  results: semanticResults,
+  hasSearchRun: hasSemanticSearchRun,
+  isLoading: semanticLoading,
+  error: semanticError,
+} = useDebouncedSemanticSearch(debouncedSearchTerm)
 const route = useRoute()
 
 // Fetch search sections with full body content
@@ -145,7 +134,7 @@ const contentFuse = computed(() => {
       { name: 'description', weight: 0.7 },
       { name: 'keywords', weight: 0.9 },
     ],
-    threshold: 0.3,
+    threshold: 0.4,
     ignoreLocation: true,
     includeScore: true,
   })
@@ -295,7 +284,7 @@ const fuseOptions = {
       { name: 'description', weight: 0.7 },
       { name: 'keywords', weight: 0.9 }, // tags, type, authors
     ],
-    threshold: 0.3,
+    threshold: 0.4,
     ignoreLocation: true,
   },
   resultLimit: 15,
