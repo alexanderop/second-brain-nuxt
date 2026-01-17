@@ -14,6 +14,7 @@
     "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
     "build:excalidraw": "npx tsx scripts/build-excalidraw.ts",
     "build:og": "npx tsx scripts/build-og-images.ts",
+    "generate:embeddings": "npx tsx scripts/generate-embeddings.ts",
     "build": "pnpm build:excalidraw && pnpm build:og && nuxt build",
     "dev": "nuxt dev",
     "typecheck": "nuxt typecheck",
@@ -34,10 +35,11 @@
     "test:e2e:ui": "playwright test --ui",
     "test:mutation": "stryker run",
     "prepare": "husky",
-    "ralph": "./scripts/ralph/ralph.sh"
+    "ralph": "./ralph/ralph.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@huggingface/transformers": "^3.8.1",
     "@nuxt/content": "^3.10.0",
     "@nuxt/eslint": "1.12.1",
     "@nuxt/fonts": "^0.12.1",

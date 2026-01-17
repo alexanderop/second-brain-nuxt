@@ -35,7 +35,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "Run pnpm add @huggingface/transformers first. Script runs in Node with Transformers.js."
     },
     {

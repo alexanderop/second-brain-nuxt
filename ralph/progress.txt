@@ -29,3 +29,31 @@ Started: 2026-01-17
 
 ---
 
+## US-002: Embedding Generation Script (COMPLETED)
+
+**Date:** 2026-01-17
+
+**Files created:**
+- `scripts/generate-embeddings.ts` - Build script using Transformers.js to generate embeddings
+- `public/embeddings.json` - Generated embeddings file (248 entries)
+
+**Package changes:**
+- Added `@huggingface/transformers` dependency
+- Added `generate:embeddings` script to package.json
+
+**Implementation notes:**
+- Uses `Xenova/bge-small-en-v1.5` model for 384-dimension embeddings
+- Processes title + summary + first 512 chars of body
+- Excludes same directories as OG image script (authors, pages, podcasts, etc.)
+- Strips markdown syntax from body text before embedding
+- Output format: `{ version, model, embeddings: { [slug]: { vector, title, type } } }`
+- Script processes ~250 files in reasonable time
+- All tests pass, typecheck passes
+
+**Next steps:**
+- US-003 (semantic search composable) will load embeddings.json and use cosine similarity
+- US-004 (hybrid search) will combine keyword and semantic scores
+- US-007 will add this to prebuild script
+
+---
+
