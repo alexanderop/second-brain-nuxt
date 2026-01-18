@@ -2,7 +2,15 @@ import type { Rule } from 'eslint'
 import { extractUrlFields, parseFrontmatter } from '../utils/parse-frontmatter.ts'
 import type { YamlNode } from '../utils/types.ts'
 
-const DEFAULT_BLOCKED_PATTERNS = [
+// Patterns that must match as whole words (use word boundary regex)
+const WORD_BOUNDARY_PATTERNS = [
+  'TODO',
+  'FIXME',
+  'placeholder',
+]
+
+// Patterns that can match as substrings (domains, IPs)
+const SUBSTRING_PATTERNS = [
   'localhost',
   '127.0.0.1',
   '0.0.0.0',
@@ -11,12 +19,11 @@ const DEFAULT_BLOCKED_PATTERNS = [
   'example.net',
   'test.com',
   'foo.bar',
-  'TODO',
-  'FIXME',
-  'placeholder',
   'your-url-here',
   'change-me',
 ]
+
+const DEFAULT_BLOCKED_PATTERNS = [...WORD_BOUNDARY_PATTERNS, ...SUBSTRING_PATTERNS]
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -59,7 +66,16 @@ const rule: Rule.RuleModule = {
           const lowerValue = value.toLowerCase()
 
           for (const pattern of options.blockedPatterns) {
-            if (lowerValue.includes(pattern.toLowerCase())) {
+            const lowerPattern = pattern.toLowerCase()
+            const isWordBoundaryPattern = WORD_BOUNDARY_PATTERNS
+              .map(p => p.toLowerCase())
+              .includes(lowerPattern)
+
+            const matched = isWordBoundaryPattern
+              ? new RegExp(`\\b${lowerPattern}\\b`, 'i').test(lowerValue)
+              : lowerValue.includes(lowerPattern)
+
+            if (matched) {
               context.report({
                 loc: node.position,
                 messageId: 'placeholderUrl',

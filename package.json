@@ -5,7 +5,12 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "devalue": ">=5.6.2",
+      "tar": ">=7.5.3",
+      "diff": ">=8.0.3"
+    }
   },
   "engines": {
     "node": "24.x"
@@ -62,7 +67,7 @@
     "d3-zoom": "^3.0.0",
     "eslint": "^9.39.2",
     "fuse.js": "^7.1.0",
-    "h3": "^1.15.4",
+    "h3": "^1.15.5",
     "mermaid": "^11.12.2",
     "nuxt": "^4.2.2",
     "satori": "^0.18.3",

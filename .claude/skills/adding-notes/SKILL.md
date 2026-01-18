@@ -55,7 +55,7 @@ Only use scripts that fetch external data or perform complex processing:
 | `get-goodreads-metadata.sh URL` | Book metadata |
 | `get-manga-metadata.sh URL` | Manga series data |
 | `get-github-metadata.sh URL` | Repo stats |
-| `find-related-notes.py FILE --limit N` | Semantic search |
+| `find-related-notes.ts FILE [--limit N] [--min-score N]` | Semantic search using project embeddings |
 
 **Do NOT use scripts for trivial operations** — do them inline:
 - Author check: `Glob` with `content/authors/*{lastname}*.md`

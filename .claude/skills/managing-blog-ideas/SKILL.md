@@ -48,7 +48,8 @@ tags:
   - tag-1
   - tag-2
 core_idea: "Single sentence thesis"
-target_audience: ""
+target_audience: "Vue/Nuxt developers who..."
+reader_outcome: "After reading, they will [think/feel/do X]"
 created: {today YYYY-MM-DD}
 updated: {today YYYY-MM-DD}
 ---
@@ -108,12 +109,16 @@ options:
     description: "Add more sections or detail to existing sections"
   - label: "Draft a section"
     description: "Write content for one of the outline sections"
+  - label: "Polish & Edit"
+    description: "Cut filler, tighten prose, improve skimmability"
   - label: "Find sources"
     description: "Search Second Brain for more related notes"
   - label: "Update status"
     description: "Move to next stage (idea → outline → draft → ready)"
   - label: "Refine core idea"
     description: "Sharpen the thesis or angle"
+  - label: "Prep for distribution"
+    description: "Create teaser, thread points, and pull quotes"
 ```
 
 ### Phase 3: Execute Update
@@ -129,6 +134,17 @@ options:
 - Generate draft prose following writing-style skill (especially Alexander's Voice Profile)
 - Insert under `## Draft Sections`
 
+**Polish & Edit:**
+- Review draft sections for filler and bloat
+- Apply the Ruthless Editing Checklist:
+  - Cut 20-30% of word count
+  - Remove filler phrases: "very", "really", "just", "actually", "in order to", "basically", "essentially"
+  - Replace "in terms of" with direct language
+  - Cut redundant qualifiers ("completely unique" → "unique")
+  - Delete weak sentence starters ("I think that", "It seems like", "In my opinion")
+- Improve skimmability (see Skimmability Guidelines)
+- Suggest reading the draft aloud to catch awkward phrasing
+
 **Find sources:**
 - Extract keywords from title/outline
 - Search Second Brain
@@ -143,6 +159,12 @@ options:
 - Present current core_idea
 - Discuss with user
 - Update frontmatter
+
+**Prep for distribution:**
+- Generate teaser hook (2-3 sentences to post before publishing)
+- Extract 3-5 thread points (key insights as standalone posts)
+- Identify 2-3 pull quote candidates (shareable insights)
+- Add to `## Distribution` section
 
 ### Phase 4: Save
 
@@ -173,6 +195,7 @@ tags:
   - topic-1
 core_idea: "Single sentence thesis"
 target_audience: "Vue/Nuxt developers who..."
+reader_outcome: "After reading, they will [think/feel/do X]"
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
@@ -209,7 +232,9 @@ updated: YYYY-MM-DD
 
 ### 7. Conclusion
 - Key insight (1-2 sentences)
-- Actionable next step
+- Ask a question to spark discussion
+- Clear call-to-action
+- Optional: related content links
 
 ## Source Notes
 
@@ -221,6 +246,23 @@ updated: YYYY-MM-DD
 
 [Write draft content following the Drafting Guidelines below]
 
+## Distribution
+
+[Prepare content for social promotion]
+
+### Teaser Hook
+[2-3 sentences to post before/when publishing - create curiosity]
+
+### Thread Points
+[Key insights as standalone posts for social threads]
+1.
+2.
+3.
+
+### Pull Quotes
+[Shareable insights that stand alone]
+-
+
 ## Open Questions
 
 - Question I need to answer before writing
@@ -229,11 +271,97 @@ updated: YYYY-MM-DD
 
 ---
 
+## Title Formula
+
+Good titles combine **curiosity + value promise**. The reader should know what they'll learn AND be intrigued enough to click.
+
+### Formula
+```
+[Action Verb] + [Specific Outcome] + [Context/Tool]
+```
+
+### Examples
+
+**Bad titles:**
+- "Vue Reactivity" (too vague)
+- "How I Use Composables" (no clear benefit)
+- "Some Thoughts on Testing" (weak, unclear)
+
+**Good titles:**
+- "Stop Fighting Vue Reactivity: The Mental Model That Finally Clicked"
+- "3 Composable Patterns That Eliminated 500 Lines of Duplicate Code"
+- "Why Your E2E Tests Are Slow (And the 80/20 Fix)"
+
+### Checklist
+- [ ] Would I click this in a busy feed?
+- [ ] Does it promise a specific outcome?
+- [ ] Does it create curiosity?
+- [ ] Is it honest about what the post delivers?
+
+---
+
+## Skimmability Guidelines
+
+Most readers skim before committing to read. Make your post scannable.
+
+### Paragraph Rules
+- **2-4 lines max** per paragraph (phone screens are narrow)
+- One idea per paragraph
+- If a paragraph has two ideas, split it
+
+### Subheading Rules
+- Add subheading every **3-5 paragraphs**
+- Subheadings should be informative, not clever ("The Fix" not "Plot Twist")
+- Reader should understand the post from subheadings alone
+
+### Emphasis Rules
+- **Bold the key insight** in each major section (one per section)
+- Use bold for emphasis, not ALL CAPS or italics
+- Don't over-bold; if everything is bold, nothing is
+
+### Visual Breaks
+- Use bullet lists for 3+ related items
+- Add code blocks, diagrams, or callouts to break up text walls
+- Empty lines between sections
+
+---
+
+## Ruthless Editing Checklist
+
+Apply when polishing drafts:
+
+### Filler Phrases to Cut
+- "very", "really", "just", "actually"
+- "in order to" → "to"
+- "basically", "essentially", "fundamentally"
+- "in terms of" → rephrase directly
+- "the fact that" → cut entirely
+- "I think that", "I believe that" → just state it
+
+### Redundancies to Remove
+- "completely unique" → "unique"
+- "absolutely essential" → "essential"
+- "past experience" → "experience"
+- "end result" → "result"
+
+### Target
+- Cut **20-30%** of first draft word count
+- If you can remove a word without losing meaning, remove it
+
+### The Read-Aloud Test
+- Read the draft aloud
+- Mark where you stumble or run out of breath
+- Those spots need shorter sentences or clearer phrasing
+
+---
+
 ## Quality Checklist
 
 Before saving:
 - [ ] Title is specific and compelling (Action Verb + Outcome + Context)
+- [ ] Title creates curiosity AND promises value
 - [ ] Core idea is a clear thesis (assertion, not description)
+- [ ] `reader_outcome` explicitly states what they'll gain
 - [ ] At least 3 outline sections
 - [ ] At least 2 wiki-links to source notes
 - [ ] Tags match existing taxonomy
@@ -242,11 +370,14 @@ Before saving:
 **For drafts, also check:**
 - [ ] Opens with problem/observation, never "In this post..."
 - [ ] Uses first-person where appropriate ("I", "In my experience")
+- [ ] Paragraphs are 2-4 lines max
+- [ ] Key insight bolded in each section
 - [ ] Includes ❌/✅ markers for comparisons
 - [ ] Has at least one visual element (diagram, table, or callout)
 - [ ] Acknowledges limitations or alternatives
-- [ ] Ends with actionable next steps
+- [ ] Ends with question or clear CTA
 - [ ] Uses everyday words, not jargon
+- [ ] Has teaser/thread candidates identified (for `ready` status)
 
 ---
 
@@ -293,11 +424,12 @@ For each major section:
 - [ ] At least one Mermaid diagram for complex flows
 - [ ] Comparison table if presenting multiple options
 - [ ] File tree for architectural posts
-- [ ] Callout boxes (💡/⚠️) for tips and warnings
+- [ ] Callout boxes for tips and warnings
 
 ### Conclusion Pattern
 End with:
 1. Brief summary of key insight (1-2 sentences)
 2. Honest assessment of trade-offs
-3. Actionable next step for the reader
-4. Optional: Link to related posts or resources
+3. **Ask a question** to spark discussion (e.g., "What patterns have you found for X?")
+4. Clear call-to-action (try it, share feedback, etc.)
+5. Optional: Link to related posts or resources
