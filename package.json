@@ -47,7 +47,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@huggingface/transformers": "^3.8.1",
-    "@nuxt/content": "^3.10.0",
+    "@nuxt/content": "^3.11.0",
     "@nuxt/eslint": "1.12.1",
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/ui": "4.3.0",
