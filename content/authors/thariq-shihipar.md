@@ -5,7 +5,7 @@ bio: "Engineer and entrepreneur working on Claude Code at Anthropic. Previously 
 avatar: ""
 website: "https://www.thariq.io/"
 socials:
-  twitter: ""
+  twitter: "trq212"
   github: "ThariqS"
   linkedin: "thariqshihipar"
   youtube: ""

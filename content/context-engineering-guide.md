@@ -22,5 +22,6 @@ This map connects strategies for structuring information effectively for AI syst
 
 ## Agent Architecture
 
+- [[effective-context-engineering-for-ai-agents]] - Anthropic's guide to treating context as finite budget for long-horizon agents
 - [[12-factor-agents]] - Principles for building context-aware production agents
 - [[advanced-context-engineering-for-coding-agents]] - Research-Plan-Implement workflow for complex codebases

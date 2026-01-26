@@ -19,12 +19,15 @@ VS Code has become a hub for AI-assisted coding. This map covers the ecosystem: 
 Understanding how to feed the right information to AI coding assistants.
 
 - [[context-engineering-guide-vscode]] - Microsoft's official guide to custom instructions, planning agents, and structured workflows
+- [[prompt-files-in-vscode]] - Reusable, on-demand prompt workflows with .prompt.md files for task-specific AI interactions
 - [[beast-mode-3-1-vs-code-chat-agent]] - A custom chat mode that fixes GPT-4.1's speed-over-thoroughness tendency using todo lists and sequential thinking
 
-## Agent Skills
+## Agents
 
-Portable instruction folders that transform AI agents into domain-specific experts.
+Understanding VS Code's agent architecture and capabilities.
 
+- [[using-agents-in-vscode]] - Four agent types (local, background, cloud, third-party) with unified session management
+- [[mastering-subagents-in-vs-code-copilot]] - Using #runSubagent for isolated, autonomous task execution in Git worktrees
 - [[introducing-agent-skills-in-vs-code]] - The Agent Skills open standard: portable workflows that load on demand
 - [[nuxt-skills]] - Practical implementation of skills for Nuxt development
 
