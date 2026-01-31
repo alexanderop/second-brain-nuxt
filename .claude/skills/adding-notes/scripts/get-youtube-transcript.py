@@ -139,6 +139,20 @@ def output_plain(transcript):
     print(full_text)
 
 
+def output_sentences(transcript):
+    """Output transcript with one sentence per line for easier grep/search.
+
+    Splits on sentence boundaries (. ! ?) while preserving the text.
+    """
+    full_text = ' '.join([snippet.text for snippet in transcript])
+    # Split on sentence endings, keeping the delimiter
+    sentences = re.split(r'(?<=[.!?])\s+', full_text)
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if sentence:
+            print(sentence)
+
+
 def output_timestamped(transcript, merge=True):
     """Output transcript with [MM:SS] timestamps."""
     if merge:
@@ -201,8 +215,8 @@ def main():
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--lang', '-l', help='Preferred language code (e.g., de, en, fr)')
     parser.add_argument('--list', '-L', action='store_true', help='List available transcripts')
-    parser.add_argument('--format', '-f', choices=['plain', 'timestamped', 'json'],
-                        default='plain', help='Output format (default: plain)')
+    parser.add_argument('--format', '-f', choices=['plain', 'timestamped', 'json', 'sentences'],
+                        default='plain', help='Output format: plain (blob), timestamped ([MM:SS] per segment), json (full metadata), sentences (one per line)')
     parser.add_argument('--no-merge', action='store_true',
                         help='Do not merge short segments (for timestamped/json formats)')
     args = parser.parse_args()
@@ -241,6 +255,8 @@ def main():
             output_plain(transcript)
         elif args.format == 'timestamped':
             output_timestamped(transcript, merge=not args.no_merge)
+        elif args.format == 'sentences':
+            output_sentences(transcript)
         elif args.format == 'json':
             output_json(transcript, video_id, best.language_code,
                        best.is_generated, merge=not args.no_merge)

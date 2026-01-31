@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Brain Architecture</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-hover: #1a1a25;
+      --border: rgba(255,255,255,0.08);
+      --text: #e4e4e7;
+      --text-muted: #71717a;
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.4);
+      --purple: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.4);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.4);
+      --orange: #f59e0b;
+      --orange-glow: rgba(245, 158, 11, 0.4);
+      --pink: #ec4899;
+      --pink-glow: rgba(236, 72, 153, 0.4);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.4);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.1), transparent),
+        radial-gradient(ellipse 50% 30% at 20% 80%, rgba(16, 185, 129, 0.08), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .preset-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .preset-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+
+    .preset-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 20px var(--blue-glow);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .control-card h3 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #27272a;
+      border-radius: 100px;
+      transition: all 0.3s;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #52525b;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle-item input {
+      display: none;
+    }
+
+    .toggle-item input:checked + .toggle-switch {
+      background: var(--blue);
+    }
+
+    .toggle-item input:checked + .toggle-switch::after {
+      transform: translateX(20px);
+      background: white;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .color-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+    }
+
+    /* Main diagram area */
+    .diagram-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      min-height: 700px;
+    }
+
+    .architecture-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+    }
+
+    /* Flow connector lines */
+    .flow-connector {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--purple), var(--green), var(--orange), var(--pink));
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    .layer-row {
+      position: relative;
+      z-index: 1;
+    }
+
+    .layer-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .layer-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .layer-header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .layer-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .layer-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .layer-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .layer-content {
+      padding: 20px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .component-chip {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .component-chip:hover {
+      transform: scale(1.05);
+    }
+
+    .component-chip .chip-icon {
+      font-size: 16px;
+    }
+
+    .component-chip .chip-label {
+      font-weight: 600;
+    }
+
+    .component-chip .chip-desc {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-left: 4px;
+    }
+
+    /* Layer specific colors */
+    .layer-ui .layer-icon { background: linear-gradient(135deg, var(--blue), #60a5fa); }
+    .layer-ui .layer-header { background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent); }
+    .layer-ui .component-chip { background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    .layer-state .layer-icon { background: linear-gradient(135deg, var(--purple), #a78bfa); }
+    .layer-state .layer-header { background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent); }
+    .layer-state .component-chip { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+    .layer-api .layer-icon { background: linear-gradient(135deg, var(--green), #34d399); }
+    .layer-api .layer-header { background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent); }
+    .layer-api .component-chip { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .layer-content-data .layer-icon { background: linear-gradient(135deg, var(--orange), #fbbf24); }
+    .layer-content-data .layer-header { background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), transparent); }
+    .layer-content-data .component-chip { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .layer-source .layer-icon { background: linear-gradient(135deg, var(--pink), #f472b6); }
+    .layer-source .layer-header { background: linear-gradient(90deg, rgba(236, 72, 153, 0.1), transparent); }
+    .layer-source .component-chip { background: rgba(236, 72, 153, 0.15); color: #f9a8d4; border: 1px solid rgba(236, 72, 153, 0.3); }
+
+    /* Data flow visualization */
+    .data-flow-section {
+      margin-top: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(139, 92, 246, 0.05));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+
+    .data-flow-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 16px 0;
+    }
+
+    .flow-node {
+      padding: 12px 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: var(--cyan);
+      font-size: 20px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Prompt output */
+    .prompt-section {
+      margin-top: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .prompt-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--green), #34d399);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px var(--green-glow);
+    }
+
+    .copy-btn.copied {
+      background: linear-gradient(135deg, var(--purple), #a78bfa);
+    }
+
+    .prompt-output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      min-height: 100px;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .control-card {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+
+    /* Stats badges */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2371717a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+
+  <div class="container">
+    <header>
+      <h1>🧠 Second Brain Architecture</h1>
+      <p>Interactive explorer for your Nuxt-powered knowledge base</p>
+
+      <div class="preset-bar">
+        <button class="preset-btn active" onclick="setPreset('full')">Full Stack</button>
+        <button class="preset-btn" onclick="setPreset('frontend')">Frontend</button>
+        <button class="preset-btn" onclick="setPreset('data')">Data Flow</button>
+        <button class="preset-btn" onclick="setPreset('search')">Search System</button>
+        <button class="preset-btn" onclick="setPreset('wikilinks')">Wiki-Links</button>
+      </div>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-badge">
+        <span class="stat-value">1000+</span>
+        <span class="stat-label">Notes</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-value">5</span>
+        <span class="stat-label">Collections</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-value">20+</span>
+        <span class="stat-label">Composables</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-value">6</span>
+        <span class="stat-label">API Routes</span>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <aside class="sidebar">
+        <div class="control-card">
+          <h3>Layers</h3>
+          <div class="toggle-list">
+            <label class="toggle-item">
+              <input type="checkbox" id="layer-ui" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <span class="color-indicator" style="background: var(--blue)"></span>
+                UI Layer
+              </span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="layer-state" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <span class="color-indicator" style="background: var(--purple)"></span>
+                State
+              </span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="layer-api" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <span class="color-indicator" style="background: var(--green)"></span>
+                API
+              </span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="layer-content" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <span class="color-indicator" style="background: var(--orange)"></span>
+                Content
+              </span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="layer-source" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">
+                <span class="color-indicator" style="background: var(--pink)"></span>
+                Source
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <h3>Focus Area</h3>
+          <select id="focus-area" onchange="updateAll()">
+            <option value="all">All Systems</option>
+            <option value="wiki-links">Wiki-Links Pipeline</option>
+            <option value="search">Hybrid Search</option>
+            <option value="graph">Knowledge Graph</option>
+            <option value="rendering">Content Rendering</option>
+          </select>
+        </div>
+
+        <div class="control-card">
+          <h3>Data Flow</h3>
+          <div class="toggle-list">
+            <label class="toggle-item">
+              <input type="checkbox" id="show-flow" checked onchange="updateAll()">
+              <span class="toggle-switch"></span>
+              <span class="toggle-label">Show Connections</span>
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="diagram-container">
+          <div class="architecture-flow" id="diagram"></div>
+        </div>
+
+        <div class="prompt-section">
+          <div class="prompt-header">
+            <h3>📋 Generated Prompt</h3>
+            <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Copy to Clipboard</button>
+          </div>
+          <div class="prompt-output" id="prompt"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      layers: { ui: true, state: true, api: true, content: true, source: true },
+      focusArea: 'all',
+      showFlow: true
+    };
+
+    function readState() {
+      state.layers.ui = document.getElementById('layer-ui').checked;
+      state.layers.state = document.getElementById('layer-state').checked;
+      state.layers.api = document.getElementById('layer-api').checked;
+      state.layers.content = document.getElementById('layer-content').checked;
+      state.layers.source = document.getElementById('layer-source').checked;
+      state.focusArea = document.getElementById('focus-area').value;
+      state.showFlow = document.getElementById('show-flow').checked;
+    }
+
+    function applyState() {
+      document.getElementById('layer-ui').checked = state.layers.ui;
+      document.getElementById('layer-state').checked = state.layers.state;
+      document.getElementById('layer-api').checked = state.layers.api;
+      document.getElementById('layer-content').checked = state.layers.content;
+      document.getElementById('layer-source').checked = state.layers.source;
+      document.getElementById('focus-area').value = state.focusArea;
+      document.getElementById('show-flow').checked = state.showFlow;
+    }
+
+    function setPreset(preset) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      switch (preset) {
+        case 'full':
+          Object.assign(state.layers, { ui: true, state: true, api: true, content: true, source: true });
+          state.focusArea = 'all';
+          break;
+        case 'frontend':
+          Object.assign(state.layers, { ui: true, state: true, api: false, content: false, source: false });
+          state.focusArea = 'all';
+          break;
+        case 'data':
+          Object.assign(state.layers, { ui: false, state: true, api: true, content: true, source: true });
+          state.focusArea = 'all';
+          break;
+        case 'search':
+          Object.assign(state.layers, { ui: true, state: true, api: false, content: false, source: true });
+          state.focusArea = 'search';
+          break;
+        case 'wikilinks':
+          Object.assign(state.layers, { ui: true, state: false, api: false, content: true, source: true });
+          state.focusArea = 'wiki-links';
+          break;
+      }
+
+      applyState();
+      renderDiagram();
+      updatePrompt();
+    }
+
+    function renderDiagram() {
+      const diagram = document.getElementById('diagram');
+      let html = '';
+
+      // UI Layer
+      if (state.layers.ui) {
+        html += `
+        <div class="layer-row">
+          <div class="layer-card layer-ui">
+            <div class="layer-header">
+              <div class="layer-icon">📱</div>
+              <div>
+                <div class="layer-title">UI Layer</div>
+                <div class="layer-subtitle">app/ — Pages, Layouts & Components</div>
+              </div>
+            </div>
+            <div class="layer-content">
+              <div class="component-chip">
+                <span class="chip-icon">📄</span>
+                <span class="chip-label">[...slug].vue</span>
+                <span class="chip-desc">catch-all route</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔍</span>
+                <span class="chip-label">search.vue</span>
+                <span class="chip-desc">hybrid search</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🕸️</span>
+                <span class="chip-label">graph.vue</span>
+                <span class="chip-desc">knowledge graph</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">📚</span>
+                <span class="chip-label">books.vue</span>
+                <span class="chip-desc">reading list</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🧩</span>
+                <span class="chip-label">BaseGraph</span>
+                <span class="chip-desc">D3 force layout</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">💬</span>
+                <span class="chip-label">ChatPanel</span>
+                <span class="chip-desc">AI assistant</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔗</span>
+                <span class="chip-label">ProseA</span>
+                <span class="chip-desc">wiki-link renderer</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // State Layer
+      if (state.layers.state) {
+        html += `
+        <div class="layer-row">
+          <div class="layer-card layer-state">
+            <div class="layer-header">
+              <div class="layer-icon">⚡</div>
+              <div>
+                <div class="layer-title">State Layer</div>
+                <div class="layer-subtitle">composables/ — Reactive Logic</div>
+              </div>
+            </div>
+            <div class="layer-content">
+              <div class="component-chip">
+                <span class="chip-icon">🔮</span>
+                <span class="chip-label">useSemanticSearch</span>
+                <span class="chip-desc">transformers.js</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔎</span>
+                <span class="chip-label">useContentFuse</span>
+                <span class="chip-desc">fuse.js</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">↩️</span>
+                <span class="chip-label">useBacklinks</span>
+                <span class="chip-desc">reverse links</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">💭</span>
+                <span class="chip-label">useMentions</span>
+                <span class="chip-desc">text mentions</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">⌨️</span>
+                <span class="chip-label">useShortcuts</span>
+                <span class="chip-desc">keyboard nav</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🎨</span>
+                <span class="chip-label">useFocusMode</span>
+                <span class="chip-desc">distraction-free</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // API Layer
+      if (state.layers.api) {
+        html += `
+        <div class="layer-row">
+          <div class="layer-card layer-api">
+            <div class="layer-header">
+              <div class="layer-icon">🔌</div>
+              <div>
+                <div class="layer-title">API Layer</div>
+                <div class="layer-subtitle">server/api/ — Nitro Endpoints</div>
+              </div>
+            </div>
+            <div class="layer-content">
+              <div class="component-chip">
+                <span class="chip-icon">🕸️</span>
+                <span class="chip-label">/api/graph</span>
+                <span class="chip-desc">nodes + edges</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔗</span>
+                <span class="chip-label">/api/backlinks</span>
+                <span class="chip-desc">link index</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">💬</span>
+                <span class="chip-label">/api/mentions</span>
+                <span class="chip-desc">text extract</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🤖</span>
+                <span class="chip-label">/api/chat</span>
+                <span class="chip-desc">Claude AI</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">📊</span>
+                <span class="chip-label">/api/stats</span>
+                <span class="chip-desc">analytics</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // Content Layer
+      if (state.layers.content) {
+        html += `
+        <div class="layer-row">
+          <div class="layer-card layer-content-data">
+            <div class="layer-header">
+              <div class="layer-icon">📖</div>
+              <div>
+                <div class="layer-title">Content Layer</div>
+                <div class="layer-subtitle">@nuxt/content v3 — SQLite + Zod</div>
+              </div>
+            </div>
+            <div class="layer-content">
+              <div class="component-chip">
+                <span class="chip-icon">🗃️</span>
+                <span class="chip-label">SQLite</span>
+                <span class="chip-desc">in-memory DB</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">📋</span>
+                <span class="chip-label">Zod Schemas</span>
+                <span class="chip-desc">5 collections</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔄</span>
+                <span class="chip-label">Wiki Transform</span>
+                <span class="chip-desc">[[slug]] → link</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🎨</span>
+                <span class="chip-label">ContentRenderer</span>
+                <span class="chip-desc">AST → HTML</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔍</span>
+                <span class="chip-label">queryCollection</span>
+                <span class="chip-desc">SQL-like API</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // Source Layer
+      if (state.layers.source) {
+        html += `
+        <div class="layer-row">
+          <div class="layer-card layer-source">
+            <div class="layer-header">
+              <div class="layer-icon">📁</div>
+              <div>
+                <div class="layer-title">Source Layer</div>
+                <div class="layer-subtitle">content/ — Markdown Files</div>
+              </div>
+            </div>
+            <div class="layer-content">
+              <div class="component-chip">
+                <span class="chip-icon">📝</span>
+                <span class="chip-label">*.md</span>
+                <span class="chip-desc">1000+ notes</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">👤</span>
+                <span class="chip-label">authors/</span>
+                <span class="chip-desc">author profiles</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🎙️</span>
+                <span class="chip-label">podcasts/</span>
+                <span class="chip-desc">show metadata</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">📬</span>
+                <span class="chip-label">newsletters/</span>
+                <span class="chip-desc">publication info</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🐦</span>
+                <span class="chip-label">tweets/</span>
+                <span class="chip-desc">saved tweets</span>
+              </div>
+              <div class="component-chip">
+                <span class="chip-icon">🔢</span>
+                <span class="chip-label">embeddings.json</span>
+                <span class="chip-desc">semantic vectors</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // Data Flow Section
+      if (state.showFlow) {
+        let flowContent = '';
+
+        if (state.focusArea === 'wiki-links') {
+          flowContent = `
+            <div class="flow-diagram">
+              <div class="flow-node" style="border-color: var(--pink)">[[slug]]</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">nuxt.config hook</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">[text](/slug){.wiki-link}</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--blue)">ProseA.vue</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--green)">Rendered Link</div>
+            </div>`;
+        } else if (state.focusArea === 'search') {
+          flowContent = `
+            <div class="flow-diagram">
+              <div class="flow-node" style="border-color: var(--cyan)">Search Query</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">Fuse.js (keyword)</div>
+              <span class="flow-arrow">+</span>
+              <div class="flow-node">Transformers.js (semantic)</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--purple)">hybridSearch()</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--green)">Ranked Results</div>
+            </div>`;
+        } else if (state.focusArea === 'graph') {
+          flowContent = `
+            <div class="flow-diagram">
+              <div class="flow-node" style="border-color: var(--pink)">Markdown [[links]]</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">minimark.ts extract</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--green)">/api/graph</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">{ nodes, edges }</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--blue)">BaseGraph D3</div>
+            </div>`;
+        } else if (state.focusArea === 'rendering') {
+          flowContent = `
+            <div class="flow-diagram">
+              <div class="flow-node" style="border-color: var(--pink)">Markdown + Frontmatter</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">Nuxt Content Parser</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--orange)">AST in SQLite</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node">ContentRenderer</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--blue)">Styled HTML</div>
+            </div>`;
+        } else {
+          flowContent = `
+            <div class="flow-diagram">
+              <div class="flow-node" style="border-color: var(--pink)">Markdown Files</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--orange)">Nuxt Content</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--green)">Server APIs</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--purple)">Composables</div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="border-color: var(--blue)">Vue Components</div>
+            </div>`;
+        }
+
+        html += `
+        <div class="data-flow-section">
+          <div class="data-flow-title">
+            <span>⚡</span>
+            Data Flow ${state.focusArea !== 'all' ? '— ' + state.focusArea.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : ''}
+          </div>
+          ${flowContent}
+        </div>`;
+      }
+
+      diagram.innerHTML = html;
+    }
+
+    function updatePrompt() {
+      const parts = [];
+      const focus = state.focusArea;
+
+      let prompt = 'Explain the Second Brain Nuxt architecture';
+
+      if (focus === 'wiki-links') {
+        prompt = `Explain how wiki-links work in this Second Brain:
+
+1. How [[slug]] syntax is transformed in nuxt.config.ts beforeParse hook
+2. The regex pattern and output format [text](/slug){.wiki-link}
+3. How ProseA.vue renders these special links
+4. How backlinks are extracted and indexed via /api/backlinks`;
+      } else if (focus === 'search') {
+        prompt = `Explain the hybrid search architecture:
+
+1. Keyword search via useContentFuse (Fuse.js configuration)
+2. Semantic search via useSemanticSearch (Transformers.js + bge-small-en embeddings)
+3. How hybridSearch() merges and ranks results
+4. The embeddings.json pre-computation pipeline`;
+      } else if (focus === 'graph') {
+        prompt = `Explain the knowledge graph system:
+
+1. How /api/graph builds nodes and edges from content
+2. The minimark.ts link extraction from AST
+3. BaseGraph.vue D3 force-directed layout
+4. Graph filtering via useGraphFilters`;
+      } else if (focus === 'rendering') {
+        prompt = `Explain the content rendering pipeline:
+
+1. Markdown parsing with frontmatter validation (Zod schemas)
+2. Wiki-link transformation in nuxt.config.ts hook
+3. SQLite storage via queryCollection API
+4. ContentRenderer AST-to-HTML with MDC components (ProseA, Mermaid)`;
+      } else {
+        const activeLayers = Object.entries(state.layers).filter(([,v]) => v).map(([k]) => k);
+        if (activeLayers.length < 5) {
+          prompt += `, focusing on the ${activeLayers.join(', ')} layer${activeLayers.length > 1 ? 's' : ''}`;
+        }
+        prompt += `.
+
+Cover the key components:`;
+        if (state.layers.ui) parts.push('- UI: [...slug].vue catch-all routing, BaseGraph D3 visualization, ChatPanel AI');
+        if (state.layers.state) parts.push('- State: useSemanticSearch, useBacklinks, useShortcuts composables');
+        if (state.layers.api) parts.push('- API: /api/graph, /api/backlinks, /api/chat endpoints');
+        if (state.layers.content) parts.push('- Content: Nuxt Content v3, SQLite, wiki-link transformation');
+        if (state.layers.source) parts.push('- Source: 1000+ markdown notes, 5 collections, embeddings.json');
+
+        prompt += '\n' + parts.join('\n');
+      }
+
+      document.getElementById('prompt').textContent = prompt;
+    }
+
+    function copyPrompt() {
+      const prompt = document.getElementById('prompt').textContent;
+      navigator.clipboard.writeText(prompt);
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy to Clipboard';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+
+    function updateAll() {
+      readState();
+      renderDiagram();
+      updatePrompt();
+    }
+
+    // Initial render
+    renderDiagram();
+    updatePrompt();
+  </script>
+</body>
+</html>

@@ -49,13 +49,24 @@ Only use scripts that fetch external data or perform complex processing:
 | Script | Purpose |
 |--------|---------|
 | `get-youtube-metadata.sh URL` | Video title, channel |
-| `get-youtube-transcript.py URL` | Video transcript |
+| `get-youtube-transcript.py URL [--format FORMAT]` | Video transcript (see formats below) |
 | `get-podcast-transcript.py [opts]` | Podcast transcript |
 | `get-reddit-thread.py URL --comments N` | Thread + comments |
 | `get-goodreads-metadata.sh URL` | Book metadata |
 | `get-manga-metadata.sh URL` | Manga series data |
 | `get-github-metadata.sh URL` | Repo stats |
 | `find-related-notes.ts FILE [--limit N] [--min-score N]` | Semantic search using project embeddings |
+
+### Transcript Format Options
+
+```bash
+get-youtube-transcript.py URL                      # plain (default) - single blob
+get-youtube-transcript.py URL --format sentences   # one sentence per line (grep-friendly)
+get-youtube-transcript.py URL --format timestamped # [MM:SS] per segment
+get-youtube-transcript.py URL --format json        # full metadata with timestamps
+```
+
+**Recommended:** Use `--format sentences` for large transcripts—enables grep/search and chunked reading.
 
 **Do NOT use scripts for trivial operations** — do them inline:
 - Author check: `Glob` with `content/authors/*{lastname}*.md`
@@ -69,6 +80,7 @@ Only use scripts that fetch external data or perform complex processing:
 ```text
 Phase 1: Type Detection → Route to content-type file
 Phase 2: Parallel Metadata Collection → Per-type agents
+Phase 2.5: Large Transcript Handling → Subagent for >10K token transcripts
 Phase 3: Author Creation → See references/author-creation.md
 Phase 4: Content Generation → Apply writing-style, generate body
 Phase 4.25: Diagram Evaluation → REQUIRED visual assessment with logged outcome
@@ -93,6 +105,61 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 - Special handling notes
 
 **If `isTechnical: true`:** Also spawn code extraction agent (see `references/code-extraction.md`).
+
+### Phase 2.5: Large Transcript Handling
+
+For podcasts/videos with transcripts >10K tokens, use a dedicated subagent instead of reading directly.
+
+**Detection:** If transcript file exceeds 50KB or initial read fails with token limit error.
+
+**Option A: Transcript Analysis Subagent (Recommended)**
+
+Spawn a Task with `subagent_type: general-purpose`:
+
+```text
+Analyze this transcript and extract structured content for a knowledge base note.
+
+**Instructions:**
+1. Read the transcript file at: {transcript_path}
+2. Extract and return:
+
+## Timestamps
+| Time | Topic |
+|------|-------|
+(Major topic shifts with approximate times)
+
+## Key Arguments
+(3-5 main claims with supporting reasoning, 2-3 sentences each)
+
+## Notable Quotes
+(4-6 verbatim quotes that capture core ideas, with speaker attribution)
+
+## Named Frameworks
+(Any models, principles, or processes given specific names)
+
+## Diagram Candidates
+(Any process, system, or framework worth visualizing)
+
+**Output:** Structured markdown, max 1500 words.
+```
+
+**Option B: Chunked Extraction (Fallback)**
+
+If subagent unavailable, use `--format sentences` and manual chunking:
+
+1. Fetch with sentences format: `get-youtube-transcript.py URL --format sentences > transcript.txt`
+2. Read first 100 lines (intro, episode overview)
+3. Read last 100 lines (conclusion, wrap-up)
+4. Grep for key terms mentioned in intro
+5. Extract quotes around grep matches with `-C 3` context
+
+**Benefits of Subagent Approach:**
+| Aspect | Direct Read | Subagent |
+|--------|-------------|----------|
+| Context usage | Fills main context with raw text | Returns only structured output |
+| Parallelism | Sequential processing | Runs alongside other agents |
+| Semantic analysis | Manual grep for terms | Agent identifies themes |
+| Output quality | May miss connections | Comprehensive extraction |
 
 ### Phase 3: Author Creation
 
@@ -202,6 +269,7 @@ If errors are found, fix them before completing the task.
 |-------|----------|
 | Metadata agent fails | Prompt for manual entry or WebFetch fallback |
 | Transcript unavailable | Note "No transcript available" in body |
+| Transcript too large (>10K tokens) | Use Phase 2.5 subagent or chunked extraction |
 | Author not found online | Create minimal profile (name only) |
 | Reddit 429 | Wait 60s and retry |
 | Semantic analysis timeout | Proceed without wiki-link suggestions |
