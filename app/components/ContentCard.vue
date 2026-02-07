@@ -45,10 +45,18 @@ function formatDate(date?: Date | string) {
           </h2>
           <p v-if="content.podcast && podcastName" class="text-sm text-[var(--ui-text-muted)]">
             <NuxtLink
+              v-slot="{ navigate }"
               :to="`/podcasts/${content.podcast}`"
-              class="underline text-[var(--ui-text)]"
-              @click.stop
-            >{{ podcastName }}</NuxtLink>
+              custom
+            >
+              <span
+                class="underline text-[var(--ui-text)] cursor-pointer"
+                role="link"
+                tabindex="0"
+                @click.stop="navigate"
+                @keydown.enter.stop="() => navigate()"
+              >{{ podcastName }}</span>
+            </NuxtLink>
             <template v-if="content.guests?.length">
               <span> &bull; Guest: {{ content.guests.join(', ') }}</span>
             </template>

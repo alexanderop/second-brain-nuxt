@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
  * collect-weekly-notes.mjs
- * Collects notes added this week and outputs structured JSON for newsletter generation
+ * Collects notes added last week and outputs structured JSON for newsletter generation
+ * (Default: previous week, since newsletter is published on Monday)
  *
  * Usage: node collect-weekly-notes.mjs [--week YYYY-Www]
  *
  * Options:
- *   --week YYYY-Www   Specify week (default: current week)
+ *   --week YYYY-Www   Specify week (default: previous week for Monday publishing)
  */
 
 import { execSync } from 'child_process'
@@ -47,13 +48,16 @@ function getWeekBoundaries(weekStr) {
     return weekStart
   }
 
-  // Current week: find Monday
+  // Previous week: find last week's Monday (for Monday publishing)
   const dayOfWeek = now.getDay()
   const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1
-  const monday = new Date(now)
-  monday.setDate(now.getDate() - daysToSubtract)
-  monday.setHours(0, 0, 0, 0)
-  return monday
+  const thisMonday = new Date(now)
+  thisMonday.setDate(now.getDate() - daysToSubtract)
+  // Go back one more week to get last week
+  const lastMonday = new Date(thisMonday)
+  lastMonday.setDate(thisMonday.getDate() - 7)
+  lastMonday.setHours(0, 0, 0, 0)
+  return lastMonday
 }
 
 function formatDate(date) {

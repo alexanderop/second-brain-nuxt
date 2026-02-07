@@ -2,7 +2,7 @@
 import { NuxtLink, UIcon } from '#components'
 import type { TweetItem } from '~/types/content'
 
-defineProps<{
+const props = defineProps<{
   tweet: TweetItem
   author: {
     name: string
@@ -11,6 +11,10 @@ defineProps<{
     twitterHandle?: string
   }
 }>()
+
+function openExternalUrl() {
+  window.open(props.tweet.tweetUrl, '_blank', 'noopener,noreferrer')
+}
 
 function formatDate(date?: Date | string) {
   if (!date)
@@ -76,16 +80,14 @@ function handleImageError(event: Event) {
       <!-- Footer: date + external link -->
       <div class="mt-3 flex items-center justify-between text-sm text-[var(--ui-text-muted)]">
         <span>{{ formatDate(tweet.tweetedAt) }}</span>
-        <a
-          :href="tweet.tweetUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-[var(--ui-text)] flex items-center gap-1"
+        <button
+          type="button"
+          class="hover:text-[var(--ui-text)] flex items-center gap-1 cursor-pointer"
           aria-label="View original tweet"
-          @click.stop
+          @click.stop="openExternalUrl"
         >
           <UIcon name="i-lucide-external-link" class="size-4" />
-        </a>
+        </button>
       </div>
     </NuxtLink>
   </article>

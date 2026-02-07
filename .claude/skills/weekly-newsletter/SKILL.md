@@ -1,12 +1,12 @@
 ---
 name: weekly-newsletter
-description: Generate a weekly newsletter summarizing resources added this week. Use when asked to "weekly newsletter", "newsletter", "what did I add this week", "generate newsletter", or "Sunday newsletter".
+description: Generate a weekly newsletter summarizing resources added last week. Use when asked to "weekly newsletter", "newsletter", "what did I add this week", "generate newsletter", or "Monday newsletter".
 allowed-tools: Read, Write, Glob, Grep, Bash, AskUserQuestion
 ---
 
 # Weekly Newsletter
 
-Generate a newsletter summarizing public notes added during the past week, grouped by content type.
+Generate a newsletter summarizing public notes added during the previous week (Mon-Sun), grouped by content type. Designed for Monday publishing.
 
 ## Output
 
