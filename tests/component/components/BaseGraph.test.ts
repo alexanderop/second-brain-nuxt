@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, assert } from 'vitest'
-import { page } from '@vitest/browser/context'
+import { page } from 'vitest/browser'
 import { render } from 'vitest-browser-vue'
 import BaseGraph from '~/components/BaseGraph.vue'
 import {
