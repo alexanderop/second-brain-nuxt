@@ -112,7 +112,7 @@
     "oxlint": "^1.0.0",
     "playwright": "^1.57.0",
     "typescript-eslint": "^8.32.1",
-    "unplugin-auto-import": "^20.3.0",
+    "unplugin-auto-import": "^21.0.0",
     "vitest": "^4.0.2",
     "vitest-axe": "^0.1.0",
     "vitest-browser-vue": "^1.1.0",
