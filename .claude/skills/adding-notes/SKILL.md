@@ -23,6 +23,7 @@ Detect type from URL, then load the appropriate reference file.
 | spotify.com/episode, podcasts.apple.com | podcast | `references/content-types/podcast.md` |
 | udemy.com, coursera.org, skillshare.com | course | `references/content-types/course.md` |
 | *.substack.com/p/*, *.beehiiv.com/p/*, buttondown.email/* | newsletter | `references/content-types/newsletter.md` |
+| URL ending in `.pdf` | article (PDF) | `references/content-types/article.md` (use PDF extraction) |
 | Other URLs | article | `references/content-types/article.md` |
 | No URL | note | `references/content-types/note.md` |
 | Manual: `quote` | quote | `references/content-types/quote.md` |
@@ -55,6 +56,7 @@ Only use scripts that fetch external data or perform complex processing:
 | `get-goodreads-metadata.sh URL` | Book metadata |
 | `get-manga-metadata.sh URL` | Manga series data |
 | `get-github-metadata.sh URL` | Repo stats |
+| `get-pdf-text.sh URL [output-file]` | Download PDF and extract text (requires `pdftotext`) |
 | `find-related-notes.ts FILE [--limit N] [--min-score N]` | Semantic search using project embeddings |
 
 ### Transcript Format Options
@@ -103,6 +105,8 @@ Spawn parallel agents as specified in the content-type file. Each file lists:
 - Required scripts to run
 - Agent configuration
 - Special handling notes
+
+**If URL ends in `.pdf`:** WebFetch cannot parse PDFs. Use `get-pdf-text.sh URL` to download and extract text, then read the output file. For large PDFs (>50KB extracted text), use a subagent per Phase 2.5 pattern.
 
 **If `isTechnical: true`:** Also spawn code extraction agent (see `references/code-extraction.md`).
 
@@ -270,6 +274,7 @@ If errors are found, fix them before completing the task.
 | Metadata agent fails | Prompt for manual entry or WebFetch fallback |
 | Transcript unavailable | Note "No transcript available" in body |
 | Transcript too large (>10K tokens) | Use Phase 2.5 subagent or chunked extraction |
+| PDF extraction fails (no `pdftotext`) | Install with `brew install poppler`, then retry |
 | Author not found online | Create minimal profile (name only) |
 | Reddit 429 | Wait 60s and retry |
 | Semantic analysis timeout | Proceed without wiki-link suggestions |
