@@ -39,5 +39,6 @@ const sizeClasses = {
   <UIcon
     :name="iconMap[type]"
     :class="sizeClasses[size ?? 'md']"
+    aria-hidden="true"
   />
 </template>

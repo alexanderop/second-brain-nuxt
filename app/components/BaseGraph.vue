@@ -6,11 +6,14 @@ import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom'
 import { drag } from 'd3-drag'
 import { scalePow, scaleLinear } from 'd3-scale'
 import { extent } from 'd3-array'
-import type { Simulation, ZoomBehavior, Selection, ZoomTransform } from 'd3'
+import type { Simulation } from 'd3-force'
+import type { ZoomBehavior, ZoomTransform } from 'd3-zoom'
+import type { Selection } from 'd3-selection'
 import type { NoteGraphData, FullGraphData, UnifiedGraphNode, UnifiedGraphEdge } from '~/types/graph'
 import { normalizeGraphData } from '~/utils/graphNormalize'
 import { createRadialSimulation, createFreeformSimulation } from '~/utils/graphForces'
 import { typeColors, getNodeColor, getGlowFilter, graphColors } from '~/utils/graphColors'
+import { tryCatch } from '#shared/utils/tryCatch'
 
 // Constants
 const RADIAL_SIZES = { center: 18, level1: 10, level2: 7 }
@@ -106,15 +109,19 @@ interface ZoomData {
 
 function isZoomData(data: unknown): data is ZoomData {
   if (typeof data !== 'object' || data === null) return false
-  const obj = data as Record<string, unknown> // eslint-disable-line @typescript-eslint/consistent-type-assertions -- Type guard narrowing
-  return typeof obj.k === 'number' && typeof obj.x === 'number' && typeof obj.y === 'number'
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing from unknown
+  const obj = data as Record<string, unknown>
+  return 'k' in data && typeof obj.k === 'number'
+    && 'x' in data && typeof obj.x === 'number'
+    && 'y' in data && typeof obj.y === 'number'
 }
 
 function loadZoomTransform(): ZoomTransform | null {
   if (!effectivePersistZoom.value) return null
   const stored = sessionStorage.getItem(effectiveZoomStorageKey.value)
   if (!stored) return null
-  const parsed: unknown = JSON.parse(stored)
+  const [parseError, parsed] = tryCatch(() => JSON.parse(stored))
+  if (parseError) return null
   if (!isZoomData(parsed)) return null
   return zoomIdentity.translate(parsed.x, parsed.y).scale(parsed.k)
 }
@@ -325,6 +332,8 @@ function initGraph() {
     .attr('width', width)
     .attr('height', height)
     .attr('viewBox', [0, 0, width, height])
+    .attr('role', 'img')
+    .attr('aria-label', `Knowledge graph with ${nodes.length} nodes and ${edges.length} connections`)
   svgRef.value = svg
 
   // Glow filters
@@ -582,7 +591,7 @@ watch(() => props.selectedId, (newId) => {
     .attr('stroke-width', d => (d.isCenter || d.id === newId) ? 2 : 0)
 })
 
-watch([() => props.noteGraphData, () => props.fullGraphData], () => initGraph(), { deep: true })
+watch([() => props.noteGraphData, () => props.fullGraphData], () => initGraph())
 useResizeObserver(container, useDebounceFn(initGraph, 200))
 
 // Expose

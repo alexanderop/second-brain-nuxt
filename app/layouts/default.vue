@@ -38,22 +38,22 @@ defineShortcuts({
     toggleFocusMode()
   },
   'g-h': () => {
-    navigateTo('/')
+    void navigateTo('/')
   },
   'g-b': () => {
-    navigateTo('/books')
+    void navigateTo('/books')
   },
   'g-g': () => {
-    navigateTo('/graph')
+    void navigateTo('/graph')
   },
   'g-t': () => {
-    navigateTo('/tags')
+    void navigateTo('/tags')
   },
   'g-a': () => {
-    navigateTo('/authors')
+    void navigateTo('/authors')
   },
   'r': () => {
-    navigateToRandomNote()
+    void navigateToRandomNote()
   },
   'meta_i': () => {
     if (chatEnabled.value) {
@@ -68,7 +68,7 @@ defineShortcuts({
     <UContainer>
       <div class="max-w-6xl mx-auto">
         <AppHeader v-if="!isFocusMode" v-model:search-open="searchOpen" v-model:shortcuts-open="shortcutsOpen" />
-        <main class="py-8">
+        <main id="main-content" class="py-8">
           <slot />
         </main>
         <AppFooter v-if="!isFocusMode" />

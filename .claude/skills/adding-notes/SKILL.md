@@ -80,11 +80,12 @@ get-youtube-transcript.py URL --format json        # full metadata with timestam
 ## Workflow Phases
 
 ```text
+Phase 0: Load SOUL.md → Read SOUL.md for voice, perspective, and anti-patterns
 Phase 1: Type Detection → Route to content-type file
 Phase 2: Parallel Metadata Collection → Per-type agents
 Phase 2.5: Large Transcript Handling → Subagent for >10K token transcripts
 Phase 3: Author Creation → See references/author-creation.md
-Phase 4: Content Generation → Apply writing-style, generate body
+Phase 4: Content Generation → Apply writing-style + SOUL.md voice, generate body
 Phase 4.25: Diagram Evaluation → REQUIRED visual assessment with logged outcome
 Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any exist)
 Phase 5: Quality Validation → Parallel validators
@@ -92,6 +93,16 @@ Phase 6: Save Note → Write to content/{slug}.md with link density report
 Phase 7: MOC Placement → Suggest placements + check MOC threshold
 Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 ```
+
+### Phase 0: Load Soul (REQUIRED)
+
+Read `SOUL.md` from the project root. This defines Alexander's voice, what he values in notes, anti-patterns to avoid, and how to add his perspective. Every note must reflect this identity — not just summarize a source.
+
+Key things SOUL.md controls:
+- **Voice:** Direct, opinionated, no filler — not polished AI prose
+- **Perspective:** Always contextualize why Alexander cares about this content
+- **Author preservation:** Don't flatten unique voices into generic summaries
+- **Anti-patterns:** No sycophancy, no rigid same-template-for-everything, no generic summaries
 
 ### Phase 1: Type Detection & Dispatch
 
@@ -179,23 +190,42 @@ Glob: content/authors/*{lastname}*.md
 
 ### Phase 4: Content Generation
 
-1. **Load writing-style skill** (REQUIRED): `Read .claude/skills/writing-style/SKILL.md`
-2. **Load linking philosophy** (REQUIRED): `Read .claude/skills/adding-notes/references/linking-philosophy.md`
-3. If `isTechnical`: collect code snippets from Phase 2
-4. **Compile frontmatter** using template from content-type file
-5. **Generate body** with wiki-links (see Phase 4.5 for connection discovery)
+1. **Verify SOUL.md loaded** (REQUIRED): Must have been read in Phase 0. If not, `Read SOUL.md` now
+2. **Load writing-style skill** (REQUIRED): `Read .claude/skills/writing-style/SKILL.md`
+3. **Load linking philosophy** (REQUIRED): `Read .claude/skills/adding-notes/references/linking-philosophy.md`
+4. If `isTechnical`: collect code snippets from Phase 2
+5. **Compile frontmatter** using template from content-type file
+6. **Generate body** applying SOUL.md voice — add Alexander's perspective, preserve author's unique voice, no generic summaries (see Phase 4.5 for connection discovery)
 
 **Tags:** 3-5 relevant tags. Use tags you've seen in prior notes or `Grep` for similar content to find existing tags.
 
 **Summary:** Frame as a core argument, not a description. What claim does this content make?
 
-### Phase 4.25: Diagram Evaluation (REQUIRED)
+### Phase 4.25: Diagram Evaluation (REQUIRED — Visual-First)
 
-1. Load `references/diagrams-guide.md`
-2. Apply the decision tree based on content type priority
+Alexander is a visual learner. **Default to adding a diagram.** Only skip when the content is genuinely too brief or structureless (short quotes, link lists).
+
+1. Load `references/diagrams-guide.md` — apply the decision tree (all 7 triggers) with visual-first bias
+2. **If diagram needed** (expected for most notes), delegate to the mermaid skill:
+   a. Load mermaid skill: `Read .agents/skills/mermaid/skill.md`
+   b. Choose the best diagram type — prefer `mindmap` for concept overviews, `flowchart` for processes
+   c. Write diagram source to `{slug}.mmd` in project root
+   d. Validate: `.agents/skills/mermaid/tools/validate.sh {slug}.mmd`
+   e. If validation fails, fix syntax errors and re-validate
+   f. Show ASCII preview output to user
+   g. Copy validated mermaid block into note wrapped with MDC syntax:
+      ```markdown
+      ::mermaid
+      <pre>
+      {validated mermaid source}
+      </pre>
+      ::
+      ```
+   h. Delete the `.mmd` file: `rm {slug}.mmd`
+   i. For rich content (books, talks, long articles): consider a second diagram if there's both a concept overview AND a distinct process/framework
 3. Log outcome (REQUIRED):
    - Adding: `✓ Diagram added: [mermaid-type] - [description]`
-   - Skipping: `✓ No diagram needed: [specific reason]`
+   - Skipping: `✓ No diagram needed: [specific reason]` (should be rare)
 
 ### Phase 4.5: Connection Discovery
 
@@ -286,8 +316,10 @@ If errors are found, fix them before completing the task.
 
 | File | Purpose |
 |------|---------|
+| `SOUL.md` (project root) | Alexander's voice, perspective, and anti-patterns — **load first** |
 | `references/author-creation.md` | Author profile workflow |
-| `references/diagrams-guide.md` | When/how to add mermaid diagrams |
+| `references/diagrams-guide.md` | Decision tree for when to add diagrams |
+| `.agents/skills/mermaid/skill.md` | Full mermaid syntax reference + validation (loaded in Phase 4.25) |
 | `references/linking-philosophy.md` | Connection quality standards |
 | `references/moc-placement.md` | MOC suggestion and creation |
 | `references/code-extraction.md` | Technical content code snippets |

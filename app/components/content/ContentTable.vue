@@ -5,29 +5,10 @@ import type { TableColumn } from '@nuxt/ui'
 import type { ContentType } from '~/constants/contentTypes'
 import type { FilterState, SortState, TableAuthor, TableContentItem } from '~/types/table'
 import { useTableFilterMenus, CONTENT_TYPE_ICONS } from '~/composables/useTableFilterMenus'
+import { CONTENT_TYPE_BADGE_COLORS } from '~/constants/contentTypeColors'
+import { formatDate } from '~/utils/formatDate'
 
 const router = useRouter()
-
-// Color mapping for content type badges (subtle/muted tints)
-const CONTENT_TYPE_COLORS: Record<ContentType, string> = {
-  youtube: 'error',
-  podcast: 'secondary',
-  article: 'info',
-  book: 'warning',
-  manga: 'warning',
-  movie: 'error',
-  tv: 'info',
-  tweet: 'info',
-  quote: 'success',
-  course: 'warning',
-  note: 'neutral',
-  evergreen: 'success',
-  map: 'secondary',
-  reddit: 'warning',
-  github: 'neutral',
-  newsletter: 'info',
-  talk: 'primary',
-}
 
 // State interface combines related props
 export interface ContentTableState {
@@ -46,13 +27,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'set-type-filter', types: ContentType[]): void
-  (e: 'set-tags-filter', tags: string[]): void
-  (e: 'set-authors-filter', authors: string[]): void
-  (e: 'set-date-consumed-range', range: [string, string] | null): void
-  (e: 'set-rating-range', range: [number, number] | null): void
-  (e: 'set-sort', column: SortState['column'], direction: SortState['direction']): void
-  (e: 'clear-filters'): void
+  'set-type-filter': [types: ContentType[]]
+  'set-tags-filter': [tags: string[]]
+  'set-authors-filter': [authors: string[]]
+  'set-date-consumed-range': [range: [string, string] | null]
+  'set-rating-range': [range: [number, number] | null]
+  'set-sort': [column: SortState['column'], direction: SortState['direction']]
+  'clear-filters': []
 }>()
 
 // Shorthand accessors
@@ -89,14 +70,9 @@ const {
   },
 })
 
-// Format date for display
-function formatDate(date?: string): string {
-  if (!date) return '—'
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+// Format date for display with dash fallback
+function formatTableDate(date?: string): string {
+  return formatDate(date, 'short') || '—'
 }
 
 // Column pinning for sticky title on mobile
@@ -115,7 +91,7 @@ const selectedAuthors = computed({
 
 // Type guard for ContentType
 function isContentType(value: unknown): value is ContentType {
-  return typeof value === 'string' && value in CONTENT_TYPE_ICONS
+  return typeof value === 'string' && value in CONTENT_TYPE_BADGE_COLORS
 }
 
 // Type guard for TableAuthor array
@@ -194,7 +170,7 @@ const columns: TableColumn<TableContentItem>[] = [
       const type = getRowType(row)
       return h(UBadge, {
         variant: 'soft',
-        color: CONTENT_TYPE_COLORS[type] || 'neutral',
+        color: CONTENT_TYPE_BADGE_COLORS[type] || 'neutral',
         icon: CONTENT_TYPE_ICONS[type],
         class: 'capitalize',
       }, () => type)
@@ -257,7 +233,7 @@ const columns: TableColumn<TableContentItem>[] = [
     size: 130,
     cell: ({ row }) => {
       const date = getRowDate(row)
-      return h('span', { class: date ? '' : 'text-[var(--ui-text-muted)]' }, formatDate(date))
+      return h('span', { class: date ? '' : 'text-[var(--ui-text-muted)]' }, formatTableDate(date))
     },
   },
   {
@@ -291,6 +267,7 @@ const columns: TableColumn<TableContentItem>[] = [
         variant: 'ghost',
         color: 'neutral',
         size: 'xs',
+        'aria-label': `Open ${row.original.title} in new tab`,
         onClick: (e: Event) => {
           e.stopPropagation()
           window.open(`/${row.original.slug}`, '_blank')

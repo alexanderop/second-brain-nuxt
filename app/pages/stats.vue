@@ -226,7 +226,7 @@ usePageTitle('Stats')
     </h1>
 
     <div v-if="status === 'pending'" class="text-center py-12 text-[var(--ui-text-muted)]">
-      <UIcon name="i-heroicons-arrow-path" class="size-5 animate-spin mb-2" />
+      <UIcon name="i-lucide-loader-2" class="size-5 animate-spin mb-2" />
       <p>Loading stats...</p>
     </div>
 
@@ -236,22 +236,22 @@ usePageTitle('Stats')
         <StatCard
           label="Total Notes"
           :value="stats.total"
-          icon="i-heroicons-document-text"
+          icon="i-lucide-file-text"
         />
         <StatCard
           label="Connections"
           :value="stats.connections.totalEdges"
-          icon="i-heroicons-arrows-right-left"
+          icon="i-lucide-arrow-left-right"
         />
         <StatCard
           label="Orphan Notes"
           :value="`${stats.connections.orphanPercent}%`"
-          icon="i-heroicons-document-minus"
+          icon="i-lucide-file-minus"
         />
         <StatCard
           label="This Week"
           :value="stats.thisWeek"
-          icon="i-heroicons-calendar"
+          icon="i-lucide-calendar"
         />
       </div>
 
@@ -269,7 +269,7 @@ usePageTitle('Stats')
             :height="Math.max(160, typeChartData.length * 32)"
           />
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-            <UIcon name="i-heroicons-document-plus" class="size-8 mb-2 opacity-50" />
+            <UIcon name="i-lucide-file-plus" class="size-8 mb-2 opacity-50" />
             <p class="text-sm">No content yet</p>
           </div>
         </div>
@@ -286,7 +286,7 @@ usePageTitle('Stats')
             :height="Math.max(160, tagChartData.length * 32)"
           />
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-            <UIcon name="i-heroicons-tag" class="size-8 mb-2 opacity-50" />
+            <UIcon name="i-lucide-tag" class="size-8 mb-2 opacity-50" />
             <p class="text-sm">No tags yet</p>
           </div>
         </div>
@@ -308,6 +308,7 @@ usePageTitle('Stats')
                 :class="chartMode === option.value
                   ? 'bg-[var(--ui-bg-elevated)] text-[var(--ui-text)]'
                   : 'text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:bg-[var(--ui-bg-muted)]'"
+                :aria-pressed="chartMode === option.value"
                 @click="chartMode = option.value"
               >
                 {{ option.label }}
@@ -322,6 +323,7 @@ usePageTitle('Stats')
                 :class="timeRange === option.value
                   ? 'bg-[var(--ui-bg-elevated)] text-[var(--ui-text)]'
                   : 'text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] hover:bg-[var(--ui-bg-muted)]'"
+                :aria-pressed="timeRange === option.value"
                 @click="timeRange = option.value"
               >
                 {{ option.label }}
@@ -331,7 +333,7 @@ usePageTitle('Stats')
         </div>
         <StatsLineChart v-if="growthChartData.length > 1" :data="growthChartData" :height="180" />
         <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-          <UIcon name="i-heroicons-chart-bar" class="size-8 mb-2 opacity-50" />
+          <UIcon name="i-lucide-bar-chart-3" class="size-8 mb-2 opacity-50" />
           <p class="text-sm">No data for selected period</p>
         </div>
       </div>
@@ -359,7 +361,7 @@ usePageTitle('Stats')
             </NuxtLink>
           </div>
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-            <UIcon name="i-heroicons-link" class="size-8 mb-2 opacity-50" />
+            <UIcon name="i-lucide-link" class="size-8 mb-2 opacity-50" />
             <p class="text-sm mb-1">No connected notes yet</p>
             <p class="text-xs opacity-70">Add [[wiki-links]] to build your knowledge graph</p>
           </div>
@@ -392,7 +394,7 @@ usePageTitle('Stats')
             </button>
           </div>
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-            <UIcon name="i-heroicons-check-circle" class="size-8 mb-2 opacity-50" />
+            <UIcon name="i-lucide-check-circle" class="size-8 mb-2 opacity-50" />
             <p class="text-sm">All notes are connected!</p>
           </div>
         </div>
@@ -427,7 +429,7 @@ usePageTitle('Stats')
             </div>
           </div>
           <div v-else class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]">
-            <UIcon name="i-heroicons-chart-bar" class="size-8 mb-2 opacity-50" />
+            <UIcon name="i-lucide-bar-chart-3" class="size-8 mb-2 opacity-50" />
             <p class="text-sm">No content yet</p>
           </div>
         </div>
@@ -467,7 +469,7 @@ usePageTitle('Stats')
               class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] p-1"
               @click="orphanModalOpen = false"
             >
-              <UIcon name="i-heroicons-x-mark" class="size-5" />
+              <UIcon name="i-lucide-x" class="size-5" />
             </button>
           </div>
 
@@ -475,8 +477,9 @@ usePageTitle('Stats')
           <UInput
             v-model="orphanFilter"
             placeholder="Filter by title or type..."
-            icon="i-heroicons-magnifying-glass"
+            icon="i-lucide-search"
             size="sm"
+            aria-label="Filter orphan notes"
             class="mb-4 flex-shrink-0"
           />
 

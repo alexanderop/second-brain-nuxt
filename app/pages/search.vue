@@ -369,11 +369,11 @@ defineShortcuts({
     if (selectedIndex.value < 0) return
     if (debouncedSearch.value && results.value.length) {
       const item = results.value[selectedIndex.value]
-      if (item) navigateTo(item.path)
+      if (item) void navigateTo(item.path)
       return
     }
     const item = defaultContent.value[selectedIndex.value]
-    if (item) navigateTo(`/${item.stem}`)
+    if (item) void navigateTo(`/${item.stem}`)
   },
 })
 
@@ -397,6 +397,7 @@ usePageTitle('Search')
       icon="i-lucide-search"
       size="lg"
       autofocus
+      aria-label="Search your knowledge base"
       class="mb-8"
     />
 
@@ -408,7 +409,7 @@ usePageTitle('Search')
 
     <!-- Search results -->
     <div v-if="debouncedSearch && results.length">
-      <p class="text-sm text-[var(--ui-text-muted)] mb-4">
+      <p class="text-sm text-[var(--ui-text-muted)] mb-4" role="status" aria-live="polite">
         {{ results.length }} result{{ results.length === 1 ? '' : 's' }}
         <span v-if="semanticLoading" class="ml-2">(semantic search loading...)</span>
       </p>

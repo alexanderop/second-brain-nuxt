@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { ContentRenderer, UAvatar, UButton } from '#components'
+import { buildSocialLinks } from '~/utils/socialLinks'
 
 const { data: page } = await useAsyncData('about-page', () => {
   return queryCollection('pages')
@@ -10,17 +11,7 @@ const { data: page } = await useAsyncData('about-page', () => {
     .first()
 })
 
-const socialLinks = computed(() => {
-  if (!page.value?.socials) return []
-  const socials = page.value.socials
-  const links = []
-  if (socials.twitter) links.push({ icon: 'i-lucide-twitter', url: `https://twitter.com/${socials.twitter}`, label: 'Twitter' })
-  if (socials.github) links.push({ icon: 'i-lucide-github', url: `https://github.com/${socials.github}`, label: 'GitHub' })
-  if (socials.linkedin) links.push({ icon: 'i-lucide-linkedin', url: `https://linkedin.com/in/${socials.linkedin}`, label: 'LinkedIn' })
-  if (socials.youtube) links.push({ icon: 'i-lucide-youtube', url: `https://youtube.com/@${socials.youtube}`, label: 'YouTube' })
-  if (socials.bluesky) links.push({ icon: 'i-lucide-cloud', url: `https://bsky.app/profile/${socials.bluesky}`, label: 'Bluesky' })
-  return links
-})
+const socialLinks = computed(() => buildSocialLinks(page.value?.socials))
 
 usePageTitle(() => page.value?.title ?? 'About')
 

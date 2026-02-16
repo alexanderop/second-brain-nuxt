@@ -22,7 +22,7 @@ export function usePrefetchContent() {
     }
 
     // Prefetch route components (non-blocking)
-    preloadRouteComponents(normalizedPath)
+    void preloadRouteComponents(normalizedPath)
 
     // Prefetch page data with same cache key as [...slug].vue
     // Using server: false since we only need client-side prefetch

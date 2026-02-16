@@ -5,15 +5,12 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import PodcastHeader from '~/components/PodcastHeader.vue'
 import ContentList from '~/components/ContentList.vue'
+import { isPodcastItem } from '~/types/content'
 import type { PodcastItem } from '~/types/content'
 import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
-
-function isPodcastItem(p: unknown): p is PodcastItem {
-  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
-}
 
 const { data: podcast } = await useAsyncData(`podcast-${slug.value}`, () => {
   return queryCollection('podcasts')

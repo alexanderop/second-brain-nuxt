@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { NuxtLink, UButton, UIcon } from '#components'
 import type { PodcastItem } from '~/types/content'
+import { handleImageError } from '~/utils/imageErrorHandler'
 
 const props = defineProps<{
   podcast: PodcastItem
@@ -31,22 +32,13 @@ const platformLinks = computed(() => {
     label: platformLabels[platform] || platform,
   }))
 })
-
-function handleImageError(event: Event) {
-  if (!(event.target instanceof HTMLImageElement)) return
-  event.target.style.display = 'none'
-  const fallback = event.target.nextElementSibling
-  if (fallback instanceof HTMLElement) {
-    fallback.style.display = 'flex'
-  }
-}
 </script>
 
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-3 mb-4">
-      <NuxtLink to="/podcasts" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]">
-        <UIcon name="i-lucide-arrow-left" class="size-5" />
+      <NuxtLink to="/podcasts" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]" aria-label="Back to podcasts">
+        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
       </NuxtLink>
       <UIcon name="i-lucide-podcast" class="size-6" />
       <span class="text-[var(--ui-text-muted)]">Podcast</span>

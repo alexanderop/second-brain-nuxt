@@ -5,7 +5,6 @@ import type { NoteGraphData } from '~/types/graph'
 import type { BaseGraphOptions } from './BaseGraph.vue'
 
 const props = defineProps<{
-  slug: string
   graphData: NoteGraphData | null | undefined
 }>()
 

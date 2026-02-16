@@ -58,6 +58,7 @@ const mobileMenuOpen = ref(false)
           variant="ghost"
           color="neutral"
           class="hidden sm:inline-flex"
+          aria-label="Keyboard shortcuts"
           @click="shortcutsOpen = true"
         >
           <UKbd>?</UKbd>

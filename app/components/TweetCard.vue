@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { NuxtLink, UIcon } from '#components'
 import type { TweetItem } from '~/types/content'
+import { formatDate } from '~/utils/formatDate'
+import { handleImageError } from '~/utils/imageErrorHandler'
 
 const props = defineProps<{
   tweet: TweetItem
@@ -14,25 +16,6 @@ const props = defineProps<{
 
 function openExternalUrl() {
   window.open(props.tweet.tweetUrl, '_blank', 'noopener,noreferrer')
-}
-
-function formatDate(date?: Date | string) {
-  if (!date)
-    return ''
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
-function handleImageError(event: Event) {
-  if (!(event.target instanceof HTMLImageElement)) return
-  event.target.style.display = 'none'
-  const fallback = event.target.nextElementSibling
-  if (fallback instanceof HTMLElement) {
-    fallback.style.display = 'flex'
-  }
 }
 </script>
 

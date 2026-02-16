@@ -13,12 +13,12 @@ const groupedShortcuts = computed(() => ({
 </script>
 
 <template>
-  <UModal v-model:open="open" :ui="{ content: 'w-full max-w-2xl' }">
+  <UModal v-model:open="open" title="Keyboard Shortcuts" :ui="{ content: 'w-full max-w-2xl' }">
     <template #content>
       <div class="p-6">
         <header class="flex items-center justify-between mb-6">
           <h2 class="text-lg font-semibold">Keyboard Shortcuts</h2>
-          <UButton icon="i-lucide-x" variant="ghost" color="neutral" size="sm" @click="open = false" />
+          <UButton icon="i-lucide-x" variant="ghost" color="neutral" size="sm" aria-label="Close keyboard shortcuts" @click="open = false" />
         </header>
 
         <div class="max-h-[70vh] overflow-y-auto grid md:grid-cols-2 gap-4">

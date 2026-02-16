@@ -15,7 +15,7 @@ import { useMentions } from '~/composables/useMentions'
 import { useFocusMode } from '~/composables/useFocusMode'
 import { useTocVisibility } from '~/composables/useTocVisibility'
 import { useAuthorShortcut } from '~/composables/useAuthorShortcut'
-import type { NewsletterItem, PodcastItem } from '~/types/content'
+import { isPodcastItem, isNewsletterItem } from '~/types/content'
 
 interface PageWithPodcast {
   podcast?: string
@@ -26,20 +26,12 @@ interface PageWithNewsletter {
   newsletter?: string
 }
 
-function isPodcastItem(p: unknown): p is PodcastItem {
-  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
-}
-
-function isNewsletterItem(n: unknown): n is NewsletterItem {
-  return typeof n === 'object' && n !== null && 'slug' in n && 'name' in n && 'authors' in n
-}
-
 function hasPagePodcastFields(p: unknown): p is PageWithPodcast {
-  return typeof p === 'object' && p !== null
+  return typeof p === 'object' && p !== null && 'podcast' in p
 }
 
 function hasPageNewsletterFields(p: unknown): p is PageWithNewsletter {
-  return typeof p === 'object' && p !== null
+  return typeof p === 'object' && p !== null && 'newsletter' in p
 }
 
 const route = useRoute()
@@ -197,11 +189,11 @@ defineShortcuts({
     }
   },
   'shift_l': () => {
-    navigator.clipboard.writeText(`[[${slug.value}]]`)
+    void navigator.clipboard.writeText(`[[${slug.value}]]`)
   },
   'shift_c': () => {
     if (page.value?.url) {
-      navigator.clipboard.writeText(page.value.url)
+      void navigator.clipboard.writeText(page.value.url)
     }
   },
 })

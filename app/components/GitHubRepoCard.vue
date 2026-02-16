@@ -45,6 +45,7 @@ function formatStars(count: number): string {
       :href="url"
       target="_blank"
       rel="noopener noreferrer"
+      :aria-label="`View GitHub repository${language ? ` (${language})` : ''}${stars !== undefined ? `, ${formatStars(stars)} stars` : ''}`"
       class="flex items-center gap-4 px-5 py-3 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-bg-elevated)] hover:border-[var(--ui-primary)] transition-colors"
     >
       <UIcon name="i-lucide-github" class="size-6 text-[var(--ui-text-muted)]" />

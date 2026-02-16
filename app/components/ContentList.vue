@@ -26,10 +26,10 @@ const podcastSlugs = computed(() => {
 })
 
 const { data: podcasts } = await useAsyncData(
-  `content-list-podcasts-${podcastSlugs.value.join(',')}`,
+  'content-list-podcasts',
   async () => {
     if (podcastSlugs.value.length === 0) return []
-    return queryCollection('podcasts').all()
+    return queryCollection('podcasts').select('slug', 'name').all()
   },
   { watch: [podcastSlugs] },
 )

@@ -1,5 +1,5 @@
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceRadial, forceY, forceCollide } from 'd3-force'
-import type { Simulation } from 'd3'
+import type { Simulation } from 'd3-force'
 import type { UnifiedGraphNode, UnifiedGraphEdge } from '~/types/graph'
 
 export interface ForceConfig {

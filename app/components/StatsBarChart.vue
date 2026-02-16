@@ -70,6 +70,8 @@ function drawChart() {
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('role', 'img')
+    .attr('aria-label', `Bar chart with ${props.data.length} items`)
 
   // Create defs for gradients
   const defs = svg.append('defs')
@@ -237,7 +239,7 @@ function drawChart() {
 }
 
 onMounted(() => drawChart())
-watch(() => props.data, () => drawChart(), { deep: true })
+watch(() => props.data, () => drawChart())
 useResizeObserver(container, useDebounceFn(drawChart, 200))
 </script>
 

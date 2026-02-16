@@ -73,13 +73,15 @@ function formatJson(obj: unknown): string {
     >
       <button
         class="w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[var(--ui-bg-elevated)] transition-colors"
+        :aria-expanded="isExpanded"
         @click="toggle"
       >
-        <UIcon :name="toolIcon" class="text-[var(--ui-primary)] shrink-0" />
+        <UIcon :name="toolIcon" class="text-[var(--ui-primary)] shrink-0" aria-hidden="true" />
         <span class="flex-1 text-[var(--ui-text-muted)]">{{ description }}</span>
         <UIcon
           :name="statusIcon"
           class="shrink-0"
+          aria-hidden="true"
           :class="[
             isPending ? 'animate-spin text-[var(--ui-text-muted)]' : 'text-green-500',
           ]"
@@ -87,6 +89,7 @@ function formatJson(obj: unknown): string {
         <UIcon
           name="i-lucide-chevron-down"
           class="transition-transform shrink-0 text-[var(--ui-text-muted)]"
+          aria-hidden="true"
           :class="{ 'rotate-180': isExpanded }"
         />
       </button>

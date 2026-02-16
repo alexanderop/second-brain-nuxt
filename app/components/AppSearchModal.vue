@@ -35,30 +35,35 @@ const route = useRoute()
 const { data: searchSections } = await useAsyncData(
   'search-modal-sections',
   () => queryCollectionSearchSections('content'),
+  { lazy: true },
 )
 
 // Fetch authors for search
 const { data: authors } = await useAsyncData(
   'search-modal-authors',
   () => queryCollection('authors').select('name', 'slug', 'avatar').all(),
+  { lazy: true },
 )
 
 // Fetch newsletters for search
 const { data: newsletters } = await useAsyncData(
   'search-modal-newsletters',
   () => queryCollection('newsletters').select('name', 'slug', 'logo').all(),
+  { lazy: true },
 )
 
 // Fetch podcasts for search
 const { data: podcasts } = await useAsyncData(
   'search-modal-podcasts',
   () => queryCollection('podcasts').select('name', 'slug', 'artwork').all(),
+  { lazy: true },
 )
 
 // Fetch content metadata for enriching search (tags, type, authors)
 const { data: contentMetadata } = await useAsyncData(
   'search-modal-metadata',
   () => queryCollection('content').select('stem', 'tags', 'type', 'authors').all(),
+  { lazy: true },
 )
 
 // Build metadata lookup map

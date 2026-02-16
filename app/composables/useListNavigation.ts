@@ -31,7 +31,7 @@ export function useListNavigation<T extends NavigableItem>(items: Ref<T[] | null
     'enter': () => {
       const item = items.value?.[selectedIndex.value]
       if (item) {
-        navigateTo(getPath(item))
+        void navigateTo(getPath(item))
       }
     },
   })

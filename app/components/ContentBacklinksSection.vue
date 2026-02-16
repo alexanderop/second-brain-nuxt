@@ -6,13 +6,13 @@ import type { ContentType } from '~/constants/contentTypes'
 interface Backlink {
   slug: string
   title: string
-  type: string
+  type: ContentType
 }
 
 interface Mention {
   slug: string
   title: string
-  type: string
+  type: ContentType
   snippet: string
   highlightedSnippet: string
 }
@@ -36,7 +36,7 @@ defineProps<{
             :to="`/${link.slug}`"
             class="flex items-center gap-2 p-2 -mx-2 rounded hover:bg-[var(--ui-bg-muted)] transition-colors"
           >
-            <BaseTypeIcon :type="link.type as ContentType" size="sm" class="text-[var(--ui-text-muted)]" />
+            <BaseTypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
             <span>{{ link.title }}</span>
           </NuxtLink>
         </li>
@@ -55,7 +55,7 @@ defineProps<{
             class="block p-3 -mx-2 rounded hover:bg-[var(--ui-bg-muted)] transition-colors"
           >
             <div class="flex items-center gap-2 mb-1">
-              <BaseTypeIcon :type="mention.type as ContentType" size="sm" class="text-[var(--ui-text-muted)]" />
+              <BaseTypeIcon :type="mention.type" size="sm" class="text-[var(--ui-text-muted)]" />
               <span class="font-medium">{{ mention.title }}</span>
             </div>
             <p

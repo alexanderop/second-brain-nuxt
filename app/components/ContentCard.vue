@@ -5,6 +5,7 @@ import BaseTagPill from '~/components/BaseTagPill.vue'
 import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
 import { usePrefetchContent } from '~/composables/usePrefetchContent'
 import type { ContentItem } from '~/types/content'
+import { formatDate } from '~/utils/formatDate'
 
 const props = defineProps<{
   content: ContentItem
@@ -16,16 +17,6 @@ const { prefetch } = usePrefetchContent()
 
 function handleMouseEnter() {
   prefetch(`/${props.content.slug}`)
-}
-
-function formatDate(date?: Date | string) {
-  if (!date)
-    return ''
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
 }
 </script>
 
@@ -74,7 +65,7 @@ function formatDate(date?: Date | string) {
       <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
       <BaseRatingDisplay v-if="content.rating" :rating="content.rating" />
       <span v-if="content.date" class="text-xs text-[var(--ui-text-muted)]">
-        {{ formatDate(content.date) }}
+        {{ formatDate(content.date, 'short') }}
       </span>
     </div>
   </article>

@@ -5,6 +5,8 @@ import { useRequestURL } from '#imports'
 import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components'
 import BaseTagPill from '~/components/BaseTagPill.vue'
 import type { TweetItem } from '~/types/content'
+import { formatDate } from '~/utils/formatDate'
+import { handleImageError } from '~/utils/imageErrorHandler'
 
 const props = defineProps<{
   tweet: TweetItem
@@ -31,25 +33,6 @@ const copyItems: DropdownMenuItem[] = [
     onSelect: () => copy(`${requestUrl.origin}/tweets/${props.tweet.slug}`),
   },
 ]
-
-function formatDate(date?: Date | string) {
-  if (!date)
-    return ''
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-function handleImageError(event: Event) {
-  if (!(event.target instanceof HTMLImageElement)) return
-  event.target.style.display = 'none'
-  const fallback = event.target.nextElementSibling
-  if (fallback instanceof HTMLElement) {
-    fallback.style.display = 'flex'
-  }
-}
 </script>
 
 <template>
@@ -59,8 +42,9 @@ function handleImageError(event: Event) {
       <NuxtLink
         :to="`/authors/${encodeURIComponent(author.slug)}`"
         class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
+        aria-label="Back to author page"
       >
-        <UIcon name="i-lucide-arrow-left" class="size-5" />
+        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
       </NuxtLink>
       <UIcon name="i-simple-icons-x" class="size-5" />
       <span class="text-[var(--ui-text-muted)]">Tweet</span>
@@ -127,6 +111,7 @@ function handleImageError(event: Event) {
           color="neutral"
           size="sm"
           :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+          aria-label="Copy options"
         />
       </UDropdownMenu>
       <UButton

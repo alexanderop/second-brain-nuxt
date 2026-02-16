@@ -5,7 +5,7 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink } from '#components'
 
 const { data: allContent } = await useAsyncData('all-content-tags', () => {
-  return queryCollection('content').all()
+  return queryCollection('content').select('tags', 'stem').all()
 })
 
 const tagCounts = computed(() => {

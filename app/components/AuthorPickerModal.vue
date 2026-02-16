@@ -58,7 +58,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" title="Select Author" description="This note has multiple authors. Select one to open their page.">
     <template #content>
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
@@ -70,6 +70,7 @@ defineShortcuts({
             variant="ghost"
             color="neutral"
             size="sm"
+            aria-label="Close author picker"
             @click="open = false"
           />
         </div>

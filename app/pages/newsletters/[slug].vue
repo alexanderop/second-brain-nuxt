@@ -5,15 +5,12 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import NewsletterHeader from '~/components/NewsletterHeader.vue'
 import ContentList from '~/components/ContentList.vue'
+import { isNewsletterItem } from '~/types/content'
 import type { NewsletterItem } from '~/types/content'
 import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
-
-function isNewsletterItem(n: unknown): n is NewsletterItem {
-  return typeof n === 'object' && n !== null && 'slug' in n && 'name' in n && 'authors' in n
-}
 
 const { data: newsletter } = await useAsyncData(`newsletter-${slug.value}`, () => {
   return queryCollection('newsletters')

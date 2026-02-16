@@ -86,6 +86,7 @@ const mapMemberCount = computed(() => {
             variant="ghost"
             color="neutral"
             size="sm"
+            aria-label="Close node details"
             @click="emit('close')"
           />
         </div>

@@ -1,10 +1,11 @@
 import { computed } from 'vue'
 import { useAsyncData } from '#imports'
+import type { ContentType } from '~/constants/contentTypes'
 
 interface BacklinkItem {
   slug: string
   title: string
-  type: string
+  type: ContentType
 }
 
 interface BacklinksIndex {

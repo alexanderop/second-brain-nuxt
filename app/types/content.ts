@@ -57,3 +57,12 @@ export interface TweetItem {
   tweetedAt: Date | string
   tags?: Array<string>
 }
+
+// Type guards for content collections
+export function isPodcastItem(p: unknown): p is PodcastItem {
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
+}
+
+export function isNewsletterItem(p: unknown): p is NewsletterItem {
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'authors' in p
+}

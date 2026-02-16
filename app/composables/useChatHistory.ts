@@ -1,5 +1,6 @@
 import type { RemovableRef } from '@vueuse/core'
 import { useLocalStorage } from '@vueuse/core'
+import { tryCatch } from '#shared/utils/tryCatch'
 
 export interface Source {
   title: string
@@ -31,7 +32,26 @@ interface ChatHistoryReturn {
 }
 
 export function useChatHistory(): ChatHistoryReturn {
-  const messages = useLocalStorage<ChatMessage[]>('sb-chat-messages', [])
+  const messages = useLocalStorage<ChatMessage[]>('sb-chat-messages', [], {
+    serializer: {
+      read(raw: string): ChatMessage[] {
+        const [error, parsed] = tryCatch((): unknown => JSON.parse(raw))
+        if (error || !Array.isArray(parsed)) return []
+        return parsed.filter((entry: unknown): entry is ChatMessage => {
+          if (typeof entry !== 'object' || entry === null) return false
+          if (!('id' in entry) || !('content' in entry) || !('role' in entry)) return false
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing
+          const obj = entry as Record<string, unknown>
+          return typeof obj.id === 'string'
+            && typeof obj.content === 'string'
+            && (obj.role === 'user' || obj.role === 'assistant')
+        })
+      },
+      write(value: ChatMessage[]): string {
+        return JSON.stringify(value)
+      },
+    },
+  })
 
   function addMessage(msg: Omit<ChatMessage, 'id' | 'timestamp'>): void {
     messages.value.push({

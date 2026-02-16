@@ -36,6 +36,8 @@ function drawChart() {
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('role', 'img')
+    .attr('aria-label', `Line chart with ${props.data.length} data points`)
 
   const g = svg.append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`)
@@ -169,7 +171,7 @@ function formatLabel(label: string): string {
 }
 
 onMounted(() => drawChart())
-watch(() => props.data, () => drawChart(), { deep: true })
+watch(() => props.data, () => drawChart())
 useResizeObserver(container, useDebounceFn(drawChart, 200))
 </script>
 

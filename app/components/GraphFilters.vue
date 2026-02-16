@@ -22,9 +22,6 @@ const {
   clearFilters,
 } = useGraphFilters()
 
-// Pass through available types - filtering is handled by the parent
-const visibleTypes = computed(() => props.availableTypes)
-
 // Type display names
 const typeLabels: Record<ContentType, string> = {
   book: 'Books',
@@ -48,7 +45,7 @@ const typeLabels: Record<ContentType, string> = {
 
 // Build checkbox items for UCheckboxGroup
 const typeItems = computed(() =>
-  visibleTypes.value.map(type => ({
+  props.availableTypes.map(type => ({
     label: typeLabels[type] || type,
     value: type,
   })),
@@ -104,9 +101,10 @@ function getTypeColor(type: ContentType): string {
           :key="item.value"
           type="button"
           class="type-pill"
-          :class="{ active: isTypeSelected(item.value as ContentType) }"
+          :class="{ active: isTypeSelected(item.value) }"
+          :aria-pressed="isTypeSelected(item.value)"
           :style="{ '--pill-color': getTypeColor(item.value) }"
-          @click="toggleType(item.value as ContentType)"
+          @click="toggleType(item.value)"
         >
           <span
             class="type-dot"
@@ -171,6 +169,7 @@ function getTypeColor(type: ContentType): string {
       type="button"
       class="orphan-toggle"
       :class="{ active: showOrphans }"
+      :aria-pressed="showOrphans"
       @click="showOrphans = !showOrphans"
     >
       <UIcon

@@ -4,6 +4,7 @@ import { useAsyncData, queryCollection } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import PodcastCard from '~/components/PodcastCard.vue'
+import { isPodcastItem } from '~/types/content'
 import type { PodcastItem } from '~/types/content'
 
 interface EpisodeData {
@@ -49,10 +50,6 @@ const podcastStats = computed(() => {
 
 function isPodcastEpisode(ep: unknown): ep is EpisodeData {
   return typeof ep === 'object' && ep !== null
-}
-
-function isPodcastItem(p: unknown): p is PodcastItem {
-  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p
 }
 
 const activePodcasts = computed(() => {

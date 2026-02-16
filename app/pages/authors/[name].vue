@@ -6,6 +6,7 @@ import { NuxtLink, UIcon, UButton, UAvatar } from '#components'
 import ContentList from '~/components/ContentList.vue'
 import TweetCard from '~/components/TweetCard.vue'
 import type { TweetItem } from '~/types/content'
+import { buildSocialLinks } from '~/utils/socialLinks'
 
 const route = useRoute()
 const authorSlug = computed(() => decodeURIComponent(String(route.params.name)))
@@ -76,24 +77,15 @@ const authorName = computed(() => authorData.value?.name ?? authorSlug.value)
 
 usePageTitle(() => authorName.value)
 
-const socialLinks = computed(() => {
-  if (!authorData.value?.socials) return []
-  const socials = authorData.value.socials
-  const links = []
-  if (socials.twitter) links.push({ icon: 'i-lucide-twitter', url: `https://twitter.com/${socials.twitter}`, label: 'Twitter' })
-  if (socials.github) links.push({ icon: 'i-lucide-github', url: `https://github.com/${socials.github}`, label: 'GitHub' })
-  if (socials.linkedin) links.push({ icon: 'i-lucide-linkedin', url: `https://linkedin.com/in/${socials.linkedin}`, label: 'LinkedIn' })
-  if (socials.youtube) links.push({ icon: 'i-lucide-youtube', url: `https://youtube.com/@${socials.youtube}`, label: 'YouTube' })
-  return links
-})
+const socialLinks = computed(() => buildSocialLinks(authorData.value?.socials))
 </script>
 
 <template>
   <div>
     <div class="mb-6">
       <div class="flex items-center gap-3 mb-4">
-        <NuxtLink to="/authors" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]">
-          <UIcon name="i-lucide-arrow-left" class="size-5" />
+        <NuxtLink to="/authors" aria-label="Back to authors" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]">
+          <UIcon name="i-lucide-arrow-left" aria-hidden="true" class="size-5" />
         </NuxtLink>
         <UAvatar
           v-if="authorData?.avatar"

@@ -11,7 +11,7 @@ function reload() {
 
 <template>
   <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-    <div class="i-lucide-wifi-off w-16 h-16 text-[var(--ui-text-muted)] mb-6" />
+    <div class="i-lucide-wifi-off w-16 h-16 text-[var(--ui-text-muted)] mb-6" aria-hidden="true" />
 
     <h1 class="text-2xl font-semibold tracking-tight mb-2">
       You're offline

@@ -5,7 +5,7 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UIcon } from '#components'
 
 const { data: allContent } = await useAsyncData('all-content-authors', () => {
-  return queryCollection('content').all()
+  return queryCollection('content').select('authors', 'stem').all()
 })
 
 const authorCounts = computed(() => {

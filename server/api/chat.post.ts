@@ -3,6 +3,7 @@ import { queryCollection } from '@nuxt/content/server'
 import { useRuntimeConfig } from '#imports'
 import { consola } from 'consola'
 import Anthropic from '@anthropic-ai/sdk'
+import { z } from 'zod'
 import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch'
 import {
   MODEL,
@@ -14,7 +15,7 @@ import {
   isGetNoteDetailsInput,
   isFetchSourceInput,
 } from '../utils/chat/tools'
-import type { ChatRequest, NoteContext } from '../utils/chat/tools'
+import type { NoteContext } from '../utils/chat/tools'
 import {
   formatNoteContent,
   hybridSearch,
@@ -127,17 +128,17 @@ async function executeGetNoteContent(
   return result
 }
 
-// Wiki-link pattern to extract forward links from note content
-const WIKI_LINK_PATTERN = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g
-
 /**
  * Parse wiki-links from note content to find forward links.
+ * Regex is created inside the function to avoid lastIndex persistence issues
+ * with the global flag across multiple calls.
  */
 function parseWikiLinks(content: string | null | undefined): string[] {
   if (!content) return []
+  const wikiLinkPattern = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g
   const links: string[] = []
   let match
-  while ((match = WIKI_LINK_PATTERN.exec(content)) !== null) {
+  while ((match = wikiLinkPattern.exec(content)) !== null) {
     if (match[1]) {
       links.push(match[1])
     }
@@ -242,6 +243,34 @@ async function executeGetNoteDetails(
   return result
 }
 
+/**
+ * Validate that a URL is allowed for server-side fetching.
+ * Blocks localhost, private IPs, and non-http(s) protocols to prevent SSRF.
+ */
+const BLOCKED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1', '[::1]'])
+const ALLOWED_PROTOCOLS = new Set(['http:', 'https:'])
+
+const PRIVATE_IP_PATTERNS = [
+  /^10\./,
+  /^172\.(1[6-9]|2\d|3[01])\./,
+  /^192\.168\./,
+  /^169\.254\./,
+  /^0\.0\.0\.0$/,
+]
+
+function isPrivateIp(hostname: string): boolean {
+  return PRIVATE_IP_PATTERNS.some(pattern => pattern.test(hostname))
+}
+
+function isAllowedUrl(urlString: string): boolean {
+  const [error, parsed] = tryCatch(() => new URL(urlString))
+  if (error) return false
+  if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) return false
+  const hostname = parsed.hostname.toLowerCase()
+  if (BLOCKED_HOSTNAMES.has(hostname)) return false
+  return !isPrivateIp(hostname)
+}
+
 interface FetchSourceResult {
   url: string
   content: string
@@ -268,6 +297,12 @@ async function executeFetchSource(
   }
 
   const noteUrl = note.url
+
+  // SSRF protection: block requests to private/internal networks
+  if (!isAllowedUrl(noteUrl)) {
+    log.warn(`[${requestId}] fetch_source: blocked disallowed URL`, { url: noteUrl })
+    return { url: noteUrl, content: '', error: 'URL is not allowed (private or non-http)' }
+  }
 
   // Fetch the URL content
   const [fetchError, response] = await tryCatchAsync(async () => {
@@ -515,6 +550,15 @@ async function streamChatResponse(
   await eventStream.close()
 }
 
+// Zod schema for chat request validation
+const chatRequestSchema = z.object({
+  message: z.string().min(1, 'Message is required').max(10000, 'Message too long'),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant']),
+    content: z.string().max(50000, 'History entry content too long'),
+  })).max(50, 'Too many history entries').default([]),
+})
+
 // HTTP handler (thin imperative shell)
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
@@ -537,7 +581,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const [bodyError, body] = await tryAsync(readBody<ChatRequest>(event))
+  const [bodyError, body] = await tryAsync(readBody(event))
   if (bodyError) {
     log.warn(`[${requestId}] Failed to parse request body`, bodyError)
     throw createError({
@@ -546,22 +590,24 @@ export default defineEventHandler(async (event) => {
       data: { message: 'Failed to parse request body.' },
     })
   }
-  const { message, history = [] } = body
 
-  log.info(`[${requestId}] Incoming request`, {
-    messageLength: message?.length ?? 0,
-    messagePreview: message?.slice(0, 100),
-    historyLength: history.length,
-  })
-
-  if (!message?.trim()) {
-    log.warn(`[${requestId}] Empty message received`)
+  const parseResult = chatRequestSchema.safeParse(body)
+  if (!parseResult.success) {
+    log.warn(`[${requestId}] Request validation failed`, parseResult.error.issues)
     throw createError({
       statusCode: 400,
-      statusMessage: 'Message is required',
-      data: { message: 'Please enter a message to send.' },
+      statusMessage: 'Validation failed',
+      data: { message: parseResult.error.issues.map(i => i.message).join(', ') },
     })
   }
+
+  const { message, history } = parseResult.data
+
+  log.info(`[${requestId}] Incoming request`, {
+    messageLength: message.length,
+    messagePreview: message.slice(0, 100),
+    historyLength: history.length,
+  })
 
   const messages = buildInitialMessages(history, message)
 
@@ -572,7 +618,7 @@ export default defineEventHandler(async (event) => {
   const eventStream = createEventStream(event)
   const anthropic = new Anthropic({ apiKey: config.anthropicApiKey })
 
-  streamChatResponse(event, anthropic, messages, eventStream, requestId)
+  void streamChatResponse(event, anthropic, messages, eventStream, requestId)
 
   return eventStream.send()
 })

@@ -20,8 +20,8 @@ function handleImageError(event: Event) {
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-3 mb-4">
-      <NuxtLink to="/newsletters" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]">
-        <UIcon name="i-lucide-arrow-left" class="size-5" />
+      <NuxtLink to="/newsletters" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]" aria-label="Back to newsletters">
+        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
       </NuxtLink>
       <UIcon name="i-lucide-newspaper" class="size-6" />
       <span class="text-[var(--ui-text-muted)]">Newsletter</span>

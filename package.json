@@ -22,7 +22,7 @@
     "generate:embeddings": "npx tsx scripts/generate-embeddings.ts",
     "prebuild": "pnpm generate:embeddings",
     "build": "pnpm build:excalidraw && pnpm build:og && nuxt build",
-    "dev": "nuxt dev",
+    "dev": "rm -rf .nuxt .data && nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
     "lint": "oxlint && eslint . && markdownlint-cli2 'content/**/*.md'",

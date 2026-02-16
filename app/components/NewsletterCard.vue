@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import { NuxtLink, UIcon } from '#components'
 import type { NewsletterItem } from '~/types/content'
+import { handleImageError } from '~/utils/imageErrorHandler'
 
 defineProps<{
   newsletter: NewsletterItem
   articleCount?: number
 }>()
-
-function handleImageError(event: Event) {
-  if (!(event.target instanceof HTMLImageElement)) return
-  event.target.style.display = 'none'
-  const fallback = event.target.nextElementSibling
-  if (fallback instanceof HTMLElement) {
-    fallback.style.display = 'flex'
-  }
-}
 </script>
 
 <template>

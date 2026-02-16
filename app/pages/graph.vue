@@ -212,8 +212,8 @@ const showMobileFilters = ref(false)
     <div class="absolute top-4 left-4 z-10">
       <div class="glass-panel px-4 py-3">
         <div class="flex items-center gap-3">
-          <NuxtLink to="/" class="p-2 -m-2 rounded-lg hover:bg-white/5 transition-colors">
-            <UIcon name="i-lucide-arrow-left" class="size-4 text-[var(--ui-text-muted)]" />
+          <NuxtLink to="/" aria-label="Back to home" class="p-2 -m-2 rounded-lg hover:bg-white/5 transition-colors">
+            <UIcon name="i-lucide-arrow-left" aria-hidden="true" class="size-4 text-[var(--ui-text-muted)]" />
           </NuxtLink>
           <div>
             <h1 class="text-sm font-semibold">Knowledge Graph</h1>
@@ -231,6 +231,7 @@ const showMobileFilters = ref(false)
         <!-- Collapse toggle header -->
         <button
           class="flex items-center justify-between w-full px-4 py-2 text-xs font-medium text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] transition-colors"
+          :aria-expanded="filtersExpanded"
           @click="filtersExpanded = !filtersExpanded"
         >
           <span class="flex items-center gap-2">
@@ -292,6 +293,7 @@ const showMobileFilters = ref(false)
         </UTooltip>
         <UTooltip text="Reset zoom">
           <button
+            aria-label="Reset zoom to fit all nodes"
             class="px-2 py-1 text-xs font-medium text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] transition-colors min-w-[3rem] text-center"
             @click="graphRef?.fitAll()"
           >
@@ -313,7 +315,7 @@ const showMobileFilters = ref(false)
 
     <!-- Mobile filter button (bottom-right) -->
     <div v-if="isMobile" class="absolute bottom-4 right-4 z-10">
-      <button class="glass-panel p-3" @click="showMobileFilters = true">
+      <button aria-label="Open graph filters" class="glass-panel p-3" @click="showMobileFilters = true">
         <UIcon name="i-lucide-filter" class="size-5" />
       </button>
     </div>

@@ -10,6 +10,7 @@ import type { ContentType } from '~/constants/contentTypes'
 // Fetch content
 const { data: contentItems } = await useAsyncData('recent-content', () => {
   return queryCollection('content')
+    .select('stem', 'path', 'title', 'type', 'tags', 'authors', 'date', 'summary', 'rating', 'podcast', 'guests')
     .order('date', 'DESC')
     .all()
 })
@@ -23,12 +24,12 @@ const { data: tweetItems } = await useAsyncData('recent-tweets', () => {
 
 // Fetch authors for tweet display
 const { data: authors } = await useAsyncData('homepage-authors', () =>
-  queryCollection('authors').all(),
+  queryCollection('authors').select('slug', 'name', 'avatar', 'socials').all(),
 )
 
 // Fetch podcasts for content display
 const { data: podcasts } = await useAsyncData('homepage-podcasts', () =>
-  queryCollection('podcasts').all(),
+  queryCollection('podcasts').select('slug', 'name').all(),
 )
 
 interface AuthorInfo {

@@ -62,7 +62,7 @@ onMounted(() => {
 // Reset scroll when filters change
 watch(filters, () => {
   scrollPosition.value = 0
-}, { deep: true })
+})
 </script>
 
 <template>
@@ -107,6 +107,7 @@ watch(filters, () => {
         <template #prev>
           <UButton
             data-testid="pagination-prev"
+            aria-label="Previous page"
             variant="outline"
             color="neutral"
             size="sm"
@@ -116,6 +117,7 @@ watch(filters, () => {
         <template #next>
           <UButton
             data-testid="pagination-next"
+            aria-label="Next page"
             variant="outline"
             color="neutral"
             size="sm"

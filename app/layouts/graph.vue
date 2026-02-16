@@ -17,16 +17,16 @@ defineShortcuts({
     searchOpen.value = true
   },
   'g-h': () => {
-    navigateTo('/')
+    void navigateTo('/')
   },
   'g-g': () => {
-    navigateTo('/graph')
+    void navigateTo('/graph')
   },
   'g-t': () => {
-    navigateTo('/tags')
+    void navigateTo('/tags')
   },
   'g-a': () => {
-    navigateTo('/authors')
+    void navigateTo('/authors')
   },
 })
 </script>
@@ -34,9 +34,9 @@ defineShortcuts({
 <template>
   <UApp>
     <!-- Full viewport, no container constraints -->
-    <div class="h-screen overflow-hidden bg-[var(--ui-bg)]">
+    <main class="h-screen overflow-hidden bg-[var(--ui-bg)]">
       <slot />
-    </div>
+    </main>
     <AppSearchModal v-model:open="searchOpen" />
     <AppShortcutsModal v-model:open="shortcutsOpen" />
   </UApp>

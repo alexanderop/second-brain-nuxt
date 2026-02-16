@@ -4,6 +4,7 @@ import { useAsyncData, queryCollection } from '#imports'
 import { NuxtLink, UPopover, UBadge } from '#components'
 import { usePrefetchContent } from '~/composables/usePrefetchContent'
 import type { ContentType } from '~/constants/contentTypes'
+import { CONTENT_TYPE_BADGE_COLORS } from '~/constants/contentTypeColors'
 
 const props = defineProps<{
   href?: string
@@ -86,30 +87,10 @@ const linkClass = computed(() => {
   return exists.value ? props.class : `${props.class} broken`
 })
 
-// Type-based colors for badges
-type BadgeColor = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error' | 'neutral'
-
-const typeColors: Record<ContentType, BadgeColor> = {
-  youtube: 'error',
-  podcast: 'secondary',
-  article: 'info',
-  book: 'warning',
-  manga: 'warning',
-  movie: 'error',
-  tv: 'info',
-  tweet: 'info',
-  quote: 'success',
-  course: 'warning',
-  note: 'neutral',
-  evergreen: 'success',
-  map: 'secondary',
-  reddit: 'warning',
-  github: 'neutral',
-  newsletter: 'info',
-  talk: 'primary',
-}
 
 // Normalize preview data from different collection schemas
+type BadgeColor = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error' | 'neutral'
+
 interface PreviewData {
   title: string
   summary?: string
@@ -126,7 +107,7 @@ function isRecord(obj: unknown): obj is Record<string, unknown> {
 
 // Type guard for ContentType
 function isContentType(value: unknown): value is ContentType {
-  return typeof value === 'string' && value in typeColors
+  return typeof value === 'string' && value in CONTENT_TYPE_BADGE_COLORS
 }
 
 // Helper to safely get string property
@@ -191,7 +172,7 @@ function buildContentPreview(data: Record<string, unknown>): PreviewData {
   return {
     title: getString(data, 'title') ?? '',
     summary: getString(data, 'summary'),
-    badge: isContentType(contentType) ? { label: contentType, color: typeColors[contentType] } : undefined,
+    badge: isContentType(contentType) ? { label: contentType, color: CONTENT_TYPE_BADGE_COLORS[contentType] } : undefined,
     tags: getStringArray(data, 'tags'),
   }
 }

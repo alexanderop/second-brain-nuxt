@@ -8,6 +8,7 @@ import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
 import BaseTagPill from '~/components/BaseTagPill.vue'
 import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
 import type { ContentItem, NewsletterItem, PodcastItem } from '~/types/content'
+import { formatDate } from '~/utils/formatDate'
 
 const props = defineProps<{
   content: ContentItem
@@ -55,16 +56,6 @@ const copyItems = computed<DropdownMenuItem[]>(() => {
 
   return items
 })
-
-function formatDate(date?: Date | string) {
-  if (!date)
-    return ''
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
 </script>
 
 <template>

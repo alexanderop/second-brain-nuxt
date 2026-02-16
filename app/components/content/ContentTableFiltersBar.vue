@@ -8,11 +8,11 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'remove-type', type: ContentType): void
-  (e: 'remove-tag', tag: string): void
-  (e: 'remove-author', authorSlug: string): void
-  (e: 'remove-rating-range'): void
-  (e: 'clear-all'): void
+  'remove-type': [type: ContentType]
+  'remove-tag': [tag: string]
+  'remove-author': [authorSlug: string]
+  'remove-rating-range': []
+  'clear-all': []
 }>()
 
 function getAuthorName(slug: string): string {
@@ -23,55 +23,71 @@ function getAuthorName(slug: string): string {
 <template>
   <div class="flex flex-wrap gap-2 mb-4">
     <!-- Type chips -->
-    <UBadge
+    <button
       v-for="type in filters.type"
       :key="type"
-      variant="soft"
-      color="neutral"
-      class="cursor-pointer"
+      :aria-label="`Remove ${type} type filter`"
       @click="emit('remove-type', type)"
     >
-      {{ type }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
+      <UBadge
+        variant="soft"
+        color="neutral"
+        class="cursor-pointer"
+      >
+        {{ type }}
+        <UIcon name="i-lucide-x" class="ml-1 size-3" />
+      </UBadge>
+    </button>
 
     <!-- Tags chips -->
-    <UBadge
+    <button
       v-for="tag in filters.tags"
       :key="tag"
-      variant="soft"
-      color="primary"
-      class="cursor-pointer"
+      :aria-label="`Remove ${tag} tag filter`"
       @click="emit('remove-tag', tag)"
     >
-      {{ tag }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
+      <UBadge
+        variant="soft"
+        color="primary"
+        class="cursor-pointer"
+      >
+        {{ tag }}
+        <UIcon name="i-lucide-x" class="ml-1 size-3" />
+      </UBadge>
+    </button>
 
     <!-- Authors chips -->
-    <UBadge
+    <button
       v-for="authorSlug in filters.authors"
       :key="authorSlug"
-      variant="soft"
-      color="secondary"
-      class="cursor-pointer"
+      :aria-label="`Remove ${getAuthorName(authorSlug)} author filter`"
       @click="emit('remove-author', authorSlug)"
     >
-      {{ getAuthorName(authorSlug) }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
+      <UBadge
+        variant="soft"
+        color="secondary"
+        class="cursor-pointer"
+      >
+        {{ getAuthorName(authorSlug) }}
+        <UIcon name="i-lucide-x" class="ml-1 size-3" />
+      </UBadge>
+    </button>
 
     <!-- Rating range chip -->
-    <UBadge
+    <button
       v-if="filters.ratingRange"
-      variant="soft"
-      color="warning"
-      class="cursor-pointer"
+      aria-label="Remove rating range filter"
       @click="emit('remove-rating-range')"
     >
-      Rating: {{ filters.ratingRange[0] }}-{{ filters.ratingRange[1] }}
-      <UIcon name="i-lucide-x" class="ml-1 size-3" />
-    </UBadge>
+      <UBadge
+        variant="soft"
+        color="warning"
+        class="cursor-pointer"
+      >
+        Rating: {{ filters.ratingRange[0] }}-{{ filters.ratingRange[1] }}
+        <UIcon name="i-lucide-x" class="ml-1 size-3" />
+      </UBadge>
+    </button>
 
     <!-- Clear all button -->
     <UButton

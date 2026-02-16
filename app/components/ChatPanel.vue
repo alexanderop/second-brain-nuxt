@@ -215,7 +215,7 @@ async function sendMessage() {
 function handleKeydown(event: KeyboardEvent): void {
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
-    sendMessage()
+    void sendMessage()
   }
 }
 
@@ -303,12 +303,12 @@ function getSourceLinkClass(role: string): string {
             </template>
 
             <!-- Streaming indicator -->
-            <div v-if="showStreamingIndicator" class="flex justify-start">
+            <div v-if="showStreamingIndicator" class="flex justify-start" role="status" aria-live="polite">
               <div class="bg-[var(--ui-bg-muted)] rounded-lg px-4 py-2">
                 <span class="flex gap-1">
-                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 0ms" />
-                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 150ms" />
-                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 300ms" />
+                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 0ms" aria-hidden="true" />
+                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 150ms" aria-hidden="true" />
+                  <span class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 300ms" aria-hidden="true" />
                 </span>
               </div>
             </div>
@@ -325,6 +325,7 @@ function getSourceLinkClass(role: string): string {
                 :maxrows="4"
                 class="flex-1"
                 :disabled="status === 'streaming'"
+                aria-label="Chat message"
                 @keydown="handleKeydown"
               />
               <UButton

@@ -4,6 +4,7 @@ import { useAsyncData, queryCollection } from '#imports'
 import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import NewsletterCard from '~/components/NewsletterCard.vue'
+import { isNewsletterItem } from '~/types/content'
 import type { NewsletterItem } from '~/types/content'
 
 interface ArticleData {
@@ -49,10 +50,6 @@ const newsletterStats = computed(() => {
 
 function isNewsletterArticle(article: unknown): article is ArticleData {
   return typeof article === 'object' && article !== null
-}
-
-function isNewsletterItem(n: unknown): n is NewsletterItem {
-  return typeof n === 'object' && n !== null && 'slug' in n && 'name' in n && 'authors' in n
 }
 
 const activeNewsletters = computed(() => {
