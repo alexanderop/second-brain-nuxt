@@ -7,6 +7,8 @@ tags:
   - local-first
   - software-architecture
   - data-ownership
+  - crdt
+  - sync-engines
 authors:
   - martin-kleppmann
 summary: "Martin Kleppmann traces local-first from CRDTs to a proposed definition: software where another computer's availability never blocks the user—including when the developer shuts down."
@@ -15,7 +17,45 @@ date: 2026-01-04
 
 ## Overview
 
-Martin Kleppmann, co-author of the original [[local-first-software]] essay, reflects on five years of local-first development and proposes a sharper definition: local-first software must survive not just network outages, but the complete disappearance of its creators.
+Martin Kleppmann, co-author of the original [[local-first-software]] essay, reflects on five years of local-first development and proposes a sharper definition: local-first software must survive not just network outages, but the complete disappearance of its creators. The talk moves from personal history (discovering CRDTs in 2013, building Automerge, coining the term) to the real thesis: sync should become commoditized infrastructure, and local-first changes the economics of software development more than the technology.
+
+::mermaid
+<pre>
+mindmap
+    root((Local-First
+        Evolution))
+        Past
+            CRDTs 2011
+            Automerge 2017
+            Local-First Essay 2019
+            Seven Ideals Framework
+        Present
+            Movement has grown
+            Many projects self-describe as local-first
+            Definition needs sharpening
+            Not just CRDTs
+            Not just peer-to-peer
+        New Definition
+            Multi-device sync required
+            Offline-first is necessary but not sufficient
+            Incredible Journey proof
+            Survives developer shutdown
+        Future Vision
+            Generic sync service
+            Standardized protocols
+            Multiple interoperable providers
+            Peer-to-peer as complement
+            App-independent infrastructure
+        Developer Benefits
+            No backend team needed
+            Simpler programming model
+            No server costs
+            Smaller teams, niche apps
+        Open Challenge
+            Business model without data moat
+            Subscription without lock-in
+</pre>
+::
 
 ## Key Arguments
 
@@ -71,6 +111,10 @@ Small teams can build impressive apps for niche audiences. Prototypes that would
 - The simplified development model changes startup economics fundamentally
 - The "data moat" weakens when users own their data—business models must adapt
 
-## References
+## Connections
 
-Expands on the foundational [[local-first-software]] essay. See [[what-is-local-first-web-development]] for implementation approaches and [[ux-and-dx-with-sync-engines]] for sync engine patterns.
+- [[local-first-software]] — The original essay Kleppmann co-authored, revisited here five years later with a sharper definition and the "Incredible Journey proof" framing
+- [[what-is-local-first-web-development]] — Alexander's own practical take on implementing these principles in web apps with Vue and PWAs
+- [[the-big-questions-of-local-first]] — Panel discussion from the same conference where Kleppmann debates these open questions with other local-first pioneers
+- [[sync-panel-discussion]] — Another Local-First Conf panel focused on the sync architecture challenges Kleppmann's "commoditized sync" vision would solve
+- [[ux-and-dx-with-sync-engines]] — Practical sync engine patterns that demonstrate the developer experience improvements Kleppmann argues for

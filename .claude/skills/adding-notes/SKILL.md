@@ -221,7 +221,7 @@ Alexander is a visual learner. **Default to adding a diagram.** Only skip when t
       </pre>
       ::
       ```
-   h. Delete the `.mmd` file: `rm {slug}.mmd`
+   h. Delete the `.mmd` file: `command rm {slug}.mmd` (use `command` to bypass shell aliases)
    i. For rich content (books, talks, long articles): consider a second diagram if there's both a concept overview AND a distinct process/framework
 3. Log outcome (REQUIRED):
    - Adding: `✓ Diagram added: [mermaid-type] - [description]`
