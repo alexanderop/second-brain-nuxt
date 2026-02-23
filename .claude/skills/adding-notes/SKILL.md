@@ -57,7 +57,6 @@ Only use scripts that fetch external data or perform complex processing:
 | `get-manga-metadata.sh URL` | Manga series data |
 | `get-github-metadata.sh URL` | Repo stats |
 | `get-pdf-text.sh URL [output-file]` | Download PDF and extract text (requires `pdftotext`) |
-| `find-related-notes.ts FILE [--limit N] [--min-score N]` | Semantic search using project embeddings |
 
 ### Transcript Format Options
 

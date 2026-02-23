@@ -18,11 +18,9 @@ import {
 import type { NoteContext } from '../utils/chat/tools'
 import {
   formatNoteContent,
-  hybridSearch,
   keywordSearch,
 } from '../utils/chat/search'
 import type { RawNote } from '../utils/chat/search'
-import { semanticSearch, findSimilarNotes } from '../utils/chat/semanticSearch'
 import {
   buildInitialMessages,
   appendAssistantMessage,
@@ -69,44 +67,15 @@ async function executeSearchNotes(
   query: string,
   type?: string,
   limit = 5,
-  mode: 'keyword' | 'semantic' | 'hybrid' = 'hybrid',
   requestId = '',
 ): Promise<NoteContext[]> {
-  log.info(`[${requestId}] Tool: search_notes`, { query, type, limit, mode })
+  log.info(`[${requestId}] Tool: search_notes`, { query, type, limit })
 
   const allNotes = await fetchAllNotes(httpEvent)
 
-  const notes = await executeSearchByMode(query, allNotes, { limit, type }, mode)
-  log.info(`[${requestId}] ${mode} search found ${notes.length} results:`, notes.map(n => n.title))
+  const notes = keywordSearch(query, allNotes, { limit, type })
+  log.info(`[${requestId}] keyword search found ${notes.length} results:`, notes.map(n => n.title))
   return notes
-}
-
-async function executeSearchByMode(
-  query: string,
-  allNotes: RawNote[],
-  options: { limit: number; type?: string },
-  mode: 'keyword' | 'semantic' | 'hybrid',
-): Promise<NoteContext[]> {
-  const { limit, type } = options
-
-  if (mode === 'keyword') {
-    return keywordSearch(query, allNotes, { limit, type })
-  }
-
-  if (mode === 'semantic') {
-    const semanticResults = await semanticSearch(query, limit * 2)
-    const filtered = type
-      ? semanticResults.filter(r => r.type === type)
-      : semanticResults
-    return filtered.slice(0, limit).map(r => ({
-      title: r.title,
-      summary: allNotes.find(n => n.stem === r.slug)?.summary ?? null,
-      path: `/${r.slug}`,
-    }))
-  }
-
-  // Default: hybrid search
-  return hybridSearch(query, allNotes, { limit, type })
 }
 
 async function executeGetNoteContent(
@@ -225,10 +194,8 @@ async function executeGetNoteDetails(
     return null
   }
 
-  const [backlinks, related] = await Promise.all([
-    findBacklinks(httpEvent, slug),
-    includeRelated ? findSimilarNotes(slug, 5) : Promise.resolve([]),
-  ])
+  const backlinks = await findBacklinks(httpEvent, slug)
+  const related: RelatedNote[] = []
 
   const forwardLinks = parseWikiLinks(note.notes)
   const result = buildNoteDetails(note, backlinks, forwardLinks, related)
@@ -350,10 +317,10 @@ interface ToolResult {
 // Individual tool handlers
 async function handleSearchNotes(
   httpEvent: HttpEvent,
-  input: { query: string; type?: string; limit?: number; mode?: 'keyword' | 'semantic' | 'hybrid' },
+  input: { query: string; type?: string; limit?: number },
   requestId: string,
 ): Promise<ToolResult> {
-  const notes = await executeSearchNotes(httpEvent, input.query, input.type, input.limit, input.mode, requestId)
+  const notes = await executeSearchNotes(httpEvent, input.query, input.type, input.limit, requestId)
 
   if (notes.length === 0) {
     return {

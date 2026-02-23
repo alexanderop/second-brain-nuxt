@@ -6,8 +6,6 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UInput, UKbd, UAvatar } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
-import { useDebouncedSemanticSearch } from '~/composables/useDebouncedSemanticSearch'
-import { mergeSearchResults, type KeywordResult, type HybridResult } from '~/utils/hybridSearch'
 import { getSnippet, highlightMatch } from '~/utils/searchResultTransformers'
 
 interface SearchSection {
@@ -64,14 +62,6 @@ watchDebounced(
   },
   { debounce: 250 },
 )
-
-// Semantic search with debouncing and proper async handling
-const {
-  results: semanticResults,
-  hasSearchRun: hasSemanticSearchRun,
-  isLoading: semanticLoading,
-  error: semanticError,
-} = useDebouncedSemanticSearch(debouncedSearch)
 
 // Fetch search sections with full body content
 const { data: searchSections } = await useAsyncData(
@@ -215,135 +205,13 @@ function processSearchResults(fuseResults: FuseResult<SearchableItem>[]): Search
   return Array.from(resultMap.values())
 }
 
-// Helper to process a single author result
-function processAuthorResult(
-  item: SearchableItem,
-  seenPaths: Set<string>,
-  authorResults: SearchResult[],
-): void {
-  const key = `author:${item.slug ?? ''}`
-  if (!seenPaths.has(key)) {
-    seenPaths.add(key)
-    authorResults.push(createAuthorResult(item, debouncedSearch.value))
-  }
-}
-
-// Helper to process a single content result
-function processContentResult(
-  result: FuseResult<SearchableItem>,
-  seenPaths: Set<string>,
-  keywordResults: KeywordResult[],
-  fuseMap: Map<string, FuseResult<SearchableItem>>,
-): void {
-  const item = result.item
-  const path = (item.id ?? '').split('#')[0] || item.id || ''
-  if (seenPaths.has(path)) return
-  seenPaths.add(path)
-
-  // Convert Fuse score (0 = perfect match, 1 = no match) to 0-1 scale (1 = perfect)
-  const normalizedScore = 1 - (result.score ?? 0)
-  const title = item.titles?.[0] || item.title || path
-
-  keywordResults.push({ slug: path, title, score: normalizedScore })
-  fuseMap.set(path, result)
-}
-
-// Convert Fuse results to keyword results for hybrid scoring
-function fuseToKeywordResults(fuseResults: FuseResult<SearchableItem>[]): { keywordResults: KeywordResult[], authorResults: SearchResult[], fuseMap: Map<string, FuseResult<SearchableItem>> } {
-  const keywordResults: KeywordResult[] = []
-  const authorResults: SearchResult[] = []
-  const fuseMap = new Map<string, FuseResult<SearchableItem>>()
-  const seenPaths = new Set<string>()
-
-  for (const result of fuseResults) {
-    if (result.item.type === 'author') {
-      processAuthorResult(result.item, seenPaths, authorResults)
-      continue
-    }
-    processContentResult(result, seenPaths, keywordResults, fuseMap)
-  }
-
-  return { keywordResults, authorResults, fuseMap }
-}
-
-// Convert hybrid results back to SearchResult format
-function hybridToSearchResults(
-  hybridResults: HybridResult[],
-  fuseMap: Map<string, FuseResult<SearchableItem>>,
-  searchTerm: string,
-): SearchResult[] {
-  return hybridResults.map((hr) => {
-    const fuseResult = fuseMap.get(hr.slug)
-
-    // If we have a fuse result, use its snippet info
-    if (fuseResult) {
-      const { snippet, highlightedSnippet } = extractSnippetFromMatch(fuseResult, searchTerm)
-      return {
-        id: hr.slug,
-        type: 'content' as const,
-        path: hr.slug,
-        title: hr.title,
-        snippet,
-        highlightedSnippet,
-      }
-    }
-
-    // Semantic-only result - no snippet available
-    return {
-      id: hr.slug,
-      type: 'content' as const,
-      path: hr.slug,
-      title: hr.title,
-      snippet: '',
-      highlightedSnippet: '',
-    }
-  })
-}
-
-// Computed search results with hybrid scoring
+// Computed search results using keyword (Fuse.js) search
 const results = computed<SearchResult[]>(() => {
   if (!debouncedSearch.value) return []
   if (!fuse.value) return []
 
   const fuseResults = fuse.value.search(debouncedSearch.value)
-  const { keywordResults, authorResults, fuseMap } = fuseToKeywordResults(fuseResults)
-
-  // If semantic search hasn't completed yet or failed, use keyword-only results
-  if (!hasSemanticSearchRun.value || semanticError.value) {
-    // Fall back to original keyword-only processing
-    const keywordOnlyResults = keywordResults.map((kr) => {
-      const fuseResult = fuseMap.get(kr.slug)
-      if (fuseResult) {
-        const { snippet, highlightedSnippet } = extractSnippetFromMatch(fuseResult, debouncedSearch.value)
-        return {
-          id: kr.slug,
-          type: 'content' as const,
-          path: kr.slug,
-          title: kr.title,
-          snippet,
-          highlightedSnippet,
-        }
-      }
-      return {
-        id: kr.slug,
-        type: 'content' as const,
-        path: kr.slug,
-        title: kr.title,
-        snippet: '',
-        highlightedSnippet: '',
-      }
-    })
-    return [...authorResults, ...keywordOnlyResults]
-  }
-
-  // Merge keyword and semantic results using hybrid scoring
-  const hybridResults = mergeSearchResults(keywordResults, semanticResults.value)
-
-  // Convert back to SearchResult format
-  const contentResults = hybridToSearchResults(hybridResults, fuseMap, debouncedSearch.value)
-
-  // Authors first, then content sorted by hybrid score
-  return [...authorResults, ...contentResults]
+  return processSearchResults(fuseResults)
 })
 
 // Default content when no search term
@@ -401,17 +269,10 @@ usePageTitle('Search')
       class="mb-8"
     />
 
-    <!-- Semantic search loading indicator -->
-    <div v-if="debouncedSearch && semanticLoading" class="flex items-center gap-2 text-sm text-[var(--ui-text-muted)] mb-4">
-      <span class="i-lucide-loader-2 animate-spin" />
-      Loading semantic search...
-    </div>
-
     <!-- Search results -->
     <div v-if="debouncedSearch && results.length">
       <p class="text-sm text-[var(--ui-text-muted)] mb-4" role="status" aria-live="polite">
         {{ results.length }} result{{ results.length === 1 ? '' : 's' }}
-        <span v-if="semanticLoading" class="ml-2">(semantic search loading...)</span>
       </p>
       <div class="space-y-4">
         <NuxtLink

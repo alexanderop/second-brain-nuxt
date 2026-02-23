@@ -1,34 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { watchDebounced } from '@vueuse/core'
 import { useRoute, useAsyncData, navigateTo, queryCollectionSearchSections, queryCollection } from '#imports'
 import { UModal, UCommandPalette, UAvatar } from '#components'
 import type { CommandPaletteItem, CommandPaletteGroup } from '@nuxt/ui'
 import { transformPodcastToSearchItem } from '~/utils/searchHelpers'
-import { useDebouncedSemanticSearch } from '~/composables/useDebouncedSemanticSearch'
-import { mergeSearchResults, type KeywordResult } from '~/utils/hybridSearch'
-import Fuse from 'fuse.js'
 
 const open = defineModel<boolean>('open', { default: false })
 const searchTerm = ref('')
-const debouncedSearchTerm = ref('')
 
-// Debounce search term for semantic search (consistent 250ms across app)
-watchDebounced(
-  searchTerm,
-  (value) => {
-    debouncedSearchTerm.value = value
-  },
-  { debounce: 250 },
-)
-
-// Semantic search with debouncing and proper async handling
-const {
-  results: semanticResults,
-  hasSearchRun: hasSemanticSearchRun,
-  isLoading: semanticLoading,
-  error: semanticError,
-} = useDebouncedSemanticSearch(debouncedSearchTerm)
 const route = useRoute()
 
 // Fetch search sections with full body content
@@ -84,9 +63,6 @@ watch(() => route.fullPath, () => {
 watch(open, (isOpen) => {
   if (!isOpen) {
     searchTerm.value = ''
-    debouncedSearchTerm.value = ''
-    semanticResults.value = []
-    hasSemanticSearchRun.value = false
   }
 })
 
@@ -130,60 +106,6 @@ const contentItems = computed<CommandPaletteItem[]>(() => {
   return Array.from(contentItemsMap.value.values())
 })
 
-// Fuse.js instance for keyword search on content
-const contentFuse = computed(() => {
-  if (contentItems.value.length === 0) return null
-  return new Fuse(contentItems.value, {
-    keys: [
-      { name: 'label', weight: 1 },
-      { name: 'description', weight: 0.7 },
-      { name: 'keywords', weight: 0.9 },
-    ],
-    threshold: 0.4,
-    ignoreLocation: true,
-    includeScore: true,
-  })
-})
-
-// Hybrid-scored content items when searching
-const hybridContentItems = computed<CommandPaletteItem[]>(() => {
-  const query = debouncedSearchTerm.value
-  if (!query || !contentFuse.value) return contentItems.value
-
-  // Get keyword results from Fuse
-  const fuseResults = contentFuse.value.search(query)
-  const keywordResults: KeywordResult[] = fuseResults.map((result) => {
-    const item = result.item
-    const path = typeof item.to === 'string' ? item.to : ''
-    // Fuse score: 0 = perfect match, 1 = no match; convert to 0-1 scale (1 = perfect)
-    const normalizedScore = 1 - (result.score ?? 0)
-    return { slug: path, title: item.label ?? '', score: normalizedScore }
-  })
-
-  // If semantic search hasn't completed or failed, return keyword-only results
-  if (!hasSemanticSearchRun.value || semanticError.value) {
-    return fuseResults.map(r => r.item).slice(0, 15)
-  }
-
-  // Merge keyword and semantic results using hybrid scoring
-  const hybridResults = mergeSearchResults(keywordResults, semanticResults.value)
-
-  // Convert back to CommandPaletteItem format, preserving original item data
-  return hybridResults.slice(0, 15).map((hr) => {
-    const existing = contentItemsMap.value.get(hr.slug)
-    if (existing) return existing
-
-    // Semantic-only result - create new item
-    return {
-      id: hr.slug,
-      label: hr.title,
-      description: '',
-      icon: 'i-lucide-file-text',
-      to: hr.slug,
-    }
-  })
-})
-
 // Build author items for CommandPalette
 const authorItems = computed<CommandPaletteItem[]>(() => {
   if (!authors.value) return []
@@ -220,21 +142,8 @@ const podcastItems = computed<CommandPaletteItem[]>(() => {
   return podcasts.value.map(transformPodcastToSearchItem)
 })
 
-// Content group for CommandPalette - uses hybrid search when searching
+// Content group for CommandPalette
 const contentGroup = computed<CommandPaletteGroup | null>(() => {
-  const isSearching = Boolean(debouncedSearchTerm.value)
-
-  // When searching, use hybrid results with ignoreFilter to bypass built-in Fuse
-  if (isSearching && hybridContentItems.value.length) {
-    return {
-      id: 'content',
-      label: semanticLoading.value ? 'Notes (loading semantic...)' : 'Notes',
-      items: hybridContentItems.value,
-      ignoreFilter: true,
-    }
-  }
-
-  // Not searching - show all items with built-in Fuse filtering
   if (contentItems.value.length) {
     return {
       id: 'content',

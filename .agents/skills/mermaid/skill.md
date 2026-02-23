@@ -33,7 +33,7 @@ Examples: `vue-architecture.mmd`, `docs/auth-flow.mmd`, `db-schema.mmd`
 The validate script lives **inside the skill directory**. Use the path relative to the skill, not the working directory:
 
 ```bash
-skills/mermaid/tools/validate.sh <filename.mmd> [output.svg]
+.agents/skills/mermaid/tools/validate.sh <filename.mmd> [output.svg]
 ```
 
 - Parses and renders the Mermaid source.
@@ -45,7 +45,7 @@ skills/mermaid/tools/validate.sh <filename.mmd> [output.svg]
 
 1. Choose a **descriptive filename** for the diagram (from the argument or derived from the subject). Use kebab-case with `.mmd` extension.
 2. Write the Mermaid source to that file in the project root (or the path given).
-3. Run `skills/mermaid/tools/validate.sh <filename.mmd>`.
+3. Run `.agents/skills/mermaid/tools/validate.sh <filename.mmd>`.
 4. Fix any errors shown by the CLI.
 5. **Always show the ASCII preview output to the user.** The tool prints an ASCII rendering of the diagram — display it in your response so the user can see the result without opening another tool.
 6. Once it validates, if the diagram will live in Markdown, copy the Mermaid block into the target Markdown file.
