@@ -16,7 +16,7 @@ export function useMentions(slug: string, title: string) {
     () => $fetch<MentionItem[]>('/api/mentions', {
       params: { slug, title },
     }),
-    { default: () => [] },
+    { default: () => [], server: false, lazy: true },
   )
 
   return {

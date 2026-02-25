@@ -6,7 +6,7 @@ import { tryAsync } from '#shared/utils/tryCatch'
 export default defineEventHandler(async (event): Promise<BacklinksIndex> => {
   const [error, allContent] = await tryAsync(
     queryCollection(event, 'content')
-      .select('path', 'stem', 'title', 'type', 'tags', 'summary', 'body')
+      .select('path', 'stem', 'title', 'type', 'body')
       .all(),
   )
 

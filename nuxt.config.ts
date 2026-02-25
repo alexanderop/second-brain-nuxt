@@ -162,6 +162,8 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/', '/api/graph', '/api/backlinks'],
       failOnError: false, // Continue on prerender errors to see what fails
+      concurrency: 1,
+      ignore: ['/tweets/tweets/'], // Exclude malformed tweet paths
     },
   },
 

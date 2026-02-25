@@ -16,6 +16,7 @@ import { useFocusMode } from '~/composables/useFocusMode'
 import { useTocVisibility } from '~/composables/useTocVisibility'
 import { useAuthorShortcut } from '~/composables/useAuthorShortcut'
 import { isPodcastItem, isNewsletterItem } from '~/types/content'
+import type { NoteGraphData } from '~/types/graph'
 
 interface PageWithPodcast {
   podcast?: string
@@ -148,10 +149,11 @@ const headerContent = computed(() => ({
 const pageAuthors = computed(() => page.value?.authors)
 const { handleShortcut: handleAuthorShortcut } = useAuthorShortcut(pageAuthors)
 
-// Fetch note graph data for mini-graph visualization
-const { data: noteGraph } = await useAsyncData(
+// Fetch note graph data for mini-graph visualization (client-only to avoid expensive prerender)
+const { data: noteGraph } = useAsyncData<NoteGraphData>(
   `note-graph-${slug.value}`,
-  () => $fetch(`/api/note-graph/${slug.value}`),
+  () => $fetch<NoteGraphData>(`/api/note-graph/${slug.value}`),
+  { server: false, lazy: true },
 )
 
 function navigateToNote(targetSlug: string) {

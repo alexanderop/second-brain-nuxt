@@ -16,7 +16,7 @@ export function useBacklinks(slug: string) {
   const { data: backlinksIndex } = useAsyncData<BacklinksIndex>(
     'backlinks-index',
     () => $fetch<BacklinksIndex>('/api/backlinks'),
-    { default: () => ({}) },
+    { default: () => ({}), server: false, lazy: true },
   )
 
   const backlinks = computed(() => {
