@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph Before["Old Stack"]
+        tsc["tsc"]
+        prettier["Prettier"]
+        eslint["ESLint"]
+    end
+
+    subgraph After["2026 Stack"]
+        tsgo["tsgo (Go)"]
+        oxfmt["Oxfmt (Rust)"]
+        oxlint["Oxlint (Rust)"]
+    end
+
+    tsc -->|"10x faster"| tsgo
+    prettier -->|"+ import sort + Tailwind"| oxfmt
+    eslint -->|"+ ESLint plugin shim"| oxlint
+
+    subgraph Enduring["Still Recommended"]
+        pnpm["pnpm"]
+        vite["Vite"]
+        react["React"]
+    end
