@@ -20,6 +20,7 @@ The ideas driving the movement — data ownership, malleable software, and user 
 
 - [[local-first-software]] - The original Ink & Switch essay that defined the seven ideals of local-first
 - [[the-past-present-and-future-of-local-first]] - Kleppmann traces the arc from CRDTs to a proposed definition: software where another computer's availability never blocks the user
+- [[15-years-of-local-first]] - Jan Lehnardt's 15-year retrospective from CouchDB to humanitarian deployments — the strongest case for local-first comes from Ebola contact tracing and COVID vaccination systems
 - [[local-first-software-pragmatism-vs-idealism]] - Movements succeed when idealists define the vision and pragmatists build the infrastructure
 - [[local-first-the-secret-master-plan]] - Ink & Switch's three-part endgame: local-first enables version control enables malleable software
 - [[file-over-app]] - Apps are temporary, but plain-text files you control endure
@@ -69,12 +70,15 @@ The infrastructure layer between local data and remote peers.
 
 - [[a-map-of-sync]] - Nine dimensions map where every sync platform sits and why no single engine wins everywhere
 - [[object-sync-engine]] - The architecture Linear, Figma, and Asana independently converged on
+- [[a-tale-of-two-sync-engines]] - Figma runs two sync engines because not all data fits the CRDT model — and scaling the non-CRDT one was the harder problem
 - [[general-purpose-sync-with-ivm]] - Query-driven sync at interactive speeds using a novel incremental view maintenance approach
 - [[can-sync-be-network-optional]] - The real prize of peer-to-peer isn't ideology — it's sublinear scaling
 - [[sync-engines-for-vue-developers]] - How Replicache, Zero, Convex, PowerSync, LiveStore, Jazz, and Dexie each approach sync differently
 - [[unleashing-the-power-of-sync]] - Sync engines extend naturally to AI agents reading and writing directly to local databases
+- [[sync-protocols-and-the-truth-behind-local-first]] - Offline writes destroy serializability mathematically — start with strong consistency and intentionally weaken it
 - [[sync-panel-discussion]] - Where you draw the line between server authority and client autonomy defines your trade-offs
 - [[an-interactive-guide-to-tanstack-db]] - TanStack DB adds collections, live queries, and transactional mutations as a drop-in upgrade over TanStack Query
+- [[offline-first-apps-with-tanstack-db-and-powersync]] - Most offline conflicts never happen in practice — five escalating resolution strategies for the ones that do
 
 ## Tools & Frameworks
 

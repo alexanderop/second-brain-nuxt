@@ -224,3 +224,43 @@ export function useRandomNote() {
 ```
 
 **Why this matters:** Composables called on user actions don't benefit from SSR prefetching. Without `useAsyncData`, every invocation triggers a fresh database query—causing slow/broken behavior on first visit (before PWA caching kicks in).
+
+## Expensive Queries During Prerendering
+
+API routes that query ALL content (especially with `body` selected) become O(N²) during prerendering—each of N pages triggers the expensive query.
+
+**Symptoms:**
+- Pages take 20-30+ seconds to prerender
+- Build OOMs or never completes
+- Log shows patterns like `├─ /page-name (29571ms)`
+
+**Example problem:**
+
+```typescript
+// app/pages/[...slug].vue
+// This runs for EVERY page during prerender
+const { data: noteGraph } = await useAsyncData(
+  `note-graph-${slug.value}`,
+  () => $fetch(`/api/note-graph/${slug.value}`), // Queries ALL content, builds indexes
+)
+```
+
+**Solution**: Make supplementary features client-only:
+
+```typescript
+const { data: noteGraph } = await useAsyncData(
+  `note-graph-${slug.value}`,
+  () => $fetch(`/api/note-graph/${slug.value}`),
+  { server: false, lazy: true }, // Skip during SSR/prerender
+)
+```
+
+**When to use `{ server: false, lazy: true }`:**
+- Visual enhancements (graphs, relationship visualizations)
+- Supplementary navigation (backlinks, mentions, related notes)
+- Any feature that queries ALL content but isn't needed for SEO
+
+**Additional mitigations:**
+- Set `nitro.prerender.concurrency: 1` to reduce peak memory
+- Use `NODE_OPTIONS="--max-old-space-size=8192"` for large sites
+- Only `.select()` fields you actually need (avoid `body` when possible)
