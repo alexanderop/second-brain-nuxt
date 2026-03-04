@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '22'
-  PNPM_VERSION: '9'
+  NODE_VERSION: '24'
+  PNPM_VERSION: '10'
 
 jobs:
   lint:
@@ -36,11 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run oxlint
-        run: pnpm lint:ox
-
-      - name: Run ESLint
-        run: pnpm lint:es
+      - name: Lint
+        run: pnpm lint
 
   typecheck:
     name: Type Check
@@ -197,3 +194,30 @@ jobs:
           path: .output/
           include-hidden-files: true
           retention-days: 7
+
+  knip:
+    name: Dead Code Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxt prepare
+
+      - name: Check for unused code
+        run: pnpm knip
