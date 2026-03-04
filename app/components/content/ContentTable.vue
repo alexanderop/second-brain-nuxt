@@ -54,7 +54,6 @@ const {
   typeFilterItems,
   tagsFilterItems,
   dateConsumedFilterItems,
-  ratingFilterItems,
   titleSortItems,
   authorSelectItems,
 } = useTableFilterMenus({

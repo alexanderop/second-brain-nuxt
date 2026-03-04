@@ -5,7 +5,6 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import NewsletterCard from '~/components/NewsletterCard.vue'
 import { isNewsletterItem } from '~/types/content'
-import type { NewsletterItem } from '~/types/content'
 
 interface ArticleData {
   newsletter?: string

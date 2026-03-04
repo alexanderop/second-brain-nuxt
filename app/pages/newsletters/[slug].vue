@@ -6,7 +6,6 @@ import { UIcon } from '#components'
 import NewsletterHeader from '~/components/NewsletterHeader.vue'
 import ContentList from '~/components/ContentList.vue'
 import { isNewsletterItem } from '~/types/content'
-import type { NewsletterItem } from '~/types/content'
 import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()

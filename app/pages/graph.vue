@@ -9,7 +9,7 @@ import GraphFilters from '~/components/GraphFilters.vue'
 import GraphNodePanel from '~/components/GraphNodePanel.vue'
 import { useGraphFilters } from '~/composables/useGraphFilters'
 import type { ContentType } from '~/constants/contentTypes'
-import type { FullGraphData, FullGraphNode, FullGraphEdge, UnifiedGraphNode } from '~/types/graph'
+import type { FullGraphData, FullGraphNode, UnifiedGraphNode } from '~/types/graph'
 
 // Use immersive graph layout (no header)
 definePageMeta({
