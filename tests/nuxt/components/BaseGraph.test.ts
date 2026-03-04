@@ -1,3 +1,4 @@
+// @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
 import { describe, it, expect, beforeEach, assert } from 'vitest'
 import { page } from 'vitest/browser'
 import { render } from 'vitest-browser-vue'
@@ -128,7 +129,7 @@ describe('BaseGraph', () => {
 
       // Check emitted event
       expect(emitted().select).toBeTruthy()
-      expect(emitted().select[0][0]).toMatchObject({ id: 'node-1' })
+      expect(emitted().select?.[0]?.[0]).toMatchObject({ id: 'node-1' })
     })
 
     it('emits navigate when clicking non-center node in radial mode', async () => {
@@ -151,7 +152,7 @@ describe('BaseGraph', () => {
 
       // Check emitted event - radial mode emits navigate for non-center nodes
       expect(emitted().navigate).toBeTruthy()
-      expect(emitted().navigate[0][0]).toBe('note-1')
+      expect(emitted().navigate?.[0]?.[0]).toBe('note-1')
     })
 
     it('emits select when clicking center node in radial mode', async () => {

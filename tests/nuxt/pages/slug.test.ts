@@ -26,6 +26,7 @@ import { createMultiCollectionMock } from '../fixtures/query-builder'
 
 // Hoisted mock data holder
 interface CollectionConfig {
+  [key: string]: { data?: unknown[]; path?: Record<string, unknown> }
   content: { path: Record<string, unknown> }
   podcasts: { data: unknown[] }
   newsletters: { data: unknown[] }

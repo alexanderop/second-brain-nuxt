@@ -93,8 +93,8 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
-  test-integration:
-    name: Integration Tests
+  test-nuxt:
+    name: Nuxt Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -117,8 +117,11 @@ jobs:
       - name: Prepare Nuxt
         run: pnpm nuxt prepare
 
-      - name: Run integration tests
-        run: pnpm test:integration
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Run nuxt tests
+        run: pnpm test:nuxt
 
   test-e2e:
     name: E2E Tests

@@ -16,9 +16,19 @@
  * Manual testing and user feedback remain essential.
  */
 import { axe } from 'vitest-axe'
-import { toHaveNoViolations } from 'vitest-axe/matchers'
+import * as matchers from 'vitest-axe/matchers'
 import { expect } from 'vitest'
 
-expect.extend({ toHaveNoViolations })
+// Augment Vitest's Assertion interface for vitest-axe matchers
+declare module 'vitest' {
+   
+  interface Assertion<T> extends CustomMatchers<T> {}
+}
+
+interface CustomMatchers<_T = unknown> {
+  toHaveNoViolations(): void
+}
+
+expect.extend(matchers)
 
 export { axe }

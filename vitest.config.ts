@@ -57,6 +57,7 @@ export default defineConfig({
           name: 'unit',
           include: ['tests/unit/**/*.test.ts'],
           environment: 'node',
+          setupFiles: ['./tests/setup/console-spy.ts'],
         },
         resolve: {
           alias: {
@@ -67,12 +68,16 @@ export default defineConfig({
         },
       },
 
-      // Layer 2: Integration tests - Nuxt environment with registerEndpoint
-      // Tests components + composables that need Nuxt context
+      // Layer 2a: Nuxt integration tests - Nuxt environment with registerEndpoint
+      // Tests pages, composables, and a11y that need Nuxt context
       await defineVitestProject({
         test: {
-          name: 'integration',
-          include: ['tests/integration/**/*.test.ts'],
+          name: 'nuxt',
+          include: [
+            'tests/nuxt/pages/**/*.test.ts',
+            'tests/nuxt/composables/**/*.test.ts',
+            'tests/nuxt/a11y.test.ts',
+          ],
           environment: 'nuxt',
           environmentOptions: {
             nuxt: {
@@ -82,12 +87,12 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ['./tests/integration/setup.ts'],
+          setupFiles: ['./tests/nuxt/setup.ts', './tests/setup/console-spy.ts'],
         },
       }),
 
-      // Layer 3: Component tests - isolated components in real browser
-      // Tests D3.js graphs, charts, visual components
+      // Layer 2b: Nuxt browser tests - real Chromium for D3/visual components
+      // Tests D3.js graphs, charts requiring real browser DOM
       {
         plugins: [
           vue(),
@@ -98,9 +103,9 @@ export default defineConfig({
           }),
         ],
         test: {
-          name: 'component',
-          include: ['tests/component/**/*.test.ts'],
-          setupFiles: ['./tests/component/setup.ts'],
+          name: 'nuxt-browser',
+          include: ['tests/nuxt/components/**/*.test.ts'],
+          setupFiles: ['./tests/nuxt/browser-setup.ts'],
           browser: {
             enabled: true,
             provider: playwright(),
@@ -111,6 +116,7 @@ export default defineConfig({
           alias: {
             '~': fileURLToPath(new URL('./app', import.meta.url)),
             '~~': fileURLToPath(new URL('./', import.meta.url)),
+            '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
           },
           dedupe: ['vue'],
         },

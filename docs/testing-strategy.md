@@ -1,6 +1,6 @@
 # Testing Strategy
 
-This project uses a **4-layer Testing Trophy** approach optimized for fast AI agent feedback and refactoring confidence.
+This project uses a **3-layer Testing Trophy** approach optimized for fast AI agent feedback and refactoring confidence.
 
 ## Test Layers
 
@@ -8,14 +8,11 @@ This project uses a **4-layer Testing Trophy** approach optimized for fast AI ag
         ╭──────────────╮
         │     E2E      │  ← Blackbox testing (CI only, ~30s)
         ╰──────────────╯
-       ╭────────────────╮
-       │   Component    │  ← Real browser for D3/visuals (~5s)
-       ╰────────────────╯
       ╭──────────────────╮
-      │   Integration    │  ← Nuxt context + registerEndpoint (~3s)
+      │       Nuxt       │  ← Nuxt env + real browser (~5s)
       ╰──────────────────╯
     ╭────────────────────────╮
-    │         Unit           │  ← Pure functions, fast (~100ms)
+    │         Unit           │  ← Pure functions, fast (~500ms)
     ╰────────────────────────╯
 ```
 
@@ -23,29 +20,36 @@ This project uses a **4-layer Testing Trophy** approach optimized for fast AI ag
 
 | Command | What it runs | When to use |
 |---------|-------------|-------------|
-| `pnpm test` | Unit + Integration | **Default for AI agents** (~3.5s) |
+| `pnpm test` | Unit + Nuxt + Browser | **Default for AI agents** (~10s) |
 | `pnpm test:unit` | Unit tests only | Pure function changes |
-| `pnpm test:integration` | Integration tests | Component/composable changes |
-| `pnpm test:component` | Browser component tests | D3/chart changes |
+| `pnpm test:nuxt` | Nuxt + Browser tests | Component/composable changes |
 | `pnpm test:e2e` | Full Playwright E2E | **CI only** (requires build) |
 
 ## Test Locations
 
 ```text
 tests/
-├── unit/              # Pure functions, no framework deps
-│   ├── utils/         # graph.test.ts, backlinks.test.ts, mentions.test.ts
-│   ├── composables/   # useShortcuts.test.ts
-│   └── types/         # table.test.ts
-├── integration/       # Nuxt context + registerEndpoint
-│   ├── pages/         # Page-level tests with mocked APIs
-│   └── fixtures/      # Shared test data + query builder mocks
-├── component/         # Real browser for visuals
-│   ├── components/    # D3 graphs, charts
-│   └── factories/     # Test data factories
-└── e2e/               # Playwright blackbox (CI only)
-    ├── *.spec.ts      # User flow tests
-    └── pages/         # Page object models
+├── unit/                # Pure functions, no framework deps
+│   ├── utils/           # graph.test.ts, backlinks.test.ts, mentions.test.ts
+│   │                    # + property-based tests (*.prop.test.ts)
+│   ├── composables/     # useShortcuts.test.ts, useContentTable.test.ts
+│   ├── types/           # table.test.ts
+│   └── a11y-coverage.test.ts  # Meta-test enforcing a11y coverage
+├── nuxt/                # Nuxt context + real browser
+│   ├── pages/           # Page-level tests with mocked APIs
+│   ├── composables/     # Composables needing Nuxt context
+│   ├── components/      # D3 graphs, charts (browser mode)
+│   ├── fixtures/        # Shared test data + query builder mocks
+│   ├── factories/       # Test data factories
+│   ├── utils/           # a11y helpers (vitest-axe)
+│   └── a11y.test.ts     # Component-level a11y with axe-core
+├── e2e/                 # Playwright blackbox (CI only)
+│   ├── *.spec.ts        # User flow tests
+│   ├── hydration.spec.ts # Hydration matrix tests
+│   ├── pages/           # Page object models
+│   └── test-utils.ts    # Extended fixtures (hydration errors)
+└── setup/
+    └── console-spy.ts   # Catches unexpected console.warn/error
 ```
 
 ## When to Use Each Layer
@@ -54,7 +58,9 @@ tests/
 - Pure utility functions
 - Server logic (graph algorithms, backlink parsing, mention detection)
 - Type utilities and validators
-- **Target: <100ms total**
+- Property-based tests with fast-check
+- A11y coverage enforcement
+- **Target: <500ms total**
 
 ```typescript
 // tests/unit/utils/graph.test.ts
@@ -68,40 +74,34 @@ describe('buildGraphFromContent', () => {
 })
 ```
 
-### Integration Tests (`tests/integration/`)
-- Components that fetch from APIs
-- Composables needing Nuxt context
-- Uses `registerEndpoint` to mock API responses
-- **Target: <3s total**
+### Nuxt Tests (`tests/nuxt/`)
+
+The nuxt layer runs two Vitest sub-projects from the same directory:
+
+- **`nuxt` project**: Pages, composables, a11y tests using `environment: 'nuxt'` with `mountSuspended`, `registerEndpoint`, `mockNuxtImport`
+- **`nuxt-browser` project**: D3/chart components using real Chromium via Playwright
 
 ```typescript
-// tests/integration/api/graph.test.ts
-import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { linkedGraph } from '../fixtures'
-
-describe('/api/graph integration', () => {
-  it('can mock graph endpoint', async () => {
-    registerEndpoint('/api/graph', () => linkedGraph)
-    const response = await $fetch('/api/graph')
-    expect(response.nodes).toHaveLength(2)
-  })
-})
-```
-
-#### Page-Level Integration Tests
-
-For testing full pages with mocked data, use `mountSuspended` + `registerEndpoint`:
-
-```typescript
-// tests/integration/pages/stats.test.ts
+// tests/nuxt/pages/stats.test.ts — uses Nuxt environment
 import { registerEndpoint, mountSuspended } from '@nuxt/test-utils/runtime'
-import StatsPage from '~/pages/stats.vue'
 
 describe('Stats Page', () => {
   it('renders stats from API', async () => {
     registerEndpoint('/api/stats', () => fixtures.stats)
     const page = await mountSuspended(StatsPage)
     expect(page.text()).toContain('Total Notes')
+  })
+})
+```
+
+```typescript
+// tests/nuxt/components/BaseGraph.test.ts — uses real browser
+import { render } from 'vitest-browser-vue'
+
+describe('BaseGraph', () => {
+  it('renders graph container', async () => {
+    const { container } = render(BaseGraph, { props: { ... } })
+    expect(container.querySelector('svg')).toBeTruthy()
   })
 })
 ```
@@ -113,7 +113,6 @@ Pages using `queryCollection` need `mockNuxtImport` with `vi.hoisted()`:
 ```typescript
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 
-// Must use vi.hoisted for dynamic data
 const { mockData } = vi.hoisted(() => {
   const holder: { value: ContentFixture[] } = { value: [] }
   return { mockData: holder }
@@ -122,34 +121,52 @@ const { mockData } = vi.hoisted(() => {
 mockNuxtImport('queryCollection', () => {
   return () => createQueryCollectionMock(mockData.value)()
 })
-
-it('renders content list', async () => {
-  mockData.value = fixtures.multipleLinks
-  const page = await mountSuspended(IndexPage)
-  expect(page.text()).toContain('Atomic Habits')
-})
 ```
-
-#### Page Test Limitations
-
-| Issue | Cause | Workaround |
-|-------|-------|------------|
-| Mock data doesn't change between tests | `useAsyncData` caches results | Use same data or separate test files |
-| `UTooltip` crashes | Needs `TooltipProvider` context | Skip test or use E2E |
-| Route-based pages fail | Payload loading issues | Use E2E for `[...slug].vue` |
-
-### Component Tests (`tests/component/`)
-- D3.js visualizations (BaseGraph)
-- Chart components (StatsBarChart, StatsLineChart)
-- Anything requiring real browser DOM
-- Uses Playwright through Vitest
-- **Target: <5s total**
 
 ### E2E Tests (`tests/e2e/`)
 - Full blackbox user journeys
+- Hydration matrix testing (pages × preferences)
 - Run against built preview server with real content
 - **CI only** - not for local development
 - **Target: <30s total**
+
+## New Testing Patterns
+
+### Property-Based Testing (fast-check)
+
+Property tests verify invariants across random inputs. Files use `.prop.test.ts` suffix:
+
+```typescript
+// tests/unit/utils/wikilinks.prop.test.ts
+import fc from 'fast-check'
+
+it('property: normalizeSlug is idempotent', () => {
+  fc.assert(fc.property(fc.string(), (input) => {
+    const once = normalizeSlug(input)
+    const twice = normalizeSlug(once)
+    return once === twice
+  }))
+})
+```
+
+### Console Warning Catching
+
+The `tests/setup/console-spy.ts` setup file intercepts `console.warn` and `console.error` in all unit and nuxt tests. Tests fail if unexpected warnings are logged. Known harmless warnings (e.g., `[intlify]`, `<Suspense>`) are allowlisted.
+
+### Component A11y Testing (axe-core)
+
+`tests/nuxt/a11y.test.ts` mounts each component with minimal props and runs axe-core analysis. Page-level rules (landmark, region, heading) are disabled since components are tested in isolation.
+
+The `tests/unit/a11y-coverage.test.ts` meta-test scans `app/components/` and enforces that every component either has an a11y test or is in the documented skip list. It catches:
+- Components missing a11y tests
+- Obsolete skip list entries (deleted components)
+- Unnecessary skips (components that actually have tests)
+
+### E2E Hydration Matrix Testing
+
+`tests/e2e/hydration.spec.ts` tests key pages under different preference settings for hydration errors. Uses an extended Playwright fixture that captures console messages matching hydration mismatch patterns.
+
+Matrix: 6 pages × 3 preferences = 18 test combinations.
 
 ## Key Principles
 
@@ -158,11 +175,9 @@ Server handlers are thin wrappers. Business logic lives in `server/utils/`:
 
 ```typescript
 // server/api/graph.get.ts - thin wrapper
-import { buildGraphFromContent } from '../utils/graph'
-
 export default defineEventHandler(async (event) => {
   const allContent = await queryCollection(event, 'content').all()
-  return buildGraphFromContent(allContent)  // Pure function
+  return buildGraphFromContent(allContent)  // Pure function → unit testable
 })
 ```
 
@@ -177,110 +192,41 @@ registerEndpoint('/api/graph', () => fixtures.graphResponse)
 vi.mock('@nuxt/content/server', () => ({ queryCollection: mockFn }))
 ```
 
-### 3. E2E Tests Real Content
-E2E tests run against your actual knowledge base. They verify:
-- Pages load correctly
-- Wiki-links navigate
-- Search finds content
-- Content renders properly
+### 3. AHA Testing (Avoid Hasty Abstractions)
 
-### 4. Don't Test SQLite Internals
-Focus on routes and page behavior, not Nuxt Content implementation details.
-
-### 5. AHA Testing (Avoid Hasty Abstractions)
-
-Based on [Kent C. Dodds' testing principles](https://kentcdodds.com/blog/avoid-nesting-when-youre-testing):
-
-**Avoid mutable variables in tests.** Don't use `let` at describe scope with `beforeEach` assignment:
+**Avoid mutable variables in tests.** Use setup functions instead of `beforeEach`:
 
 ```typescript
-// Bad: Hidden state, hard to trace variable values
-describe('myTest', () => {
-  let mockFn: Mock
-
-  beforeEach(() => {
-    mockFn = vi.fn()  // Where is this assigned? What's the value?
-  })
-
-  it('does something', () => {
-    expect(mockFn).toHaveBeenCalled()  // Have to scroll up to understand
-  })
-})
-
 // Good: Setup function returns fresh values per test
-describe('myTest', () => {
-  function setup() {
-    const mockFn = vi.fn()
-    return { mockFn }
-  }
+function setup() {
+  const mockFn = vi.fn()
+  return { mockFn }
+}
 
-  it('does something', () => {
-    const { mockFn } = setup()  // Everything visible in the test
-    // ...
-    expect(mockFn).toHaveBeenCalled()
-  })
+it('does something', () => {
+  const { mockFn } = setup()
+  expect(mockFn).toHaveBeenCalled()
 })
 ```
-
-**When `beforeEach`/`afterEach` is OK:**
-- Cleanup that must run even if test fails (e.g., `vi.unstubAllGlobals()`)
-- Server start/stop in `beforeAll`/`afterAll`
-- Console mock setup/teardown
-
-**When to avoid `beforeEach`:**
-- As a mechanism for code reuse (use setup functions instead)
-- When it mutates shared state between tests
 
 ## Coverage
 
 Coverage tracked for:
-- `server/**/*.ts` - All server code including utils
+- `server/utils/**/*.ts` - All server utilities
 - `app/composables/**/*.ts` - Composables
+- `app/utils/**/*.ts` - App utilities
 
-Excluded (tested via E2E):
-- Vue-dependent composables (useBacklinks, useMentions)
-- Nitro plugins (logic extracted to server/utils)
+Excluded (tested via E2E): Vue-dependent composables, Nitro plugins.
 
 Run: `pnpm test:unit:cov`
-
-## Writing New Tests
-
-1. **Default to unit tests** - Extract pure functions, test in isolation
-2. **Integration for Nuxt context** - Use registerEndpoint when components need API data
-3. **Component tests for visuals** - Only for D3, charts, DOM-dependent code
-4. **E2E sparingly** - Critical user paths only, run in CI
 
 ## CI Pipeline
 
 ```yaml
 # Tests run in order of speed
-1. pnpm typecheck        # ~20s
-2. pnpm test:unit        # ~100ms
-3. pnpm test:integration # ~3s
-4. pnpm test:component   # ~5s
+1. pnpm lint          # ~10s
+2. pnpm typecheck     # ~20s
+3. pnpm test:unit     # ~500ms
+4. pnpm test:nuxt     # ~10s (includes Playwright Chromium)
 5. pnpm build + pnpm test:e2e  # ~30s
 ```
-
-## E2E Debugging Tips
-
-### Connection Refused Errors
-
-If E2E tests fail with `net::ERR_CONNECTION_REFUSED`:
-
-1. **Check for stale servers** - A previous process may be blocking port 3000:
-   ```bash
-   lsof -i :3000  # Find process
-   kill <PID>     # Remove it
-   ```
-
-2. **Verify build works** - Run `pnpm build && pnpm preview` manually to check for build errors.
-
-### Nuxt UI Component Selectors
-
-Nuxt UI components use Reka UI internally. Some selector gotchas:
-
-| Component | What doesn't work | What works |
-|-----------|------------------|------------|
-| `UCommandPalette` | `getByRole('combobox', { name: /search/i })` | `getByPlaceholder(/search/i)` |
-
-**Why:** The input's `placeholder` attribute isn't treated as an ARIA accessible name. Use `getByPlaceholder()` instead of `getByRole()` with name matching.

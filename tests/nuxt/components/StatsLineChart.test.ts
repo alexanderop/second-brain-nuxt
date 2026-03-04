@@ -1,3 +1,4 @@
+// @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
 import { describe, it, expect } from 'vitest'
 import { page } from 'vitest/browser'
 import { render } from 'vitest-browser-vue'

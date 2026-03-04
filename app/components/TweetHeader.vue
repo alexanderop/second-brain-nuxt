@@ -56,6 +56,7 @@ const copyItems: DropdownMenuItem[] = [
       <div class="flex items-start gap-4">
         <NuxtLink
           :to="`/authors/${encodeURIComponent(author.slug)}`"
+          :aria-label="`View ${author.name}'s profile`"
           class="shrink-0 size-14 rounded-full overflow-hidden bg-[var(--ui-bg-muted)] hover:opacity-80 transition-opacity"
         >
           <img

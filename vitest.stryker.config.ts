@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
 // Vitest config for Stryker mutation testing
-// Includes both unit tests and integration tests
+// Includes both unit tests and nuxt tests
 export default defineConfig({
   test: {
     projects: [
@@ -23,11 +23,11 @@ export default defineConfig({
         },
       },
 
-      // Integration tests - Nuxt environment
+      // Nuxt tests - Nuxt environment
       await defineVitestProject({
         test: {
-          name: 'integration',
-          include: ['tests/integration/**/*.test.ts'],
+          name: 'nuxt',
+          include: ['tests/nuxt/**/*.test.ts'],
           environment: 'nuxt',
           environmentOptions: {
             nuxt: {
@@ -37,7 +37,7 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ['./tests/integration/setup.ts'],
+          setupFiles: ['./tests/nuxt/setup.ts'],
         },
       }),
     ],
