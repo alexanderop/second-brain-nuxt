@@ -37,7 +37,7 @@ function transformWikiLinks(content: string): string {
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', '@vite-pwa/nuxt', '@nuxt/a11y', '@nuxt/content'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/fonts', '@vueuse/nuxt', '@vite-pwa/nuxt', '@nuxt/a11y', '@nuxt/content', '@nuxtjs/html-validator'],
 
   devtools: { enabled: true },
 
@@ -46,6 +46,14 @@ export default defineNuxtConfig({
     theme: {
       colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error', 'neutral'],
     },
+  },
+
+  htmlValidator: {
+    enabled: process.env.NODE_ENV !== 'test',
+    options: {
+      rules: { 'meta-refresh': 'off' },
+    },
+    failOnError: true,
   },
 
   // Content transformation hooks - must be at config level per Nuxt Content v3 docs
@@ -57,13 +65,23 @@ export default defineNuxtConfig({
       }
     },
   },
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2025-11-01',
 
   // Prefetch route components on hover/focus for faster navigation
   experimental: {
+    typescriptPlugin: true,
+    typedPages: true,
     defaults: {
       nuxtLink: {
         prefetchOn: { interaction: true },
+      },
+    },
+  },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        noUnusedLocals: true,
       },
     },
   },
@@ -92,6 +110,9 @@ export default defineNuxtConfig({
 
   // Reduce file watchers to prevent EMFILE errors
   vite: {
+    optimizeDeps: {
+      include: ['@vueuse/core', 'd3', 'fuse.js', 'mermaid', 'zod'],
+    },
     server: {
       watch: {
         usePolling: false,
@@ -164,6 +185,11 @@ export default defineNuxtConfig({
       failOnError: false, // Continue on prerender errors to see what fails
       concurrency: 1,
       ignore: ['/tweets/tweets/'], // Exclude malformed tweet paths
+    },
+    esbuild: {
+      options: {
+        target: 'es2024',
+      },
     },
   },
 

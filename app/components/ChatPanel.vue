@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
-import { USlideover, UButton, UTextarea, UIcon } from '#components'
+import { USlideover, UButton, UTextarea } from '#components'
 import { useChatHistory, type ChatMessage, type ToolCall } from '~/composables/useChatHistory'
 import ChatMessageComponent from '~/components/ChatMessage.vue'
 import ToolCallItem from '~/components/ToolCallItem.vue'

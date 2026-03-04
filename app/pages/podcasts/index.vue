@@ -5,7 +5,6 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { UIcon } from '#components'
 import PodcastCard from '~/components/PodcastCard.vue'
 import { isPodcastItem } from '~/types/content'
-import type { PodcastItem } from '~/types/content'
 
 interface EpisodeData {
   podcast?: string

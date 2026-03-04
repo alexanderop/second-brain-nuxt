@@ -6,7 +6,6 @@ import { UIcon } from '#components'
 import PodcastHeader from '~/components/PodcastHeader.vue'
 import ContentList from '~/components/ContentList.vue'
 import { isPodcastItem } from '~/types/content'
-import type { PodcastItem } from '~/types/content'
 import type { ContentType } from '~/constants/contentTypes'
 
 const route = useRoute()
