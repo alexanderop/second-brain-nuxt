@@ -1,19 +1,26 @@
-import { defineEventHandler } from 'h3'
-import { queryCollection } from '@nuxt/content/server'
-import { buildGraphFromContent, type GraphData } from '../utils/graph'
-import { tryAsync } from '#shared/utils/tryCatch'
+import { defineCachedEventHandler } from "nitropack/runtime";
+import { queryCollection } from "@nuxt/content/server";
+import { buildGraphFromContent, type GraphData } from "../utils/graph";
+import { tryAsync } from "#shared/utils/tryCatch";
+import { handleApiError } from "../utils/handleApiError";
 
-export default defineEventHandler(async (event): Promise<GraphData> => {
-  const [error, allContent] = await tryAsync(
-    queryCollection(event, 'content')
-      .select('path', 'stem', 'title', 'type', 'tags', 'authors', 'summary', 'body')
-      .all(),
-  )
+export default defineCachedEventHandler(
+  async (event): Promise<GraphData> => {
+    const [error, allContent] = await tryAsync(
+      queryCollection(event, "content")
+        .select("path", "stem", "title", "type", "tags", "authors", "summary", "body")
+        .all(),
+    );
 
-  if (error) {
-    console.error('Error building graph data:', error)
-    return { nodes: [], edges: [] }
-  }
+    if (error) {
+      handleApiError(error, "graph");
+    }
 
-  return buildGraphFromContent(allContent)
-})
+    return buildGraphFromContent(allContent);
+  },
+  {
+    maxAge: 60 * 5,
+    swr: true,
+    name: "graph",
+  },
+);

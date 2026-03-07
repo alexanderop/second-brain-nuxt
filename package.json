@@ -40,7 +40,9 @@
     "ralph": "./ralph/ralph.sh",
     "fix-e2e": "./ralph/fix-e2e.sh",
     "knip": "knip",
-    "knip:fix": "knip --fix"
+    "knip:fix": "knip --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
@@ -110,6 +112,7 @@
     "lucide-static": "^0.562.0",
     "markdownlint-cli2": "^0.20.0",
     "nitropack": "^2.12.9",
+    "oxfmt": "^0.36.0",
     "oxlint": "^1.0.0",
     "playwright": "^1.57.0",
     "simple-git-hooks": "^2.13.0",
@@ -128,6 +131,7 @@
   },
   "lint-staged": {
     "*.{ts,vue}": [
+      "pnpm exec oxfmt",
       "pnpm exec oxlint --fix"
     ],
     "*.vue": [

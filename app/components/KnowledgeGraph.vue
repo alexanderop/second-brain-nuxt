@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import BaseGraph from '~/components/BaseGraph.vue'
-import type { FullGraphData, UnifiedGraphNode } from '~/types/graph'
-import type { BaseGraphOptions } from './BaseGraph.vue'
+import { ref } from "vue";
+import BaseGraph from "~/components/BaseGraph.client.vue";
+import type { FullGraphData, UnifiedGraphNode } from "~/types/graph";
+import type { BaseGraphOptions } from "./BaseGraph.client.vue";
 
 const props = defineProps<{
-  graphData?: FullGraphData | null
-  selectedId?: string | null
-}>()
+  graphData?: FullGraphData | null;
+  selectedId?: string | null;
+}>();
 
 // Emit UnifiedGraphNode which contains all properties from both formats
 const emit = defineEmits<{
-  select: [node: UnifiedGraphNode]
-  zoomChange: [level: number]
-}>()
+  select: [node: UnifiedGraphNode];
+  zoomChange: [level: number];
+}>();
 
 const baseGraphRef = ref<{
-  zoomIn: () => void
-  zoomOut: () => void
-  fitAll: (padding?: number) => void
-  getCurrentZoom: () => number
-}>()
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitAll: (padding?: number) => void;
+  getCurrentZoom: () => number;
+}>();
 
 const graphOptions: BaseGraphOptions = {
   hexagonMaps: true,
   breathing: true,
   persistZoom: true,
   zoomExtent: [0.1, 4],
-  labelVisibility: 'progressive',
-}
+  labelVisibility: "progressive",
+};
 
 defineExpose({
   fitAll: (padding?: number) => baseGraphRef.value?.fitAll(padding),
   zoomIn: () => baseGraphRef.value?.zoomIn(),
   zoomOut: () => baseGraphRef.value?.zoomOut(),
-})
+});
 </script>
 
 <template>

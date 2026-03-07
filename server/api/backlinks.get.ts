@@ -1,19 +1,24 @@
-import { defineEventHandler } from 'h3'
-import { queryCollection } from '@nuxt/content/server'
-import { buildBacklinksIndex, type BacklinksIndex } from '../utils/backlinks'
-import { tryAsync } from '#shared/utils/tryCatch'
+import { defineCachedEventHandler } from "nitropack/runtime";
+import { queryCollection } from "@nuxt/content/server";
+import { buildBacklinksIndex, type BacklinksIndex } from "../utils/backlinks";
+import { tryAsync } from "#shared/utils/tryCatch";
+import { handleApiError } from "../utils/handleApiError";
 
-export default defineEventHandler(async (event): Promise<BacklinksIndex> => {
-  const [error, allContent] = await tryAsync(
-    queryCollection(event, 'content')
-      .select('path', 'stem', 'title', 'type', 'body')
-      .all(),
-  )
+export default defineCachedEventHandler(
+  async (event): Promise<BacklinksIndex> => {
+    const [error, allContent] = await tryAsync(
+      queryCollection(event, "content").select("path", "stem", "title", "type", "body").all(),
+    );
 
-  if (error) {
-    console.error('Error building backlinks index:', error)
-    return {}
-  }
+    if (error) {
+      handleApiError(error, "backlinks");
+    }
 
-  return buildBacklinksIndex(allContent)
-})
+    return buildBacklinksIndex(allContent);
+  },
+  {
+    maxAge: 60 * 5,
+    swr: true,
+    name: "backlinks",
+  },
+);
