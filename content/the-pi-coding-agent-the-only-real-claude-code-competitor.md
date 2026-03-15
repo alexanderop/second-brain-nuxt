@@ -34,6 +34,7 @@ Other extensions shown: damage control (blocking dangerous bash commands via hoo
 ## The Progression Path
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Base Agent] --> B[Better Agent]
@@ -54,6 +55,7 @@ Agents`"]
         F
     end
 </pre>
+
 ::
 
 Dan traces six stages of agentic engineering maturity. Most engineers are stuck at stage 1-2: using a base agent, maybe tweaking their CLAUDE.md. The leap to custom agents (stage 4) requires controlling the harness — the layer around the model. Pi exposes that layer; Claude Code abstracts it away.
@@ -62,17 +64,17 @@ The frontier is meta agents — agents that generate other agents. Pi supports t
 
 ## Feature Comparison (What Matters)
 
-| Feature | Claude Code | Pi Agent |
-|---------|------------|----------|
-| System prompt | ~10K tokens | ~200 tokens |
-| Default tools | ~8 | 4 |
-| Safety model | Multiple tiers | YOLO (full access) |
-| Hook points | Limited | 25+ |
-| Extensions | Skills + hooks | Full TypeScript SDK |
-| Sub-agents | Native | Via extensions |
-| MCP support | Yes | No |
-| Multi-model | Limited | Any provider |
-| Agent teams | Native (new) | Via YAML config |
+| Feature       | Claude Code    | Pi Agent            |
+| ------------- | -------------- | ------------------- |
+| System prompt | ~10K tokens    | ~200 tokens         |
+| Default tools | ~8             | 4                   |
+| Safety model  | Multiple tiers | YOLO (full access)  |
+| Hook points   | Limited        | 25+                 |
+| Extensions    | Skills + hooks | Full TypeScript SDK |
+| Sub-agents    | Native         | Via extensions      |
+| MCP support   | Yes            | No                  |
+| Multi-model   | Limited        | Any provider        |
+| Agent teams   | Native (new)   | Via YAML config     |
 
 ## The Strategic Take
 

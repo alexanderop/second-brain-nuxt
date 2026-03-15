@@ -28,16 +28,14 @@ Rather than repeating session-validation code in every protected API endpoint, c
 
 ```typescript
 // server/utils/auth.ts
-export function defineSecureHandler<T>(
-  handler: (event: H3Event, user: User) => T
-) {
+export function defineSecureHandler<T>(handler: (event: H3Event, user: User) => T) {
   return defineEventHandler(async (event) => {
-    const session = await getUserSession(event)
+    const session = await getUserSession(event);
     if (!session.user) {
-      throw createError({ statusCode: 401, message: 'Unauthorized' })
+      throw createError({ statusCode: 401, message: "Unauthorized" });
     }
-    return handler(event, session.user)
-  })
+    return handler(event, session.user);
+  });
 }
 ```
 
@@ -46,8 +44,8 @@ export function defineSecureHandler<T>(
 ```typescript
 // server/api/app/ping.ts
 export default defineSecureHandler((event, user) => {
-  return { message: `Hello ${user.name}` }
-})
+  return { message: `Hello ${user.name}` };
+});
 ```
 
 ## Connections

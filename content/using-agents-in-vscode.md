@@ -24,6 +24,7 @@ The key distinction: agents don't just suggest code—they autonomously perform 
 VS Code supports four execution modes, each suited to different workflows:
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Local["Local Agents"]
@@ -45,11 +46,13 @@ graph TD
         T1[External providers<br/>Specialized tools]
     end
 </pre>
+
 ::
 
 ### Local Agents
 
 Run within VS Code with real-time feedback. Best for:
+
 - Brainstorming and planning
 - Tasks requiring immediate workspace context
 - Interactive refinement of solutions
@@ -57,6 +60,7 @@ Run within VS Code with real-time feedback. Best for:
 ### Background Agents
 
 CLI-based tools (like Copilot CLI) operating non-interactively. Best for:
+
 - Well-defined autonomous tasks
 - Batch operations
 - Tasks that can run unattended
@@ -66,6 +70,7 @@ Background agents can use Git worktrees for isolated work environments.
 ### Cloud Agents
 
 Run on remote infrastructure with GitHub integration. Best for:
+
 - Team collaboration via pull requests and branches
 - Long-running tasks that shouldn't tie up your machine
 - CI/CD integration workflows
@@ -73,6 +78,7 @@ Run on remote infrastructure with GitHub integration. Best for:
 ### Third-Party Agents
 
 External provider agents integrated into VS Code's unified experience. Best for:
+
 - Specialized domain tools
 - Vendor-specific integrations
 

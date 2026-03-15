@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { NuxtLink, UBadge } from '#components'
+import { NuxtLink, UBadge } from "#components";
 
 defineProps<{
-  tag: string
-}>()
+  tag: string;
+}>();
 </script>
 
 <template>
   <NuxtLink :to="`/tags/${tag}`">
-    <UBadge
-      variant="subtle"
-      color="neutral"
-      size="sm"
-    >
+    <UBadge variant="subtle" color="neutral" size="sm">
       {{ tag }}
     </UBadge>
   </NuxtLink>

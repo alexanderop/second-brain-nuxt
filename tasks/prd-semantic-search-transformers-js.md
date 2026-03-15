@@ -15,9 +15,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 ## User Stories
 
 ### US-001: Create embedding generation script
+
 **Description:** As a developer, I need a script to generate embeddings for all content at build time so they can be served statically.
 
 **Acceptance Criteria:**
+
 - [ ] Script at `scripts/generate-embeddings.ts` using Transformers.js
 - [ ] Uses `bge-small-en-v1.5` model from Hugging Face
 - [ ] Processes all markdown files in `content/` directory
@@ -29,9 +31,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Typecheck passes
 
 ### US-002: Create embedding storage format
+
 **Description:** As a developer, I need a well-defined storage format for embeddings that balances file size with query performance.
 
 **Acceptance Criteria:**
+
 - [ ] JSON structure: `{ version: string, model: string, embeddings: { [slug]: { vector: number[], title: string, type: string } } }`
 - [ ] Vectors stored as arrays of floats (384 dimensions for bge-small)
 - [ ] Include model name and version for cache invalidation
@@ -39,9 +43,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Typecheck passes
 
 ### US-003: Create semantic search composable
+
 **Description:** As a developer, I need a composable to perform semantic search queries against the pre-computed embeddings.
 
 **Acceptance Criteria:**
+
 - [ ] Composable at `app/composables/useSemanticSearch.ts`
 - [ ] Lazy-loads Transformers.js only when search is performed
 - [ ] Converts search query to embedding using bge-small-en-v1.5
@@ -52,9 +58,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Typecheck passes
 
 ### US-004: Implement cosine similarity function
+
 **Description:** As a developer, I need an efficient cosine similarity implementation for comparing embeddings.
 
 **Acceptance Criteria:**
+
 - [ ] Pure TypeScript function, no external dependencies
 - [ ] Handles 384-dimension vectors efficiently
 - [ ] Returns similarity score between -1 and 1
@@ -62,10 +70,12 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Typecheck passes
 
 ### US-005: Create hybrid search scoring
+
 **Description:** As a user, I want search results that combine keyword matches with semantic similarity for the best results.
 
 **Acceptance Criteria:**
-- [ ] Hybrid score = (keyword_score * 0.4) + (semantic_score * 0.6)
+
+- [ ] Hybrid score = (keyword*score * 0.4) + (semantic*score * 0.6)
 - [ ] Weights configurable via constants
 - [ ] Results sorted by hybrid score descending
 - [ ] Keyword-only results included if semantic score is 0
@@ -73,9 +83,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Typecheck passes
 
 ### US-006: Integrate semantic search into search page
+
 **Description:** As a user, I want the search page to use hybrid semantic+keyword search.
 
 **Acceptance Criteria:**
+
 - [ ] Search page uses `useSemanticSearch` composable
 - [ ] Shows loading indicator while model initializes (first search only)
 - [ ] Results show similarity score badge (optional, can be hidden)
@@ -85,9 +97,11 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Verify in browser
 
 ### US-007: Integrate semantic search into command palette
+
 **Description:** As a user, I want the Cmd+K search modal to also use semantic search.
 
 **Acceptance Criteria:**
+
 - [ ] Command palette uses same `useSemanticSearch` composable
 - [ ] Model loaded lazily on first search query
 - [ ] Results merged with existing Fuse.js results using hybrid scoring
@@ -96,18 +110,22 @@ Add semantic (meaning-based) search to the Second Brain knowledge base using Tra
 - [ ] Verify in browser
 
 ### US-008: Add embeddings generation to build pipeline
+
 **Description:** As a developer, I need embeddings regenerated when content changes.
 
 **Acceptance Criteria:**
+
 - [ ] Add `prebuild` script that runs embedding generation
 - [ ] Document in CLAUDE.md: `pnpm generate:embeddings`
 - [ ] Embeddings file committed to repo (or generated in CI)
 - [ ] Typecheck passes
 
 ### US-009: Handle model loading UX
+
 **Description:** As a user, I want clear feedback when the semantic search model is loading.
 
 **Acceptance Criteria:**
+
 - [ ] First search shows "Loading semantic search..." indicator
 - [ ] Subsequent searches are instant (model cached)
 - [ ] If model fails to load, graceful fallback to keyword search

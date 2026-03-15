@@ -28,4 +28,4 @@ One of the most influential sports manga ever created, credited with popularizin
 
 - Sold over 170 million copies worldwide
 - Ran in Weekly Shonen Jump from 1990-1996
-- Adapted into an anime series and the 2022 film *The First Slam Dunk*, directed by Inoue himself
+- Adapted into an anime series and the 2022 film _The First Slam Dunk_, directed by Inoue himself

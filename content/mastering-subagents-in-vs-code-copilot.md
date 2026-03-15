@@ -28,6 +28,7 @@ Subagents function as isolated Copilot Chat sessions invoked via `#runSubagent`.
 ## Subagent Workflow
 
 ::mermaid
+
 <pre>
 flowchart LR
     Request[Define Task] --> Spawn[Spawn Subagent]
@@ -36,17 +37,18 @@ flowchart LR
     Execute --> Review[Review Diff]
     Review --> Merge[Merge Changes]
 </pre>
+
 ::
 
 ## Practical Use Cases
 
-| Use Case | What the Subagent Does |
-|----------|------------------------|
-| **Refactoring** | Analyzes problematic files in isolation, proposes changes, generates reviewable diffs |
-| **Test Generation** | Scaffolds testing framework, generates test files, runs tests, summarizes coverage gaps |
-| **Security Scanning** | Pre-release static analysis in isolated branches |
-| **Documentation** | Batch JSDoc additions, README generation, formatting across codebase |
-| **Multi-Service Debugging** | Aggregates logs and proposes hypotheses across systems |
+| Use Case                    | What the Subagent Does                                                                  |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| **Refactoring**             | Analyzes problematic files in isolation, proposes changes, generates reviewable diffs   |
+| **Test Generation**         | Scaffolds testing framework, generates test files, runs tests, summarizes coverage gaps |
+| **Security Scanning**       | Pre-release static analysis in isolated branches                                        |
+| **Documentation**           | Batch JSDoc additions, README generation, formatting across codebase                    |
+| **Multi-Service Debugging** | Aggregates logs and proposes hypotheses across systems                                  |
 
 ## Orchestration Patterns
 
@@ -63,6 +65,7 @@ Multi-step refactors benefit from structured instructions guiding analysis → p
 ## When to Use Subagents
 
 Reserve subagents for tasks that:
+
 - Would exceed 30 minutes of manual work
 - Involve multi-file changes
 - Are structured but tedious

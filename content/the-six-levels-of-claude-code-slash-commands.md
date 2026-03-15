@@ -32,6 +32,7 @@ Most users treat slash commands as saved prompts. This video argues they're a pr
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     L1[Level 1: Saved Prompt]
@@ -43,6 +44,7 @@ graph TD
 
     L1 --> L2 --> L3 --> L4 --> L5 --> L6
 </pre>
+
 ::
 
 ## Key Insight

@@ -63,9 +63,10 @@ The US-China competition prevents coordinated slowdown. Even if safety concerns 
 
 ### The Technological Adolescence Frame
 
-Dario previews his upcoming essay on AI risks, framed around Carl Sagan's *Contact*: "How did you get through this technological adolescence without destroying yourselves?"
+Dario previews his upcoming essay on AI risks, framed around Carl Sagan's _Contact_: "How did you get through this technological adolescence without destroying yourselves?"
 
 Key risk categories:
+
 - **Control**: Highly autonomous systems smarter than humans
 - **Individual misuse**: Bioterrorism, weapons
 - **State misuse**: Authoritarian deployment
@@ -75,6 +76,7 @@ Key risk categories:
 ## Self-Improvement Loop
 
 ::mermaid
+
 <pre>
 flowchart LR
     Models[AI Models] --> Code[Write Code]
@@ -84,6 +86,7 @@ flowchart LR
 
     Limits[Hardware & Training Time] -.->|constrains| Train
 </pre>
+
 ::
 
 ## Practical Takeaways

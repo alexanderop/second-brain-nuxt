@@ -53,6 +53,7 @@ Add to `~/.claude/settings.json`:
 ## Available Variables
 
 The JSON input includes:
+
 - `model.id` and `model.display_name`
 - `context_window.total_input_tokens` and `context_window.total_output_tokens`
 - `context_window.context_window_size`

@@ -33,6 +33,7 @@ After 800+ hours in Claude Code, Artem Zhutov shares what separates power users 
 ## Workflow: Session Analysis Feedback Loop
 
 ::mermaid
+
 <pre>
 flowchart LR
     Sessions[JSON Conversation Files] --> Analyze[Session Analysis Skill]
@@ -41,6 +42,7 @@ flowchart LR
     Suggest --> Memory[Update Agent Memory]
     Memory --> Sessions
 </pre>
+
 ::
 
 ## Steps Summary

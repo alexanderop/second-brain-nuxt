@@ -17,20 +17,21 @@ date: 2026-01-10
 
 # Vue Weekly #3
 
-*January 4-10, 2026 | Your weekly dose of Vue ecosystem news*
+_January 4-10, 2026 | Your weekly dose of Vue ecosystem news_
 
 ## TL;DR
 
 > **This week:** Vue 3.6.0-beta.2 brings Vapor Mode to beta with a major reactivity refactor, NuxtLabs joins Vercel making Nuxt Studio and UI Pro free, and Nuxt 3.16 delivers up to 32% faster loading with native lazy hydration — all while the clock ticks toward Nuxt 3's January 31st EOL.
 
 **Must-read:**
+
 - [Vue 3.6.0-beta.2](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.2) — Vapor Mode enters beta with feature parity
 - [NuxtLabs acquired by Vercel](https://nuxt.com/blog/nuxtlabs-joins-vercel) — Nuxt Studio and UI Pro now free
 - [Nuxt 3.16.0](https://nuxt.com/blog/v3-16) — Native lazy hydration, 28-32% faster loading
 - [@nuxt/a11y Alpha](https://github.com/nuxt/a11y) — First official Nuxt accessibility module
 - [Nuxt Studio 1.0](https://studio.nuxt.com/) — In-browser content editing, now free
 
-**Week theme:** *The Great Opening* — Vercel's acquisition makes premium Nuxt tools free, while the first official a11y module democratizes web accessibility.
+**Week theme:** _The Great Opening_ — Vercel's acquisition makes premium Nuxt tools free, while the first official a11y module democratizes web accessibility.
 
 **Action required:** Nuxt 3 EOL is January 31, 2026 — only 3 weeks remain. Begin migration to Nuxt 4 now.
 
@@ -39,12 +40,15 @@ date: 2026-01-10
 ## Releases
 
 ### Vue.js
-- **[v3.6.0-beta.2](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.2)** (Jan 4) — Vapor Mode enters beta with full Virtual DOM feature parity. Major reactivity refactor based on alien-signals for improved performance. *This is the one to watch.*
+
+- **[v3.6.0-beta.2](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.2)** (Jan 4) — Vapor Mode enters beta with full Virtual DOM feature parity. Major reactivity refactor based on alien-signals for improved performance. _This is the one to watch._
 
 ### Vite
+
 - **[v7.3.1](https://github.com/vitejs/vite/releases/tag/v7.3.1)** (Jan 7) — Bug fixes for buildStart hooks, proxy.bypass middleware, SSR transform errors, and WebKit inline worker compatibility.
 
 ### Nuxt
+
 - **[v3.16.0](https://github.com/nuxt/nuxt/releases)** — Native delayed/lazy hydration support, Devtools v2 with custom editor selection, 28-32% faster loading via exsolve module resolution.
 
 ---
@@ -59,7 +63,7 @@ date: 2026-01-10
 
 ## Community Highlights
 
-1. **NuxtLabs Acquired by Vercel** — Nuxt Studio and Nuxt UI Pro now completely free. *Enterprise-grade tooling at zero cost.*
+1. **NuxtLabs Acquired by Vercel** — Nuxt Studio and Nuxt UI Pro now completely free. _Enterprise-grade tooling at zero cost._
 2. **[@nuxt/a11y Alpha](https://bsky.app/profile/timdamen.io/post/3mbvkfpbwxs2g)** by Tim Damen — First alpha of the official Nuxt accessibility module.
 3. **Nuxt MCP Server Integration** — Sebastien Chopin discussing Model Context Protocol for AI-powered Nuxt development.
 4. **Nue Framework** — Active Lobsters discussion about this React/Vue/Vite alternative.
@@ -81,7 +85,7 @@ date: 2026-01-10
 
 ## Podcast & Video
 
-1. **[DejaVue Ep. 61: "Was Nuxt just sold?!"](https://dejavue.fm/)** — Daniel Roe & Sebastien Chopin on the Vercel acquisition. *Must-listen.*
+1. **[DejaVue Ep. 61: "Was Nuxt just sold?!"](https://dejavue.fm/)** — Daniel Roe & Sebastien Chopin on the Vercel acquisition. _Must-listen._
 2. **[DejaVue: "Vite 7 is out"](https://dejavue.fm/)** — Deep dive into Vite 7 features.
 3. **[Vue School: AI Apps with AI SDK v6](https://vueschool.io/)** (Jan 6) — New course on AI-powered Vue/Nuxt apps.
 4. **Vue Mastery: Vapor Mode Course** — Upcoming course taught by Evan You.
@@ -90,13 +94,13 @@ date: 2026-01-10
 
 ## Trending Repos
 
-| Repository | Stars | Description |
-|------------|-------|-------------|
-| [Vue Core](https://github.com/vuejs/core) | 209k | Vue 3 with Vapor Mode in beta |
-| [Nuxt](https://github.com/nuxt/nuxt) | 59k | Full-stack Vue framework v4.2 |
-| [VueUse](https://github.com/vueuse/vueuse) | 20k+ | 200+ composition utilities |
-| [Nuxt UI v4](https://github.com/nuxt/ui) | 5k+ | 110+ components, now open-source |
-| [vue-jsx-vapor](https://github.com/vuejs/vue-jsx-vapor) | New | Vapor Mode for Vue JSX in Rust |
+| Repository                                              | Stars | Description                      |
+| ------------------------------------------------------- | ----- | -------------------------------- |
+| [Vue Core](https://github.com/vuejs/core)               | 209k  | Vue 3 with Vapor Mode in beta    |
+| [Nuxt](https://github.com/nuxt/nuxt)                    | 59k   | Full-stack Vue framework v4.2    |
+| [VueUse](https://github.com/vueuse/vueuse)              | 20k+  | 200+ composition utilities       |
+| [Nuxt UI v4](https://github.com/nuxt/ui)                | 5k+   | 110+ components, now open-source |
+| [vue-jsx-vapor](https://github.com/vuejs/vue-jsx-vapor) | New   | Vapor Mode for Vue JSX in Rust   |
 
 ---
 
@@ -109,9 +113,10 @@ date: 2026-01-10
 ---
 
 **Upcoming Events:**
+
 - **VueConf US 2026** — May 19-21, Atlanta
 - **MadVue 2026** — May 22, Madrid
 
 ---
 
-*Curated with care. Found something interesting? Reply to share!*
+_Curated with care. Found something interesting? Reply to share!_

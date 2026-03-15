@@ -27,15 +27,15 @@ A VS Code Insiders user demonstrates a multi-agent orchestration system using Gi
 
 ## Agent Architecture
 
-| Agent | Model | Role |
-|-------|-------|------|
-| **Atlas** | Sonnet 4.5 | Orchestrator—delegates and synthesizes |
-| **Prometheus** | GPT 5.2 High | Deep research and planning, writes to plan directories |
-| **Oracle** | GPT 5.2 | Research and analysis |
-| **Sisyphus** | Sonnet 4.5 | Task execution from plans |
-| **Explorer** | Gemini 3 Flash | File discovery, web fetches |
-| **Code Review** | GPT 5.2 | Autonomous code review |
-| **Frontend Engineer** | Gemini 3 Pro | UI/UX specialist |
+| Agent                 | Model          | Role                                                   |
+| --------------------- | -------------- | ------------------------------------------------------ |
+| **Atlas**             | Sonnet 4.5     | Orchestrator—delegates and synthesizes                 |
+| **Prometheus**        | GPT 5.2 High   | Deep research and planning, writes to plan directories |
+| **Oracle**            | GPT 5.2        | Research and analysis                                  |
+| **Sisyphus**          | Sonnet 4.5     | Task execution from plans                              |
+| **Explorer**          | Gemini 3 Flash | File discovery, web fetches                            |
+| **Code Review**       | GPT 5.2        | Autonomous code review                                 |
+| **Frontend Engineer** | Gemini 3 Pro   | UI/UX specialist                                       |
 
 ## Notable Comments
 

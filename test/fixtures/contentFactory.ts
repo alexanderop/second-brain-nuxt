@@ -13,15 +13,15 @@
  * const linkedNote = createLinkedContent('My Note', 'atomic-habits')
  * ```
  */
-import type { ContentFixture } from './content'
+import type { ContentFixture } from "./content";
 
-let counter = 0
+let counter = 0;
 
 /**
  * Reset the factory counter between test files if needed
  */
 export function resetContentFactory(): void {
-  counter = 0
+  counter = 0;
 }
 
 /**
@@ -29,19 +29,19 @@ export function resetContentFactory(): void {
  * Override only the properties relevant to your test
  */
 export function createContentItem(overrides: Partial<ContentFixture> = {}): ContentFixture {
-  counter++
-  const stem = overrides.stem ?? `test-note-${counter}`
+  counter++;
+  const stem = overrides.stem ?? `test-note-${counter}`;
 
   return {
     path: `/${stem}`,
     stem,
     title: overrides.title ?? `Test Note ${counter}`,
-    type: overrides.type ?? 'note',
+    type: overrides.type ?? "note",
     tags: overrides.tags ?? [],
-    summary: overrides.summary ?? 'A test note for testing purposes',
-    body: overrides.body ?? { type: 'minimark', value: [] },
+    summary: overrides.summary ?? "A test note for testing purposes",
+    body: overrides.body ?? { type: "minimark", value: [] },
     ...overrides,
-  }
+  };
 }
 
 /**
@@ -56,20 +56,21 @@ export function createLinkedContent(
   return createContentItem({
     title: sourceTitle,
     body: {
-      type: 'minimark',
-      value: [
-        ['p', {}, 'Text with ', ['a', { href: `/${targetStem}` }, targetStem]],
-      ],
+      type: "minimark",
+      value: [["p", {}, "Text with ", ["a", { href: `/${targetStem}` }, targetStem]]],
     },
     ...overrides,
-  })
+  });
 }
 
 /**
  * Create multiple content items at once
  */
-export function createContentItems(count: number, overrides: Partial<ContentFixture> = {}): ContentFixture[] {
-  return Array.from({ length: count }, () => createContentItem(overrides))
+export function createContentItems(
+  count: number,
+  overrides: Partial<ContentFixture> = {},
+): ContentFixture[] {
+  return Array.from({ length: count }, () => createContentItem(overrides));
 }
 
 /**
@@ -77,10 +78,10 @@ export function createContentItems(count: number, overrides: Partial<ContentFixt
  */
 export function createBook(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: 'book',
-    tags: ['reading'],
+    type: "book",
+    tags: ["reading"],
     ...overrides,
-  })
+  });
 }
 
 /**
@@ -88,10 +89,10 @@ export function createBook(overrides: Partial<ContentFixture> = {}): ContentFixt
  */
 export function createArticle(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: 'article',
-    tags: ['articles'],
+    type: "article",
+    tags: ["articles"],
     ...overrides,
-  })
+  });
 }
 
 /**
@@ -99,8 +100,8 @@ export function createArticle(overrides: Partial<ContentFixture> = {}): ContentF
  */
 export function createPodcast(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: 'podcast',
-    tags: ['podcasts'],
+    type: "podcast",
+    tags: ["podcasts"],
     ...overrides,
-  })
+  });
 }

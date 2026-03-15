@@ -19,6 +19,7 @@ date: 2026-02-22
 Adam Fish has been building sync engines for 13 years — from a failed CRM startup, through Realm (acquired by MongoDB), to founding Ditto in 2018. Ditto's differentiator: true peer-to-peer sync over Bluetooth and WiFi, no internet required. But this talk isn't about the tech. It's about a harder problem: making businesses care.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Local-First
@@ -54,6 +55,7 @@ mindmap
             Firefighter safety
             Remote healthcare
 </pre>
+
 ::
 
 ## Key Arguments

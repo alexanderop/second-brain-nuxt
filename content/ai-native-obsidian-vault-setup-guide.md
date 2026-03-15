@@ -23,6 +23,7 @@ This guide establishes a comprehensive Obsidian vault structure that functions a
 The folder structure uses numeric prefixes to control sidebar ordering:
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Root[" "]
@@ -39,9 +40,11 @@ graph TD
     EN --> People & Teams & Goals & Projects
     R --> Books & Podcasts & Courses
 </pre>
+
 ::
 
 **Key design decisions:**
+
 - Emoji files (🌟, 📊, 🔗) sort first as core strategic documents
 - **000 series:** Operating system components (templates, Claude configuration)
 - **100 series:** Time-based periodics (daily, weekly, monthly, quarterly)
@@ -55,16 +58,19 @@ graph TD
 Three specialized tag namespaces enable pattern detection across notes:
 
 **Self-insight tags** capture personal patterns:
+
 - `#insight/pattern` — recurring behavioral patterns
 - `#insight/trigger` — emotional reaction catalysts
 - `#insight/energy` — energizing vs. draining activities
 - `#insight/win` and `#insight/lesson` — achievements and learnings
 
 **People interaction tags** track relational dynamics:
+
 - `#people/feedback-given` and `#people/feedback-got`
 - `#people/conflict`, `#people/connection`, `#people/idea`
 
 **AI experimentation tags** document tool learnings:
+
 - `#ai/prompt` — prompt engineering discoveries
 - `#ai/agent` — multi-step workflow patterns
 - `#ai/limitation` and `#ai/surprise` — capability boundaries

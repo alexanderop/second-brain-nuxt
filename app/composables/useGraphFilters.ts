@@ -1,121 +1,119 @@
-import { computed } from 'vue'
-import { contentTypeValues, type ContentType } from '~/constants/contentTypes'
-import { useRouteQuery } from '@vueuse/router'
+import { computed } from "vue";
+import { contentTypeValues, type ContentType } from "~/constants/contentTypes";
+import { useRouteQuery } from "@vueuse/router";
 
 export interface GraphFilterState {
-  types: Array<ContentType>
-  tags: Array<string>
-  authors: Array<string>
-  maps: Array<string>
-  showOrphans: boolean
+  types: Array<ContentType>;
+  tags: Array<string>;
+  authors: Array<string>;
+  maps: Array<string>;
+  showOrphans: boolean;
 }
 
 // All available content types - derived from content.config.ts (single source of truth)
-export const ALL_CONTENT_TYPES: readonly ContentType[] = contentTypeValues
+export const ALL_CONTENT_TYPES: readonly ContentType[] = contentTypeValues;
 
 export function useGraphFilters() {
   // Parse array query param (handles single value or array)
   function parseArrayParam(value: string | Array<string> | null | undefined): Array<string> {
-    if (!value)
-      return []
-    return Array.isArray(value) ? value : [value]
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
   }
 
   // URL-synced refs
-  const typesParam = useRouteQuery<string | Array<string> | null>('types')
-  const tagsParam = useRouteQuery<string | Array<string> | null>('tags')
-  const authorsParam = useRouteQuery<string | Array<string> | null>('authors')
-  const mapsParam = useRouteQuery<string | Array<string> | null>('maps')
-  const orphansParam = useRouteQuery<string | null>('orphans')
+  const typesParam = useRouteQuery<string | Array<string> | null>("types");
+  const tagsParam = useRouteQuery<string | Array<string> | null>("tags");
+  const authorsParam = useRouteQuery<string | Array<string> | null>("authors");
+  const mapsParam = useRouteQuery<string | Array<string> | null>("maps");
+  const orphansParam = useRouteQuery<string | null>("orphans");
 
   // Computed getters/setters with proper typing
   // Set of valid content types for O(1) lookup
-  const contentTypeSet = new Set<string>(ALL_CONTENT_TYPES)
+  const contentTypeSet = new Set<string>(ALL_CONTENT_TYPES);
 
   // Helper: Check if string is a valid ContentType
   function isContentType(value: string): value is ContentType {
-    return contentTypeSet.has(value)
+    return contentTypeSet.has(value);
   }
 
   const selectedTypes = computed({
     get: (): Array<ContentType> => {
-      const parsed = parseArrayParam(typesParam.value)
+      const parsed = parseArrayParam(typesParam.value);
       // If no types in URL, all are selected (default state)
-      if (parsed.length === 0)
-        return [...ALL_CONTENT_TYPES]
+      if (parsed.length === 0) return [...ALL_CONTENT_TYPES];
       // Filter to only valid content types
-      return parsed.filter(isContentType)
+      return parsed.filter(isContentType);
     },
     set: (v: Array<ContentType>) => {
       // If all types selected, remove from URL (default state)
       if (v.length === ALL_CONTENT_TYPES.length) {
-        typesParam.value = null
-        return
+        typesParam.value = null;
+        return;
       }
-      typesParam.value = v.length ? v : null
+      typesParam.value = v.length ? v : null;
     },
-  })
+  });
 
   const selectedTags = computed({
     get: () => parseArrayParam(tagsParam.value),
     set: (v: Array<string>) => {
-      tagsParam.value = v.length ? v : null
+      tagsParam.value = v.length ? v : null;
     },
-  })
+  });
 
   const selectedAuthors = computed({
     get: () => parseArrayParam(authorsParam.value),
     set: (v: Array<string>) => {
-      authorsParam.value = v.length ? v : null
+      authorsParam.value = v.length ? v : null;
     },
-  })
+  });
 
   const selectedMaps = computed({
     get: () => parseArrayParam(mapsParam.value),
     set: (v: Array<string>) => {
-      mapsParam.value = v.length ? v : null
+      mapsParam.value = v.length ? v : null;
     },
-  })
+  });
 
   const showOrphans = computed({
-    get: () => orphansParam.value !== 'false', // default true
+    get: () => orphansParam.value !== "false", // default true
     set: (v: boolean) => {
-      orphansParam.value = v ? null : 'false' // only store if false
+      orphansParam.value = v ? null : "false"; // only store if false
     },
-  })
+  });
 
   // Helper to check if a type is selected
   function isTypeSelected(type: ContentType): boolean {
-    return selectedTypes.value.includes(type)
+    return selectedTypes.value.includes(type);
   }
 
   // Toggle a content type
   function toggleType(type: ContentType) {
     if (isTypeSelected(type)) {
-      selectedTypes.value = selectedTypes.value.filter(t => t !== type)
-      return
+      selectedTypes.value = selectedTypes.value.filter((t) => t !== type);
+      return;
     }
-    selectedTypes.value = [...selectedTypes.value, type]
+    selectedTypes.value = [...selectedTypes.value, type];
   }
 
   // Check if any filters are active
   const hasActiveFilters = computed(() => {
     return (
-      selectedTypes.value.length < ALL_CONTENT_TYPES.length
-      || selectedTags.value.length > 0
-      || selectedAuthors.value.length > 0
-      || selectedMaps.value.length > 0
-      || !showOrphans.value
-    )
-  })
+      selectedTypes.value.length < ALL_CONTENT_TYPES.length ||
+      selectedTags.value.length > 0 ||
+      selectedAuthors.value.length > 0 ||
+      selectedMaps.value.length > 0 ||
+      !showOrphans.value
+    );
+  });
 
   // Clear all filters
   function clearFilters() {
-    typesParam.value = null
-    tagsParam.value = null
-    authorsParam.value = null
-    mapsParam.value = null
-    orphansParam.value = null
+    typesParam.value = null;
+    tagsParam.value = null;
+    authorsParam.value = null;
+    mapsParam.value = null;
+    orphansParam.value = null;
   }
 
   // Combined filter state for convenience
@@ -125,7 +123,7 @@ export function useGraphFilters() {
     authors: selectedAuthors.value,
     maps: selectedMaps.value,
     showOrphans: showOrphans.value,
-  }))
+  }));
 
   return {
     // State
@@ -142,5 +140,5 @@ export function useGraphFilters() {
     clearFilters,
     // Constants
     allTypes: ALL_CONTENT_TYPES,
-  }
+  };
 }

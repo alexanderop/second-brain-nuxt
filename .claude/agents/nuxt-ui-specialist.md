@@ -80,12 +80,7 @@ This agent operates within a Nuxt 4 application using:
 ```vue
 <!-- Button with variants -->
 <template>
-  <UButton
-    color="primary"
-    variant="solid"
-    icon="i-heroicons-plus"
-    @click="handleClick"
-  >
+  <UButton color="primary" variant="solid" icon="i-heroicons-plus" @click="handleClick">
     Add Item
   </UButton>
 </template>
@@ -94,19 +89,19 @@ This agent operates within a Nuxt 4 application using:
 ```vue
 <!-- Form with validation -->
 <script setup lang="ts">
-import { z } from 'zod'
+import { z } from "zod";
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
-  name: z.string().min(2, 'Name too short')
-})
+  email: z.string().email("Invalid email"),
+  name: z.string().min(2, "Name too short"),
+});
 
-type Schema = z.output<typeof schema>
+type Schema = z.output<typeof schema>;
 
 const state = reactive<Partial<Schema>>({
   email: undefined,
-  name: undefined
-})
+  name: undefined,
+});
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   // Handle form submission
@@ -121,9 +116,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <UFormField label="Name" name="name">
       <UInput v-model="state.name" />
     </UFormField>
-    <UButton type="submit">
-      Submit
-    </UButton>
+    <UButton type="submit"> Submit </UButton>
   </UForm>
 </template>
 ```
@@ -131,10 +124,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 ```vue
 <!-- Color mode toggle -->
 <script setup lang="ts">
-const colorMode = useColorMode()
+const colorMode = useColorMode();
 
 function toggleColorMode() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 }
 </script>
 

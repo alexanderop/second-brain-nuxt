@@ -1,26 +1,23 @@
-import type { Anthropic } from '@anthropic-ai/sdk'
+import type { Anthropic } from "@anthropic-ai/sdk";
 
-type MessageParam = Anthropic.MessageParam
-type ContentBlock = Anthropic.ContentBlock
-type ToolResultBlockParam = Anthropic.ToolResultBlockParam
+type MessageParam = Anthropic.MessageParam;
+type ContentBlock = Anthropic.ContentBlock;
+type ToolResultBlockParam = Anthropic.ToolResultBlockParam;
 
 export interface HistoryMessage {
-  role: 'user' | 'assistant'
-  content: string
+  role: "user" | "assistant";
+  content: string;
 }
 
 /**
  * Build the initial message array from history and new user message.
  * Pure function - creates a new array without mutation.
  */
-export function buildInitialMessages(
-  history: HistoryMessage[],
-  message: string,
-): MessageParam[] {
+export function buildInitialMessages(history: HistoryMessage[], message: string): MessageParam[] {
   return [
     ...history.map((h): MessageParam => ({ role: h.role, content: h.content })),
-    { role: 'user', content: message },
-  ]
+    { role: "user", content: message },
+  ];
 }
 
 /**
@@ -31,10 +28,7 @@ export function appendAssistantMessage(
   messages: MessageParam[],
   content: ContentBlock[],
 ): MessageParam[] {
-  return [
-    ...messages,
-    { role: 'assistant', content },
-  ]
+  return [...messages, { role: "assistant", content }];
 }
 
 /**
@@ -45,8 +39,5 @@ export function appendToolResults(
   messages: MessageParam[],
   toolResults: ToolResultBlockParam[],
 ): MessageParam[] {
-  return [
-    ...messages,
-    { role: 'user', content: toolResults },
-  ]
+  return [...messages, { role: "user", content: toolResults }];
 }

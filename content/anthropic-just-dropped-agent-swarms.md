@@ -32,6 +32,7 @@ date: 2026-02-06
 The team system follows a leader-worker pattern with bidirectional messaging:
 
 ::mermaid
+
 <pre>
 graph TD
     Leader[Team Lead] -->|creates| TL[Shared Task List]
@@ -46,6 +47,7 @@ graph TD
     T1 <-->|inbox messages| T2
     TL -->|blocks/unblocks| T3
 </pre>
+
 ::
 
 ## Notable Quotes

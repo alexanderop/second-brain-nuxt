@@ -28,15 +28,19 @@ Context engineering is a systematic approach to providing AI agents with targete
 ## Key Techniques
 
 ### Documentation Foundation
+
 Create Markdown files documenting product vision, system architecture, and contribution guidelines. These become reference materials for AI interactions.
 
 ### Custom Instructions File
+
 A `.github/copilot-instructions.md` file automatically includes project context in all chat interactions, eliminating the need to re-explain requirements repeatedly.
 
 ### Planning Agents
+
 Dedicated custom agents with planning-specific tools generate structured implementation plans using templates, ensuring consistency before coding begins.
 
 ### Workflow Handoffs
+
 Use handoffs between agents to create guided transitions from planning through implementation to review stages.
 
 ## Best Practices

@@ -77,31 +77,28 @@ This agent operates within a Nuxt 4 application using:
 
 ```typescript
 // content.config.ts - Collection definition pattern
-import { defineCollection, z } from '@nuxt/content'
+import { defineCollection, z } from "@nuxt/content";
 
 export const collections = {
   content: defineCollection({
-    type: 'page',
-    source: '**/*.md'
-  })
-}
+    type: "page",
+    source: "**/*.md",
+  }),
+};
 ```
 
 ```vue
 <!-- Catch-all route pattern: app/pages/[...slug].vue -->
 <script setup lang="ts">
-const route = useRoute()
-const { data: page } = await useAsyncData(
-  route.path,
-  () => queryCollection('content').path(route.path).first()
-)
+const route = useRoute();
+const { data: page } = await useAsyncData(route.path, () =>
+  queryCollection("content").path(route.path).first(),
+);
 </script>
 
 <template>
   <ContentRenderer v-if="page" :value="page" />
-  <div v-else>
-    Page not found
-  </div>
+  <div v-else>Page not found</div>
 </template>
 ```
 

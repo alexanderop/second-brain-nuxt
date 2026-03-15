@@ -38,6 +38,7 @@ The tool creates "mutants" (copies of code with one small change), runs tests ag
 ### How Mutations Work
 
 ::mermaid
+
 <pre>
 flowchart TD
     P[Parse code into AST] --> F[Find each function]
@@ -49,9 +50,11 @@ flowchart TD
     K -->|No| Survived[Mutant survived ✗]
     Survived --> A[Analyze: weak test or redundant code?]
 </pre>
+
 ::
 
 Mutation operators include:
+
 - Arithmetic swaps (`+` → `-`, `*` → `/`)
 - Comparison changes (`<` → `<=`, `==` → `!=`)
 - Logical inversions (`&&` → `||`, insert negation)

@@ -28,4 +28,4 @@ date: 2026-01-02
 
 ## Notable Aspect
 
-The title "No Longer Human" (人間失格, *Ningen Shikkaku*) translates literally as "Disqualified as a Human Being." Dazai completed the novel shortly before his own suicide in 1948, lending the work an autobiographical weight that intensifies its emotional impact.
+The title "No Longer Human" (人間失格, _Ningen Shikkaku_) translates literally as "Disqualified as a Human Being." Dazai completed the novel shortly before his own suicide in 1948, lending the work an autobiographical weight that intensifies its emotional impact.

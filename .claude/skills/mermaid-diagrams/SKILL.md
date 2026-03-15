@@ -9,22 +9,23 @@ Generate diagrams using Mermaid syntax. All diagrams render in markdown code blo
 
 ## Decision Guide
 
-| Use Case | Diagram Type |
-|----------|--------------|
-| Process flow, decision trees | Flowchart |
-| API calls, system interactions over time | Sequence |
-| OOP structure, domain models | Class |
-| State machines, workflows | State |
-| Database schemas, data relationships | ER |
-| Software architecture (C4 model) | C4 |
-| Brainstorming, hierarchical organization | Mindmap |
-| Git branching, commit history | GitGraph |
+| Use Case                                 | Diagram Type |
+| ---------------------------------------- | ------------ |
+| Process flow, decision trees             | Flowchart    |
+| API calls, system interactions over time | Sequence     |
+| OOP structure, domain models             | Class        |
+| State machines, workflows                | State        |
+| Database schemas, data relationships     | ER           |
+| Software architecture (C4 model)         | C4           |
+| Brainstorming, hierarchical organization | Mindmap      |
+| Git branching, commit history            | GitGraph     |
 
 ---
 
 ## Quick Reference
 
 ### Flowchart
+
 ```mermaid
 flowchart TD
     A[Start] --> B{Decision}
@@ -35,6 +36,7 @@ flowchart TD
 ```
 
 ### Sequence
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -44,6 +46,7 @@ sequenceDiagram
 ```
 
 ### Class
+
 ```mermaid
 classDiagram
     Animal <|-- Dog
@@ -53,6 +56,7 @@ classDiagram
 ```
 
 ### State
+
 ```mermaid
 stateDiagram-v2
     [*] --> Idle
@@ -62,6 +66,7 @@ stateDiagram-v2
 ```
 
 ### ER
+
 ```mermaid
 erDiagram
     CUSTOMER ||--o{ ORDER : places
@@ -69,6 +74,7 @@ erDiagram
 ```
 
 ### C4 Context
+
 ```mermaid
 C4Context
     Person(user, "User", "End user")
@@ -77,6 +83,7 @@ C4Context
 ```
 
 ### Mindmap
+
 ```mermaid
 mindmap
   root((Topic))
@@ -87,6 +94,7 @@ mindmap
 ```
 
 ### GitGraph
+
 ```mermaid
 gitgraph
     commit
@@ -104,31 +112,32 @@ gitgraph
 
 ### Node Shapes
 
-| Shape | Syntax | Example |
-|-------|--------|---------|
-| Rectangle | `[text]` | `A[Process]` |
-| Rounded | `(text)` | `A(Start)` |
-| Stadium | `([text])` | `A([Terminal])` |
-| Diamond | `{text}` | `A{Decision}` |
-| Circle | `((text))` | `A((Event))` |
-| Hexagon | `{{text}}` | `A{{Prepare}}` |
-| Cylinder | `[(text)]` | `A[(Database)]` |
-| Subroutine | `[[text]]` | `A[[Subprocess]]` |
-| Parallelogram | `[/text/]` | `A[/Input/]` |
-| Trapezoid | `[\text\]` | `A[\Manual Op\]` |
+| Shape         | Syntax     | Example           |
+| ------------- | ---------- | ----------------- |
+| Rectangle     | `[text]`   | `A[Process]`      |
+| Rounded       | `(text)`   | `A(Start)`        |
+| Stadium       | `([text])` | `A([Terminal])`   |
+| Diamond       | `{text}`   | `A{Decision}`     |
+| Circle        | `((text))` | `A((Event))`      |
+| Hexagon       | `{{text}}` | `A{{Prepare}}`    |
+| Cylinder      | `[(text)]` | `A[(Database)]`   |
+| Subroutine    | `[[text]]` | `A[[Subprocess]]` |
+| Parallelogram | `[/text/]` | `A[/Input/]`      |
+| Trapezoid     | `[\text\]` | `A[\Manual Op\]`  |
 
 ### Link Types
 
-| Type | Syntax | Description |
-|------|--------|-------------|
-| Arrow | `-->` | Solid with arrowhead |
-| Open | `---` | Solid, no arrowhead |
-| Dotted arrow | `-.->` | Dotted with arrowhead |
-| Thick arrow | `==>` | Thick with arrowhead |
-| With text | `--\|text\|>` | Label on link |
-| Multi-length | `---->` | Longer link (more ranks) |
+| Type         | Syntax        | Description              |
+| ------------ | ------------- | ------------------------ |
+| Arrow        | `-->`         | Solid with arrowhead     |
+| Open         | `---`         | Solid, no arrowhead      |
+| Dotted arrow | `-.->`        | Dotted with arrowhead    |
+| Thick arrow  | `==>`         | Thick with arrowhead     |
+| With text    | `--\|text\|>` | Label on link            |
+| Multi-length | `---->`       | Longer link (more ranks) |
 
 ### Subgraphs
+
 ```mermaid
 flowchart TD
     subgraph Backend["Backend Services"]
@@ -139,6 +148,7 @@ flowchart TD
 ```
 
 ### Styling
+
 ```mermaid
 flowchart TD
     A[Node]:::highlight
@@ -152,15 +162,16 @@ flowchart TD
 
 ### Arrow Types
 
-| Syntax | Style |
-|--------|-------|
-| `->>` | Solid with arrowhead |
-| `-->>` | Dotted with arrowhead |
-| `-x` | Solid with cross |
-| `-)` | Async (open arrow) |
-| `<<->>` | Bidirectional |
+| Syntax  | Style                 |
+| ------- | --------------------- |
+| `->>`   | Solid with arrowhead  |
+| `-->>`  | Dotted with arrowhead |
+| `-x`    | Solid with cross      |
+| `-)`    | Async (open arrow)    |
+| `<<->>` | Bidirectional         |
 
 ### Participants
+
 ```mermaid
 sequenceDiagram
     actor User
@@ -169,6 +180,7 @@ sequenceDiagram
 ```
 
 ### Activations
+
 ```mermaid
 sequenceDiagram
     User->>+API: Request
@@ -178,6 +190,7 @@ sequenceDiagram
 ```
 
 ### Control Flow
+
 ```mermaid
 sequenceDiagram
     alt Success
@@ -196,6 +209,7 @@ sequenceDiagram
 ```
 
 ### Notes
+
 ```mermaid
 sequenceDiagram
     Note right of A: Single note
@@ -203,6 +217,7 @@ sequenceDiagram
 ```
 
 ### Grouping with Boxes
+
 ```mermaid
 sequenceDiagram
     box Blue Frontend
@@ -220,25 +235,26 @@ sequenceDiagram
 
 ### Visibility Modifiers
 
-| Symbol | Meaning |
-|--------|---------|
-| `+` | Public |
-| `-` | Private |
-| `#` | Protected |
-| `~` | Package |
+| Symbol | Meaning   |
+| ------ | --------- |
+| `+`    | Public    |
+| `-`    | Private   |
+| `#`    | Protected |
+| `~`    | Package   |
 
 ### Relationships
 
-| Type | Syntax | Meaning |
-|------|--------|---------|
-| Inheritance | `<\|--` | Extends |
-| Composition | `*--` | Strong owns |
-| Aggregation | `o--` | Weak owns |
-| Association | `-->` | Uses |
-| Dependency | `..>` | Depends on |
-| Realization | `..\|>` | Implements |
+| Type        | Syntax  | Meaning     |
+| ----------- | ------- | ----------- |
+| Inheritance | `<\|--` | Extends     |
+| Composition | `*--`   | Strong owns |
+| Aggregation | `o--`   | Weak owns   |
+| Association | `-->`   | Uses        |
+| Dependency  | `..>`   | Depends on  |
+| Realization | `..\|>` | Implements  |
 
 ### Full Example
+
 ```mermaid
 classDiagram
     class Animal {
@@ -256,6 +272,7 @@ classDiagram
 ```
 
 ### Generics
+
 ```mermaid
 classDiagram
     class List~T~ {
@@ -265,6 +282,7 @@ classDiagram
 ```
 
 ### Annotations
+
 - `<<interface>>` - Interface
 - `<<abstract>>` - Abstract class
 - `<<service>>` - Service class
@@ -275,6 +293,7 @@ classDiagram
 ## State Diagram Reference
 
 ### Basic Syntax
+
 ```mermaid
 stateDiagram-v2
     [*] --> State1
@@ -283,6 +302,7 @@ stateDiagram-v2
 ```
 
 ### Composite States
+
 ```mermaid
 stateDiagram-v2
     state Active {
@@ -295,6 +315,7 @@ stateDiagram-v2
 ```
 
 ### Fork and Join
+
 ```mermaid
 stateDiagram-v2
     state fork <<fork>>
@@ -308,6 +329,7 @@ stateDiagram-v2
 ```
 
 ### Choice
+
 ```mermaid
 stateDiagram-v2
     state check <<choice>>
@@ -317,6 +339,7 @@ stateDiagram-v2
 ```
 
 ### Notes
+
 ```mermaid
 stateDiagram-v2
     State1
@@ -331,18 +354,20 @@ stateDiagram-v2
 
 ### Cardinality
 
-| Left | Right | Meaning |
-|------|-------|---------|
-| `\|o` | `o\|` | Zero or one |
-| `\|\|` | `\|\|` | Exactly one |
-| `}o` | `o{` | Zero or more |
-| `}\|` | `\|{` | One or more |
+| Left   | Right  | Meaning      |
+| ------ | ------ | ------------ |
+| `\|o`  | `o\|`  | Zero or one  |
+| `\|\|` | `\|\|` | Exactly one  |
+| `}o`   | `o{`   | Zero or more |
+| `}\|`  | `\|{`  | One or more  |
 
 ### Relationship Types
+
 - `--` Identifying (solid line, child depends on parent)
 - `..` Non-identifying (dashed line, independent entities)
 
 ### Attributes
+
 ```mermaid
 erDiagram
     USER {
@@ -367,6 +392,7 @@ erDiagram
 C4 provides 4 levels of abstraction for architecture documentation.
 
 ### Diagram Types
+
 - `C4Context` - System context (level 1)
 - `C4Container` - Container diagram (level 2)
 - `C4Component` - Component diagram (level 3)
@@ -375,18 +401,19 @@ C4 provides 4 levels of abstraction for architecture documentation.
 
 ### Elements
 
-| Element | Syntax | Use |
-|---------|--------|-----|
-| Person | `Person(alias, label, desc)` | Users |
-| Person_Ext | `Person_Ext(...)` | External users |
-| System | `System(alias, label, desc)` | Software systems |
-| System_Ext | `System_Ext(...)` | External systems |
-| SystemDb | `SystemDb(...)` | Database systems |
-| Container | `Container(alias, label, tech, desc)` | Applications |
-| ContainerDb | `ContainerDb(...)` | Container databases |
-| Component | `Component(alias, label, tech, desc)` | Internal parts |
+| Element     | Syntax                                | Use                 |
+| ----------- | ------------------------------------- | ------------------- |
+| Person      | `Person(alias, label, desc)`          | Users               |
+| Person_Ext  | `Person_Ext(...)`                     | External users      |
+| System      | `System(alias, label, desc)`          | Software systems    |
+| System_Ext  | `System_Ext(...)`                     | External systems    |
+| SystemDb    | `SystemDb(...)`                       | Database systems    |
+| Container   | `Container(alias, label, tech, desc)` | Applications        |
+| ContainerDb | `ContainerDb(...)`                    | Container databases |
+| Component   | `Component(alias, label, tech, desc)` | Internal parts      |
 
 ### Boundaries
+
 ```mermaid
 C4Container
     System_Boundary(app, "Application") {
@@ -399,11 +426,13 @@ C4Container
 ```
 
 ### Relationships
+
 - `Rel(from, to, label)` - Standard relationship
 - `Rel_U/D/L/R(...)` - Directional hints
 - `BiRel(from, to, label)` - Bidirectional
 
 ### Complete C4 Context Example
+
 ```mermaid
 C4Context
     Person(user, "Customer", "Uses the system")
@@ -423,6 +452,7 @@ C4Context
 Uses indentation for hierarchy. Root node required.
 
 ### Node Shapes
+
 ```mermaid
 mindmap
     root((Central Topic))
@@ -433,6 +463,7 @@ mindmap
 ```
 
 ### With Icons
+
 ```mermaid
 mindmap
     root((Project))
@@ -441,6 +472,7 @@ mindmap
 ```
 
 ### Styling
+
 ```mermaid
 mindmap
     root
@@ -453,6 +485,7 @@ mindmap
 ## GitGraph Reference
 
 ### Basic Operations
+
 ```mermaid
 gitgraph
     commit id: "initial"
@@ -464,11 +497,13 @@ gitgraph
 ```
 
 ### Commit Types
+
 - `type: NORMAL` - Default
 - `type: HIGHLIGHT` - Emphasized
 - `type: REVERSE` - Reverted
 
 ### Full Example
+
 ```mermaid
 gitgraph
     commit id: "init"
@@ -485,6 +520,7 @@ gitgraph
 ## Best Practices
 
 ### DO
+
 - Keep diagrams focused (one concept per diagram)
 - Use clear, descriptive labels
 - Add direction hints (`TD`, `LR`) explicitly
@@ -492,12 +528,14 @@ gitgraph
 - Include legends for complex diagrams
 
 ### DON'T
+
 - Overcrowd with too many nodes (>15-20)
 - Use cryptic single-letter IDs without labels
 - Mix multiple concerns in one diagram
 - Rely on auto-layout for complex diagrams
 
 ### Layout Tips
+
 - **Flowchart**: `LR` for processes, `TD` for hierarchies
 - **Sequence**: Order participants by interaction frequency
 - **Class**: Group related classes with namespaces
@@ -505,9 +543,10 @@ gitgraph
 - **ER**: Place central entities in the middle
 
 ### Common Fixes
-| Problem | Solution |
-|---------|----------|
-| Nodes overlap | Reduce node count, use subgraphs |
-| Links cross confusingly | Reorder nodes, change direction |
-| Text truncated | Use aliases: `A[Long Name] as short` |
-| Diagram too wide | Switch `LR` to `TD` |
+
+| Problem                 | Solution                             |
+| ----------------------- | ------------------------------------ |
+| Nodes overlap           | Reduce node count, use subgraphs     |
+| Links cross confusingly | Reorder nodes, change direction      |
+| Text truncated          | Use aliases: `A[Long Name] as short` |
+| Diagram too wide        | Switch `LR` to `TD`                  |

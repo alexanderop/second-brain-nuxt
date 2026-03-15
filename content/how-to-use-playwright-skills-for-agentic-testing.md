@@ -58,6 +58,7 @@ test("navigate to videos and filter by MCP", async ({ page }) => {
 ## Workflow
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Install CLI] --> B[Install Skills]
@@ -68,6 +69,7 @@ flowchart LR
     D --> G[Record Video]
     D --> H[Capture Trace]
 </pre>
+
 ::
 
 ## Connections

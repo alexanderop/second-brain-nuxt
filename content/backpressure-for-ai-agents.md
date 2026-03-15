@@ -47,6 +47,7 @@ Randomized testing for CUDA kernels and automated documentation generation provi
 ## Diagram
 
 ::mermaid
+
 <pre>
 graph TD
     Agent[AI Agent] --> Output[Code/Output]
@@ -60,6 +61,7 @@ graph TD
     Build & Types & Visual & Verify & Test -->|Pass| Next[Next Task]
     Feedback --> Agent
 </pre>
+
 ::
 
 ## Key Insight

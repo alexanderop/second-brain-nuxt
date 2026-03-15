@@ -24,6 +24,7 @@ All private notes live in `content/private/` with flat structure (no subfolders)
 Identify the month being reviewed (default: previous month if early in month, current month otherwise).
 
 Calculate:
+
 - Month start and end dates
 - ISO week numbers that fall within the month
 
@@ -44,6 +45,7 @@ Filter to weeks where `week` frontmatter falls within the month.
 ### 2.2 Load Content
 
 Read each weekly review and extract:
+
 - Week summaries
 - Key events
 - Learnings
@@ -52,6 +54,7 @@ Read each weekly review and extract:
 ### 2.3 Present Summary
 
 Display to user:
+
 - Number of weekly reviews found
 - Weeks covered (e.g., "W01-W04")
 - Major themes identified
@@ -89,12 +92,13 @@ options:
 ### 3.3 Create Monthly Note
 
 **Frontmatter:**
+
 ```yaml
 ---
 title: "{Month Name} {YYYY}"
 type: monthly
 month: YYYY-MM
-date: {first of next month YYYY-MM-DD}
+date: { first of next month YYYY-MM-DD }
 weeks:
   - "[[YYYY-W01]]"
   - "[[YYYY-W02]]"
@@ -105,6 +109,7 @@ private: true
 ```
 
 **Body structure:**
+
 ```markdown
 ## Month Summary
 
@@ -147,6 +152,7 @@ options:
 Save to `content/private/{YYYY-MM}.md`.
 
 Confirm with:
+
 - File path
 - Weeks covered
 - Key themes and achievements
@@ -198,6 +204,7 @@ Overview of the month's patterns, progress, and observations.
 ## Quality Checklist
 
 Before saving:
+
 - [ ] Filename matches `YYYY-MM.md` format
 - [ ] Frontmatter has `type: monthly` and `private: true`
 - [ ] Month in title and frontmatter match
@@ -210,10 +217,10 @@ Before saving:
 
 ## Edge Cases
 
-| Situation | Handling |
-|-----------|----------|
-| No weekly reviews found | Offer to scan dailies directly |
-| Partial month (< 4 weeks) | Proceed with available entries |
-| Monthly review already exists | Offer to update or skip |
-| User wants different month | Allow specifying month |
-| Week spans two months | Include if majority in target month |
+| Situation                     | Handling                            |
+| ----------------------------- | ----------------------------------- |
+| No weekly reviews found       | Offer to scan dailies directly      |
+| Partial month (< 4 weeks)     | Proceed with available entries      |
+| Monthly review already exists | Offer to update or skip             |
+| User wants different month    | Allow specifying month              |
+| Week spans two months         | Include if majority in target month |

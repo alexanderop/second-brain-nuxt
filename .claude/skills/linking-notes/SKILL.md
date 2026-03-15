@@ -20,6 +20,7 @@ ls content/*.md
 ```
 
 Extract from the target note:
+
 - Title
 - Tags
 - Key concepts/terms
@@ -28,18 +29,21 @@ Extract from the target note:
 ### 2. Search for Related Content
 
 **By Title Mentions:**
+
 ```bash
 # Search for the note's title in other files
 grep -l "note title" content/*.md
 ```
 
 **By Tag Overlap:**
+
 ```bash
 # Find notes sharing the same tags
 grep -l "tags:.*tag-name" content/*.md
 ```
 
 **By Key Terms:**
+
 ```bash
 # Search for key concepts
 grep -l "specific concept" content/*.md
@@ -50,6 +54,7 @@ grep -l "specific concept" content/*.md
 **Aim for connection, not perfection.** Every note benefits from 2-3 meaningful links. An orphan note is harder to discover than an over-connected one.
 
 ✅ **Link when:**
+
 - Same author or creator
 - Explicitly references or cites the other work
 - Directly builds on or responds to the other content
@@ -60,6 +65,7 @@ grep -l "specific concept" content/*.md
 - Applies theory from one note to practice in another
 
 ❌ **Avoid linking when:**
+
 - Only a vague thematic overlap (e.g., "both mention AI")
 - The connection requires multiple hops of reasoning
 - You haven't read the target note and can't explain the relationship
@@ -69,6 +75,7 @@ grep -l "specific concept" content/*.md
 ### 4. Present Suggestions
 
 For each suggested link, provide:
+
 1. The slug to link: `[[slug-name]]`
 2. Brief justification (1 sentence)
 3. Where in the note it would fit (if applicable)
@@ -79,10 +86,12 @@ For each suggested link, provide:
 ## Suggested Wiki-Links for [Note Title]
 
 ### Strong Connections
+
 - [[related-note-1]] - Same author, discusses related concepts
 - [[related-note-2]] - Directly cited in this content
 
 ### Potential Connections (Review Needed)
+
 - [[maybe-related]] - Shares "testing" tag, similar topic
 ```
 
@@ -96,6 +105,7 @@ grep -l "type: map" content/*.md
 ```
 
 Map notes (`type: map`) create visual clusters on the graph - notes linked from the map are pulled together. This is useful for:
+
 - Learning paths (e.g., "Vue 3 Development Guide")
 - Topic clusters (e.g., "Leadership Principles")
 - Curated collections (e.g., "AI Agents Roadmap")
@@ -103,6 +113,7 @@ Map notes (`type: map`) create visual clusters on the graph - notes linked from 
 ## Quality Checklist
 
 Before suggesting links:
+
 - [ ] Read the target note thoroughly
 - [ ] Verified each suggestion has a strong, direct connection
 - [ ] Excluded vague thematic overlaps

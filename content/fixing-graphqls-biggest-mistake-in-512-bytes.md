@@ -16,6 +16,7 @@ date: 2026-01-03
 ## The Problem: Two Types of Null
 
 GraphQL has two types of null that look identical:
+
 - **Data null**: The data genuinely doesn't exist (user has no avatar)
 - **Error null**: A failure prevented fetching the data (service down)
 
@@ -34,6 +35,7 @@ The entire library fits in 512 bytes. It uses immutable tree manipulation and on
 ## Semantic Non-Null Directive
 
 For backwards compatibility with legacy clients, use the `@semanticNonNull` directive. Mark nullable fields that are semantically non-null, then generate two schemas:
+
 - Legacy clients: strip the directive (nullable fields act as error boundaries)
 - Modern clients: convert to strict non-null
 

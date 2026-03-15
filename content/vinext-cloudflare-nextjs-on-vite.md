@@ -23,6 +23,7 @@ Deploying Next.js outside Vercel has always been painful. Tools like OpenNext re
 vinext takes the opposite approach: reimplement the Next.js API surface directly on Vite. Same developer-facing APIs (file-system routing, RSC, server actions, ISR, middleware), completely different build pipeline underneath.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Traditional["Traditional: OpenNext Approach"]
@@ -41,16 +42,17 @@ flowchart LR
     Traditional -.->|Fragile, breaks<br/>on updates| DP1
     Vinext -.->|Direct, 4.4x faster<br/>57% smaller| DP2
 </pre>
+
 ::
 
 ## The Numbers
 
 The performance gap is stark:
 
-| Metric | Next.js 16.1.6 | vinext (Vite 8/Rolldown) | Improvement |
-|--------|----------------|--------------------------|-------------|
-| Build time | 7.38s | 1.67s | 4.4x faster |
-| Bundle size | 168.9 KB | 72.9 KB | 57% smaller |
+| Metric      | Next.js 16.1.6 | vinext (Vite 8/Rolldown) | Improvement |
+| ----------- | -------------- | ------------------------ | ----------- |
+| Build time  | 7.38s          | 1.67s                    | 4.4x faster |
+| Bundle size | 168.9 KB       | 72.9 KB                  | 57% smaller |
 
 These aren't micro-benchmarks. The bundle size difference alone means real-world loading improvements for every user. Rolldown (Vite 8's Rust-based bundler) is doing the heavy lifting on the build side.
 
@@ -75,7 +77,7 @@ The conditions aren't universally replicable. Not every project has a well-docum
 
 The most provocative argument buried in the post: many software abstractions exist because of human cognitive limitations, not technical necessity. If AI can hold entire systems in context, intermediate frameworks become unnecessary overhead. Faulkner suggests that the layers we've built over the years aren't all going to survive.
 
-This is either visionary or dangerously naive depending on your perspective on [[cognitive-debt]]. The code passes quality gates — but does the team *understand* 1,700 tests they didn't write? Can they extend the system when the model's context window isn't enough?
+This is either visionary or dangerously naive depending on your perspective on [[cognitive-debt]]. The code passes quality gates — but does the team _understand_ 1,700 tests they didn't write? Can they extend the system when the model's context window isn't enough?
 
 ## Connections
 

@@ -3,7 +3,7 @@ import type {
   FullGraphData,
   UnifiedGraphData,
   UnifiedGraphNode,
-} from '~/types/graph'
+} from "~/types/graph";
 
 /**
  * Normalize NoteGraph format to unified format
@@ -14,20 +14,20 @@ export function normalizeNoteGraphData(data: NoteGraphData): UnifiedGraphData {
       ...data.center,
       isCenter: true,
       level: 0,
-      connections: data.connected.filter(n => n.level === 1).length,
+      connections: data.connected.filter((n) => n.level === 1).length,
     },
-    ...data.connected.map(node => ({
+    ...data.connected.map((node) => ({
       ...node,
       isCenter: false,
       level: node.level ?? 1,
       connections: 0,
     })),
-  ]
+  ];
 
   return {
     nodes,
-    edges: data.edges.map(e => ({ ...e })),
-  }
+    edges: data.edges.map((e) => ({ ...e })),
+  };
 }
 
 /**
@@ -35,13 +35,13 @@ export function normalizeNoteGraphData(data: NoteGraphData): UnifiedGraphData {
  */
 export function normalizeFullGraphData(data: FullGraphData): UnifiedGraphData {
   return {
-    nodes: data.nodes.map(node => ({
+    nodes: data.nodes.map((node) => ({
       ...node,
       isCenter: false,
       level: undefined,
     })),
-    edges: data.edges.map(e => ({ ...e })),
-  }
+    edges: data.edges.map((e) => ({ ...e })),
+  };
 }
 
 /**
@@ -52,10 +52,10 @@ export function normalizeGraphData(
   fullGraphData?: FullGraphData | null,
 ): UnifiedGraphData | null {
   if (noteGraphData) {
-    return normalizeNoteGraphData(noteGraphData)
+    return normalizeNoteGraphData(noteGraphData);
   }
   if (fullGraphData) {
-    return normalizeFullGraphData(fullGraphData)
+    return normalizeFullGraphData(fullGraphData);
   }
-  return null
+  return null;
 }

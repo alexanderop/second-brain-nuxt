@@ -29,6 +29,7 @@ Amp is discontinuing its Tab completion feature by the end of January 2026. The 
 ## The Paradigm Shift
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Old["Old Model"]
@@ -39,6 +40,7 @@ flowchart LR
     end
     Old -.->|"paradigm shift"| New
 </pre>
+
 ::
 
 ## Connections

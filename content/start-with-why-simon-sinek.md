@@ -35,6 +35,7 @@ Most people communicate from the outside in (What → How → Why). Inspired lea
 ## The Biology Behind It
 
 The brain structure maps to the Golden Circle:
+
 - **Neocortex** (What) - Rational, analytical thought, language
 - **Limbic brain** (Why/How) - Feelings, trust, loyalty, decision-making, behavior - but no language capacity
 
@@ -43,12 +44,15 @@ This explains "gut decisions" - we can process facts and figures rationally, but
 ## Case Studies
 
 ### Apple vs. Competitors
+
 Apple communicates their belief first: "Everything we do, we believe in challenging the status quo." Their products are proof of that belief. Gateway and Dell had the same capabilities but failed at TVs and MP3 players because they only communicated what they made, not why.
 
 ### Wright Brothers vs. Samuel Pierpont Langley
+
 Langley had everything: $50,000 funding, Harvard connections, best talent, media attention. The Wright Brothers had none of it - funded by their bicycle shop, no college education, no press coverage. But the Wright Brothers believed their work would change the world. Langley wanted to be rich and famous. When the Wright Brothers succeeded, Langley quit instead of building on their work.
 
 ### Dr. Martin Luther King Jr.
+
 250,000 people showed up in Washington not for him, but for themselves - for what they believed about America. He gave the "I have a dream" speech, not the "I have a plan" speech. Leaders hold positions; those who lead inspire us.
 
 ## Law of Diffusion of Innovation

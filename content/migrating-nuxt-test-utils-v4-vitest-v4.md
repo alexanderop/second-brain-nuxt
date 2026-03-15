@@ -20,13 +20,13 @@ Five dependency updates, one config change, and one import rename across three f
 
 ### Dependencies
 
-| Package | Before | After |
-|---------|--------|-------|
-| `@nuxt/test-utils` | `^3.21.0` | `^4.0.0` |
-| `vitest` | `^3.2.4` | `^4.0.2` |
-| `@vitest/coverage-v8` | `^3.2.4` | `^4.0.2` |
-| `@vitest/browser` | `3.2.4` | Removed |
-| `@vitest/browser-playwright` | — | `^4.0.2` |
+| Package                      | Before    | After    |
+| ---------------------------- | --------- | -------- |
+| `@nuxt/test-utils`           | `^3.21.0` | `^4.0.0` |
+| `vitest`                     | `^3.2.4`  | `^4.0.2` |
+| `@vitest/coverage-v8`        | `^3.2.4`  | `^4.0.2` |
+| `@vitest/browser`            | `3.2.4`   | Removed  |
+| `@vitest/browser-playwright` | —         | `^4.0.2` |
 
 Vitest v4 splits the browser provider into a separate package. `@vitest/browser` is gone, replaced by `@vitest/browser-playwright` (or `-webdriverio`, or `-preview`).
 
@@ -36,7 +36,7 @@ The provider changed from a string to a function call:
 
 ```ts
 // vitest.config.ts
-import { playwright } from '@vitest/browser-playwright' // [!code ++]
+import { playwright } from "@vitest/browser-playwright"; // [!code ++]
 
 export default defineConfig({
   test: {
@@ -44,15 +44,15 @@ export default defineConfig({
       {
         test: {
           browser: {
-            provider: 'playwright', // [!code --]
+            provider: "playwright", // [!code --]
             provider: playwright(), // [!code ++]
-            instances: [{ browser: 'chromium' }],
+            instances: [{ browser: "chromium" }],
           },
         },
       },
     ],
   },
-})
+});
 ```
 
 ### Import Path
@@ -60,8 +60,8 @@ export default defineConfig({
 Component tests that import from `@vitest/browser/context` need updating:
 
 ```ts
-import { page } from '@vitest/browser/context' // [!code --]
-import { page } from 'vitest/browser' // [!code ++]
+import { page } from "@vitest/browser/context"; // [!code --]
+import { page } from "vitest/browser"; // [!code ++]
 ```
 
 ## What Didn't Change
@@ -79,14 +79,15 @@ If you call composables at the top of a `describe` block, move them into `before
 
 ```ts
 // Before (worked in vitest v3)
-describe('my test', () => {
-  const router = useRouter() // [!code --]
+describe("my test", () => {
+  const router = useRouter(); // [!code --]
 
-  let router: ReturnType<typeof useRouter> // [!code ++]
-  beforeAll(() => { // [!code ++]
-    router = useRouter() // [!code ++]
-  }) // [!code ++]
-})
+  let router: ReturnType<typeof useRouter>; // [!code ++]
+  beforeAll(() => {
+    // [!code ++]
+    router = useRouter(); // [!code ++]
+  }); // [!code ++]
+});
 ```
 
 ## The Hidden Gotcha: Vue Version Alignment

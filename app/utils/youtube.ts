@@ -10,7 +10,7 @@
  * - URLs with additional parameters (e.g., ?v=VIDEO_ID&t=123)
  */
 export function extractYouTubeVideoId(url: string): string | null {
-  if (!url) return null
+  if (!url) return null;
 
   const patterns = [
     // Standard watch URL: youtube.com/watch?v=VIDEO_ID
@@ -21,23 +21,23 @@ export function extractYouTubeVideoId(url: string): string | null {
     /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
     // Old embed URL: youtube.com/v/VIDEO_ID
     /youtube\.com\/v\/([a-zA-Z0-9_-]{11})/,
-  ]
+  ];
 
   for (const pattern of patterns) {
-    const match = url.match(pattern)
+    const match = url.match(pattern);
     if (match?.[1]) {
-      return match[1]
+      return match[1];
     }
   }
 
-  return null
+  return null;
 }
 
 /**
  * Generate privacy-friendly embed URL using youtube-nocookie.com
  */
 export function getYouTubeEmbedUrl(videoId: string): string {
-  return `https://www.youtube-nocookie.com/embed/${videoId}`
+  return `https://www.youtube-nocookie.com/embed/${videoId}`;
 }
 
 /**
@@ -45,7 +45,7 @@ export function getYouTubeEmbedUrl(videoId: string): string {
  */
 export function getYouTubeThumbnailUrl(
   videoId: string,
-  quality: 'maxresdefault' | 'hqdefault' | 'mqdefault' | 'sddefault' = 'hqdefault'
+  quality: "maxresdefault" | "hqdefault" | "mqdefault" | "sddefault" = "hqdefault",
 ): string {
-  return `https://i.ytimg.com/vi/${videoId}/${quality}.jpg`
+  return `https://i.ytimg.com/vi/${videoId}/${quality}.jpg`;
 }

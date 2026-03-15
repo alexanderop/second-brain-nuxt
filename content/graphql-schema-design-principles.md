@@ -62,6 +62,7 @@ Follow Conway's Law: schema structure should mirror organizational structure. Si
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Design["Schema Design Flow"]
@@ -82,6 +83,7 @@ graph TD
         Abstract --> OrgAlign[10. Org Alignment]
     end
 </pre>
+
 ::
 
 ## Key Takeaway

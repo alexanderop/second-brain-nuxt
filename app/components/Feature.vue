@@ -13,25 +13,23 @@
  * </Feature>
  */
 
-import { computed } from 'vue'
-import type { FeatureName } from '~~/config/features'
-import { useFeature } from '~/composables/useFeature'
+import { computed } from "vue";
+import type { FeatureName } from "~~/config/features";
+import { useFeature } from "~/composables/useFeature";
 
 const props = defineProps<{
-  name: FeatureName
-  variant?: string
-  not?: boolean
-}>()
+  name: FeatureName;
+  variant?: string;
+  not?: boolean;
+}>();
 
-const { isEnabled, isVariantActive } = useFeature(props.name)
+const { isEnabled, isVariantActive } = useFeature(props.name);
 
 const shouldRender = computed(() => {
-  const result = props.variant
-    ? isVariantActive(props.variant)
-    : isEnabled.value
+  const result = props.variant ? isVariantActive(props.variant) : isEnabled.value;
 
-  return props.not ? !result : result
-})
+  return props.not ? !result : result;
+});
 </script>
 
 <template>

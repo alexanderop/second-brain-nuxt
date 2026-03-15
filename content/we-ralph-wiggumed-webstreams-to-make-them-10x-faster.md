@@ -40,14 +40,14 @@ Available as `experimental-fast-webstreams` on npm. Passes 1,100 of 1,116 Web Pl
 
 ## Benchmarks
 
-| Operation | fast-webstreams | native | Improvement |
-|-----------|-----------------|--------|-------------|
-| read loop | 12,400 MB/s | 3,300 MB/s | 3.7x |
-| write loop | 5,500 MB/s | 2,300 MB/s | 2.4x |
-| pipeThrough | 6,200 MB/s | 630 MB/s | 9.8x |
-| React Flight | 1,600 MB/s | 110 MB/s | 14.6x |
-| 3 transforms | 2,900 MB/s | — | 9.7x |
-| 8 transforms | 1,000 MB/s | — | 8.7x |
+| Operation    | fast-webstreams | native     | Improvement |
+| ------------ | --------------- | ---------- | ----------- |
+| read loop    | 12,400 MB/s     | 3,300 MB/s | 3.7x        |
+| write loop   | 5,500 MB/s      | 2,300 MB/s | 2.4x        |
+| pipeThrough  | 6,200 MB/s      | 630 MB/s   | 9.8x        |
+| React Flight | 1,600 MB/s      | 110 MB/s   | 14.6x       |
+| 3 transforms | 2,900 MB/s      | —          | 9.7x        |
+| 8 transforms | 1,000 MB/s      | —          | 8.7x        |
 
 ## Surprising Findings
 

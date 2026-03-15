@@ -44,6 +44,7 @@ Exploratory "vibe-coding"—prompting without meticulous oversight—helps devel
 Willison's iterative approach to LLM-assisted development:
 
 ::mermaid
+
 <pre>
 flowchart LR
     Context[Seed Context] --> Prompt[Detailed Prompt]
@@ -54,6 +55,7 @@ flowchart LR
     Verify -->|Yes| Test[Test Rigorously]
     Test --> Ship[Ship or Iterate]
 </pre>
+
 ::
 
 ## Practical Techniques

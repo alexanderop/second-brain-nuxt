@@ -69,6 +69,7 @@ Uses synchronized output escape sequences to eliminate flicker—a retained-mode
 ## Architecture
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph pi["pi Agent Harness"]
@@ -87,6 +88,7 @@ graph TD
     CLI --> EDIT["edit"]
     CLI --> BASH["bash"]
 </pre>
+
 ::
 
 ✓ Diagram added: graph TD - Four-package architecture with tool surface

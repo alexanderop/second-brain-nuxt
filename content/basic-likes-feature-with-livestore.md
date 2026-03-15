@@ -28,6 +28,7 @@ This tutorial demonstrates building a minimal likes feature using LiveStore, a l
 ## Architecture
 
 ::mermaid
+
 <pre>
 flowchart LR
     Click[Button Click] --> Event[LikeAdded Event]
@@ -39,6 +40,7 @@ flowchart LR
     Log <--> Sync[Sync Engine]
     Sync <--> Server[Backend]
 </pre>
+
 ::
 
 The sync engine distributes events between clients and server while each client maintains its own materialized database. This architecture provides offline support by default—the local eventlog and database work without connectivity.
@@ -51,9 +53,9 @@ Events require only a name and schema. For a simple counter, an empty schema suf
 
 ```typescript
 const LikeAdded = Event.create({
-  name: 'LikeAdded',
-  schema: Schema.Struct({})
-})
+  name: "LikeAdded",
+  schema: Schema.Struct({}),
+});
 ```
 
 ### Materializer
@@ -64,9 +66,9 @@ The materializer translates events into database mutations.
 const likeMaterializer = Materializer.create({
   event: LikeAdded,
   exec: (event, { db }) => {
-    db.run('UPDATE likes SET count = count + 1 WHERE id = 1')
-  }
-})
+    db.run("UPDATE likes SET count = count + 1 WHERE id = 1");
+  },
+});
 ```
 
 ### Reactive Query
@@ -74,9 +76,7 @@ const likeMaterializer = Materializer.create({
 Components subscribe to state changes without manual refetching.
 
 ```typescript
-const likes = useQuery(db =>
-  db.queryFirst('SELECT count FROM likes WHERE id = 1')
-)
+const likes = useQuery((db) => db.queryFirst("SELECT count FROM likes WHERE id = 1"));
 ```
 
 ## Connections

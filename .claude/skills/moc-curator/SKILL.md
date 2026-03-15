@@ -31,6 +31,7 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=full
 ```
 
 Parse the JSON output:
+
 - `moc_updates`: Existing MOCs with missing notes
 - `new_clusters`: Orphan note clusters that could be MOCs
 
@@ -62,6 +63,7 @@ For each orphan cluster:
 Common tags: tag1, tag2, tag3
 
 Notes in this cluster:
+
 - [[note-a]] - Note A Title
 - [[note-b]] - Note B Title
 - [[note-c]] - Note C Title
@@ -93,6 +95,7 @@ options:
 ### Phase 5: Apply Changes
 
 **For MOC Updates:**
+
 1. Read the existing MOC file
 2. Append new links to a `## Suggested` section at the end
 
@@ -104,6 +107,7 @@ options:
 ```
 
 **For New MOCs:**
+
 1. Read the writing-style skill for prose guidelines:
    - Use the Read tool on `.claude/skills/writing-style/SKILL.md`
    - Apply its 10 rules when writing MOC descriptions
@@ -131,7 +135,7 @@ Description of what this map covers.
 Run linter and type check to catch any issues:
 
 ```bash
-pnpm lint:fix && pnpm typecheck
+vp check && pnpm typecheck
 ```
 
 If errors are found, fix them before completing the task.
@@ -171,7 +175,13 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=hub-notes --m
       "moc_title": "Title",
       "current_members": 5,
       "missing_notes": [
-        {"slug": "note", "title": "Title", "score": 0.82, "shared_tags": ["tag"], "type": "article"}
+        {
+          "slug": "note",
+          "title": "Title",
+          "score": 0.82,
+          "shared_tags": ["tag"],
+          "type": "article"
+        }
       ]
     }
   ],
@@ -180,7 +190,7 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=hub-notes --m
       "cluster_id": 0,
       "theme": "Inferred Theme",
       "common_tags": ["tag1", "tag2"],
-      "notes": [{"slug": "note", "title": "Title", "type": "article"}],
+      "notes": [{ "slug": "note", "title": "Title", "type": "article" }],
       "size": 3
     }
   ],
@@ -199,19 +209,24 @@ python3 .claude/skills/moc-curator/scripts/cluster-notes.py --mode=hub-notes --m
     }
   ],
   "for_note": [
-    {"moc": "slug", "moc_title": "Title", "score": 0.82, "reason": "shares tags: x; semantic similarity: 82%"}
+    {
+      "moc": "slug",
+      "moc_title": "Title",
+      "score": 0.82,
+      "reason": "shares tags: x; semantic similarity: 82%"
+    }
   ]
 }
 ```
 
 ## Error Recovery
 
-| Issue | Resolution |
-|-------|------------|
-| No embeddings cache | Script will auto-generate embeddings |
-| sklearn not installed | `pip install scikit-learn` |
-| Empty results | Try lower threshold: `--threshold=0.6` |
-| sentence-transformers missing | `pip install sentence-transformers` |
+| Issue                         | Resolution                             |
+| ----------------------------- | -------------------------------------- |
+| No embeddings cache           | Script will auto-generate embeddings   |
+| sklearn not installed         | `pip install scikit-learn`             |
+| Empty results                 | Try lower threshold: `--threshold=0.6` |
+| sentence-transformers missing | `pip install sentence-transformers`    |
 
 ## Quality Guidelines
 

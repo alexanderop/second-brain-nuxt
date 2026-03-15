@@ -19,45 +19,53 @@ Software engineering is shifting from writing code to writing specs. With Ralph,
 ## Outline
 
 ### 1. The Shift: From Code Writers to Spec Architects
+
 - Observation: I used to spend hours debugging complex functions
 - The new reality: I spent 10 minutes writing a spec, Ralph fixed it in 3 iterations
 - The role of the engineer is changing—we're becoming architects of intent
 
 ### 2. Why Chat-Based AI Coding Falls Short
+
 - The friction problem: typing filters out context
 - Lost context = hallucinations = frustration
 - Interactive chat is optimized for exploration, not execution
 
 ### 3. The Ralph Pattern: Loops Over Chat
+
 - What is Ralph? A bash loop that feeds prompts to AI agents
 - The two-agent architecture: Initializer + Coding Agent
 - Why JSON specs instead of markdown prompts (structure prevents corruption)
 
 ### 4. Anatomy of a Spec-Driven Workflow
+
 - Phase 1: Write comprehensive specs in JSON
 - Phase 2: Let the initializer break it down into features
 - Phase 3: Run the loop—one feature per context window
 - Phase 4: Watch, tune, repeat
 
 ### 5. Real Example: Fixing Cyclomatic Complexity in My Workout App
+
 - The problem: ESLint screaming about complex functions
 - The spec I wrote (show the actual JSON)
 - What Ralph did: extracted functions, simplified branching
 - Result: 3 iterations, zero manual coding, all tests passing
 
 ### 6. The Engineer's New Toolkit
+
 - Spec writing becomes a core skill
 - JSON/structured formats over prose
 - Understanding context windows as arrays
 - Knowing when to intervene vs. let it run
 
 ### 7. When This Works (and When It Doesn't)
+
 - ✅ Greenfield projects with clear requirements
 - ✅ Refactoring tasks with measurable outcomes (linting, tests)
 - ❌ Brownfield with tribal knowledge
 - ❌ Highly creative design decisions
 
 ### 8. The Future: Engineers as Orchestrators
+
 - Multiple Ralph loops in parallel (git worktrees)
 - Supervisor agents merging results
 - The human stays "on the loop" not "in the loop"
@@ -73,7 +81,7 @@ Software engineering is shifting from writing code to writing specs. With Ralph,
 
 ## Draft Sections
 
-*None yet*
+_None yet_
 
 ## Open Questions
 

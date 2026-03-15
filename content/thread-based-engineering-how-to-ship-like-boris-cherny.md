@@ -30,20 +30,21 @@ Tool calls roughly equal impact. Pre-2023, engineers were the tool calls. Now ag
 
 ### The Six Thread Types
 
-| Thread | Name | Description |
-|--------|------|-------------|
-| **Base** | Single thread | One prompt → agent work → one review |
-| **P** | Parallel | Multiple threads running simultaneously (Boris runs 5-10 Claude Codes in parallel) |
-| **C** | Chained | Multi-phase work with intentional checkpoints for high-risk production work |
-| **F** | Fusion | Same prompt to multiple agents, then aggregate the best results |
-| **B** | Big/Nested | Meta-threads where agents prompt other agents (sub-agents, orchestrators) |
-| **L** | Long | High-autonomy, extended duration work—hundreds of tool calls over hours |
+| Thread   | Name          | Description                                                                        |
+| -------- | ------------- | ---------------------------------------------------------------------------------- |
+| **Base** | Single thread | One prompt → agent work → one review                                               |
+| **P**    | Parallel      | Multiple threads running simultaneously (Boris runs 5-10 Claude Codes in parallel) |
+| **C**    | Chained       | Multi-phase work with intentional checkpoints for high-risk production work        |
+| **F**    | Fusion        | Same prompt to multiple agents, then aggregate the best results                    |
+| **B**    | Big/Nested    | Meta-threads where agents prompt other agents (sub-agents, orchestrators)          |
+| **L**    | Long          | High-autonomy, extended duration work—hundreds of tool calls over hours            |
 
 There's also a hidden seventh: the **Z-thread** (zero touch)—maximum trust where you skip the review step entirely.
 
 ## The Framework
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Base["Base Thread"]
@@ -59,6 +60,7 @@ flowchart LR
 
     Base --> Scale
 </pre>
+
 ::
 
 ## Four Ways to Improve

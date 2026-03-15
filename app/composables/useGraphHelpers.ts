@@ -123,7 +123,7 @@ interface ZoomData {
 
 function isZoomData(data: unknown): data is ZoomData {
   if (typeof data !== "object" || data === null) return false;
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing from unknown
+  // oxlint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing from unknown
   const obj = data as Record<string, unknown>;
   return (
     "k" in data &&
@@ -135,7 +135,11 @@ function isZoomData(data: unknown): data is ZoomData {
   );
 }
 
-export function saveZoomTransform(transform: ZoomTransform, persistZoom: boolean, storageKey: string) {
+export function saveZoomTransform(
+  transform: ZoomTransform,
+  persistZoom: boolean,
+  storageKey: string,
+) {
   if (!persistZoom) return;
   sessionStorage.setItem(
     storageKey,
@@ -262,7 +266,10 @@ export function useGraphInteractions(
     if (!svgNode) return;
 
     const currentTransform = zoomTransform(svgNode);
-    const newTransform = currentTransform.translate(dx / currentTransform.k, dy / currentTransform.k);
+    const newTransform = currentTransform.translate(
+      dx / currentTransform.k,
+      dy / currentTransform.k,
+    );
     svgRef.value.call(zoomRef.value.transform, newTransform);
   }
 

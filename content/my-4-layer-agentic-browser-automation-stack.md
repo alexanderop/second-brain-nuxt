@@ -19,6 +19,7 @@ IndyDevDan lays out a layered architecture for browser automation that goes well
 ## The 4-Layer Stack
 
 ::mermaid
+
 <pre>
 flowchart TD
     R["`**Reusability**
@@ -46,6 +47,7 @@ flowchart TD
     PW --> UT
     PW --> BA
 </pre>
+
 ::
 
 1. **Skills** (Capability) — The foundation. Raw tools like a Playwright browser skill or a Claude-in-Chrome skill. This is where most people stop, and it's barely the beginning.

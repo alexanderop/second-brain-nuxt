@@ -11,11 +11,13 @@ GitHub projects and repositories.
 ## Metadata Collection
 
 **Agent A - Repo Metadata:**
+
 ```bash
 .claude/skills/adding-notes/scripts/get-github-metadata.sh 'URL'
 ```
 
 **Agent B - Author Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'owner'
 ```
@@ -44,10 +46,10 @@ date: 2026-01-02
 
 ## GitHub-specific Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `stars` | Yes | Repository star count (number) |
-| `language` | Yes | Primary programming language (string) |
+| Field      | Required | Description                           |
+| ---------- | -------- | ------------------------------------- |
+| `stars`    | Yes      | Repository star count (number)        |
+| `language` | Yes      | Primary programming language (string) |
 
 ## Body Template
 
@@ -95,6 +97,7 @@ result, err := client.Process(data)
 ## Code Snippet Rules
 
 **Always include 1-3 snippets** from README showing:
+
 1. Installation command
 2. Basic usage example
 3. Configuration (if relevant)
@@ -104,6 +107,7 @@ See `references/code-extraction.md` for detailed guidelines.
 ## Special Features
 
 **GitHub Card**: Notes with `type: github` automatically display a card with:
+
 - Language badge
 - Star count
 - Repository link
@@ -115,6 +119,7 @@ See `references/code-extraction.md` for detailed guidelines.
 **Priority: MEDIUM** — GitHub repos may have architectural concepts worth visualizing.
 
 **Look for these triggers:**
+
 - README describes architecture
 - Multi-component system
 - Plugin/extension architecture
@@ -122,6 +127,7 @@ See `references/code-extraction.md` for detailed guidelines.
 - Pipeline stages
 
 **Common skip reasons:**
+
 - Simple utility library
 - Single-purpose tool
 - Documentation already includes diagrams (don't duplicate)

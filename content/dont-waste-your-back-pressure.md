@@ -27,6 +27,7 @@ Back pressure refers to automated feedback mechanisms that validate an AI agent'
 ## Diagram
 
 ::mermaid
+
 <pre>
 graph LR
     Agent[AI Agent] --> Output[Code Output]
@@ -35,6 +36,7 @@ graph LR
     BP -->|Fail| Feedback[Error Signal]
     Feedback --> Agent
 </pre>
+
 ::
 
 ## Practical Tools

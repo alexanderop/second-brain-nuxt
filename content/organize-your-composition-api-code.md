@@ -29,20 +29,18 @@ Create composable functions inside the same file when logic is only used in one 
 ```ts
 // Inside your component file
 function useMessage(input: Ref<string> | string) {
-  const originalMessage = toRef(input)
-  const isReversed = ref(false)
+  const originalMessage = toRef(input);
+  const isReversed = ref(false);
 
   const message = computed(() =>
-    isReversed.value
-      ? originalMessage.value.split('').reverse().join('')
-      : originalMessage.value
-  )
+    isReversed.value ? originalMessage.value.split("").reverse().join("") : originalMessage.value,
+  );
 
   function toggleReverse() {
-    isReversed.value = !isReversed.value
+    isReversed.value = !isReversed.value;
   }
 
-  return { message, toggleReverse }
+  return { message, toggleReverse };
 }
 ```
 
@@ -51,6 +49,7 @@ This hides implementation details while keeping the top-level script clean and d
 ## When to Extract
 
 Extract to a separate file only when:
+
 - Multiple components need the same logic
 - The composable becomes complex enough to warrant its own tests
 

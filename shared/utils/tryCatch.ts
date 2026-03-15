@@ -3,7 +3,7 @@
  * Forces callers to explicitly handle the error case
  */
 
-export type Result<T, E = Error> = [E, null] | [null, T]
+export type Result<T, E = Error> = [E, null] | [null, T];
 
 /**
  * Wraps a synchronous function and returns [error, result] tuple
@@ -15,11 +15,10 @@ export type Result<T, E = Error> = [E, null] | [null, T]
  */
 export function tryCatch<T, E = Error>(fn: () => T): Result<T, E> {
   try {
-    return [null, fn()]
-  }
-  catch (error) {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
-    return [error as E, null]
+    return [null, fn()];
+  } catch (error) {
+    // oxlint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
+    return [error as E, null];
   }
 }
 
@@ -30,15 +29,12 @@ export function tryCatch<T, E = Error>(fn: () => T): Result<T, E> {
  * const [error, data] = await tryCatchAsync(() => fetchData())
  * if (error) return handleError(error)
  */
-export async function tryCatchAsync<T, E = Error>(
-  fn: () => Promise<T>,
-): Promise<Result<T, E>> {
+export async function tryCatchAsync<T, E = Error>(fn: () => Promise<T>): Promise<Result<T, E>> {
   try {
-    return [null, await fn()]
-  }
-  catch (error) {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
-    return [error as E, null]
+    return [null, await fn()];
+  } catch (error) {
+    // oxlint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
+    return [error as E, null];
   }
 }
 
@@ -54,14 +50,11 @@ export async function tryCatchAsync<T, E = Error>(
  * }
  * return users
  */
-export async function tryAsync<T, E = Error>(
-  promise: Promise<T>,
-): Promise<Result<T, E>> {
+export async function tryAsync<T, E = Error>(promise: Promise<T>): Promise<Result<T, E>> {
   try {
-    return [null, await promise]
-  }
-  catch (error) {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
-    return [error as E, null]
+    return [null, await promise];
+  } catch (error) {
+    // oxlint-disable-next-line @typescript-eslint/consistent-type-assertions -- Core error-handling utility requires cast from unknown
+    return [error as E, null];
   }
 }

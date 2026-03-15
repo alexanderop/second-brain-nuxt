@@ -36,11 +36,13 @@ Beck catalogs specific tidying moves:
 The book's central insight: tidying has costs and benefits that compound differently.
 
 Tidy first when:
+
 - The change will be easier to make
 - You'll touch the same code again soon
 - Understanding the code takes significant effort
 
 Skip tidying when:
+
 - You're under time pressure for a one-off fix
 - The code won't be touched again
 - The tidying is bigger than the actual change

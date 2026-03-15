@@ -17,12 +17,13 @@ A treemap visualization on the `/stats` page that reveals knowledge depth across
 
 **Type:** Treemap heatmap
 
-| Dimension | Represents |
-|-----------|------------|
-| Rectangle size | Note volume (count) |
+| Dimension       | Represents                                   |
+| --------------- | -------------------------------------------- |
+| Rectangle size  | Note volume (count)                          |
 | Rectangle color | Depth score (blue=shallow → orange/red=deep) |
 
 **Filters:**
+
 - Only show tags with 2+ notes (minimum threshold)
 - Flat tag structure (no hierarchy)
 
@@ -30,25 +31,25 @@ A treemap visualization on the `/stats` page that reveals knowledge depth across
 
 Weighted scoring with **connections-heavy** approach (Zettelkasten philosophy):
 
-| Signal | Weight | Description |
-|--------|--------|-------------|
-| Wiki-link connections | **High** | Outbound + inbound `[[links]]` |
-| Note count | Medium | Number of notes with this tag |
-| Key insights count | Low | `key_insights` array length in frontmatter |
-| Word count | Low | Content length thresholds |
-| Quotes presence | Low | `notable_quotes` in frontmatter |
+| Signal                | Weight   | Description                                |
+| --------------------- | -------- | ------------------------------------------ |
+| Wiki-link connections | **High** | Outbound + inbound `[[links]]`             |
+| Note count            | Medium   | Number of notes with this tag              |
+| Key insights count    | Low      | `key_insights` array length in frontmatter |
+| Word count            | Low      | Content length thresholds                  |
+| Quotes presence       | Low      | `notable_quotes` in frontmatter            |
 
 ### Proposed Formula
 
 ```typescript
 function calculateDepthScore(tag: TagStats): number {
-  const connectionScore = (tag.outboundLinks + tag.inboundLinks) * 3
-  const noteScore = tag.noteCount * 2
-  const insightsScore = tag.totalKeyInsights * 1
-  const wordScore = Math.min(tag.avgWordCount / 500, 2) * 1
-  const quotesScore = tag.notesWithQuotes * 0.5
+  const connectionScore = (tag.outboundLinks + tag.inboundLinks) * 3;
+  const noteScore = tag.noteCount * 2;
+  const insightsScore = tag.totalKeyInsights * 1;
+  const wordScore = Math.min(tag.avgWordCount / 500, 2) * 1;
+  const quotesScore = tag.notesWithQuotes * 0.5;
 
-  return connectionScore + noteScore + insightsScore + wordScore + quotesScore
+  return connectionScore + noteScore + insightsScore + wordScore + quotesScore;
 }
 ```
 
@@ -69,11 +70,13 @@ function calculateDepthScore(tag: TagStats): number {
 ### Gap Suggestions Panel
 
 **Logic:**
+
 1. Find outbound wiki-links from "deep" tags (high depth score)
 2. Identify link targets that have few/no notes
 3. Surface as "Topics to explore"
 
 **Display:**
+
 - Sidebar or bottom panel
 - List of suggested topics with source context
 - "You mention X frequently in [deep topic] but haven't explored it"
@@ -83,15 +86,16 @@ function calculateDepthScore(tag: TagStats): number {
 ### Data Requirements
 
 Query all content to build:
+
 ```typescript
 interface TagStats {
-  tag: string
-  noteCount: number
-  outboundLinks: number  // links FROM notes with this tag
-  inboundLinks: number   // links TO notes with this tag
-  totalKeyInsights: number
-  avgWordCount: number
-  notesWithQuotes: number
+  tag: string;
+  noteCount: number;
+  outboundLinks: number; // links FROM notes with this tag
+  inboundLinks: number; // links TO notes with this tag
+  totalKeyInsights: number;
+  avgWordCount: number;
+  notesWithQuotes: number;
 }
 ```
 
@@ -105,6 +109,7 @@ interface TagStats {
 ### Color Scale
 
 Cool-to-warm gradient:
+
 - `#3b82f6` (blue) → `#f59e0b` (amber) → `#ef4444` (red)
 - Use `d3-scale` or similar for interpolation
 

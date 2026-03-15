@@ -22,6 +22,7 @@ Grep pattern: "tags:.*{tag}" glob: "content/*.md" output_mode: "count"
 **IF tag count >= 15 AND no existing MOC for that tag:**
 
 Use AskUserQuestion to offer MOC creation:
+
 - Option 1: Create MOC (invoke moc-curator skill with `--mode=new-clusters --tag={tag}`)
 - Option 2: Skip for now
 

@@ -24,11 +24,11 @@ Before 2.1, Claude Code had three separate abstractions:
 
 After 2.1, skills absorb most of this functionality:
 
-| Capability | Before | After |
-|------------|--------|-------|
-| User invocation | Slash commands | Skills (default `user-invocable: true`) |
-| Isolated context | Task tool only | Skills with `context: fork` |
-| Model selection | Task tool parameter | Skills with `model: haiku/sonnet/opus` |
+| Capability       | Before              | After                                   |
+| ---------------- | ------------------- | --------------------------------------- |
+| User invocation  | Slash commands      | Skills (default `user-invocable: true`) |
+| Isolated context | Task tool only      | Skills with `context: fork`             |
+| Model selection  | Task tool parameter | Skills with `model: haiku/sonnet/opus`  |
 
 ## The New Frontmatter Options
 

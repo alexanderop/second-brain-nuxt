@@ -22,6 +22,7 @@ All private notes live in `content/private/` with flat structure (no subfolders)
 ## Phase 1: Determine Week Boundaries
 
 Calculate the current ISO week:
+
 - Week starts Monday, ends Sunday
 - Use ISO 8601 week numbering
 
@@ -44,6 +45,7 @@ Filter to notes where date falls within the week.
 ### 2.2 Load Content
 
 Read each daily note found and extract:
+
 - Morning Thoughts
 - Done Today items
 - Learnings
@@ -52,6 +54,7 @@ Read each daily note found and extract:
 ### 2.3 Present Summary
 
 Display to user:
+
 - Number of daily entries found (e.g., "Found 5 of 7 days")
 - Key themes identified
 - Most linked public notes
@@ -77,12 +80,13 @@ If user chooses manual, gather their input.
 ### 3.2 Create Weekly Note
 
 **Frontmatter:**
+
 ```yaml
 ---
 title: "Week {N}, {YYYY}"
 type: weekly
 week: YYYY-Www
-date: {week end date YYYY-MM-DD}
+date: { week end date YYYY-MM-DD }
 dailies:
   - "[[YYYY-MM-DD]]"
   - "[[YYYY-MM-DD]]"
@@ -91,6 +95,7 @@ private: true
 ```
 
 **Body structure:**
+
 ```markdown
 ## Week Summary
 
@@ -131,6 +136,7 @@ options:
 Save to `content/private/{YYYY-Www}.md`.
 
 Confirm with:
+
 - File path
 - Number of days covered
 - Key themes captured
@@ -182,6 +188,7 @@ High-level themes and patterns from the week.
 ## Quality Checklist
 
 Before saving:
+
 - [ ] Filename matches `YYYY-Www.md` format (w lowercase)
 - [ ] Frontmatter has `type: weekly` and `private: true`
 - [ ] Week number in title and frontmatter match
@@ -193,9 +200,9 @@ Before saving:
 
 ## Edge Cases
 
-| Situation | Handling |
-|-----------|----------|
-| No daily notes found | Warn user, offer to create anyway |
-| Partial week (< 7 days) | Proceed with available entries |
-| Weekly review already exists | Offer to update or skip |
-| User wants different week | Allow specifying week number |
+| Situation                    | Handling                          |
+| ---------------------------- | --------------------------------- |
+| No daily notes found         | Warn user, offer to create anyway |
+| Partial week (< 7 days)      | Proceed with available entries    |
+| Weekly review already exists | Offer to update or skip           |
+| User wants different week    | Allow specifying week number      |

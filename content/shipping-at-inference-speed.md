@@ -50,6 +50,7 @@ Steinberger describes several key patterns:
 The article describes an iterative development loop where the bottleneck has shifted:
 
 ::mermaid
+
 <pre>
 flowchart LR
     Plan[Plan Task] --> Queue[Queue for Agent]
@@ -62,6 +63,7 @@ flowchart LR
         Infer
     end
 </pre>
+
 ::
 
 ## Notable Quotes

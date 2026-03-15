@@ -31,7 +31,7 @@ Instead of caching query outputs directly, normalizing the cache stores each ent
 
 ### Real-Time Invalidation Demands Event-Driven Architecture
 
-Time-based or LRU cache invalidation wastes bandwidth or serves stale data. The preferred approach: listen for server-side events via WebSocket and invalidate only the specific record that changed. With a normalized cache, this means updating a single entity rather than blowing away entire query results. The ideal setup receives not just *what* changed but *which fields* changed, enabling surgical cache patches.
+Time-based or LRU cache invalidation wastes bandwidth or serves stale data. The preferred approach: listen for server-side events via WebSocket and invalidate only the specific record that changed. With a normalized cache, this means updating a single entity rather than blowing away entire query results. The ideal setup receives not just _what_ changed but _which fields_ changed, enabling surgical cache patches.
 
 ### Form Mutations Create a Separate State Problem
 
@@ -40,6 +40,7 @@ Forms can't bind directly to the cache—editing would modify cached data before
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Basic Fetch] --> B[Query Cache]
@@ -51,6 +52,7 @@ flowchart LR
     C -.->|Apollo-style| C
     D -.->|WebSocket events| D
 </pre>
+
 ::
 
 ## Airstore: The Combined Solution

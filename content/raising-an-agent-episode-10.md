@@ -33,6 +33,7 @@ The one-on-one sidebar assistant is reaching its ceiling. Models like GPT-5.2 Co
 ## The Factory Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Sidebar["Sidebar Era (dying)"]
@@ -47,15 +48,16 @@ flowchart LR
     end
     Sidebar -.->|"evolution"| Factory
 </pre>
+
 ::
 
 ## AMP's Three Agent Modes
 
-| Mode | Model | Use Case | Interaction Style |
-|------|-------|----------|-------------------|
-| Smart | Opus 4.5 | Fast interactive tasks | Back-and-forth assistant |
-| Rush | Haiku | Trivial, quick tasks | Fire and forget |
-| Deep | GPT-5.2 Codex Medium | Long research, big scoped tasks | Send off, check in 45 min later |
+| Mode  | Model                | Use Case                        | Interaction Style               |
+| ----- | -------------------- | ------------------------------- | ------------------------------- |
+| Smart | Opus 4.5             | Fast interactive tasks          | Back-and-forth assistant        |
+| Rush  | Haiku                | Trivial, quick tasks            | Fire and forget                 |
+| Deep  | GPT-5.2 Codex Medium | Long research, big scoped tasks | Send off, check in 45 min later |
 
 ## Predictions Made
 

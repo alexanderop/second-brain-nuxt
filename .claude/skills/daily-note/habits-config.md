@@ -6,22 +6,22 @@ Personal configuration for the `/daily-note` skill.
 
 Track these as checkboxes each day:
 
-| Habit | Target | Notes |
-|-------|--------|-------|
-| Morning walk | Done | Start the day with movement |
-| Read | 30 min | Books or long-form articles |
-| Workout | Done | Strength or cardio session |
-| Deep work | 45 min | Focused, uninterrupted work |
+| Habit        | Target | Notes                       |
+| ------------ | ------ | --------------------------- |
+| Morning walk | Done   | Start the day with movement |
+| Read         | 30 min | Books or long-form articles |
+| Workout      | Done   | Strength or cardio session  |
+| Deep work    | 45 min | Focused, uninterrupted work |
 
 ## Daily Metrics
 
 Track these values each day:
 
-| Metric | Target | Format |
-|--------|--------|--------|
-| Steps | 7000+ | number |
-| Calories | < 2800 | number |
-| Protein | 180g+ | number in grams |
+| Metric        | Target              | Format              |
+| ------------- | ------------------- | ------------------- |
+| Steps         | 7000+               | number              |
+| Calories      | < 2800              | number              |
+| Protein       | 180g+               | number in grams     |
 | Eating window | Nothing after 20:00 | yes/no if respected |
 
 ## Template Section
@@ -38,12 +38,12 @@ Use this format in daily notes:
 
 ## Metrics
 
-| Metric | Value | Target |
-|--------|-------|--------|
-| Steps | | 7000+ |
-| Calories | | < 2800 |
-| Protein | | 180g+ |
-| Eating window respected | | ✓ |
+| Metric                  | Value | Target |
+| ----------------------- | ----- | ------ |
+| Steps                   |       | 7000+  |
+| Calories                |       | < 2800 |
+| Protein                 |       | 180g+  |
+| Eating window respected |       | ✓      |
 ```
 
 ## AskUserQuestion Format

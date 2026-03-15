@@ -40,6 +40,7 @@ The Excalidraw plugin has a setting to auto-export SVG files alongside the `.exc
 ## The SVG Theming Problem
 
 The exported SVGs have hardcoded colors:
+
 - White background: `fill="#ffffff"`
 - Dark strokes/text: `stroke="#1e1e1e"`
 
@@ -66,11 +67,13 @@ The `hue-rotate(180deg)` preserves color relationships after inverting—without
 ## Final Implementation
 
 **Files created/modified:**
+
 - `scripts/build-excalidraw.ts` - Copies and processes SVGs
 - `modules/wikilinks.ts` - Transforms `![[*.excalidraw]]` to `<img>` tags
 - `app/assets/css/main.css` - Styling and dark mode support
 
 **Pipeline:**
+
 ```text
 Obsidian auto-export → content/Excalidraw/*.svg
 Build script → public/excalidraw/*.svg (background removed)
@@ -80,4 +83,3 @@ Wiki-link transform → <img class="excalidraw-diagram" src="/excalidraw/slug.sv
 ## Key Takeaway
 
 When a "proper" solution requires complex dependencies, look for what the tool already provides. Obsidian's auto-export feature eliminated the need for build-time SVG generation entirely.
-

@@ -32,6 +32,7 @@ The core bet: an LLM can traverse conceptual relationships autonomously, making 
 - **Pre-validated presets** — Research, Personal, Experimental — starting points that the derivation engine adapts from
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Capture
@@ -47,6 +48,7 @@ flowchart LR
     end
     F -.->|challenges assumptions| A
 </pre>
+
 ::
 
 ## Code Snippets

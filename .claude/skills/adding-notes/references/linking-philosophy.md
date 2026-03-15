@@ -9,20 +9,21 @@
 
 ## Connection Types (Priority Order)
 
-| Type | Description | Example Context |
-|------|-------------|-----------------|
-| Same creator | Works by same author/speaker | "Another perspective from the same author" |
-| Direct reference | Explicitly cites or responds to | "Directly builds on the framework in..." |
-| Same series | Part of course, book series, podcast | "Episode in the same series as..." |
-| Shared core concept | Same primary topic | "Both explore the principles of..." |
-| Contrasting view | Offers alternative perspective | "Presents a different approach than..." |
-| Practical application | Applies theory to practice | "These concepts apply directly to..." |
+| Type                  | Description                          | Example Context                            |
+| --------------------- | ------------------------------------ | ------------------------------------------ |
+| Same creator          | Works by same author/speaker         | "Another perspective from the same author" |
+| Direct reference      | Explicitly cites or responds to      | "Directly builds on the framework in..."   |
+| Same series           | Part of course, book series, podcast | "Episode in the same series as..."         |
+| Shared core concept   | Same primary topic                   | "Both explore the principles of..."        |
+| Contrasting view      | Offers alternative perspective       | "Presents a different approach than..."    |
+| Practical application | Applies theory to practice           | "These concepts apply directly to..."      |
 
 ## Link Context Format
 
 Every wiki-link must have adjacent explanation text. Never use bare links.
 
 **Bad:**
+
 ```markdown
 ## Related
 
@@ -30,6 +31,7 @@ See also [[note-1]] and [[note-2]].
 ```
 
 **Good:**
+
 ```markdown
 ## Connections
 
@@ -55,13 +57,13 @@ Before saving any note:
 
 ## Anti-Patterns to Avoid
 
-| Anti-Pattern | Problem | Fix |
-|--------------|---------|-----|
-| Bare links without context | `See also [[note]]` | Add explanation: `[[note]] - explains why...` |
-| Forced connections | Links added to meet a quota | Don't link—save as standalone instead |
-| Tenuous tag overlap | "Both tagged with 'programming'" | Only link if discussing same specific concept |
-| Linking unread notes | Can't explain relationship properly | Read the note first or don't link |
-| Over-linking to hubs | Every note links to same MOC | Link to specific notes, not just hubs |
+| Anti-Pattern               | Problem                             | Fix                                           |
+| -------------------------- | ----------------------------------- | --------------------------------------------- |
+| Bare links without context | `See also [[note]]`                 | Add explanation: `[[note]] - explains why...` |
+| Forced connections         | Links added to meet a quota         | Don't link—save as standalone instead         |
+| Tenuous tag overlap        | "Both tagged with 'programming'"    | Only link if discussing same specific concept |
+| Linking unread notes       | Can't explain relationship properly | Read the note first or don't link             |
+| Over-linking to hubs       | Every note links to same MOC        | Link to specific notes, not just hubs         |
 
 ## When to Create a New MOC
 
@@ -73,9 +75,9 @@ If a tag has 15+ notes and no dedicated MOC exists, consider creating one. MOCs 
 
 ## Link Density Guide
 
-| Count | Status | Notes |
-|-------|--------|-------|
-| 0 | Standalone | Fine when no genuine connections exist |
-| 1-2 | Connected | Normal for most notes |
-| 3-4 | Well-connected | Good for central topics |
-| 5+ | Hub-like | Reserved for foundational concepts |
+| Count | Status         | Notes                                  |
+| ----- | -------------- | -------------------------------------- |
+| 0     | Standalone     | Fine when no genuine connections exist |
+| 1-2   | Connected      | Normal for most notes                  |
+| 3-4   | Well-connected | Good for central topics                |
+| 5+    | Hub-like       | Reserved for foundational concepts     |

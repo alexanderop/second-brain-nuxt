@@ -18,19 +18,20 @@ This is a personal knowledge base built on Zettelkasten principles. Structure em
 
 ## Note Types
 
-| Type | Purpose | When to Use |
-|------|---------|-------------|
-| `book`, `article`, `youtube`, `podcast` | External content capture | Capturing insights from sources with authors |
-| `note` | Personal thoughts, ideas | Quick captures, unrefined thinking |
-| `evergreen` | Permanent, refined ideas | Mature insights written in your own words |
-| `map` | Maps of Content (MOCs) | Organizing 15+ related notes into navigable clusters |
-| `quote` | Standalone quotes | Notable quotes worth preserving independently |
+| Type                                    | Purpose                  | When to Use                                          |
+| --------------------------------------- | ------------------------ | ---------------------------------------------------- |
+| `book`, `article`, `youtube`, `podcast` | External content capture | Capturing insights from sources with authors         |
+| `note`                                  | Personal thoughts, ideas | Quick captures, unrefined thinking                   |
+| `evergreen`                             | Permanent, refined ideas | Mature insights written in your own words            |
+| `map`                                   | Maps of Content (MOCs)   | Organizing 15+ related notes into navigable clusters |
+| `quote`                                 | Standalone quotes        | Notable quotes worth preserving independently        |
 
 ## When to Create an Atomic Note
 
 **One idea = one note.** If you can't summarize it in a single sentence, consider splitting.
 
 A note deserves to exist when it's:
+
 - **Self-contained** — Understandable without reading other notes
 - **In your own words** — Synthesized insight, not copy-paste from sources
 - **Linkable** — Could connect to multiple other notes
@@ -45,6 +46,7 @@ A note deserves to exist when it's:
 ### Splitting Patterns
 
 Break large topics into:
+
 - **Definition notes** — What is X?
 - **Benefit notes** — Why use X? When is it valuable?
 - **Challenge notes** — What are the downsides or limitations?
@@ -67,13 +69,16 @@ MOCs are meta-notes that curate and organize related notes. Unlike folders, a no
 Brief intro explaining the topic's scope.
 
 ## Section 1
+
 - [[note-a]] — One-line description
 - [[note-b]] — One-line description
 
 ## Section 2
+
 - [[note-c]] — One-line description
 
 ## Related MOCs
+
 - [[another-map]]
 ```
 

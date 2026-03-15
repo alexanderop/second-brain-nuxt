@@ -21,6 +21,7 @@ Stryker Mutator is a mutation testing framework that evaluates test suite qualit
 ## How It Works
 
 ::mermaid
+
 <pre>
 flowchart LR
     SC[Source Code] --> M[Generate Mutants]
@@ -30,6 +31,7 @@ flowchart LR
     K -->|No| Survived[Mutant Survived]
     Survived --> Weak[Weak Test Detected]
 </pre>
+
 ::
 
 Stryker modifies code in small ways—changing `>=` to `>`, swapping `true` for `false`, or replacing `&&` with `||`. Each mutation creates a version of the code that should fail tests. Surviving mutants indicate tests that verify execution but don't actually validate behavior.
@@ -44,11 +46,11 @@ A test suite with 100% coverage can still have 0% mutation score if it never mak
 
 ## Platform Support
 
-| Framework | Language |
-|-----------|----------|
-| StrykerJS | JavaScript, TypeScript |
-| Stryker.NET | C# |
-| Stryker4s | Scala |
+| Framework   | Language               |
+| ----------- | ---------------------- |
+| StrykerJS   | JavaScript, TypeScript |
+| Stryker.NET | C#                     |
+| Stryker4s   | Scala                  |
 
 ## Connections
 

@@ -37,11 +37,11 @@ The core algorithm handles START/END sentinels and optimizes for prepending, app
 ```javascript
 function generateKeyBetween(a, b) {
   // a < b lexicographically, or a/b can be null for start/end
-  if (a === null && b === null) return 'a0'
-  if (a === null) return decrementInteger(b)
-  if (b === null) return incrementInteger(a)
+  if (a === null && b === null) return "a0";
+  if (a === null) return decrementInteger(b);
+  if (b === null) return incrementInteger(a);
   // Find midpoint between a and b
-  return midpoint(a, b)
+  return midpoint(a, b);
 }
 ```
 
@@ -51,12 +51,12 @@ Inserting N items uses recursive balancing to minimize key length growth.
 
 ```javascript
 function generateNKeysBetween(a, b, n) {
-  if (n === 0) return []
-  if (n === 1) return [generateKeyBetween(a, b)]
-  const mid = generateKeyBetween(a, b)
-  const left = generateNKeysBetween(a, mid, Math.floor(n / 2))
-  const right = generateNKeysBetween(mid, b, Math.ceil(n / 2) - 1)
-  return [...left, mid, ...right]
+  if (n === 0) return [];
+  if (n === 1) return [generateKeyBetween(a, b)];
+  const mid = generateKeyBetween(a, b);
+  const left = generateNKeysBetween(a, mid, Math.floor(n / 2));
+  const right = generateNKeysBetween(mid, b, Math.ceil(n / 2) - 1);
+  return [...left, mid, ...right];
 }
 ```
 

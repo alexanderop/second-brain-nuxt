@@ -22,6 +22,7 @@ Andrej Karpathy walks through the complete pipeline of building an LLM like Chat
 Building an LLM starts with downloading and processing the internet. The Fine Web dataset exemplifies this process—44 terabytes of filtered text from Common Crawl, which has indexed 2.7 billion web pages since 2007.
 
 The filtering pipeline removes:
+
 - Malware, spam, and adult content (URL filtering)
 - HTML markup, keeping only text (text extraction)
 - Non-English content below 65% threshold (language filtering)

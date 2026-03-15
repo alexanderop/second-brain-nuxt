@@ -20,6 +20,7 @@ Stripe built Minions because off-the-shelf coding agents can't handle their real
 The interesting bet here: Stripe didn't try to make agents understand their codebase from scratch. They built infrastructure that gives agents the same environment human engineers use, then layered on aggressive automated feedback to catch mistakes before humans ever see the PR.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Entry["Entry Points"]
@@ -66,6 +67,7 @@ flowchart LR
     Autofix --> PR["`PR
         Human Review`"]
 </pre>
+
 ::
 
 ## Key Insights

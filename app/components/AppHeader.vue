@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { NuxtLink, UButton, UColorModeButton, UKbd, USlideover } from '#components'
-import { useSiteConfig } from '~/composables/useSiteConfig'
-import { useRandomNote } from '~/composables/useRandomNote'
+import { ref } from "vue";
+import { NuxtLink, UButton, UColorModeButton, UKbd, USlideover } from "#components";
+import { useSiteConfig } from "~/composables/useSiteConfig";
+import { useRandomNote } from "~/composables/useRandomNote";
 
-const { name: siteName, nav: links } = useSiteConfig()
-const { navigateToRandomNote } = useRandomNote()
+const { name: siteName, nav: links } = useSiteConfig();
+const { navigateToRandomNote } = useRandomNote();
 
-const searchOpen = defineModel<boolean>('searchOpen', { default: false })
-const shortcutsOpen = defineModel<boolean>('shortcutsOpen', { default: false })
-const mobileMenuOpen = ref(false)
+const searchOpen = defineModel<boolean>("searchOpen", { default: false });
+const shortcutsOpen = defineModel<boolean>("shortcutsOpen", { default: false });
+const mobileMenuOpen = ref(false);
 </script>
 
 <template>
@@ -24,6 +24,7 @@ const mobileMenuOpen = ref(false)
             v-for="link in links"
             :key="link.to"
             :to="link.to"
+            :active="link.to === '/' ? $route.path === '/' : $route.path.startsWith(link.to)"
             variant="ghost"
             color="neutral"
           >
@@ -33,12 +34,7 @@ const mobileMenuOpen = ref(false)
       </div>
       <div class="flex items-center gap-2">
         <UColorModeButton variant="ghost" color="neutral" />
-        <UButton
-          variant="ghost"
-          color="neutral"
-          icon="i-lucide-search"
-          @click="searchOpen = true"
-        >
+        <UButton variant="ghost" color="neutral" icon="i-lucide-search" @click="searchOpen = true">
           <span class="hidden sm:inline">Search</span>
           <UKbd class="ml-2 hidden sm:inline-flex">
             <span class="text-xs">⌘K</span>
@@ -80,6 +76,7 @@ const mobileMenuOpen = ref(false)
                 :key="link.to"
                 :to="link.to"
                 :icon="link.icon"
+                :active="link.to === '/' ? $route.path === '/' : $route.path.startsWith(link.to)"
                 variant="ghost"
                 color="neutral"
                 class="justify-start"

@@ -22,6 +22,7 @@ Jan Lehnardt has been doing local-first since before the term existed. He starte
 What makes this talk different from the typical local-first pitch: Jan doesn't argue from developer ergonomics or latency gains. He argues from Ebola contact tracing, COVID vaccination documentation, and active war zone logistics. When your software failing means people don't get vaccinated, the abstract benefits of local-first become concrete and non-negotiable.
 
 ::mermaid
+
 <pre>
 timeline
     title 15 Years of Local First
@@ -41,6 +42,7 @@ timeline
         2024 : Convoy route planning in active war zone
              : Local-First Conf retrospective
 </pre>
+
 ::
 
 ## Key Arguments
@@ -58,6 +60,7 @@ CouchDB and PouchDB make one immovable trade-off: data safety above everything e
 PouchDB's storage adapter pattern meant that switching from IndexedDB to a local CouchDB server to cloud CouchDB was a one-line change — or zero lines. The Ebola call center app started on browser storage, switched to cloud CouchDB for speed, then to a local CouchDB laptop when the network proved unreliable. Same application code through all three configurations.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A[PouchDB CRUD API] --> B[Storage Adapter]
@@ -66,6 +69,7 @@ flowchart TD
     B --> E[(Cloud CouchDB)]
     D <-->|Async Replication| E
 </pre>
+
 ::
 
 ### People Lie About Infrastructure

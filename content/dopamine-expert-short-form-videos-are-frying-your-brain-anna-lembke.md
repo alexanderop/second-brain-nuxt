@@ -34,6 +34,7 @@ The problem: the balance doesn't stop at level. It overshoots to the pain side b
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph Baseline["Homeostasis"]
@@ -47,6 +48,7 @@ graph LR
     Crave --> |"More Drug"| Tip
     Crave --> |"Abstain 4 weeks"| B
 </pre>
+
 ::
 
 ## Key Arguments

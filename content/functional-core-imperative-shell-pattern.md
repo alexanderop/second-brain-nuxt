@@ -20,6 +20,7 @@ The Functional Core, Imperative Shell pattern separates applications into two la
 ## Architecture
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Shell["Imperative Shell"]
@@ -36,6 +37,7 @@ graph TD
     Core -->|returns new values| Shell
     Shell -.->|persists/displays| DB & UI & API
 </pre>
+
 ::
 
 ## Key Concepts

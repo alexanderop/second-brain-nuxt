@@ -35,6 +35,7 @@ Today's coding assistants generate code quickly but create downstream problems. 
 Every coding agent follows the ReAct (Reason + Act) framework:
 
 ::mermaid
+
 <pre>
 flowchart LR
     T[Think] --> A[Action]
@@ -44,6 +45,7 @@ flowchart LR
     D -->|No| T
     D -->|Yes| Answer
 </pre>
+
 ::
 
 The LLM reasons about the task, chooses a tool, waits for execution, observes results, then loops until it has enough information to answer.

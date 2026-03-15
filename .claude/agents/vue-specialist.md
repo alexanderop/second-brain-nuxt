@@ -87,40 +87,38 @@ This agent operates within a Nuxt 4 application using:
 ```vue
 <!-- Reactive state with ref -->
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref } from "vue";
 
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
+const count = ref(0);
+const doubled = computed(() => count.value * 2);
 
 function increment() {
-  count.value++
+  count.value++;
 }
 </script>
 
 <template>
-  <button @click="increment">
-    Count: {{ count }} (doubled: {{ doubled }})
-  </button>
+  <button @click="increment">Count: {{ count }} (doubled: {{ doubled }})</button>
 </template>
 ```
 
 ```typescript
 // Composable pattern
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from "vue";
 
 export function useMousePosition() {
-  const x = ref(0)
-  const y = ref(0)
+  const x = ref(0);
+  const y = ref(0);
 
   function update(event: MouseEvent) {
-    x.value = event.pageX
-    y.value = event.pageY
+    x.value = event.pageX;
+    y.value = event.pageY;
   }
 
-  onMounted(() => window.addEventListener('mousemove', update))
-  onUnmounted(() => window.removeEventListener('mousemove', update))
+  onMounted(() => window.addEventListener("mousemove", update));
+  onUnmounted(() => window.removeEventListener("mousemove", update));
 
-  return { x, y }
+  return { x, y };
 }
 ```
 
@@ -128,40 +126,40 @@ export function useMousePosition() {
 <!-- Props with TypeScript -->
 <script setup lang="ts">
 interface Props {
-  title: string
-  count?: number
-  items: Array<string>
+  title: string;
+  count?: number;
+  items: Array<string>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  count: 0
-})
+  count: 0,
+});
 
 const emit = defineEmits<{
-  update: [value: string]
-  delete: [id: number]
-}>()
+  update: [value: string];
+  delete: [id: number];
+}>();
 </script>
 ```
 
 ```vue
 <!-- Provide/Inject with TypeScript -->
 <script setup lang="ts">
-import type { InjectionKey } from 'vue'
-import { inject, provide } from 'vue'
+import type { InjectionKey } from "vue";
+import { inject, provide } from "vue";
 
 interface UserContext {
-  name: string
-  id: number
+  name: string;
+  id: number;
 }
 
-const userKey: InjectionKey<UserContext> = Symbol('user')
+const userKey: InjectionKey<UserContext> = Symbol("user");
 
 // In parent
-provide(userKey, { name: 'Alice', id: 1 })
+provide(userKey, { name: "Alice", id: 1 });
 
 // In child
-const user = inject(userKey)
+const user = inject(userKey);
 </script>
 ```
 

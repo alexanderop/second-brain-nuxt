@@ -76,6 +76,7 @@ hooks:
 ```
 
 Three events are supported:
+
 - `PreToolUse` — Before tool execution (can block)
 - `PostToolUse` — After tool execution
 - `Stop` — When skill finishes
@@ -88,13 +89,14 @@ The key improvement: hooks are scoped to the skill's lifecycle. They're cleaned 
 
 Two settings control how skills appear:
 
-| Setting | Slash menu | Skill tool | Auto-discovery |
-|---------|-----------|------------|----------------|
-| `user-invocable: true` (default) | Visible | Allowed | Yes |
-| `user-invocable: false` | Hidden | Allowed | Yes |
-| `disable-model-invocation: true` | Visible | **Blocked** | Yes |
+| Setting                          | Slash menu | Skill tool  | Auto-discovery |
+| -------------------------------- | ---------- | ----------- | -------------- |
+| `user-invocable: true` (default) | Visible    | Allowed     | Yes            |
+| `user-invocable: false`          | Hidden     | Allowed     | Yes            |
+| `disable-model-invocation: true` | Visible    | **Blocked** | Yes            |
 
 The distinction matters:
+
 - `user-invocable: false` hides from the slash menu but Claude can still invoke via Skill tool
 - `disable-model-invocation: true` prevents Claude from invoking programmatically
 
@@ -104,18 +106,18 @@ Here's everything you can put in skill frontmatter as of 2.1:
 
 ```yaml
 ---
-name: my-skill                    # Required: lowercase, hyphens, max 64 chars
-description: "..."                # Required: max 1024 chars, include trigger keywords
-allowed-tools:                    # Optional: YAML list or comma-separated
+name: my-skill # Required: lowercase, hyphens, max 64 chars
+description: "..." # Required: max 1024 chars, include trigger keywords
+allowed-tools: # Optional: YAML list or comma-separated
   - Read
   - Grep
-  - Bash(git add:*)              # Wildcard syntax for specific commands
-model: claude-sonnet-4-20250514  # Optional: specific model
-context: fork                     # Optional: isolated execution
-agent: Explore                    # Optional: agent type when forked
-user-invocable: true             # Optional: show in slash menu (default true)
-disable-model-invocation: false  # Optional: block Skill tool invocation
-hooks:                           # Optional: lifecycle hooks
+  - Bash(git add:*) # Wildcard syntax for specific commands
+model: claude-sonnet-4-20250514 # Optional: specific model
+context: fork # Optional: isolated execution
+agent: Explore # Optional: agent type when forked
+user-invocable: true # Optional: show in slash menu (default true)
+disable-model-invocation: false # Optional: block Skill tool invocation
+hooks: # Optional: lifecycle hooks
   PreToolUse:
     - matcher: "Bash"
       hooks:
@@ -132,13 +134,13 @@ Before: "Should I use a skill, slash command, or subagent?"
 After:  "Just make it a skill"
 ```
 
-| Use case | Solution |
-|----------|----------|
-| User-invocable workflow | Skill (default behavior) |
-| Isolated context | Skill with `context: fork` |
-| Specific model | Skill with `model:` |
-| Event-driven logic | Skill with `hooks:` |
-| Dynamic runtime prompt | Task tool (the exception) |
+| Use case                | Solution                   |
+| ----------------------- | -------------------------- |
+| User-invocable workflow | Skill (default behavior)   |
+| Isolated context        | Skill with `context: fork` |
+| Specific model          | Skill with `model:`        |
+| Event-driven logic      | Skill with `hooks:`        |
+| Dynamic runtime prompt  | Task tool (the exception)  |
 
 The Task tool still wins for dynamic scenarios—when you need to compose prompts at runtime or use specialized agent types. But for repeatable workflows with known steps, skills handle it now.
 
@@ -181,15 +183,18 @@ Utility scripts are particularly efficient—they execute without consuming toke
 ## Migration Guide
 
 **From slash commands:**
+
 - Move from `~/.claude/commands/` to `~/.claude/skills/`
 - Add frontmatter with `name` and `description`
 - Benefit: auto-discovery plus slash menu visibility
 
 **From hook scripts:**
+
 - Embed hooks directly in skill frontmatter
 - Benefit: hooks scoped to skill lifecycle, cleaned up automatically
 
 **From Task tool static workflows:**
+
 - Convert to skills with `context: fork`
 - Benefit: no runtime prompt composition needed
 
@@ -236,6 +241,7 @@ Output a structured review with severity levels.
 ```
 
 **Why this works:**
+
 - `context: fork` keeps the review isolated—main conversation stays clean
 - `agent: Explore` + `model: haiku` makes it cheap and fast for initial scan
 - The `PreToolUse` hook blocks any merge attempt until security scan passes
@@ -285,6 +291,7 @@ After migration: notify team via Slack.
 ```
 
 **Why this works:**
+
 - `once: true` on backup verification—runs first time only, then auto-removes
 - Two-layer validation: backup check + SQL validation on every destructive command
 - `PostToolUse` for team notification
@@ -330,6 +337,7 @@ until corresponding test files exist.
 ```
 
 **Why this works:**
+
 - `PreToolUse` enforces the "test first" constraint at the tool level
 - `PostToolUse` runs tests after every test file change
 - `context: fork` keeps the TDD workflow isolated
@@ -410,6 +418,7 @@ allowed-tools:
 ```
 
 **Why this works:**
+
 - Parent skill orchestrates, child skills execute in isolation
 - Each stage uses appropriate model for cost/capability tradeoff
 - `user-invocable: false` on child skills—only parent triggers them
@@ -471,6 +480,7 @@ Use them for validation and code generation.
 ```
 
 **Why this works:**
+
 - SKILL.md is only 50 lines—fits easily in context
 - Reference files loaded only when that specific pattern is needed
 - Scripts execute without consuming tokens
@@ -479,6 +489,7 @@ Use them for validation and code generation.
 ## What's Left
 
 A few things I'm still figuring out:
+
 - Performance implications for hot-reloading many skills
 - Whether `once: true` hooks can be reset manually
 - How `model:` in skill frontmatter interacts with `agent:` field defaults

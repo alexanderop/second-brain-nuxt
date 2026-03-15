@@ -34,4 +34,3 @@ Current AI tools provide genuine productivity improvements for certain tasks, bu
 
 > "The people making the boldest claims about AI are often the furthest removed from actual software development."
 > — Gergely Orosz
-

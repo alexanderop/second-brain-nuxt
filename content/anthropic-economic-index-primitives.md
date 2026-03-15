@@ -51,6 +51,7 @@ Usage concentrates in wealthy nations. Lower-income countries show proportionall
 ## The Measurement Framework
 
 ::mermaid
+
 <pre>
 flowchart LR
     Raw[Raw Task Count] --> Complexity[Weight by Complexity]
@@ -60,6 +61,7 @@ flowchart LR
     Raw -->|"1.8% gains"| Headline[Headline Number]
     Effective -->|"1.0-1.2% gains"| Reality[Reality Check]
 </pre>
+
 ::
 
 ## Connections

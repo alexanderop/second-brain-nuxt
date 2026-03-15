@@ -62,6 +62,7 @@ flowchart LR
 ## Technical Details
 
 Built on the Agent Skills open standard format. Each skill contains:
+
 - `skill.md` with frontmatter defining triggers and workflow
 - Optional helper scripts and templates
 - Documentation regenerated via automated workflows

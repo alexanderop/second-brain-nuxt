@@ -10,11 +10,13 @@ Reddit discussions and posts.
 ## Metadata Collection
 
 **Agent A - Thread Content:**
+
 ```bash
 python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py 'URL' --comments 10
 ```
 
 **Agent B - Author Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'u/username'
 ```
@@ -75,11 +77,11 @@ date: 2026-01-01
 
 ## Error Handling
 
-| Error | Recovery |
-|-------|----------|
-| 429 rate limit | Wait 60s and retry |
-| Quarantined subreddit | Manually copy content |
-| Thread deleted | Note "Thread no longer available" |
+| Error                 | Recovery                          |
+| --------------------- | --------------------------------- |
+| 429 rate limit        | Wait 60s and retry                |
+| Quarantined subreddit | Manually copy content             |
+| Thread deleted        | Note "Thread no longer available" |
 
 ## Notes
 

@@ -1,42 +1,42 @@
-import { z } from 'zod'
-import { contentTypeValues, type ContentType } from '~/constants/contentTypes'
+import { z } from "zod";
+import { contentTypeValues, type ContentType } from "~/constants/contentTypes";
 
 // Content types array for filtering - derived from constants/contentTypes.ts (single source of truth)
-export const CONTENT_TYPES = contentTypeValues
+export const CONTENT_TYPES = contentTypeValues;
 
 // Author with enriched data (joined from authors collection)
 export interface TableAuthor {
-  slug: string
-  name: string
-  avatar?: string
+  slug: string;
+  name: string;
+  avatar?: string;
 }
 
 // Content item as displayed in the table (with enriched authors)
 export interface TableContentItem {
-  slug: string
-  title: string
-  type: ContentType
-  authors: TableAuthor[]
-  tags: string[]
-  date?: string // Date consumed (ISO string)
-  rating?: number // 1-10 scale
-  url?: string
-  cover?: string
+  slug: string;
+  title: string;
+  type: ContentType;
+  authors: TableAuthor[];
+  tags: string[];
+  date?: string; // Date consumed (ISO string)
+  rating?: number; // 1-10 scale
+  url?: string;
+  cover?: string;
 }
 
 // Filter state for the table
 export interface FilterState {
-  type?: ContentType[]
-  tags?: string[]
-  authors?: string[] // Author slugs
-  dateConsumedRange?: [string, string] // ISO date strings
-  ratingRange?: [number, number]
+  type?: ContentType[];
+  tags?: string[];
+  authors?: string[]; // Author slugs
+  dateConsumedRange?: [string, string]; // ISO date strings
+  ratingRange?: [number, number];
 }
 
 // Sort state for the table
 export interface SortState {
-  column: 'title' | 'type' | 'dateConsumed' | 'rating'
-  direction: 'asc' | 'desc'
+  column: "title" | "type" | "dateConsumed" | "rating";
+  direction: "asc" | "desc";
 }
 
 // Zod schema for URL parameter validation
@@ -50,10 +50,10 @@ export const tableParamsSchema = z.object({
   ratingMin: z.coerce.number().min(1).max(10).optional(),
   ratingMax: z.coerce.number().min(1).max(10).optional(),
   // Sort params
-  sort: z.enum(['title', 'type', 'dateConsumed', 'rating']).optional(),
-  dir: z.enum(['asc', 'desc']).optional(),
+  sort: z.enum(["title", "type", "dateConsumed", "rating"]).optional(),
+  dir: z.enum(["asc", "desc"]).optional(),
   // Pagination
   page: z.coerce.number().min(1).optional(),
-})
+});
 
-export type TableParams = z.infer<typeof tableParamsSchema>
+export type TableParams = z.infer<typeof tableParamsSchema>;

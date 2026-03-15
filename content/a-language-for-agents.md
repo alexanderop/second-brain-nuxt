@@ -38,6 +38,7 @@ Armin Ronacher argues that new programming languages will emerge specifically fo
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Principles["Agent-Friendly Language Design"]
@@ -53,6 +54,7 @@ graph TD
     end
     Principles -->|removes| Obstacles
 </pre>
+
 ::
 
 ## Code Example

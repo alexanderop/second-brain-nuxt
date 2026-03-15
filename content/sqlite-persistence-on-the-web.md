@@ -53,9 +53,9 @@ Conrad presents a useful mental model for how SQLite projects layer:
 
 Most browser SQLite projects sit at layer 2. The two main ones:
 
-| Project | Maintainer | Since | Notes |
-|---------|-----------|-------|-------|
-| **WA-SQLite** | Roy Hashimoto | 2021 | Most aggressive VFS experimentation, best benchmarks |
+| Project         | Maintainer             | Since     | Notes                                                    |
+| --------------- | ---------------------- | --------- | -------------------------------------------------------- |
+| **WA-SQLite**   | Roy Hashimoto          | 2021      | Most aggressive VFS experimentation, best benchmarks     |
 | **SQLite WASM** | SQLite team (official) | Late 2022 | Borrowed heavily from WA-SQLite, credits Roy extensively |
 
 ### The Lineage
@@ -75,6 +75,7 @@ The intellectual history matters for understanding where things stand:
 SQLite itself is a C library. The hard part in browsers isn't SQLite — it's implementing the Virtual File System (VFS). In 2004, SQLite introduced this abstraction layer to decouple database logic from OS-specific file operations (initially Unix vs Windows). For browser SQLite, the VFS maps SQLite's synchronous file operations to browser storage mechanisms. Every browser SQLite project is fundamentally a VFS implementation with different tradeoffs.
 
 Two decisions define a VFS:
+
 1. **Persistence mechanism** — where do SQLite's 4KB database pages actually live?
 2. **Sync/async bridge** — how do you make async browser APIs look synchronous to C code?
 
@@ -100,19 +101,20 @@ This is the harder problem. SQLite's C API was built for synchronous file I/O, b
 
 Concurrency matters even for single-user client-side databases. Sync engines like PowerSync write large amounts of data in the background — that shouldn't block the UI from querying.
 
-| Level | Description | Multi-tab Behavior |
-|-------|-------------|-------------------|
-| 1 | Single connection | Requires cross-tab messaging to coordinate |
-| 2 | Multiple connections, single transaction at a time | Each tab gets its own connection |
-| 3 | Multiple connections, concurrent reads | Reads don't block each other |
-| 4 | Concurrent reads + one writer (WAL mode) | Background sync doesn't block queries |
-| 5 | Concurrent writes | Not yet available in any browser VFS |
+| Level | Description                                        | Multi-tab Behavior                         |
+| ----- | -------------------------------------------------- | ------------------------------------------ |
+| 1     | Single connection                                  | Requires cross-tab messaging to coordinate |
+| 2     | Multiple connections, single transaction at a time | Each tab gets its own connection           |
+| 3     | Multiple connections, concurrent reads             | Reads don't block each other               |
+| 4     | Concurrent reads + one writer (WAL mode)           | Background sync doesn't block queries      |
+| 5     | Concurrent writes                                  | Not yet available in any browser VFS       |
 
 SQLite's WAL (Write-Ahead Log) mode enables level 4 — concurrent reads alongside a single writer. Most current browser VFSes operate at levels 1-2, with some offering level 3-4 solutions.
 
 In all five levels, the querying interface itself is async so the main thread is never blocked during query execution. The only way to get synchronous queries is loading the entire database into memory, which limits the use cases.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A[SQLite in Browser] --> B[VFS Implementation]
@@ -148,6 +150,7 @@ OPFS Co-op Sync`"]
     E --> G["`**Fallback:** WA-SQLite
 IDB Batch Atomic`"]
 </pre>
+
 ::
 
 ### Performance vs Concurrency Tradeoff

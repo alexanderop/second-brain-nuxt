@@ -16,6 +16,7 @@ date: 2026-01-24
 ## Slide 1: Introduction
 
 **About Me**
+
 - [Your introduction here]
 - Why I'm excited about AI coding assistants
 
@@ -36,11 +37,11 @@ date: 2026-01-24
 
 **The Transformation: LLM → Agent**
 
-| Plain LLM | Agent |
-|-----------|-------|
-| Responds to prompts | Takes actions |
-| Generates text | Executes tools |
-| One-shot | Loops until done |
+| Plain LLM           | Agent            |
+| ------------------- | ---------------- |
+| Responds to prompts | Takes actions    |
+| Generates text      | Executes tools   |
+| One-shot            | Loops until done |
 
 > "Agents don't just suggest code—they autonomously perform work while you maintain oversight."
 > — [VS Code Docs: Using Agents](https://code.visualstudio.com/docs/copilot/agents/overview)
@@ -73,14 +74,14 @@ Final Response
 
 From nanocode and real agents:
 
-| Tool | Purpose |
-|------|---------|
-| `read` | Read file contents |
+| Tool    | Purpose                |
+| ------- | ---------------------- |
+| `read`  | Read file contents     |
 | `write` | Create/overwrite files |
-| `edit` | Find and replace |
-| `glob` | Find files by pattern |
-| `grep` | Search contents |
-| `bash` | Run commands |
+| `edit`  | Find and replace       |
+| `glob`  | Find files by pattern  |
+| `grep`  | Search contents        |
+| `bash`  | Run commands           |
 
 ---
 
@@ -109,7 +110,7 @@ From nanocode and real agents:
     External Memory (Just-in-Time)
 ```
 
-**Key insight:** Give agents tools to *find* information rather than stuffing it in context.
+**Key insight:** Give agents tools to _find_ information rather than stuffing it in context.
 
 ---
 
@@ -139,17 +140,21 @@ From [Anthropic's guide](https://www.anthropic.com/engineering/effective-context
 # AGENTS.md
 
 ## Dev Environment
+
 - How to set up and navigate
 
 ## Build & Test Commands
+
 - `pnpm install && pnpm dev`
 - `pnpm test:unit`
 
 ## Code Style
+
 - TypeScript strict mode
 - Prefer composition over inheritance
 
 ## PR Instructions
+
 - Keep PRs small and focused
 ```
 
@@ -160,11 +165,13 @@ From [Anthropic's guide](https://www.anthropic.com/engineering/effective-context
 ## Slide 11: Subagents in VS Code
 
 **How to invoke:**
+
 1. Enable tools in Copilot Chat (hammer icon)
 2. Call explicitly with `@subagent`
 3. Or accept when Copilot suggests one
 
 **Use cases:**
+
 - Complex multi-step tasks
 - Specialized domain work
 - Planning before implementation
@@ -175,12 +182,12 @@ From [Anthropic's guide](https://www.anthropic.com/engineering/effective-context
 
 From [VS Code Docs](https://code.visualstudio.com/docs/copilot/agents/overview):
 
-| Type | Best For |
-|------|----------|
-| **Local** | Interactive, real-time feedback |
-| **Background** | Autonomous, well-defined tasks |
-| **Cloud** | Team collaboration, PRs |
-| **Third-party** | Specialized domain tools |
+| Type            | Best For                        |
+| --------------- | ------------------------------- |
+| **Local**       | Interactive, real-time feedback |
+| **Background**  | Autonomous, well-defined tasks  |
+| **Cloud**       | Team collaboration, PRs         |
+| **Third-party** | Specialized domain tools        |
 
 All share unified session management.
 
@@ -192,6 +199,7 @@ All share unified session management.
 > — [VS Code: Introducing Agent Skills](https://www.youtube.com/watch?v=JepVi1tBNEE)
 
 **Key difference from instructions:**
+
 - Instructions = global coding standards
 - Skills = on-demand workflows with actions
 
@@ -207,6 +215,7 @@ skills/
 ```
 
 **skill.md frontmatter:**
+
 ```yaml
 name: PRD Writing
 when: User asks to write a product spec
@@ -261,6 +270,7 @@ User Request → Agent Loop → Tools
 ## Slide 17: Live Demo
 
 **Plan:**
+
 1. Show nanocode running (agent loop)
 2. Create/show AGENTS.md in a project
 3. Invoke a subagent in VS Code

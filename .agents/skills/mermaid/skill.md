@@ -78,12 +78,14 @@ flowchart TD
 **Subgraphs:** `subgraph id[title] ... end`
 
 **Multi-line labels:** `\n` does NOT work. Use markdown strings with backticks and real newlines:
+
 ```mermaid
 A["`Line 1
 Line 2
 Line 3`"]
 ```
-Markdown strings also support **bold** and *italic* formatting.
+
+Markdown strings also support **bold** and _italic_ formatting.
 
 **Styling:** `style A fill:#f9f,stroke:#333` or `classDef cls fill:#f9f; A:::cls`
 
@@ -110,6 +112,7 @@ sequenceDiagram
 **Notes:** `Note right of A: text` or `Note over A,B: text`
 
 **Control flow:**
+
 - `loop text ... end`
 - `alt text ... else ... end`
 - `opt text ... end`
@@ -196,6 +199,7 @@ erDiagram
 **Line style:** `--` identifying (solid), `..` non-identifying (dashed)
 
 **Attributes:**
+
 ```text
 ENTITY {
     string name PK
@@ -203,6 +207,7 @@ ENTITY {
     string email UK "user email"
 }
 ```
+
 Key types: `PK`, `FK`, `UK`
 
 ### 6. Gantt Chart

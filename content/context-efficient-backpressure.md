@@ -26,6 +26,7 @@ Claude models perform optimally within a ~75k token range. Every redundant line 
 ## The `run_silent()` Solution
 
 A bash wrapper that:
+
 - Suppresses successful command output (shows only checkmark)
 - Displays full output only on failure
 - Provides deterministic control over what reaches the agent

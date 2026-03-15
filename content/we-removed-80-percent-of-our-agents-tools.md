@@ -23,12 +23,12 @@ They stripped the system to a single capability: bash execution. The agent now u
 
 ## Results
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Execution time | 274.8s | 77.4s | 3.5x faster |
-| Success rate | 80% | 100% | +20pp |
-| Token usage | ~102k | ~61k | 37% fewer |
-| Processing steps | ~12 | ~7 | 42% fewer |
+| Metric           | Before | After | Improvement |
+| ---------------- | ------ | ----- | ----------- |
+| Execution time   | 274.8s | 77.4s | 3.5x faster |
+| Success rate     | 80%    | 100%  | +20pp       |
+| Token usage      | ~102k  | ~61k  | 37% fewer   |
+| Processing steps | ~12    | ~7    | 42% fewer   |
 
 ## Technical Stack
 

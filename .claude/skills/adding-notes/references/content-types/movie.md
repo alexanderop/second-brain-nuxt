@@ -15,6 +15,7 @@ Movies from IMDB or TMDB.
 Run these in parallel:
 
 **Agent A - Movie Metadata (TMDB only):**
+
 1. Extract IMDB ID from URL (e.g., `tt16311594` from `imdb.com/title/tt16311594/`)
 2. WebSearch: `{imdb_id} site:themoviedb.org` to find TMDB page
 3. TMDB URLs follow pattern: `themoviedb.org/movie/{tmdb_id}-{slug}`
@@ -26,6 +27,7 @@ Run these in parallel:
    - Poster path → construct URL: `https://image.tmdb.org/t/p/w500/{poster_path}`
 
 **Agent B - Official Trailer (best effort):**
+
 1. WebSearch: `"{movie title}" {year} official trailer`
 2. Look for results containing YouTube URLs in the search results themselves
 3. **YouTube cannot be fetched directly** — only use URLs visible in search results
@@ -33,14 +35,17 @@ Run these in parallel:
 5. **Never guess or construct YouTube URLs** — only use verified URLs from search results
 
 **Agent C - Director/Author Check:**
+
 ```text
 Glob: content/authors/*{director-lastname}*.md
 ```
+
 If not found, create author profile for director.
 
 ## Watching Status Prompt
 
 **Skip prompts for data already provided.** If user says "watched it 2025 give it a 9":
+
 - Set `watchingStatus: watched`, `watchedOn: "2025"`, `rating: 9`
 - Don't prompt for any of these fields
 
@@ -61,11 +66,11 @@ options:
 
 ### Response Handling
 
-| Response | Set Fields |
-|----------|------------|
-| Watched | `watchingStatus: watched`, ask for `watchedOn` date |
-| Want to watch | `watchingStatus: want-to-watch` |
-| Currently watching | `watchingStatus: watching` |
+| Response           | Set Fields                                          |
+| ------------------ | --------------------------------------------------- |
+| Watched            | `watchingStatus: watched`, ask for `watchedOn` date |
+| Want to watch      | `watchingStatus: want-to-watch`                     |
+| Currently watching | `watchingStatus: watching`                          |
 
 ### Rating Prompt (if watched)
 
@@ -82,7 +87,7 @@ title: "Movie Title"
 type: movie
 url: "https://www.imdb.com/title/tt..."
 cover: "https://image.tmdb.org/t/p/w500/{poster_path}"
-trailer: "https://www.youtube.com/watch?v=..."  # optional - omit if not verified
+trailer: "https://www.youtube.com/watch?v=..." # optional - omit if not verified
 tags:
   - genre-1
   - genre-2
@@ -99,12 +104,14 @@ date: 2026-01-07
 ## Cover Image Source
 
 **TMDB provides stable, direct image URLs:**
+
 - Pattern: `https://image.tmdb.org/t/p/{size}/{poster_path}`
 - Sizes: w92, w154, w185, w342, w500, w780, original
 - Recommended: `w500` for good quality/size balance
 - The `poster_path` is found on TMDB movie pages (e.g., `/w2pzrRTevXrW3vgIK4CCYaXvtIc.jpg`)
 
 **Why TMDB over IMDB:**
+
 - IMDB blocks direct fetching (403 errors)
 - TMDB provides direct, stable image URLs
 - TMDB includes trailer information
@@ -119,11 +126,13 @@ Search pattern: `"{movie title}" {year} official trailer`
 **Look for YouTube URLs in search results** — they often appear in result snippets or descriptions. Valid format: `youtube.com/watch?v={11-char-id}`
 
 **Verification signals (from search result context):**
+
 1. Result mentions official channel or studio name
 2. Title contains "Official Trailer" or "Official Teaser"
 3. High view count mentioned in snippet
 
 **Strict rules:**
+
 - Only use YouTube URLs that appear verbatim in search results
 - **Never construct or guess video IDs**
 - If no verified URL found after 2 searches, **omit the trailer field**

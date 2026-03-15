@@ -18,6 +18,7 @@ date: 2026-02-15
 The core framing: errors cascade multiplicatively through the stack. One bad line in your CLAUDE.md file produces bad research, which produces bad plans, which produces hundreds of bad lines of code. The reverse is also true — one well-placed instruction can save entire sessions from going sideways.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A["1 bad line in CLAUDE.md"] --> B["Many bad lines of research"]
@@ -35,6 +36,7 @@ flowchart TD
 ~98% reliable"]
     end
 </pre>
+
 ::
 
 ## The Instruction Budget
@@ -49,7 +51,7 @@ Vercel's D0 agent case study drives this home. They built a data analysis agent 
 
 The takeaway for CLAUDE.md: as models improve, many "best practices" you wrote get baked into the model itself. Instructions like "use encryption for passwords" or "don't use any-casts" become redundant — and worse, they may constrain the model from applying its own (potentially better) approach.
 
-**The practice:** with every model release, audit your CLAUDE.md for what to *remove*, not what to add. If a new model handles something natively, your old instruction is now dead weight at best, a constraint at worst.
+**The practice:** with every model release, audit your CLAUDE.md for what to _remove_, not what to add. If a new model handles something natively, your old instruction is now dead weight at best, a constraint at worst.
 
 ## Why Fresh Codebases Sometimes Work Better
 
@@ -74,7 +76,7 @@ Don't use `/init`. Don't paste templates from Twitter. Start with the bare minim
 1. A one-line project description
 2. Key commands the model can't infer from the codebase
 
-Then add instructions *only* when you observe the model making a mistake. Commit each addition separately so you can git-blame which line caused a regression if performance degrades.
+Then add instructions _only_ when you observe the model making a mistake. Commit each addition separately so you can git-blame which line caused a regression if performance degrades.
 
 ## Position and Auditing
 

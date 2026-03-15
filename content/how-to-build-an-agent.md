@@ -42,6 +42,7 @@ Each tool needs only a name, description, input schema, and execution function.
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     Input[User Message] --> LLM[Claude API Call]
@@ -51,6 +52,7 @@ flowchart LR
     Result --> LLM
     Check -->|No| Done[Return Response]
 </pre>
+
 ::
 
 ## Code Snippets

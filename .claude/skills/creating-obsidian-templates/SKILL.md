@@ -17,6 +17,7 @@ This directory is excluded from Nuxt Content (configured in `content.config.ts`)
 ## Template Format
 
 Templates use Obsidian's template syntax:
+
 - `{{date}}` - Current date (YYYY-MM-DD)
 - `{{date:format}}` - Custom format (e.g., `{{date:YYYY-MM-DD}}`)
 - `{{time}}` - Current time
@@ -49,13 +50,14 @@ draft: true
 
 ## Existing Templates
 
-| Template | Purpose |
-|----------|---------|
+| Template        | Purpose                             |
+| --------------- | ----------------------------------- |
 | `newsletter.md` | Weekly newsletter draft for beehiiv |
 
 ## User Setup
 
 Remind user to configure Obsidian:
+
 1. Settings → Core plugins → Enable Templates
 2. Template folder: `_obsidian-templates`
 3. Shortcut: Cmd/Ctrl + T to insert

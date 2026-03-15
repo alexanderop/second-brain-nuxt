@@ -27,54 +27,55 @@ YouTube URL detected
 
 If channel matches, route to `podcast.md`:
 
-| Channel | Show |
-|---------|------|
-| The Diary Of A CEO | diary-of-a-ceo |
-| Lex Fridman | lex-fridman-podcast |
-| Huberman Lab | huberman-lab |
-| All-In Podcast | all-in-podcast |
-| Joe Rogan Experience | joe-rogan-experience |
-| Tim Ferriss | tim-ferriss-show |
-| Acquired | acquired |
-| My First Million | my-first-million |
-| How I Built This | how-i-built-this |
-| The Knowledge Project | knowledge-project |
-| Doppelgänger Tech Talk | doppelgaenger |
-| Lanz & Precht | lanz-und-precht |
+| Channel                | Show                       |
+| ---------------------- | -------------------------- |
+| The Diary Of A CEO     | diary-of-a-ceo             |
+| Lex Fridman            | lex-fridman-podcast        |
+| Huberman Lab           | huberman-lab               |
+| All-In Podcast         | all-in-podcast             |
+| Joe Rogan Experience   | joe-rogan-experience       |
+| Tim Ferriss            | tim-ferriss-show           |
+| Acquired               | acquired                   |
+| My First Million       | my-first-million           |
+| How I Built This       | how-i-built-this           |
+| The Knowledge Project  | knowledge-project          |
+| Doppelgänger Tech Talk | doppelgaenger              |
+| Lanz & Precht          | lanz-und-precht            |
 | The Pragmatic Engineer | pragmatic-engineer-podcast |
 
 ### Known Talk Channels
 
 If channel matches, route to `talk.md`:
 
-| Channel Pattern | Conference |
-|-----------------|------------|
-| TED, TEDx Talks | TED |
-| Google, Google Developers | Google I/O |
-| Apple | WWDC |
+| Channel Pattern            | Conference     |
+| -------------------------- | -------------- |
+| TED, TEDx Talks            | TED            |
+| Google, Google Developers  | Google I/O     |
+| Apple                      | WWDC           |
 | JSConf, ReactConf, VueConf | JS conferences |
-| Strange Loop | Strange Loop |
-| GOTO Conferences | GOTO |
-| InfoQ | QCon |
+| Strange Loop               | Strange Loop   |
+| GOTO Conferences           | GOTO           |
+| InfoQ                      | QCon           |
 
 ### Classification Signals
 
-| Signal | Podcast | Talk | Tutorial | Standard |
-|--------|---------|------|----------|----------|
-| Multiple speakers conversing | Strong | - | - | - |
-| Single speaker + slides | - | Strong | - | - |
-| Screen recording + narration | - | - | Strong | - |
-| "Guest today is..." | Strong | - | - | - |
-| Episode number in title | Strong | - | - | - |
-| Conference name in title | - | Strong | - | - |
-| "How to" / "Tutorial" in title | - | - | Strong | - |
-| Code visible on screen | - | Maybe | Yes | - |
-| Duration 1-3 hours | Yes | - | - | - |
-| Duration 15-45 min | - | Yes | Yes | - |
+| Signal                         | Podcast | Talk   | Tutorial | Standard |
+| ------------------------------ | ------- | ------ | -------- | -------- |
+| Multiple speakers conversing   | Strong  | -      | -        | -        |
+| Single speaker + slides        | -       | Strong | -        | -        |
+| Screen recording + narration   | -       | -      | Strong   | -        |
+| "Guest today is..."            | Strong  | -      | -        | -        |
+| Episode number in title        | Strong  | -      | -        | -        |
+| Conference name in title       | -       | Strong | -        | -        |
+| "How to" / "Tutorial" in title | -       | -      | Strong   | -        |
+| Code visible on screen         | -       | Maybe  | Yes      | -        |
+| Duration 1-3 hours             | Yes     | -      | -        | -        |
+| Duration 15-45 min             | -       | Yes    | Yes      | -        |
 
 ### Tutorial Detection
 
 Set `isTechnical: true` if:
+
 - Title: "how to", "tutorial", "learn", "guide", "build"
 - Channel: educational (Fireship, Traversy Media, The Coding Train, etc.)
 - Screen recording with code walkthrough visible
@@ -85,16 +86,19 @@ Set `isTechnical: true` if:
 ## Metadata Collection
 
 **Agent A - Metadata:**
+
 ```bash
 .claude/skills/adding-notes/scripts/get-youtube-metadata.sh 'URL'
 ```
 
 **Agent B - Transcript:**
+
 ```bash
 python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py 'URL'
 ```
 
 **Agent C - Author Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'Channel Name'
 ```
@@ -162,7 +166,7 @@ What this demonstrates.
 
 ```javascript
 // extracted from tutorial
-const example = "code here"
+const example = "code here";
 ```
 
 ## Steps Summary
@@ -203,6 +207,7 @@ See `references/code-extraction.md` for code snippet guidelines.
 **Priority: HIGH for tutorials (isTechnical: true), MEDIUM for standard**
 
 **Tutorial triggers:**
+
 - Step-by-step process shown on screen
 - Architecture being built or explained
 - Workflow demonstration
@@ -210,11 +215,13 @@ See `references/code-extraction.md` for code snippet guidelines.
 - Data flow visualization
 
 **Standard video triggers:**
+
 - Named frameworks discussed
 - Process or methodology explained
 - Comparison of approaches
 
 **Mermaid types commonly used:**
+
 - `flowchart LR` — Build processes, workflows
 - `graph TD` — Architecture, component hierarchies
 - `sequenceDiagram` — API calls demonstrated

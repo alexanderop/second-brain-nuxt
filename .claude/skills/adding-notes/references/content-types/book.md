@@ -10,11 +10,13 @@ Books from Goodreads or Amazon.
 ## Metadata Collection
 
 **Agent A - Book Metadata:**
+
 ```bash
 .claude/skills/adding-notes/scripts/get-goodreads-metadata.sh 'URL'
 ```
 
 **Agent B - Author Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'Author Name'
 ```
@@ -32,15 +34,16 @@ What's your reading status for this book?
 
 ### Response Handling
 
-| Response | Set Fields |
-|----------|------------|
-| 1 (Want to read) | `readingStatus: want-to-read` |
-| 2 (Currently reading) | `readingStatus: reading`, ask for `startedReading` |
-| 3 (Already finished) | `readingStatus: finished`, ask for `finishedReading`, optionally `startedReading` |
+| Response              | Set Fields                                                                        |
+| --------------------- | --------------------------------------------------------------------------------- |
+| 1 (Want to read)      | `readingStatus: want-to-read`                                                     |
+| 2 (Currently reading) | `readingStatus: reading`, ask for `startedReading`                                |
+| 3 (Already finished)  | `readingStatus: finished`, ask for `finishedReading`, optionally `startedReading` |
 
 ### Date Input Handling
 
 Accept these formats and normalize to YYYY-MM-DD:
+
 - `today` → current date
 - `skip` → leave field empty
 - `2025-12-15` → use as-is
@@ -70,11 +73,11 @@ date: 2026-01-01
 
 ## Reading Status Fields
 
-| Field | Values | Description |
-|-------|--------|-------------|
-| `readingStatus` | `want-to-read`, `reading`, `finished` | Current reading state |
-| `startedReading` | YYYY-MM-DD | Date started (optional) |
-| `finishedReading` | YYYY-MM-DD | Date finished (optional) |
+| Field             | Values                                | Description              |
+| ----------------- | ------------------------------------- | ------------------------ |
+| `readingStatus`   | `want-to-read`, `reading`, `finished` | Current reading state    |
+| `startedReading`  | YYYY-MM-DD                            | Date started (optional)  |
+| `finishedReading` | YYYY-MM-DD                            | Date finished (optional) |
 
 ## Body Template
 
@@ -107,6 +110,7 @@ date: 2026-01-01
 **Priority: HIGH** — Books commonly present visual frameworks.
 
 **Look for these triggers:**
+
 - Named models ("The Habit Loop", "The Golden Circle", "The Flywheel")
 - Numbered frameworks ("Four Laws of...", "Five Dysfunctions of...", "Three Pillars of...")
 - Circular/cyclical relationships described in text

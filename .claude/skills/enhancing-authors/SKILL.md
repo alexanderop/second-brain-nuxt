@@ -26,7 +26,7 @@ Phase 4: Save Enhanced Author
    └─ Update frontmatter fields
 
 Phase 5: Quality Check
-   └─ Run pnpm lint:fix && pnpm typecheck
+   └─ Run vp check && pnpm typecheck
 ```
 
 ---
@@ -44,6 +44,7 @@ Accept an author slug, name, or partial name as argument:
    ```
 
 **Outcomes:**
+
 - Single match → proceed with that file
 - Multiple matches → list options for user to choose
 - No match → list available authors
@@ -53,10 +54,12 @@ Accept an author slug, name, or partial name as argument:
 Read the author file and check which fields are missing or empty:
 
 **Required fields (always present):**
+
 - `name`
 - `slug`
 
 **Optional fields to enhance:**
+
 - `bio` - Professional background and expertise
 - `avatar` - URL to profile picture
 - `website` - Personal website URL
@@ -66,6 +69,7 @@ Read the author file and check which fields are missing or empty:
 - `socials.youtube` - YouTube channel
 
 A field is "missing" if:
+
 - It doesn't exist in the frontmatter
 - It exists but is empty (`""` or `null`)
 
@@ -81,23 +85,23 @@ Spawn **up to 3 WebSearch agents in parallel** based on what fields are missing:
 **Agent 1 - Bio/Background:**
 Task tool with subagent_type: "general-purpose"
 prompt: "Use WebSearch to find professional background info for [Author Name].
-  Query: '[Author Name]' bio background expertise
-  Extract: Job title, company, areas of expertise, notable projects.
-  Return: A 1-2 sentence professional bio."
+Query: '[Author Name]' bio background expertise
+Extract: Job title, company, areas of expertise, notable projects.
+Return: A 1-2 sentence professional bio."
 
 **Agent 2 - Avatar URL:**
 Task tool with subagent_type: "general-purpose"
 prompt: "Use WebSearch to find a profile picture URL for [Author Name].
-  Query: '[Author Name]' site:github.com OR site:twitter.com
-  Extract: GitHub username or Twitter handle to construct avatar URL.
-  Return: Avatar URL (prefer GitHub format: https://github.com/{username}.png)"
+Query: '[Author Name]' site:github.com OR site:twitter.com
+Extract: GitHub username or Twitter handle to construct avatar URL.
+Return: Avatar URL (prefer GitHub format: https://github.com/{username}.png)"
 
 **Agent 3 - Website & Socials:**
 Task tool with subagent_type: "general-purpose"
 prompt: "Use WebSearch to find social media profiles for [Author Name].
-  Query: '[Author Name]' twitter github linkedin youtube
-  Extract: Personal website, Twitter handle, GitHub username, LinkedIn profile, YouTube channel.
-  Return: List of found profiles with URLs/handles."
+Query: '[Author Name]' twitter github linkedin youtube
+Extract: Personal website, Twitter handle, GitHub username, LinkedIn profile, YouTube channel.
+Return: List of found profiles with URLs/handles."
 ```
 
 Only spawn agents for missing fields. If bio already exists, skip Agent 1.
@@ -117,15 +121,15 @@ Display proposed updates as a comparison table:
 ```markdown
 ## Proposed Updates for [Author Name]
 
-| Field | Current | Proposed |
-|-------|---------|----------|
-| bio | (empty) | "Founder of X, creator of Y..." |
-| avatar | (empty) | "https://github.com/username.png" |
-| website | (empty) | "https://example.com" |
-| socials.twitter | (empty) | "username" |
-| socials.github | (empty) | "username" |
-| socials.linkedin | (empty) | "username" |
-| socials.youtube | (empty) | (not found) |
+| Field            | Current | Proposed                          |
+| ---------------- | ------- | --------------------------------- |
+| bio              | (empty) | "Founder of X, creator of Y..."   |
+| avatar           | (empty) | "https://github.com/username.png" |
+| website          | (empty) | "https://example.com"             |
+| socials.twitter  | (empty) | "username"                        |
+| socials.github   | (empty) | "username"                        |
+| socials.linkedin | (empty) | "username"                        |
+| socials.youtube  | (empty) | (not found)                       |
 ```
 
 ### 3.2 Request Approval
@@ -162,6 +166,7 @@ options:
 Use the Edit tool to update only the approved fields:
 
 **Before:**
+
 ```yaml
 ---
 name: "John Doe"
@@ -178,6 +183,7 @@ socials:
 ```
 
 **After:**
+
 ```yaml
 ---
 name: "John Doe"
@@ -196,6 +202,7 @@ socials:
 ### 4.2 Preserve Existing Values
 
 **Critical:** Never overwrite existing non-empty values unless explicitly requested:
+
 - Keep existing `name` and `slug` unchanged
 - Only update fields that were empty/missing
 - Preserve any additional custom fields
@@ -203,13 +210,15 @@ socials:
 ### 4.3 Confirmation
 
 Report to user:
+
 ```markdown
 Updated: content/authors/{slug}.md
-  - bio: added
-  - avatar: added
-  - website: added
-  - socials.twitter: added
-  - socials.github: added
+
+- bio: added
+- avatar: added
+- website: added
+- socials.twitter: added
+- socials.github: added
 ```
 
 ---
@@ -219,7 +228,7 @@ Updated: content/authors/{slug}.md
 Run linter and type check to catch any issues:
 
 ```bash
-pnpm lint:fix && pnpm typecheck
+vp check && pnpm typecheck
 ```
 
 If errors are found, fix them before completing the task.
@@ -228,19 +237,20 @@ If errors are found, fix them before completing the task.
 
 ## Error Recovery
 
-| Error | Recovery |
-|-------|----------|
-| Author not found | List available authors in `content/authors/` |
-| No missing fields | Inform user, offer to update specific fields |
-| WebSearch fails | Try alternative query patterns |
-| User rejects changes | Allow editing or cancel |
-| Could not find info | Mark field as "(not found)", proceed with others |
+| Error                | Recovery                                         |
+| -------------------- | ------------------------------------------------ |
+| Author not found     | List available authors in `content/authors/`     |
+| No missing fields    | Inform user, offer to update specific fields     |
+| WebSearch fails      | Try alternative query patterns                   |
+| User rejects changes | Allow editing or cancel                          |
+| Could not find info  | Mark field as "(not found)", proceed with others |
 
 ---
 
 ## Quality Checklist
 
 Before saving, verify:
+
 - [ ] Author file exists in `content/authors/`
 - [ ] Only updating empty/missing fields
 - [ ] Bio is 1-2 sentences, professional tone

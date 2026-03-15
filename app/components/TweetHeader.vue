@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
-import { useClipboard } from '@vueuse/core'
-import { useRequestURL } from '#imports'
-import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components'
-import BaseTagPill from '~/components/BaseTagPill.vue'
-import type { TweetItem } from '~/types/content'
-import { formatDate } from '~/utils/formatDate'
-import { handleImageError } from '~/utils/imageErrorHandler'
+import type { DropdownMenuItem } from "@nuxt/ui";
+import { useClipboard } from "@vueuse/core";
+import { useRequestURL } from "#imports";
+import { NuxtLink, UButton, UDropdownMenu, UIcon } from "#components";
+import BaseTagPill from "~/components/BaseTagPill.vue";
+import type { TweetItem } from "~/types/content";
+import { formatDate } from "~/utils/formatDate";
+import { handleImageError } from "~/utils/imageErrorHandler";
 
 const props = defineProps<{
-  tweet: TweetItem
+  tweet: TweetItem;
   author: {
-    name: string
-    slug: string
-    avatar?: string
-    twitterHandle?: string
-  }
-}>()
+    name: string;
+    slug: string;
+    avatar?: string;
+    twitterHandle?: string;
+  };
+}>();
 
-const { copy, copied } = useClipboard()
-const requestUrl = useRequestURL()
+const { copy, copied } = useClipboard();
+const requestUrl = useRequestURL();
 
 const copyItems: DropdownMenuItem[] = [
   {
-    label: 'Copy Wiki',
-    icon: 'i-lucide-link',
+    label: "Copy Wiki",
+    icon: "i-lucide-link",
     onSelect: () => copy(`[[${props.tweet.slug}]]`),
   },
   {
-    label: 'Copy URL',
-    icon: 'i-lucide-globe',
+    label: "Copy URL",
+    icon: "i-lucide-globe",
     onSelect: () => copy(`${requestUrl.origin}/tweets/${props.tweet.slug}`),
   },
-]
+];
 </script>
 
 <template>
@@ -65,7 +65,7 @@ const copyItems: DropdownMenuItem[] = [
             :alt="author.name"
             class="size-full object-cover"
             @error="handleImageError"
-          >
+          />
           <div
             v-if="!author.avatar"
             class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
@@ -105,7 +105,7 @@ const copyItems: DropdownMenuItem[] = [
 
     <!-- Tags and actions -->
     <div class="flex flex-wrap items-center gap-2 mt-4">
-      <BaseTagPill v-for="tag in (tweet.tags ?? [])" :key="tag" :tag="tag" />
+      <BaseTagPill v-for="tag in tweet.tags ?? []" :key="tag" :tag="tag" />
       <UDropdownMenu :items="copyItems" class="ml-2">
         <UButton
           variant="ghost"

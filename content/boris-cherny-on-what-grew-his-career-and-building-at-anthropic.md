@@ -36,6 +36,7 @@ See also: [[the-age-of-the-generalist]]
 The single most important principle in product: find what users already do, then build for it.
 
 Examples from Meta:
+
 - **Marketplace**: 40% of Facebook Groups posts were buy/sell. Users hacked groups for commerce → Marketplace was the natural next step.
 - **Dating**: 60% of profile views were opposite-gender non-friends. The intent existed → build the product.
 
@@ -59,7 +60,7 @@ See also: [[2025-the-year-in-llms]], [[ai-codes-better-than-me-now-what]]
 
 ### Think in Types
 
-The book that changed how Boris codes: *Functional Programming in Scala*. It teaches a different way to think about problems.
+The book that changed how Boris codes: _Functional Programming in Scala_. It teaches a different way to think about problems.
 
 His core principle: type signatures matter more than the code itself. Get the types right, and clean code follows. Even in Python, thinking in types leads to better design.
 
@@ -75,7 +76,7 @@ In January 2026, Boris shared his personal workflow on X. Developers expected el
 
 He frequently teleports sessions between web and terminal using `claude --teleport <session-id>`, and kicks off morning sessions from his iPhone via the Claude iOS app.
 
-**Opus 4.5 with Thinking Mode for Everything**: Boris's model choice is counterintuitive—he uses Opus 4.5 (the slowest model) for *everything*. His reasoning: "even though it's bigger and slower than Sonnet, since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end."
+**Opus 4.5 with Thinking Mode for Everything**: Boris's model choice is counterintuitive—he uses Opus 4.5 (the slowest model) for _everything_. His reasoning: "even though it's bigger and slower than Sonnet, since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end."
 
 The math: Sonnet might take 5 fast iterations (5 min total), while Opus takes 1 iteration (2 min total). The bottleneck is human steering time, not AI processing.
 

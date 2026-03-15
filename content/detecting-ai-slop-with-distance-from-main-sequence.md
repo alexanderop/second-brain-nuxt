@@ -17,10 +17,12 @@ AI coding assistants produce code that runs. The question is whether that code w
 Robert C. Martin ("Uncle Bob") defined the Main Sequence as the ideal relationship between two properties of a software component:
 
 **Abstractness (A)** — Ratio of abstract classes/interfaces to total classes
+
 - A = 0: Completely concrete (all implementation)
 - A = 1: Completely abstract (all interfaces)
 
 **Instability (I)** — Ratio of outgoing dependencies to total dependencies
+
 - I = 0: Stable (many depend on it, it depends on nothing)
 - I = 1: Unstable (it depends on many, nothing depends on it)
 
@@ -35,6 +37,7 @@ A well-designed component has D ≈ 0. It sits on the diagonal line where abstra
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Chart["Abstractness vs Instability"]
@@ -46,16 +49,19 @@ graph TD
     ZOU -.->|"High D"| MS
     ZOP -.->|"High D"| MS
 </pre>
+
 ::
 
 ## The Two Failure Zones
 
 **Zone of Pain** (bottom-left: high stability, low abstractness)
+
 - Concrete code everything depends on
 - Impossible to change without breaking the system
 - Example: A massive database schema with no abstraction layer
 
 **Zone of Uselessness** (top-right: high abstractness, high instability)
+
 - Interfaces and abstract classes nobody implements
 - Boilerplate that adds complexity without value
 - Example: Factory patterns wrapping single implementations
@@ -70,7 +76,7 @@ AI-generated code fails architecturally in predictable ways:
 
 3. **Missing cohesion** — AI doesn't understand which pieces belong together. Components end up with wrong stability characteristics for their role.
 
-The metric catches what code review misses: code that *works* but was assembled without architectural intent.
+The metric catches what code review misses: code that _works_ but was assembled without architectural intent.
 
 ## Complementary Metrics
 
@@ -87,6 +93,7 @@ Use both: D catches structural problems at the component level; M catches logic 
 ## Practical Application
 
 Tools that calculate these metrics:
+
 - **Java**: JDepend, SonarQube
 - **C#**: NDepend
 - **Multi-language**: SonarQube, CodeClimate

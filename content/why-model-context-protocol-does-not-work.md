@@ -35,6 +35,7 @@ Performance and accuracy decline as conversations lengthen and context accumulat
 ## The Context Bloat Problem
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Request["Each API Call"]
@@ -47,11 +48,13 @@ flowchart LR
     TR -->|"All data returned"| CB[Context Bloat]
     CB -->|"Repeats"| SP
 </pre>
+
 ::
 
 ## Solutions
 
 **Context Management**
+
 - Favor opinionated, optimized servers over official implementations
 - Write concise tool descriptions enabling understanding without external documentation
 - Consolidate related endpoints to reduce schema bloat

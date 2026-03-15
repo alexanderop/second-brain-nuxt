@@ -27,7 +27,7 @@ Returns IDs with leading slash (`/slug#section`). Don't add another slash when c
 `useAsyncData` and `queryCollection` must be explicitly imported from `#imports` in composable files, or typecheck fails:
 
 ```typescript
-import { useAsyncData, queryCollection } from '#imports'
+import { useAsyncData, queryCollection } from "#imports";
 ```
 
 ## Page Collection Queries: Use `stem` Not `slug`
@@ -49,12 +49,12 @@ Note: `data`-type collections (like `authors`) can define `slug` in their schema
 Nuxt Content generates TypeScript interfaces from your Zod schemas (e.g., `ContentCollectionItem` from the `content` collection). Import these from `@nuxt/content` to derive types rather than duplicating them:
 
 ```typescript
-import type { ContentCollectionItem, NewslettersCollectionItem } from '@nuxt/content'
+import type { ContentCollectionItem, NewslettersCollectionItem } from "@nuxt/content";
 
 // Derive types from generated collection types
-export type ContentType = ContentCollectionItem['type']
-export type ReadingStatus = NonNullable<ContentCollectionItem['readingStatus']>
-export type NewsletterPlatform = NonNullable<NewslettersCollectionItem['platform']>
+export type ContentType = ContentCollectionItem["type"];
+export type ReadingStatus = NonNullable<ContentCollectionItem["readingStatus"]>;
+export type NewsletterPlatform = NonNullable<NewslettersCollectionItem["platform"]>;
 ```
 
 **Why this matters**: The Zod schema in `content.config.ts` is the single source of truth. Deriving types from the generated interfaces ensures they stay in sync automatically.
@@ -76,11 +76,11 @@ If the array contains a value not in the Zod schema, TypeScript will error.
 ```typescript
 // app/components/BaseTypeIcon.vue
 const iconMap = {
-  youtube: 'i-lucide-youtube',
-  podcast: 'i-lucide-mic',
-  article: 'i-lucide-file-text',
+  youtube: "i-lucide-youtube",
+  podcast: "i-lucide-mic",
+  article: "i-lucide-file-text",
   // ... all types must be present
-} satisfies Record<ContentType, string>
+} satisfies Record<ContentType, string>;
 ```
 
 If a new content type is added to the Zod schema and the iconMap is missing it, TypeScript will error immediately. This pattern applies to any lookup table (icons, labels, colors, route mappings) that must stay in sync with a union type.
@@ -93,14 +93,15 @@ To exclude entire directories from a collection (e.g., local-only synced content
 // content.config.ts
 const content = defineCollection({
   source: {
-    include: '**/*.md',
-    exclude: ['authors/**', 'pages/**', 'Readwise/**']
+    include: "**/*.md",
+    exclude: ["authors/**", "pages/**", "Readwise/**"],
   },
   // ...
-})
+});
 ```
 
 This prevents excluded content from being:
+
 - Queried via `queryCollection()`
 - Indexed for search
 - Appearing in any collection-based views
@@ -115,37 +116,38 @@ This prevents excluded content from being:
 
 ```typescript
 // ✗ Fragile: Mocking queryCollection in tests
-vi.mock('@nuxt/content/server', () => ({
-  queryCollection: vi.fn().mockResolvedValue(fixtures)
-}))
-const { default: handler } = await import('../../server/api/graph.get')
+vi.mock("@nuxt/content/server", () => ({
+  queryCollection: vi.fn().mockResolvedValue(fixtures),
+}));
+const { default: handler } = await import("../../server/api/graph.get");
 ```
 
 ```typescript
 // ✓ Better: Extract pure logic, test without mocking
 // server/utils/graph.ts
 export function buildGraphFromContent(allContent: ContentItem[]): GraphData {
-  const nodes = allContent.map(createNode)
-  const edges = allContent.flatMap(item => extractEdges(item, existingNodes))
-  return { nodes, edges }
+  const nodes = allContent.map(createNode);
+  const edges = allContent.flatMap((item) => extractEdges(item, existingNodes));
+  return { nodes, edges };
 }
 
 // server/api/graph.get.ts - thin wrapper
 export default defineEventHandler(async (event) => {
-  const allContent = await queryCollection(event, 'content').all()
-  return buildGraphFromContent(allContent)  // Pure function
-})
+  const allContent = await queryCollection(event, "content").all();
+  return buildGraphFromContent(allContent); // Pure function
+});
 
 // tests/unit/utils/graph.test.ts - no mocking needed!
-describe('buildGraphFromContent', () => {
-  it('creates edges from wiki-links', () => {
-    const result = buildGraphFromContent(fixtures.linkedNotes)
-    expect(result.edges).toHaveLength(1)
-  })
-})
+describe("buildGraphFromContent", () => {
+  it("creates edges from wiki-links", () => {
+    const result = buildGraphFromContent(fixtures.linkedNotes);
+    expect(result.edges).toHaveLength(1);
+  });
+});
 ```
 
 **Why this works:**
+
 - Pure functions in `server/utils/` are unit testable without any framework mocking
 - Handler becomes a thin wrapper that only fetches data
 - Tests don't break when Nuxt Content internals change
@@ -157,13 +159,16 @@ The wiki-link transformer (`[[slug]]` → `/slug`) doesn't resolve collection pa
 
 ```markdown
 <!-- ✗ Broken: resolves to /geoffrey-huntley (404) -->
+
 [[geoffrey-huntley|Geoffrey Huntley]]
 
 <!-- ✓ Works: resolves to /authors/geoffrey-huntley -->
+
 [[authors/geoffrey-huntley|Geoffrey Huntley]]
 ```
 
 **Affected collections:**
+
 - `authors` → use `[[authors/slug|Name]]`
 - `podcasts` → use `[[podcasts/slug|Name]]`
 - `newsletters` → use `[[newsletters/slug|Name]]`
@@ -177,6 +182,7 @@ The `content:file:beforeParse` hook only runs when files are **actually parsed**
 **Symptom**: Your transformation logic isn't working, even though the hook is correctly registered in `nuxt.config.ts`.
 
 **Diagnosis**: Check the dev server output:
+
 ```text
 [@nuxt/content] ✔ Processed 7 collections and 437 files in 219.83ms (437 cached, 0 parsed)
 ```
@@ -184,11 +190,13 @@ The `content:file:beforeParse` hook only runs when files are **actually parsed**
 `0 parsed` means no files went through your `beforeParse` hook—all content was served from cache.
 
 **Solution**: Clear both cache directories to force re-parsing:
+
 ```bash
 rm -rf .nuxt .data && pnpm dev
 ```
 
 **Why both directories?**
+
 - `.nuxt` — Nuxt build cache (most developers know this one)
 - `.data` — Content database cache (SQLite, often overlooked)
 
@@ -202,24 +210,23 @@ When using `queryCollection()` inside composables that run on user interaction (
 // ✗ Bad: Queries database on every call
 export function useRandomNote() {
   async function navigateToRandomNote() {
-    const items = await queryCollection('content').select('stem').all() // Called every time!
+    const items = await queryCollection("content").select("stem").all(); // Called every time!
     // ...
   }
-  return { navigateToRandomNote }
+  return { navigateToRandomNote };
 }
 
 // ✓ Good: Queries once, cached for subsequent calls
 export function useRandomNote() {
-  const { data: stems } = useAsyncData(
-    'random-note-stems',
-    () => queryCollection('content').select('stem').all(),
-  )
+  const { data: stems } = useAsyncData("random-note-stems", () =>
+    queryCollection("content").select("stem").all(),
+  );
 
   async function navigateToRandomNote() {
-    if (!stems.value) return
+    if (!stems.value) return;
     // Use cached stems.value
   }
-  return { navigateToRandomNote }
+  return { navigateToRandomNote };
 }
 ```
 
@@ -230,6 +237,7 @@ export function useRandomNote() {
 API routes that query ALL content (especially with `body` selected) become O(N²) during prerendering—each of N pages triggers the expensive query.
 
 **Symptoms:**
+
 - Pages take 20-30+ seconds to prerender
 - Build OOMs or never completes
 - Log shows patterns like `├─ /page-name (29571ms)`
@@ -242,7 +250,7 @@ API routes that query ALL content (especially with `body` selected) become O(N²
 const { data: noteGraph } = await useAsyncData(
   `note-graph-${slug.value}`,
   () => $fetch(`/api/note-graph/${slug.value}`), // Queries ALL content, builds indexes
-)
+);
 ```
 
 **Solution**: Make supplementary features client-only:
@@ -252,15 +260,17 @@ const { data: noteGraph } = await useAsyncData(
   `note-graph-${slug.value}`,
   () => $fetch(`/api/note-graph/${slug.value}`),
   { server: false, lazy: true }, // Skip during SSR/prerender
-)
+);
 ```
 
 **When to use `{ server: false, lazy: true }`:**
+
 - Visual enhancements (graphs, relationship visualizations)
 - Supplementary navigation (backlinks, mentions, related notes)
 - Any feature that queries ALL content but isn't needed for SEO
 
 **Additional mitigations:**
+
 - Set `nitro.prerender.concurrency: 1` to reduce peak memory
 - Use `NODE_OPTIONS="--max-old-space-size=8192"` for large sites
 - Only `.select()` fields you actually need (avoid `body` when possible)

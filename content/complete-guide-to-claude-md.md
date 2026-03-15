@@ -40,6 +40,7 @@ The article recommends organizing `CLAUDE.md` around:
 ## Diagram
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Locations["File Locations"]
@@ -55,6 +56,7 @@ graph TD
     Home --> Session
     Local --> Session
 </pre>
+
 ::
 
 ## Connections

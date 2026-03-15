@@ -29,6 +29,7 @@ This article walks through implementing semantic recommendations for a static As
 ## Pipeline
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Markdown Files] --> B[Strip Formatting]
@@ -38,6 +39,7 @@ flowchart LR
     E --> F[similarities.json]
     F --> G[Astro Component]
 </pre>
+
 ::
 
 ## Code Snippets
@@ -49,10 +51,7 @@ The embedding model runs entirely in JavaScript.
 ```typescript
 import { pipeline } from "@xenova/transformers";
 
-const embedder = await pipeline(
-  "feature-extraction",
-  "Snowflake/snowflake-arctic-embed-m-v2.0"
-);
+const embedder = await pipeline("feature-extraction", "Snowflake/snowflake-arctic-embed-m-v2.0");
 ```
 
 ### Calculating Similarity

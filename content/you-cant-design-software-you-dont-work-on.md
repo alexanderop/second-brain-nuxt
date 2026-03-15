@@ -27,12 +27,12 @@ Concrete factors dominate generic factors. Developers working on a system unders
 
 ## When Design Knowledge Applies
 
-| Context | Generic Design | Hands-On Knowledge |
-|---------|----------------|-------------------|
-| New project | ✓ Useful | Not yet available |
-| Existing system | Limited value | ✓ Essential |
-| Tech stack decisions | ✓ Useful | Less relevant |
-| Implementation details | Insufficient | ✓ Required |
+| Context                | Generic Design | Hands-On Knowledge |
+| ---------------------- | -------------- | ------------------ |
+| New project            | ✓ Useful       | Not yet available  |
+| Existing system        | Limited value  | ✓ Essential        |
+| Tech stack decisions   | ✓ Useful       | Less relevant      |
+| Implementation details | Insufficient   | ✓ Required         |
 
 ## Connections
 

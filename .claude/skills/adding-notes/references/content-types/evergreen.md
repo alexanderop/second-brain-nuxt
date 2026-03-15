@@ -56,6 +56,7 @@ date: 2026-01-01
 **Priority: MEDIUM** — Evergreen notes synthesize concepts that may have visual structure.
 
 **Look for these triggers:**
+
 - The concept you're synthesizing has a natural visual form
 - Multiple sources describe the same framework differently (diagram unifies them)
 - Relationships between sub-concepts benefit from visualization

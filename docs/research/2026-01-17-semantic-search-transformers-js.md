@@ -6,6 +6,7 @@
 ## Problem Statement
 
 Implement semantic search in the Second Brain without relying on external AI providers. The approach should:
+
 1. Use Transformers.js for local embedding generation (both build-time and client-side)
 2. Store pre-computed embeddings alongside Nuxt Content's SQLite database
 3. Perform cosine similarity search client-side using the same model
@@ -18,27 +19,29 @@ Implement semantic search in the Second Brain without relying on external AI pro
 Transformers.js enables running Hugging Face models directly in the browser via ONNX Runtime (WebAssembly or WebGPU). It provides a Python-equivalent API for JavaScript.
 
 **Installation:**
+
 ```bash
 pnpm add @huggingface/transformers
 ```
 
 **Generating Embeddings:**
-```javascript
-import { pipeline, cos_sim } from '@huggingface/transformers';
 
-const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-const output = await extractor('Your text here', { pooling: 'mean', normalize: true });
+```javascript
+import { pipeline, cos_sim } from "@huggingface/transformers";
+
+const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+const output = await extractor("Your text here", { pooling: "mean", normalize: true });
 const embedding = output.tolist()[0]; // Float32Array[384]
 ```
 
 ### Recommended Embedding Models
 
-| Model | Size | Dimensions | Notes |
-|-------|------|------------|-------|
-| **TaylorAI/gte-tiny** | ~15MB | 384 | Smallest, fast, good for browser |
-| **Xenova/all-MiniLM-L6-v2** | ~22MB | 384 | Most popular, proven baseline |
-| **mixedbread-ai/mxbai-embed-xsmall-v1** | ~25MB | 384 | WebGPU optimized |
-| **Supabase/gte-small** | ~33MB | 384 | Better accuracy |
+| Model                                   | Size  | Dimensions | Notes                            |
+| --------------------------------------- | ----- | ---------- | -------------------------------- |
+| **TaylorAI/gte-tiny**                   | ~15MB | 384        | Smallest, fast, good for browser |
+| **Xenova/all-MiniLM-L6-v2**             | ~22MB | 384        | Most popular, proven baseline    |
+| **mixedbread-ai/mxbai-embed-xsmall-v1** | ~25MB | 384        | WebGPU optimized                 |
+| **Supabase/gte-small**                  | ~33MB | 384        | Better accuracy                  |
 
 **Recommendation:** Use `Xenova/all-MiniLM-L6-v2` for balance of size, speed, and quality.
 
@@ -53,7 +56,7 @@ Add an `embedding` field to `content.config.ts`:
 schema: z.object({
   // ... existing fields
   embedding: z.array(z.number()).optional(),
-})
+});
 ```
 
 **Limitation:** Nuxt Content regenerates the database on every build. Embeddings must be computed during the build process using hooks.
@@ -67,6 +70,7 @@ Store embeddings in a separate JSON file shipped with the build:
 ```
 
 Structure:
+
 ```json
 {
   "model": "Xenova/all-MiniLM-L6-v2",
@@ -96,16 +100,19 @@ CREATE VIRTUAL TABLE vec_content USING vec0(
 Transformers.js provides a built-in `cos_sim` function:
 
 ```javascript
-import { cos_sim } from '@huggingface/transformers';
+import { cos_sim } from "@huggingface/transformers";
 
 const similarity = cos_sim(queryEmbedding, documentEmbedding);
 // Returns: -1 (opposite) to 1 (identical)
 ```
 
 Manual implementation for reference:
+
 ```javascript
 function cosineSimilarity(a, b) {
-  let dot = 0, normA = 0, normB = 0;
+  let dot = 0,
+    normA = 0,
+    normB = 0;
   for (let i = 0; i < a.length; i++) {
     dot += a[i] * b[i];
     normA += a[i] * a[i];
@@ -120,6 +127,7 @@ function cosineSimilarity(a, b) {
 ### Current Search Implementation
 
 The project already has **Fuse.js full-text search** at `app/pages/search.vue`:
+
 - Searches content sections via `queryCollectionSearchSections('content')`
 - Weighted fields: title (1.0), tags (0.9), content (0.7)
 - Debounced input, keyboard navigation, snippet highlighting
@@ -127,6 +135,7 @@ The project already has **Fuse.js full-text search** at `app/pages/search.vue`:
 ### Content Structure
 
 From `content.config.ts`, key fields for embedding:
+
 - `title` - Short, focused (high semantic signal)
 - `summary` - AI-generated 1-2 sentence description (ideal for embeddings)
 - `body` - Full markdown content
@@ -135,10 +144,10 @@ From `content.config.ts`, key fields for embedding:
 
 ```typescript
 // Get all content with body
-queryCollection('content').select('stem', 'title', 'summary', 'body').all()
+queryCollection("content").select("stem", "title", "summary", "body").all();
 
 // Get searchable sections (includes heading anchors)
-queryCollectionSearchSections('content')
+queryCollectionSearchSections("content");
 ```
 
 ### Build-Time Hooks
@@ -188,39 +197,40 @@ hooks: {
 Create `scripts/generate-embeddings.ts`:
 
 ```typescript
-import { pipeline } from '@huggingface/transformers';
-import { readFile, writeFile } from 'fs/promises';
-import { glob } from 'glob';
-import matter from 'gray-matter';
+import { pipeline } from "@huggingface/transformers";
+import { readFile, writeFile } from "fs/promises";
+import { glob } from "glob";
+import matter from "gray-matter";
 
-const MODEL = 'Xenova/all-MiniLM-L6-v2';
+const MODEL = "Xenova/all-MiniLM-L6-v2";
 
 async function main() {
-  const extractor = await pipeline('feature-extraction', MODEL);
-  const files = await glob('content/**/*.md');
+  const extractor = await pipeline("feature-extraction", MODEL);
+  const files = await glob("content/**/*.md");
 
   const embeddings: Record<string, number[]> = {};
 
   for (const file of files) {
-    const content = await readFile(file, 'utf-8');
+    const content = await readFile(file, "utf-8");
     const { data, content: body } = matter(content);
 
     // Combine title + summary + first 500 chars of body
-    const text = [data.title, data.summary, body.slice(0, 500)]
-      .filter(Boolean)
-      .join(' ');
+    const text = [data.title, data.summary, body.slice(0, 500)].filter(Boolean).join(" ");
 
-    const output = await extractor(text, { pooling: 'mean', normalize: true });
-    const slug = file.replace('content/', '').replace('.md', '');
+    const output = await extractor(text, { pooling: "mean", normalize: true });
+    const slug = file.replace("content/", "").replace(".md", "");
     embeddings[slug] = Array.from(output.data);
   }
 
-  await writeFile('public/embeddings.json', JSON.stringify({
-    model: MODEL,
-    dimensions: 384,
-    generated: new Date().toISOString(),
-    embeddings
-  }));
+  await writeFile(
+    "public/embeddings.json",
+    JSON.stringify({
+      model: MODEL,
+      dimensions: 384,
+      generated: new Date().toISOString(),
+      embeddings,
+    }),
+  );
 
   console.log(`Generated embeddings for ${Object.keys(embeddings).length} documents`);
 }
@@ -233,10 +243,10 @@ main();
 Create `app/composables/useSemanticSearch.ts`:
 
 ```typescript
-import { ref, shallowRef } from 'vue';
-import { pipeline, cos_sim, type FeatureExtractionPipeline } from '@huggingface/transformers';
+import { ref, shallowRef } from "vue";
+import { pipeline, cos_sim, type FeatureExtractionPipeline } from "@huggingface/transformers";
 
-const MODEL = 'Xenova/all-MiniLM-L6-v2';
+const MODEL = "Xenova/all-MiniLM-L6-v2";
 
 interface Embeddings {
   model: string;
@@ -250,17 +260,16 @@ const isLoading = ref(false);
 const isModelReady = ref(false);
 
 export function useSemanticSearch() {
-
   async function loadEmbeddings() {
     if (embeddings.value) return;
-    const response = await fetch('/embeddings.json');
+    const response = await fetch("/embeddings.json");
     embeddings.value = await response.json();
   }
 
   async function loadModel() {
     if (extractor.value) return;
     isLoading.value = true;
-    extractor.value = await pipeline('feature-extraction', MODEL);
+    extractor.value = await pipeline("feature-extraction", MODEL);
     isModelReady.value = true;
     isLoading.value = false;
   }
@@ -269,18 +278,18 @@ export function useSemanticSearch() {
     await Promise.all([loadEmbeddings(), loadModel()]);
 
     if (!extractor.value || !embeddings.value) {
-      throw new Error('Model or embeddings not loaded');
+      throw new Error("Model or embeddings not loaded");
     }
 
     // Generate query embedding
-    const output = await extractor.value(query, { pooling: 'mean', normalize: true });
+    const output = await extractor.value(query, { pooling: "mean", normalize: true });
     const queryVector = Array.from(output.data) as number[];
 
     // Calculate similarities
     const results = Object.entries(embeddings.value.embeddings)
       .map(([slug, docVector]) => ({
         slug,
-        score: cos_sim(queryVector, docVector)
+        score: cos_sim(queryVector, docVector),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
@@ -292,7 +301,7 @@ export function useSemanticSearch() {
     search,
     loadModel,
     isLoading,
-    isModelReady
+    isModelReady,
   };
 }
 ```
@@ -304,7 +313,7 @@ Combine semantic search with existing Fuse.js:
 ```vue
 <script setup lang="ts">
 const { search: semanticSearch, isModelReady, loadModel } = useSemanticSearch();
-const query = ref('');
+const query = ref("");
 const results = ref([]);
 
 // Start loading model in background on mount
@@ -315,7 +324,7 @@ onMounted(() => {
 async function handleSearch() {
   const [semanticResults, fuseResults] = await Promise.all([
     semanticSearch(query.value, 10),
-    fuseSearch(query.value) // existing Fuse.js search
+    fuseSearch(query.value), // existing Fuse.js search
   ]);
 
   // Merge and dedupe results, prioritizing semantic matches
@@ -337,35 +346,35 @@ async function handleSearch() {
 
 ### Performance Considerations
 
-| Aspect | Recommendation |
-|--------|----------------|
-| **Model Loading** | Lazy-load on first search; cache in IndexedDB automatically |
-| **Main Thread** | Use Web Worker for embedding generation to prevent UI blocking |
-| **Memory** | ~50MB for model + embeddings; acceptable for desktop/modern mobile |
-| **Initial Load** | Show Fuse.js results immediately; semantic results appear when model ready |
-| **WebGPU** | Enable with `{ device: 'webgpu' }` for 10-100x speedup where supported |
+| Aspect            | Recommendation                                                             |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Model Loading** | Lazy-load on first search; cache in IndexedDB automatically                |
+| **Main Thread**   | Use Web Worker for embedding generation to prevent UI blocking             |
+| **Memory**        | ~50MB for model + embeddings; acceptable for desktop/modern mobile         |
+| **Initial Load**  | Show Fuse.js results immediately; semantic results appear when model ready |
+| **WebGPU**        | Enable with `{ device: 'webgpu' }` for 10-100x speedup where supported     |
 
 ### Web Worker Implementation (Recommended)
 
 Create `app/workers/embedding.worker.ts`:
 
 ```typescript
-import { pipeline, type FeatureExtractionPipeline } from '@huggingface/transformers';
+import { pipeline, type FeatureExtractionPipeline } from "@huggingface/transformers";
 
 let extractor: FeatureExtractionPipeline | null = null;
 
 self.onmessage = async (event) => {
   const { type, payload } = event.data;
 
-  if (type === 'init') {
-    extractor = await pipeline('feature-extraction', payload.model);
-    self.postMessage({ type: 'ready' });
+  if (type === "init") {
+    extractor = await pipeline("feature-extraction", payload.model);
+    self.postMessage({ type: "ready" });
   }
 
-  if (type === 'embed') {
-    if (!extractor) throw new Error('Model not loaded');
-    const output = await extractor(payload.text, { pooling: 'mean', normalize: true });
-    self.postMessage({ type: 'embedding', data: Array.from(output.data) });
+  if (type === "embed") {
+    if (!extractor) throw new Error("Model not loaded");
+    const output = await extractor(payload.text, { pooling: "mean", normalize: true });
+    self.postMessage({ type: "embedding", data: Array.from(output.data) });
   }
 };
 ```
@@ -374,44 +383,45 @@ self.onmessage = async (event) => {
 
 ### Build-Time vs Runtime Embeddings
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| **Build-time (recommended)** | Fast search, works offline, no runtime cost | Requires rebuild for new content |
-| **Runtime** | Always current | API latency, requires connectivity |
-| **Hybrid** | Best of both | Complex implementation |
+| Approach                     | Pros                                        | Cons                               |
+| ---------------------------- | ------------------------------------------- | ---------------------------------- |
+| **Build-time (recommended)** | Fast search, works offline, no runtime cost | Requires rebuild for new content   |
+| **Runtime**                  | Always current                              | API latency, requires connectivity |
+| **Hybrid**                   | Best of both                                | Complex implementation             |
 
 ### sqlite-vec vs JSON File
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| **JSON file (recommended)** | Simple, no WASM extension | Linear scan, slower for >10K docs |
-| **sqlite-vec** | Indexed KNN, fast at scale | Complex setup, WASM loading |
+| Approach                    | Pros                       | Cons                              |
+| --------------------------- | -------------------------- | --------------------------------- |
+| **JSON file (recommended)** | Simple, no WASM extension  | Linear scan, slower for >10K docs |
+| **sqlite-vec**              | Indexed KNN, fast at scale | Complex setup, WASM loading       |
 
 For a Second Brain with <1000 documents, JSON file approach is sufficient.
 
 ### Model Selection
 
-| If you need... | Use... |
-|----------------|--------|
-| Smallest download | `TaylorAI/gte-tiny` (15MB) |
-| Best balance | `Xenova/all-MiniLM-L6-v2` (22MB) |
-| Multilingual | `Xenova/multilingual-e5-small` (118MB) |
-| Highest accuracy | `Supabase/gte-small` (33MB) |
+| If you need...    | Use...                                 |
+| ----------------- | -------------------------------------- |
+| Smallest download | `TaylorAI/gte-tiny` (15MB)             |
+| Best balance      | `Xenova/all-MiniLM-L6-v2` (22MB)       |
+| Multilingual      | `Xenova/multilingual-e5-small` (118MB) |
+| Highest accuracy  | `Supabase/gte-small` (33MB)            |
 
 ## Browser Compatibility
 
-| Browser | WASM (default) | WebGPU (faster) |
-|---------|----------------|-----------------|
-| Chrome 113+ | Yes | Yes |
-| Firefox | Yes | Behind flag |
-| Safari 15.4+ | Yes | Behind flag |
-| Edge 113+ | Yes | Yes |
+| Browser      | WASM (default) | WebGPU (faster) |
+| ------------ | -------------- | --------------- |
+| Chrome 113+  | Yes            | Yes             |
+| Firefox      | Yes            | Behind flag     |
+| Safari 15.4+ | Yes            | Behind flag     |
+| Edge 113+    | Yes            | Yes             |
 
 WASM provides ~100% browser coverage. WebGPU offers 10-100x speedup but limited support.
 
 ## Sources
 
 ### Official Documentation
+
 - [Transformers.js Documentation](https://huggingface.co/docs/transformers.js/en/index)
 - [Transformers.js Pipelines API](https://huggingface.co/docs/transformers.js/en/api/pipelines)
 - [Transformers.js WebGPU Guide](https://huggingface.co/docs/transformers.js/en/guides/webgpu)
@@ -419,22 +429,26 @@ WASM provides ~100% browser coverage. WebGPU offers 10-100x speedup but limited 
 - [Nuxt Content v3 Hooks](https://content.nuxt.com/docs/advanced/hooks)
 
 ### SQLite Vector Extensions
+
 - [sqlite-vec GitHub](https://github.com/asg017/sqlite-vec)
 - [sqlite-vec Node.js Docs](https://alexgarcia.xyz/sqlite-vec/js.html)
 - [How sqlite-vec Works](https://medium.com/@stephenc211/how-sqlite-vec-works-for-storing-and-querying-vector-embeddings-165adeeeceea)
 
 ### Implementation References
+
 - [SemanticFinder - Browser Semantic Search](https://github.com/do-me/SemanticFinder)
 - [client-vector-search NPM](https://www.npmjs.com/package/client-vector-search)
 - [MeMemo - Browser Vector Search with HNSW](https://github.com/poloclub/mememo)
 - [Simon Willison: OpenAI Embeddings for Related Content](https://til.simonwillison.net/llms/openai-embeddings-related-content)
 
 ### Performance and Best Practices
+
 - [Transformers.js v3 WebGPU Announcement](https://huggingface.co/blog/transformersjs-v3)
 - [Client-Side AI Performance Guide](https://web.dev/articles/client-side-ai-performance)
 - [Mozilla 3W Pattern (WebLLM + WASM + WebWorkers)](https://blog.mozilla.ai/3w-for-in-browser-ai-webllm-wasm-webworkers/)
 - [IndexedDB as a Vector Database](https://paul.kinlan.me/idb-as-a-vector-database/)
 
 ### Embedding Models
+
 - [Open Source Embedding Models Benchmark](https://research.aimultiple.com/open-source-embedding-models/)
 - [Best Embedding Models Benchmarked](https://supermemory.ai/blog/best-open-source-embedding-models-benchmarked-and-ranked/)

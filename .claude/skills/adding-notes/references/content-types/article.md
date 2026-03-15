@@ -13,6 +13,7 @@ Web articles, blog posts, and written content.
 Use WebFetch to extract: title, author, description, key points
 
 **Agent B - Author Check** (if author known):
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'Author Name'
 ```
@@ -63,6 +64,7 @@ For programming/code content, add Code Snippets section.
 ### Technical Detection
 
 Content is technical if ANY:
+
 - URL domain: github.com, dev.to, hashnode.dev, medium.com (tech), stackoverflow.com, smashingmagazine.com, egghead.io
 - Title contains: code, api, sdk, tutorial, implement, build, programming, developer, library, framework, typescript, javascript, python, vue, react
 
@@ -107,7 +109,7 @@ How to set up the client.
 const client = new ApiClient({
   baseUrl: process.env.API_URL,
   timeout: 5000,
-})
+});
 ```
 
 ### Error Handling
@@ -116,7 +118,7 @@ Recommended error handling pattern.
 
 ```typescript
 try {
-  const result = await client.fetch('/users')
+  const result = await client.fetch("/users");
 } catch (error) {
   if (error instanceof NetworkError) {
     // Retry logic here
@@ -137,6 +139,7 @@ try {
 See `references/code-extraction.md` for detailed selection and formatting rules.
 
 **Quick reference:**
+
 - Include 1-3 snippets when content is technical
 - 5-20 lines each, self-contained
 - Proper language tags
@@ -149,6 +152,7 @@ See `references/code-extraction.md` for detailed selection and formatting rules.
 **Priority: HIGH for technical articles, MEDIUM for general articles**
 
 **Technical article triggers:**
+
 - Architecture explanations
 - Data flow descriptions
 - Request/response cycles
@@ -156,11 +160,13 @@ See `references/code-extraction.md` for detailed selection and formatting rules.
 - Pipeline or build processes
 
 **General article triggers:**
+
 - Named frameworks or models
 - Process descriptions with steps
 - Comparison of approaches
 
 **Mermaid types commonly used:**
+
 - `graph TD` — Architecture, component relationships
 - `flowchart LR` — Data flow, request cycles
 - `sequenceDiagram` — API interactions (use sparingly)

@@ -29,15 +29,15 @@ Code coverage tells you what code your tests execute. Mutation testing tells you
 
 The skill catalogs operators across multiple categories:
 
-| Category | Examples |
-|----------|----------|
-| Arithmetic | `+` to `-`, `*` to `/` |
-| Conditionals | `>=` to `>`, boundary value shifts |
-| Logical | `&&` to `||`, `??` changes |
-| Boolean literals | `true` to `false` |
-| Block statements | Removing entire function bodies |
-| String/Array | Empty vs. populated values |
-| Methods | `startsWith()` to `endsWith()`, `some()` to `every()` |
+| Category         | Examples                                              |
+| ---------------- | ----------------------------------------------------- | --- | --------------- |
+| Arithmetic       | `+` to `-`, `*` to `/`                                |
+| Conditionals     | `>=` to `>`, boundary value shifts                    |
+| Logical          | `&&` to `                                             |     | `, `??` changes |
+| Boolean literals | `true` to `false`                                     |
+| Block statements | Removing entire function bodies                       |
+| String/Array     | Empty vs. populated values                            |
+| Methods          | `startsWith()` to `endsWith()`, `some()` to `every()` |
 
 ## Systematic Analysis Process
 
@@ -49,6 +49,7 @@ The skill catalogs operators across multiple categories:
 ## Critical Patterns
 
 **Surviving mutants often occur with:**
+
 - Tests using identity values (0, 1, empty strings)
 - Assertions that only verify "no error thrown"
 - Testing only one side of conditional branches
@@ -56,6 +57,7 @@ The skill catalogs operators across multiple categories:
 - Tests not verifying side effects
 
 **Strengthening weak tests:**
+
 - Add boundary value cases (exactly at threshold)
 - Test all meaningful branch combinations
 - Use non-identity values that reveal operator differences

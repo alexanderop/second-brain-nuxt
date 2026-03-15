@@ -18,6 +18,7 @@ date: 2026-01-02
 Prompt chaining decomposes a monolithic prompt into sequential subprompts. Each step produces output that feeds into the next step's input.
 
 **Example: Summarization Pipeline**
+
 1. Generate initial summary
 2. Critique the summary
 3. Refine based on critique
@@ -25,6 +26,7 @@ Prompt chaining decomposes a monolithic prompt into sequential subprompts. Each 
 Research shows 2x preference for summaries generated via prompt chaining versus monolithic prompts (Sun et al.). The decomposition lets each step focus on one objective.
 
 **LangChain Implementation:**
+
 ```python
 summarize_prompt = PromptTemplate("Summarize: {text}")
 question_prompt = PromptTemplate("Generate a question about: {summary}")
@@ -40,11 +42,13 @@ chain = (
 Routing adds conditional logic before prompt chains. A router analyzes the user's query and selects the appropriate agent path based on inferred intent.
 
 **When to use routing:**
+
 - Multiple workflows exist (e.g., summarization vs. database lookup)
 - Different prompt chains suit different intents
 - Tasks require multitask performance
 
 **LangGraph Implementation:**
+
 ```python
 # Define router node
 def do_route(state):

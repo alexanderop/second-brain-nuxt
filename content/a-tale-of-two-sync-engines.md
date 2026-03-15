@@ -39,6 +39,7 @@ Multiplayer syncs raw data — what clients see is what the server stores. LiveG
 This also makes consistency hard. If a query feeds both a raw view and a computed view, an update should hit both at the same time. But computations take time, fetch more data, and can't easily guarantee atomicity.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph MP["Multiplayer"]
@@ -66,6 +67,7 @@ Unlimited sessions`"]
     MP_FILE -.->|"Tails DB updates
 e.g. thumbnails"| LG_QC
 </pre>
+
 ::
 
 ### Scale directly informs design

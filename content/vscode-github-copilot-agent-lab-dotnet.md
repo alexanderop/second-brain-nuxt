@@ -33,12 +33,14 @@ The workshop covers four skill areas essential for working effectively with AI c
 ## Workshop Flow
 
 ::mermaid
+
 <pre>
 flowchart LR
     P1[Part 1: Setup<br/>Context Engineering] --> P2[Part 2: Design-First<br/>Frontend]
     P2 --> P3[Part 3: Custom<br/>Quiz Master]
     P3 --> P4[Part 4: Multi-Agent<br/>Development]
 </pre>
+
 ::
 
 ## Prerequisites

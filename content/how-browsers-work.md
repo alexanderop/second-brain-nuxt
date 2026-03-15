@@ -37,6 +37,7 @@ The Document Object Model sits at the center of browser functionality. JavaScrip
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     URL[URL Input] --> HTTP[HTTP Request]
@@ -51,6 +52,7 @@ flowchart LR
     Paint --> Composite[Composite]
     Composite --> Pixels[Pixels on Screen]
 </pre>
+
 ::
 
 ## Why This Matters

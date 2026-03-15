@@ -84,6 +84,7 @@ $ widget-cli static \
 The feedback-loopable workflow converts human-centric interfaces into agent-consumable feedback loops.
 
 ::mermaid
+
 <pre>
 flowchart LR
     P[Build Playground] --> E[Set Up Experiments]
@@ -93,6 +94,7 @@ flowchart LR
     V -->|Fail| F
     R -->|Adjust Direction| P
 </pre>
+
 ::
 
 ## Connections

@@ -20,39 +20,47 @@ When design requests a consistent change across many instances (like footer marg
 ## Outline
 
 ### 1. The Hook (Problem)
+
 - Real story: design requested footer margin change across 30+ modals
 - Each modal had its own footer implementation with inconsistent styles
 - No single source of truth
 
 ### 2. What We Had: Single-Slot Modal
+
 - Show the simple Modal with one default slot
 - Show 3 consumer examples with different footer styles
 - Highlight the inconsistency problem
 
 ### 3. The Compound Component Solution
+
 - Shared context via provide/inject
 - Individual pieces: ModalRoot, ModalOverlay, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody, ModalFooter
 - Using `cn()` from @sglara/cn for class merging
 
 ### 4. The Payoff
+
 - Same modals rewritten with compound components
 - One-line change updates all 30 modals
 
 ### 5. Flexibility Escape Hatches
+
 - Override with class prop (cn merges intelligently)
 - Skip component entirely for custom layout
 - Move components around (ModalClose in footer)
 
 ### 6. Why cn()?
+
 - Combines clsx + tailwind-merge
 - Later classes win on Tailwind conflicts
 - Makes override pattern work
 
 ### 7. Convenience Wrapper
+
 - SimpleModal for teams that don't need flexibility
 - Choose: SimpleModal for quick stuff, primitives for control
 
 ### 8. When Compound Components Make Sense
+
 - Good: shared defaults with escape hatches, layout flexibility, unpredictable variations
 - Overkill: fixed layout, dynamic data, mandatory consistency
 
@@ -65,28 +73,34 @@ When design requests a consistent change across many instances (like footer marg
 ## Similar Posts (Landscape)
 
 **Provide/Inject Tutorials** (use trivial examples, not complete systems):
+
 - [Tightly Coupled Components with Provide/Inject](https://vueschool.io/articles/vuejs-tutorials/tightly-coupled-components-vue-components-with-provide-inject/) - Vue School, VTabs example
 - [Using provide/inject in Vue.js 3](https://blog.logrocket.com/provide-inject-vue-js-3-composition-api/) - LogRocket, prop drilling focus
 - [Provide/Inject Pattern](https://www.patterns.dev/vue/provide-inject/) - Patterns.dev, theme/locale examples
 
 **Compound Component Overviews** (mention pattern but no deep-dive):
+
 - [5 Component Design Patterns](https://vueschool.io/articles/vuejs-tutorials/5-component-design-patterns-to-boost-your-vue-js-applications/) - Vue School
 - [12 Design Patterns in Vue](https://michaelnthiessen.com/12-design-patterns-vue/) - Michael Thiessen, short examples
 
 **Modal Tutorials** (single monolithic components, not compound):
+
 - [How To Build a Modal Component](https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component) - DigitalOcean
 - [Reusable Dynamic Modal on Vue 3](https://dev.to/cloudx/reusable-dynamic-modal-on-vue-3-1k56) - DEV, global modal service
 
 **shadcn-vue / Reka UI** (explain what, not how to build):
+
 - [Component Architecture Patterns](https://deepwiki.com/unovue/shadcn-vue/5.1-component-architecture-patterns) - DeepWiki
 - [Reka UI Introduction](https://reka-ui.com/docs/overview/introduction) - 40+ primitives
 
 **cn() Articles** (React-focused):
+
 - [Why Does Shadcn use cn()?](https://www.webdong.dev/en/post/tailwind-merge-and-clsx-in-shadcn/) - WebDong, deep dive
 
 ### Gap This Post Fills
 
 No existing article combines:
+
 1. Complete modal compound system (8 parts: Root → Footer)
 2. `cn()` integration for Vue class overrides
 3. "Build shadcn-vue patterns yourself" angle
@@ -96,7 +110,7 @@ No existing article combines:
 
 ### Full Draft
 
-*Design System, API Design, Vue — 5 min read*
+_Design System, API Design, Vue — 5 min read_
 
 ## The Problem That Started It All
 
@@ -118,13 +132,13 @@ Here's roughly what our Modal looked like:
 <!-- Modal.vue -->
 <script setup lang="ts">
 defineProps<{
-  open: boolean
-  title: string
-}>()
+  open: boolean;
+  title: string;
+}>();
 
 defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 </script>
 
 <template>
@@ -201,13 +215,13 @@ Let's build it. First, the shared context:
 
 ```ts
 // modal/context.ts
-import type { InjectionKey } from 'vue'
+import type { InjectionKey } from "vue";
 
 export interface ModalContext {
-  close: () => void
+  close: () => void;
 }
 
-export const ModalContextKey: InjectionKey<ModalContext> = Symbol('Modal')
+export const ModalContextKey: InjectionKey<ModalContext> = Symbol("Modal");
 ```
 
 Now the pieces. I'm using [`@sglara/cn`](https://github.com/SGLara/cn) which combines `clsx` and `tailwind-merge`—it lets consumers override any default class cleanly:
@@ -215,22 +229,22 @@ Now the pieces. I'm using [`@sglara/cn`](https://github.com/SGLara/cn) which com
 ```vue
 <!-- modal/ModalRoot.vue -->
 <script setup lang="ts">
-import { provide } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { provide } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  open: boolean
-  class?: string
-}>()
+  open: boolean;
+  class?: string;
+}>();
 
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
 provide(ModalContextKey, {
-  close: () => emit('close')
-})
+  close: () => emit("close"),
+});
 </script>
 
 <template>
@@ -245,15 +259,15 @@ provide(ModalContextKey, {
 ```vue
 <!-- modal/ModalOverlay.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 
-const context = inject(ModalContextKey)
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -267,20 +281,22 @@ const context = inject(ModalContextKey)
 ```vue
 <!-- modal/ModalContent.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 </script>
 
 <template>
   <div
-    :class="cn(
-      'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
-      'bg-white rounded-lg shadow-xl w-full max-w-md',
-      props.class
-    )"
+    :class="
+      cn(
+        'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+        'bg-white rounded-lg shadow-xl w-full max-w-md',
+        props.class,
+      )
+    "
     @click.stop
   >
     <slot />
@@ -291,11 +307,11 @@ const props = defineProps<{
 ```vue
 <!-- modal/ModalHeader.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 </script>
 
 <template>
@@ -308,11 +324,11 @@ const props = defineProps<{
 ```vue
 <!-- modal/ModalTitle.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 </script>
 
 <template>
@@ -325,15 +341,15 @@ const props = defineProps<{
 ```vue
 <!-- modal/ModalClose.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 
-const context = inject(ModalContextKey)
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -349,11 +365,11 @@ const context = inject(ModalContextKey)
 ```vue
 <!-- modal/ModalBody.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 </script>
 
 <template>
@@ -368,11 +384,11 @@ And here's the star of the show—the footer that would have saved me hours:
 ```vue
 <!-- modal/ModalFooter.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 const props = defineProps<{
-  class?: string
-}>()
+  class?: string;
+}>();
 </script>
 
 <template>
@@ -386,14 +402,14 @@ Export everything:
 
 ```ts
 // modal/index.ts
-export { default as Modal } from './ModalRoot.vue'
-export { default as ModalOverlay } from './ModalOverlay.vue'
-export { default as ModalContent } from './ModalContent.vue'
-export { default as ModalHeader } from './ModalHeader.vue'
-export { default as ModalTitle } from './ModalTitle.vue'
-export { default as ModalClose } from './ModalClose.vue'
-export { default as ModalBody } from './ModalBody.vue'
-export { default as ModalFooter } from './ModalFooter.vue'
+export { default as Modal } from "./ModalRoot.vue";
+export { default as ModalOverlay } from "./ModalOverlay.vue";
+export { default as ModalContent } from "./ModalContent.vue";
+export { default as ModalHeader } from "./ModalHeader.vue";
+export { default as ModalTitle } from "./ModalTitle.vue";
+export { default as ModalClose } from "./ModalClose.vue";
+export { default as ModalBody } from "./ModalBody.vue";
+export { default as ModalFooter } from "./ModalFooter.vue";
 ```
 
 ## The Payoff: One File to Change
@@ -404,10 +420,15 @@ Now those same modals look like this:
 <!-- DeleteConfirmModal.vue -->
 <script setup lang="ts">
 import {
-  Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalTitle, ModalClose,
-  ModalBody, ModalFooter
-} from '@/components/modal'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+  ModalBody,
+  ModalFooter,
+} from "@/components/modal";
 </script>
 
 <template>
@@ -509,17 +530,17 @@ The `ModalClose` component works anywhere because it uses `inject` to get the `c
 The [`@sglara/cn`](https://github.com/SGLara/cn) package is small but essential. It combines `clsx` (conditional classes) with `tailwind-merge` (conflict resolution):
 
 ```ts
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 // Later classes win when there's a Tailwind conflict
-cn('p-4', 'p-6') // → "p-6"
-cn('gap-3', 'gap-6') // → "gap-6"
+cn("p-4", "p-6"); // → "p-6"
+cn("gap-3", "gap-6"); // → "gap-6"
 
 // Non-conflicting classes are preserved
-cn('p-4 border-t', 'bg-gray-50') // → "p-4 border-t bg-gray-50"
+cn("p-4 border-t", "bg-gray-50"); // → "p-4 border-t bg-gray-50"
 
 // Conditional classes work too
-cn('flex', { 'opacity-50': isDisabled })
+cn("flex", { "opacity-50": isDisabled });
 ```
 
 This is what makes the override pattern work. When someone passes `class="gap-6"` to `ModalFooter`, the default `gap-3` is replaced, not duplicated.
@@ -531,16 +552,16 @@ The magic that connects these components is Vue's `provide`/`inject`. The parent
 ```ts
 // In ModalRoot.vue
 provide(ModalContextKey, {
-  close: () => emit('close')
-})
+  close: () => emit("close"),
+});
 ```
 
 Any descendant can inject it:
 
 ```ts
 // In ModalClose.vue or ModalOverlay.vue
-const context = inject(ModalContextKey)
-context?.close()
+const context = inject(ModalContextKey);
+context?.close();
 ```
 
 This is the same pattern Radix Vue uses. It means `ModalClose` works whether it's in the header, footer, or nested inside some other component—it'll always find its parent `Modal`.
@@ -553,19 +574,24 @@ More verbose markup is the tradeoff. For teams that don't need flexibility in mo
 <!-- SimpleModal.vue -->
 <script setup lang="ts">
 import {
-  Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalTitle, ModalClose,
-  ModalBody, ModalFooter
-} from './index'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+  ModalBody,
+  ModalFooter,
+} from "./index";
 
 defineProps<{
-  open: boolean
-  title: string
-}>()
+  open: boolean;
+  title: string;
+}>();
 
 defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 </script>
 
 <template>

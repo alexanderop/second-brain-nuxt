@@ -33,12 +33,14 @@ The project sits in technical preview. APIs may change before stable release.
 The SDK functions as a bridge between application code and the Copilot CLI:
 
 ::mermaid
+
 <pre>
 flowchart LR
     App[Your Application] --> SDK[Copilot SDK]
     SDK -->|JSON-RPC| CLI[Copilot CLI Server]
     CLI --> Copilot[GitHub Copilot]
 </pre>
+
 ::
 
 ## Code Snippets
@@ -62,7 +64,7 @@ dotnet add package GitHub.Copilot.SDK
 ### Basic Usage (TypeScript)
 
 ```typescript
-import { CopilotClient } from '@github/copilot-sdk';
+import { CopilotClient } from "@github/copilot-sdk";
 
 const client = new CopilotClient();
 await client.initialize();

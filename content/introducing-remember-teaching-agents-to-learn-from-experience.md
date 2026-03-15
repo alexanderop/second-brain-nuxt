@@ -24,6 +24,7 @@ date: 2026-01-24
 ## The /remember Flow
 
 ::mermaid
+
 <pre>
 flowchart LR
     Conv[Conversation Thread] --> Remember["/remember command"]
@@ -33,6 +34,7 @@ flowchart LR
     Decide -->|Workflow| Skills[(skills/)]
     AgentsMD & Skills --> Future[Future Sessions]
 </pre>
+
 ::
 
 ## How It Works

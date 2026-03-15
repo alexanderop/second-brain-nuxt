@@ -66,7 +66,7 @@ Claude Code finally mirrors this. And that's not an iteration—it's a paradigm 
 
 ## Draft Sections
 
-*None yet*
+_None yet_
 
 ## Open Questions
 

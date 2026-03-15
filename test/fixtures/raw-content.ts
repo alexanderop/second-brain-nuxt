@@ -5,7 +5,7 @@
  */
 
 export interface RawContentFixture {
-  raw: string
+  raw: string;
 }
 
 export const simpleRawContent: RawContentFixture = {
@@ -21,7 +21,7 @@ Small changes, remarkable results.
 
 Links to [[deep-work]] and [[thinking-fast-and-slow]].
 `,
-}
+};
 
 export const minimalRawContent: RawContentFixture = {
   raw: `---
@@ -31,8 +31,8 @@ type: note
 
 Just a simple note.
 `,
-}
+};
 
 export function createRawContentResponse(markdown: string): RawContentFixture {
-  return { raw: markdown }
+  return { raw: markdown };
 }

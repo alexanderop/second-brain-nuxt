@@ -20,6 +20,7 @@ Heidenstedt lays out 12 principles for maintaining quality when AI generates you
 ## AI Governance Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Layer1["Establish Intent"]
@@ -39,6 +40,7 @@ graph TD
     Layer1 --> Layer2
     Layer2 --> Layer3
 </pre>
+
 ::
 
 ## Key Principles

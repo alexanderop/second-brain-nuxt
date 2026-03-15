@@ -20,6 +20,7 @@ date: 2026-02-22
 The hardest unsolved problem in local-first isn't sync — it's auth. Cloud apps lean on a central server that sits on the hot path of every request, checking tokens and enforcing rules. Remove that server and the whole model collapses. Brooklyn Zelenka presents Keyhive, a research project from Ink & Switch, that flips the architecture: instead of "auth's place" (server checks everything), local-first requires "auth's data" (permissions travel with the encrypted bytes). The result is a system where a sync server can store your data without ever reading it, and the share button still works exactly like you'd expect.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Keyhive))
@@ -44,6 +45,7 @@ mindmap
             Backward: what can I touch
             Drives the share menu
 </pre>
+
 ::
 
 ## Key Arguments
@@ -61,6 +63,7 @@ Keyhive's E2EE uses a clever chunking strategy: hash each operation, use trailin
 Instead of rules on a central server, Keyhive uses capability-based certificates. Every entity — document, user, device, team — has a key pair. A document signs a certificate granting write access to a team, the team delegates to a user, the user delegates to their device. When the device writes, the invocation includes the full certificate chain back to the document. Anyone can verify it, anywhere, without calling home to any server.
 
 ::mermaid
+
 <pre>
 flowchart LR
     Doc["`**Document**
@@ -73,6 +76,7 @@ flowchart LR
     Device -->|"invocation
 + full cert chain"| Doc
 </pre>
+
 ::
 
 ### Permissions Are a CRDT, Not a Rule Engine

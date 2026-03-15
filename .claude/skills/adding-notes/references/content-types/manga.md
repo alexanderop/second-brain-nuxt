@@ -10,11 +10,13 @@ Manga series from Goodreads. Create **ONE note per series**, not per volume.
 ## Metadata Collection
 
 **Agent A - Manga Metadata:**
+
 ```bash
 .claude/skills/adding-notes/scripts/get-manga-metadata.sh 'SERIES_URL'
 ```
 
 **Agent B - Author Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'Author Name'
 ```
@@ -42,11 +44,11 @@ date: 2026-01-01
 
 ## Manga-specific Fields
 
-| Field | Required | Values |
-|-------|----------|--------|
-| `volumes` | Yes | Total volume count (number) |
-| `status` | Yes | `ongoing`, `completed`, `hiatus` |
-| `cover` | No | Cover image URL |
+| Field     | Required | Values                           |
+| --------- | -------- | -------------------------------- |
+| `volumes` | Yes      | Total volume count (number)      |
+| `status`  | Yes      | `ongoing`, `completed`, `hiatus` |
+| `cover`   | No       | Cover image URL                  |
 
 ## Body Template
 

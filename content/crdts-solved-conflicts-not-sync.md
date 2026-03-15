@@ -36,6 +36,7 @@ Ditto's differentiator is mesh networking over Bluetooth LE, peer-to-peer Wi-Fi,
 Ditto's solution to unreliable transports: use all of them simultaneously. If Bluetooth drops, route through peer-to-peer Wi-Fi. The multiplexer is network-agnostic, maintaining link-state routing tables across the mesh to determine optimal paths. The end user doesn't care which transport delivered their data — they just need it to arrive.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Building a
@@ -71,6 +72,7 @@ mindmap
             Hybrid Logical Clocks
             Automated TTL Cleanup
 </pre>
+
 ::
 
 ### Property-Level Deltas, Not Documents

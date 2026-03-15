@@ -27,6 +27,7 @@ date: 2026-01-25
 ## How Remotion Works
 
 ::mermaid
+
 <pre>
 flowchart LR
     Prompt[Plain English Prompt] --> Claude[Claude Code]
@@ -36,6 +37,7 @@ flowchart LR
     Frames --> FFmpeg[FFmpeg]
     FFmpeg --> Video[MP4 Output]
 </pre>
+
 ::
 
 The workflow transforms text prompts into video through code generation. Claude writes React components, Remotion renders each frame, and FFmpeg stitches them into a video file.
@@ -55,7 +57,7 @@ The workflow transforms text prompts into video through code generation. Claude 
 Remotion uses `Sequence` components to place elements on a timeline:
 
 ```tsx
-import { Sequence } from 'remotion';
+import { Sequence } from "remotion";
 
 export const MyVideo = () => (
   <>

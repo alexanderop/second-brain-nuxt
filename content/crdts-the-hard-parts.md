@@ -153,15 +153,15 @@ Every character in a text CRDT carries metadata: a unique identifier (Lamport ti
 
 **Results at each level of history retention:**
 
-| What's stored | Size | Notes |
-|---|---|---|
-| Full history, JSON | 150 MB | ~500 bytes/change |
-| Full history, JSON gzipped | 6 MB | Standard compression |
-| Full history, binary | 700 KB | **200x improvement** over JSON |
-| Full history, binary gzipped | 300 KB | Under 1 byte per change |
-| Without cursor movements | 230 KB | Saves ~22% |
-| Without tombstones | ~160 KB | Loses ability to merge with concurrent edits |
-| Raw CRDT metadata only (no history) | 50 KB | **48% overhead** on top of 100 KB raw text |
+| What's stored                       | Size    | Notes                                        |
+| ----------------------------------- | ------- | -------------------------------------------- |
+| Full history, JSON                  | 150 MB  | ~500 bytes/change                            |
+| Full history, JSON gzipped          | 6 MB    | Standard compression                         |
+| Full history, binary                | 700 KB  | **200x improvement** over JSON               |
+| Full history, binary gzipped        | 300 KB  | Under 1 byte per change                      |
+| Without cursor movements            | 230 KB  | Saves ~22%                                   |
+| Without tombstones                  | ~160 KB | Loses ability to merge with concurrent edits |
+| Raw CRDT metadata only (no history) | 50 KB   | **48% overhead** on top of 100 KB raw text   |
 
 The key insight: tombstones add only 48% overhead. The difference between naive JSON and optimized binary encoding accounts for a 200x difference. Optimizing the encoding matters far more than garbage-collecting tombstones.
 

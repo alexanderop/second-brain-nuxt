@@ -1,37 +1,30 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useAsyncData, useSeoMeta, queryCollection } from '#imports'
-import { usePageTitle } from '~/composables/usePageTitle'
-import { ContentRenderer, UAvatar, UButton } from '#components'
-import { buildSocialLinks } from '~/utils/socialLinks'
+import { computed } from "vue";
+import { useAsyncData, useSeoMeta, queryCollection } from "#imports";
+import { usePageTitle } from "~/composables/usePageTitle";
+import { ContentRenderer, UAvatar, UButton } from "#components";
+import { buildSocialLinks } from "~/utils/socialLinks";
 
-const { data: page } = await useAsyncData('about-page', () => {
-  return queryCollection('pages')
-    .path('/pages/about')
-    .first()
-})
+const { data: page } = await useAsyncData("about-page", () => {
+  return queryCollection("pages").path("/pages/about").first();
+});
 
-const socialLinks = computed(() => buildSocialLinks(page.value?.socials))
+const socialLinks = computed(() => buildSocialLinks(page.value?.socials));
 
-usePageTitle(() => page.value?.title ?? 'About')
+usePageTitle(() => page.value?.title ?? "About");
 
 useSeoMeta({
-  description: () => page.value?.description ?? '',
-})
+  description: () => page.value?.description ?? "",
+});
 </script>
 
 <template>
   <div>
     <div class="flex items-center gap-4 mb-8">
-      <UAvatar
-        v-if="page?.avatar"
-        :src="page.avatar"
-        :alt="page?.title"
-        size="xl"
-      />
+      <UAvatar v-if="page?.avatar" :src="page.avatar" :alt="page?.title" size="xl" />
       <div>
         <h1 class="text-2xl font-semibold tracking-tight">
-          {{ page?.title ?? 'About' }}
+          {{ page?.title ?? "About" }}
         </h1>
         <p v-if="page?.description" class="text-[var(--ui-text-muted)]">
           {{ page.description }}

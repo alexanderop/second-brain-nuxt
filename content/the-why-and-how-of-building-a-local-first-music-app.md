@@ -40,6 +40,7 @@ Schickling builds Overtone as a web app first (Figma proved the model), but that
 The research project formerly called Riffle continues as [[livestore]]. The core insight: unify state management and data management into one reactive SQLite layer. Queries return synchronously (no loading states), mutations flow through an immutable event log, and materializers translate events into SQL writes. The API feels like React state management but with the full power of SQL underneath.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Sources["Music Sources"]
@@ -77,6 +78,7 @@ flowchart TD
     SCHED --> CANVAS & DOM
     SW -.->|Offline persistence| DB
 </pre>
+
 ::
 
 ### dstream: Event Sourcing for Data You Don't Control

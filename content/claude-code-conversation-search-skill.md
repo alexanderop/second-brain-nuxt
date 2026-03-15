@@ -65,6 +65,7 @@ description: Search past Claude Code conversation history to find solutions to p
 # Conversation History Search
 
 Use this skill when the user asks:
+
 - "How did we fix X before?"
 - "What was the solution for Y?"
 - "Search history for Z"
@@ -141,6 +142,7 @@ Claude Code automatically invokes this skill when you ask things like "what did 
 ## Output
 
 Results include:
+
 - **Score**: Relevance ranking
 - **Problem**: The original issue
 - **Solution**: How it was resolved

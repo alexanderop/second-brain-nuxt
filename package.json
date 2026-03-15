@@ -1,54 +1,41 @@
 {
   "name": "secondBrain",
-  "type": "module",
   "private": true,
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp"
-    ],
-    "overrides": {
-      "devalue": ">=5.6.2",
-      "tar": ">=7.5.3",
-      "diff": ">=8.0.3"
-    }
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  },
+  "type": "module",
   "scripts": {
     "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
-    "build:excalidraw": "npx tsx scripts/build-excalidraw.ts",
-    "build:og": "npx tsx scripts/build-og-images.ts",
-    "build": "pnpm build:excalidraw && pnpm build:og && nuxt build",
+    "build:excalidraw": "vp dlx tsx scripts/build-excalidraw.ts",
+    "build:og": "vp dlx tsx scripts/build-og-images.ts",
+    "build": "vp run build:excalidraw && vp run build:og && nuxt build",
     "dev": "rm -rf .nuxt .data && nuxt dev",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",
-    "lint": "oxlint && eslint . && markdownlint-cli2 'content/**/*.md'",
-    "lint:fix": "oxlint --fix && eslint . --fix && markdownlint-cli2 --fix 'content/**/*.md'",
-    "lint:ox": "oxlint",
+    "check": "vp check",
+    "lint": "vp lint && vp run lint:es && vp run lint:md",
+    "lint:fix": "vp lint --fix && eslint . --fix && markdownlint-cli2 --fix 'content/**/*.md'",
+    "lint:ox": "vp lint",
     "lint:es": "eslint .",
     "lint:md": "markdownlint-cli2 'content/**/*.md'",
     "preview": "nuxt preview",
-    "test:unit": "vitest run --project unit",
-    "test:unit:cov": "vitest run --project unit --coverage",
-    "test:nuxt": "vitest run --project nuxt --project nuxt-browser",
-    "test": "vitest run --project unit --project nuxt --project nuxt-browser",
+    "test:unit": "vp test --project unit",
+    "test:unit:cov": "vp test --project unit --coverage",
+    "test:nuxt": "vp test --project nuxt --project nuxt-browser",
+    "test": "vp test --project unit --project nuxt --project nuxt-browser",
     "test:browser": "playwright test",
     "test:browser:ui": "playwright test --ui",
     "test:a11y": "lhci autorun --config .lighthouserc.cjs",
     "test:mutation": "stryker run",
-    "prepare": "simple-git-hooks",
+    "prepare": "vp config",
     "ralph": "./ralph/ralph.sh",
     "fix-e2e": "./ralph/fix-e2e.sh",
     "knip": "knip",
     "knip:fix": "knip --fix",
-    "format": "oxfmt .",
-    "format:check": "oxfmt --check ."
+    "format": "vp fmt",
+    "format:check": "vp fmt --check"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@nuxt/content": "^3.10.0",
-    "@nuxt/eslint": "1.12.1",
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/ui": "4.3.0",
     "@portaljs/remark-wiki-link": "^1.2.0",
@@ -65,7 +52,6 @@
     "d3-selection": "^3.0.0",
     "d3-shape": "^3.2.0",
     "d3-zoom": "^3.0.0",
-    "eslint": "^9.39.2",
     "fuse.js": "^7.1.0",
     "h3": "^1.15.5",
     "mermaid": "^11.12.2",
@@ -100,26 +86,20 @@
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vite-pwa/nuxt": "^1.1.0",
     "@vitejs/plugin-vue": "^6.0.3",
-    "@vitest/browser-playwright": "^4.0.2",
-    "@vitest/coverage-v8": "^4.0.2",
     "@vue/test-utils": "^2.4.6",
-    "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.6.2",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
     "fast-check": "^4.5.3",
     "happy-dom": "^20.0.11",
     "knip": "^5.85.0",
-    "lint-staged": "^16.1.0",
     "lucide-static": "^0.562.0",
     "markdownlint-cli2": "^0.20.0",
     "nitropack": "^2.12.9",
-    "oxfmt": "^0.36.0",
-    "oxlint": "^1.0.0",
     "playwright": "^1.57.0",
-    "simple-git-hooks": "^2.13.0",
     "typescript-eslint": "^8.32.1",
     "unplugin-auto-import": "^20.3.0",
-    "vitest": "^4.0.2",
+    "vite-plus": "latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest",
     "vitest-axe": "^0.1.0",
     "vitest-browser-vue": "^1.1.0",
     "vue": "^3.5.27",
@@ -127,22 +107,20 @@
     "vue-router": "^4.6.4",
     "yaml": "^2.8.2"
   },
-  "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged"
+  "engines": {
+    "node": ">=22.0.0"
   },
-  "lint-staged": {
-    "*.{ts,vue,js,mjs}": [
-      "pnpm exec oxfmt",
-      "pnpm exec oxlint --fix"
+  "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
     ],
-    "*.ts": [
-      "pnpm exec eslint --fix"
-    ],
-    "*.vue": [
-      "pnpm exec eslint --fix"
-    ],
-    "content/**/*.md": [
-      "pnpm exec markdownlint-cli2 --fix"
-    ]
+    "overrides": {
+      "devalue": ">=5.6.2",
+      "tar": ">=7.5.3",
+      "diff": ">=8.0.3",
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    }
   }
 }

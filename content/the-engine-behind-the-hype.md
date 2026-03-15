@@ -31,6 +31,7 @@ Uzunismail's threshold: flag concern at 70K tokens, wrap sessions at 100K. With 
 His diagnosis: "That baseline is bloated." MCPs eat tokens, sure, but the gap is too big for that alone. Hidden overhead — system prompts, tool definitions, undisclosed instructions — constitutes a tax you never agreed to pay.
 
 ::mermaid
+
 <pre>
 mindmap
     root((The Engine Behind the Hype))
@@ -56,6 +57,7 @@ mindmap
             One-person project risk
             Open-source as insurance
 </pre>
+
 ::
 
 ## The Minimalism Bet

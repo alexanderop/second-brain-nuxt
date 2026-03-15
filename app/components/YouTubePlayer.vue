@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { UIcon } from '#components'
-import { extractYouTubeVideoId, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from '~/utils/youtube'
+import { computed, ref } from "vue";
+import { UIcon } from "#components";
+import { extractYouTubeVideoId, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "~/utils/youtube";
 
 const props = defineProps<{
-  url: string
-}>()
+  url: string;
+}>();
 
-const videoId = computed(() => extractYouTubeVideoId(props.url))
-const embedUrl = computed(() => videoId.value ? getYouTubeEmbedUrl(videoId.value) : null)
-const thumbnailUrl = computed(() => videoId.value ? getYouTubeThumbnailUrl(videoId.value) : undefined)
+const videoId = computed(() => extractYouTubeVideoId(props.url));
+const embedUrl = computed(() => (videoId.value ? getYouTubeEmbedUrl(videoId.value) : null));
+const thumbnailUrl = computed(() =>
+  videoId.value ? getYouTubeThumbnailUrl(videoId.value) : undefined,
+);
 
 // Facade pattern: show thumbnail until user clicks to load iframe
-const isActivated = ref(false)
+const isActivated = ref(false);
 
 function activate() {
-  isActivated.value = true
+  isActivated.value = true;
 }
 </script>
 
@@ -24,7 +26,7 @@ function activate() {
     v-if="videoId"
     class="mb-8 rounded-xl overflow-hidden border border-[var(--ui-border)] bg-black"
   >
-    <div class="relative w-full" style="aspect-ratio: 16/9;">
+    <div class="relative w-full" style="aspect-ratio: 16/9">
       <!-- Facade: Thumbnail with play button overlay -->
       <button
         v-if="!isActivated"
@@ -39,7 +41,7 @@ function activate() {
           alt="Video thumbnail"
           class="w-full h-full object-cover"
           loading="lazy"
-        >
+        />
 
         <!-- Dark overlay for better play button visibility -->
         <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
@@ -49,10 +51,7 @@ function activate() {
           <div
             class="w-16 h-16 sm:w-20 sm:h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:bg-red-500 group-hover:scale-110 transition-all"
           >
-            <UIcon
-              name="i-lucide-play"
-              class="size-8 sm:size-10 text-white ml-1"
-            />
+            <UIcon name="i-lucide-play" class="size-8 sm:size-10 text-white ml-1" />
           </div>
         </div>
       </button>
@@ -64,7 +63,15 @@ function activate() {
         class="absolute inset-0 w-full h-full"
         title="YouTube video player"
         frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allow="
+          accelerometer;
+          autoplay;
+          clipboard-write;
+          encrypted-media;
+          gyroscope;
+          picture-in-picture;
+          web-share;
+        "
         allowfullscreen
       />
     </div>

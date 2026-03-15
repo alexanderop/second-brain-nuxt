@@ -35,6 +35,7 @@ Dan Abramov proposes applying the personal computing concept of files to social 
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph User["User's Data Repository"]
@@ -57,6 +58,7 @@ graph TD
     A2 -.->|read/write| User
     A3 -.->|read/write| User
 </pre>
+
 ::
 
 ## Connections

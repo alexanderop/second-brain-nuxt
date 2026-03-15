@@ -17,7 +17,7 @@ date: 2025-10-07
 
 ## Overview
 
-Aaron Boodman's second Local-First Conf talk moves from announcement to architecture. Last year he unveiled Zero's query-driven sync concept. This year he opens the hood on *how* it actually works — and the technical problem that almost killed it: incremental view maintenance at interactive speeds.
+Aaron Boodman's second Local-First Conf talk moves from announcement to architecture. Last year he unveiled Zero's query-driven sync concept. This year he opens the hood on _how_ it actually works — and the technical problem that almost killed it: incremental view maintenance at interactive speeds.
 
 The talk is a masterclass in sync engine architecture. It walks through why traditional databases can't handle reactive queries at scale (n-squared reruns), why existing IVM research (differential data flow, DBSP, Materialize) solves the wrong tradeoff (optimized for long-running OLAP queries, not seconds-on-screen UI), and what Zero built instead.
 
@@ -26,6 +26,7 @@ The talk is a masterclass in sync engine architecture. It walks through why trad
 The core mechanism is deceptively simple. Queries run in **both** places simultaneously — client and server — all the time.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Client["Client (SPA)"]
@@ -49,9 +50,10 @@ flowchart LR
     WAL -->|Tails changes| DS2
     DELTA -->|Delta rows only| DS1
 </pre>
+
 ::
 
-The server knows exactly which rows each client has. When a query runs server-side, it calculates the *delta* — only sending rows the client is missing. Writes don't even need to go through Zero — a raw SQL console change, an LLM writing to the database, anything that triggers the Postgres replication log gets picked up and pushed to affected clients.
+The server knows exactly which rows each client has. When a query runs server-side, it calculates the _delta_ — only sending rows the client is missing. Writes don't even need to go through Zero — a raw SQL console change, an LLM writing to the database, anything that triggers the Postgres replication log gets picked up and pushed to affected clients.
 
 The lazy description is "queries start on the client and fall back to the server." But that's not what's happening. Queries run on both sides simultaneously. The client renders immediately with whatever it has, and the server fills in gaps asynchronously. This is why partial navigations feel instant — you get the title immediately from local data while the body streams in.
 
@@ -71,11 +73,12 @@ For public-facing pages (think Notion's published pages), developers can preload
 
 ## The IVM Problem
 
-Here's where it gets technically interesting. Why not just use Postgres directly for reactive queries? Because it's an n-squared problem. Sync means keeping tens of megabytes on the client. Queries are large and permission-enriched. Every write by any user invalidates queries for all other users viewing the same data. Traditional query invalidation is both a famous unsolved research problem *and* useless here — the data is actively being used, so it's always "invalid."
+Here's where it gets technically interesting. Why not just use Postgres directly for reactive queries? Because it's an n-squared problem. Sync means keeping tens of megabytes on the client. Queries are large and permission-enriched. Every write by any user invalidates queries for all other users viewing the same data. Traditional query invalidation is both a famous unsolved research problem _and_ useless here — the data is actively being used, so it's always "invalid."
 
 Existing IVM research (differential data flow, DBSP, Materialize) solves this by breaking queries into operator graphs — data pipelines where changes flow through filters, joins, and limits. But these systems optimize for a different tradeoff: they're designed for OLAP queries that run for years, where expensive hydration is amortized over time. Interactive UIs need queries that hydrate in milliseconds and might only live for seconds.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph TRAD["Traditional IVM (Differential Data Flow)"]
@@ -98,19 +101,21 @@ flowchart TD
     TRAD ---|"100ms on 25MB (Rust)"| PERF["Hydration Comparison"]
     ZVM ---|"3ms on 25MB (TypeScript)"| PERF
 </pre>
+
 ::
 
 ## ZVM: Zero's Novel Approach
 
 ZVM (Zero View Maintenance) breaks queries into the same operator graph, but with a critical twist: **pull first, then push.**
 
-Traditional IVM pushes all rows through the pipeline from the start. ZVM starts with sorted input streams and *pulls* data through the pipeline from the bottom. Because inputs are sorted, operators can stop early — a `LIMIT 10` on a sorted stream only needs to pull 10 rows through the join, not process the entire dataset.
+Traditional IVM pushes all rows through the pipeline from the start. ZVM starts with sorted input streams and _pulls_ data through the pipeline from the bottom. Because inputs are sorted, operators can stop early — a `LIMIT 10` on a sorted stream only needs to pull 10 rows through the join, not process the entire dataset.
 
 The practical difference is staggering. On 25MB of album data:
+
 - **Differential data flow (Rust):** ~100ms hydration
 - **ZVM (TypeScript):** ~3ms hydration, ~1ms for subsequent queries, ~0.5ms for incremental updates
 
-ZVM achieves 33x faster hydration *in a slower language* because the fundamental approach — pull with sorted data, then transition to push for updates — matches the tradeoff profile of interactive applications. Operators don't need internal state because they can fetch from upstream on demand.
+ZVM achieves 33x faster hydration _in a slower language_ because the fundamental approach — pull with sorted data, then transition to push for updates — matches the tradeoff profile of interactive applications. Operators don't need internal state because they can fetch from upstream on demand.
 
 ## Notable Quotes
 

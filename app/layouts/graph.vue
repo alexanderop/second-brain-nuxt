@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { defineShortcuts, navigateTo } from '#imports'
-import { UApp } from '#components'
-import AppSearchModal from '~/components/AppSearchModal.vue'
-import AppShortcutsModal from '~/components/AppShortcutsModal.vue'
-import { useShortcutsModal } from '~/composables/useShortcuts'
+import { ref } from "vue";
+import { defineShortcuts, navigateTo } from "#imports";
+import { UApp } from "#components";
+import AppSearchModal from "~/components/AppSearchModal.vue";
+import AppShortcutsModal from "~/components/AppShortcutsModal.vue";
+import { useShortcutsModal } from "~/composables/useShortcuts";
 
-const searchOpen = ref(false)
-const shortcutsOpen = useShortcutsModal()
+const searchOpen = ref(false);
+const shortcutsOpen = useShortcutsModal();
 
 defineShortcuts({
-  'shift_/': () => {
-    shortcutsOpen.value = true
+  "shift_/": () => {
+    shortcutsOpen.value = true;
   },
-  'meta_k': () => {
-    searchOpen.value = true
+  meta_k: () => {
+    searchOpen.value = true;
   },
-  'g-h': () => {
-    void navigateTo('/')
+  "g-h": () => {
+    void navigateTo("/");
   },
-  'g-g': () => {
-    void navigateTo('/graph')
+  "g-g": () => {
+    void navigateTo("/graph");
   },
-  'g-t': () => {
-    void navigateTo('/tags')
+  "g-t": () => {
+    void navigateTo("/tags");
   },
-  'g-a': () => {
-    void navigateTo('/authors')
+  "g-a": () => {
+    void navigateTo("/authors");
   },
-})
+});
 </script>
 
 <template>

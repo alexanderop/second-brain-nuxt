@@ -31,7 +31,7 @@ The fundamental mental model: context windows are arrays.
 - The LLM is a sliding window over this array
 - **The less that window needs to slide, the better**
 
-There's no server-side memory. The array *is* the memory. So allocate less, and be deliberate about what goes in.
+There's no server-side memory. The array _is_ the memory. So allocate less, and be deliberate about what goes in.
 
 ## Deterministically Malicking the Array
 
@@ -70,6 +70,7 @@ done
 ```
 
 The prompt tells Claude to:
+
 1. Study the specs lookup table
 2. Find the implementation plan
 3. Pick the most important task
@@ -89,6 +90,7 @@ The new job is engineering back pressure to keep the generative function on trac
 ## Diagram
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Loop[Ralph Loop]
@@ -102,6 +104,7 @@ flowchart LR
     Human((Human))
     Human -.->|Watch & Tune| Loop
 </pre>
+
 ::
 
 ## Key Quotes
@@ -113,6 +116,7 @@ flowchart LR
 ## Loom: The Bigger Picture
 
 Huntley's project "Loom" embodies these principles:
+
 - Self-evolutionary software
 - Humans on the loop, not in the loop
 - Autonomous "weavers" that deploy without code review

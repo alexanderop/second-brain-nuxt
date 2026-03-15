@@ -47,6 +47,7 @@ The real value — a graduated escalation instead of one-size-fits-all:
 The progression matters more than any individual strategy. Start with strategy 1, add strategies as the pain demands it.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph App["Offline-First App"]
@@ -80,6 +81,7 @@ limits features"]
     S5 -.- COMPLEX["Guarantees merge but
 not user satisfaction"]
 </pre>
+
 ::
 
 ## The TanStack DB + PowerSync Stack
@@ -88,14 +90,15 @@ PowerSync treats the server as authoritative — all clients converge to server 
 
 ```typescript
 const ticketsQuery = useLiveQuery((q) =>
-  q.from({ ticket: ticketsCollection })
+  q
+    .from({ ticket: ticketsCollection })
     .orderBy(({ ticket }) => ticket.updated_at, "desc")
     .select(({ ticket }) => ({
       id: ticket.id,
       title: ticket.title,
       status: ticket.status,
-    }))
-)
+    })),
+);
 ```
 
 Mutations go directly to collections. PowerSync queues them and syncs in the background:
@@ -105,7 +108,7 @@ ticketsCollection.insert({
   id: crypto.randomUUID(),
   title: "New ticket",
   status: "open",
-})
+});
 ```
 
 The architecture is clean: read from local SQLite (instant), write optimistically to collections, let PowerSync handle the sync queue. No loading spinners, no cache invalidation — the same promise every sync engine makes, but with TanStack DB's typed query API on top.

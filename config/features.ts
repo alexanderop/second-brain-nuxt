@@ -7,28 +7,29 @@
  */
 
 export interface FeatureRuleContext {
-  isDev: boolean
-  now: Date
+  isDev: boolean;
+  now: Date;
 }
 
-export type FeatureRule = boolean | ((ctx: FeatureRuleContext) => boolean)
+export type FeatureRule = boolean | ((ctx: FeatureRuleContext) => boolean);
 
 export interface FeatureDefinition {
-  enabled: FeatureRule
-  variants?: Record<string, FeatureRule>
-  description?: string
+  enabled: FeatureRule;
+  variants?: Record<string, FeatureRule>;
+  description?: string;
 }
 
 export const featuresConfig = {
   chat: {
     enabled: (ctx: FeatureRuleContext) => ctx.isDev,
-    description: 'AI-powered chat for querying knowledge base',
+    description: "AI-powered chat for querying knowledge base",
   },
-} as const satisfies Record<string, FeatureDefinition>
+} as const satisfies Record<string, FeatureDefinition>;
 
-export type FeatureName = keyof typeof featuresConfig
+export type FeatureName = keyof typeof featuresConfig;
 
-export type FeatureVariantName<T extends FeatureName> =
-  (typeof featuresConfig)[T] extends { variants: infer V }
-    ? keyof V
-    : never
+export type FeatureVariantName<T extends FeatureName> = (typeof featuresConfig)[T] extends {
+  variants: infer V;
+}
+  ? keyof V
+  : never;

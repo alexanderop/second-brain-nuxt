@@ -40,7 +40,7 @@ The creator of Claude Code uses Claude Code to work on multiple features simulta
 
 ### The Great Distinction Nobody Talks About
 
-Here's what changes everything: understanding the difference between software *engineering* and software *development*.
+Here's what changes everything: understanding the difference between software _engineering_ and software _development_.
 
 **Software engineering** is designing systems. Architecture decisions. Test strategies. The guardrails that keep a codebase healthy over time. Knowing what to build and—more importantly—what not to build.
 
@@ -80,11 +80,12 @@ The developers who thrive aren't writing more code. They're orchestrating AI to 
 
 ### The Hard Part Was Never Coding
 
-Here's the uncomfortable truth: coding was never the hard part. We just convinced ourselves it was because it took so much *time*.
+Here's the uncomfortable truth: coding was never the hard part. We just convinced ourselves it was because it took so much _time_.
 
 Lee Robinson[^5]—who went from Vercel to Cursor—built a Rust image compressor, a SvelteKit web app, and a hardware game without writing code by hand. His reflection? "Writing code was never really the bottleneck, especially for larger projects." And: "It wasn't about the code... It's about building something great and something that I'm proud of."
 
 The actually hard problems haven't changed:
+
 - Understanding what customers need (not what they say they need)
 - Writing specifications clear enough that anyone—human or AI—can implement them
 - Knowing what to build and what to skip
@@ -146,12 +147,19 @@ We have both. Right now.
 The question isn't whether this shift will happen. It's whether you'll be ready when your company finally notices.
 
 [^1]: Simon Willison, [LLM Predictions for 2026](https://simonwillison.net/2026/Jan/8/llm-predictions-for-2026)
+
 [^2]: [Ralph](https://github.com/snarktank/ralph) - Automation framework for AI-driven development
+
 [^3]: Kent Beck, [90% of My Skills Are Now Worth $0](https://tidyfirst.substack.com/p/90-of-my-skills-are-now-worth-0)
+
 [^4]: Burke Holland, [Opus 4.5 is Going to Change Everything](https://burkeholland.github.io/posts/opus-4-5-change-everything/)
+
 [^5]: Lee Robinson, [AI codes better than me. Now what?](https://www.youtube.com/watch?v=UrNLVip0hSA)
+
 [^6]: Martin Fowler, [How AI Will Change Software Engineering](https://www.youtube.com/watch?v=CQmI4XKTa0U)
+
 [^7]: Geoffrey Huntley, [What do I mean by some software devs are "ngmi"?](https://ghuntley.com/ngmi/)
+
 [^8]: [12 Factor Agents](https://www.humanlayer.dev/blog/12-factor-agents) - Principles for production-grade AI agents
 
 ## Source Notes

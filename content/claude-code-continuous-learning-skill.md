@@ -19,7 +19,7 @@ date: 2026-01-18
 
 Every Claude Code session starts fresh—no memory of past discoveries. The Continuous Learning Skill solves this by extracting non-obvious knowledge (debugging techniques, workarounds, project patterns) and saving it as new skills that load automatically in future sessions.
 
-The architecture exploits Claude Code's native skill retrieval system. At startup, Claude loads skill names and descriptions (~100 tokens each). When your current context semantically matches a description, the full skill loads. This skill *writes* to that retrieval system, not just reads from it.
+The architecture exploits Claude Code's native skill retrieval system. At startup, Claude loads skill names and descriptions (~100 tokens each). When your current context semantically matches a description, the full skill loads. This skill _writes_ to that retrieval system, not just reads from it.
 
 ## Key Features
 
@@ -31,6 +31,7 @@ The architecture exploits Claude Code's native skill retrieval system. At startu
 ## Architecture
 
 ::mermaid
+
 <pre>
 flowchart LR
     Problem[Problem] --> Investigate[Investigation]
@@ -42,6 +43,7 @@ flowchart LR
     Library -->|Future sessions| Match[Semantic Matching]
     Match --> Load[Auto-load Skill]
 </pre>
+
 ::
 
 ## Code Snippets
@@ -87,12 +89,12 @@ Add to `~/.claude/settings.json`:
 
 The system applies strict criteria before extraction:
 
-| Gate | Question |
-|------|----------|
-| **Reusable** | Will this help with future tasks? |
-| **Non-trivial** | Did this require discovery, not docs lookup? |
-| **Specific** | Can you describe exact triggers and solutions? |
-| **Verified** | Has the solution been tested and confirmed? |
+| Gate            | Question                                       |
+| --------------- | ---------------------------------------------- |
+| **Reusable**    | Will this help with future tasks?              |
+| **Non-trivial** | Did this require discovery, not docs lookup?   |
+| **Specific**    | Can you describe exact triggers and solutions? |
+| **Verified**    | Has the solution been tested and confirmed?    |
 
 ## Extraction Triggers
 

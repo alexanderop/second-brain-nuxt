@@ -23,6 +23,7 @@ Eduardo San Martin Morote (posva) built this on top of Pinia, which he also crea
 ## How It Works
 
 ::mermaid
+
 <pre>
 mindmap
   root((Pinia Colada))
@@ -53,6 +54,7 @@ mindmap
       State object for type narrowing
       Vue Router Data Loaders
 </pre>
+
 ::
 
 ### Queries: Declarative Reads
@@ -75,9 +77,9 @@ The real power is cache integration. After a mutation succeeds, you can invalida
 
 ```typescript
 export const DOCUMENT_QUERY_KEYS = {
-  root: ['documents'] as const,
+  root: ["documents"] as const,
   byId: (id: string) => [...DOCUMENT_QUERY_KEYS.root, id] as const,
-}
+};
 ```
 
 `defineMutation` wraps `useMutation` for reuse across components. Both patterns keep async logic out of components and into dedicated files — separation of concerns applied to data fetching.

@@ -22,12 +22,14 @@ GitHub Copilot's agent mode in VS Code can enforce test-driven development disci
 The traditional Red-Green-Refactor cycle gains structure when each phase has a dedicated agent with constrained permissions.
 
 ::mermaid
+
 <pre>
 flowchart LR
     R[Red Agent<br/>Write failing test] --> G[Green Agent<br/>Minimal code to pass]
     G --> RF[Refactor Agent<br/>Improve structure]
     RF -.->|Next feature| R
 </pre>
+
 ::
 
 ## Key Concepts
@@ -45,6 +47,7 @@ Each agent gets a dedicated markdown file defining its behavior and available to
 
 ```markdown
 # TDD-red.agent.md
+
 "Write the minimal code change needed so that the test passes"
 
 Tools: read, edit, search
@@ -55,6 +58,7 @@ Handoff: → TDD-green when test written
 
 ```markdown
 # TDD-green.agent.md
+
 Implements changes then runs tests automatically
 
 Tools: read, edit, execute

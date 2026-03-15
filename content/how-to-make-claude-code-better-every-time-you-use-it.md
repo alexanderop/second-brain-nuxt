@@ -27,6 +27,7 @@ Every development cycle follows four steps:
 4. **Compound** — Codify learnings into CLAUDE.md, docs, or skill files so the next cycle starts smarter
 
 ::mermaid
+
 <pre>
 flowchart LR
     P[Plan] --> W[Work]
@@ -36,6 +37,7 @@ flowchart LR
     C --> K[(CLAUDE.md & Skills)]
     K -.->|loaded next cycle| P
 </pre>
+
 ::
 
 ## Key Takeaways
@@ -49,11 +51,11 @@ flowchart LR
 
 Kieran draws a clear distinction between the three extension mechanisms in [[claude-code-skills]]:
 
-| Mechanism | When to Use |
-|-----------|-------------|
-| **Slash commands** | User-triggered actions — the "business logic" of your workflow |
-| **Sub-agents** | Parallel or isolated work with a focused result (research, review) |
-| **Skills** | Just-in-time context documents loaded only when relevant |
+| Mechanism          | When to Use                                                        |
+| ------------------ | ------------------------------------------------------------------ |
+| **Slash commands** | User-triggered actions — the "business logic" of your workflow     |
+| **Sub-agents**     | Parallel or isolated work with a focused result (research, review) |
+| **Skills**         | Just-in-time context documents loaded only when relevant           |
 
 ## The Minimum Viable Version
 

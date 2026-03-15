@@ -20,40 +20,48 @@ Traditional mutation testing tools like Stryker don't support every test framewo
 ## Outline
 
 ### 1. The Coverage Lie (Hook)
+
 - Open with code that has 100% coverage but 0% usefulness
 - The test that exercises but doesn't verify
 
 ### 2. What Is Mutation Testing?
+
 - Flip the question: "if I break this code, do tests fail?"
 - The process: mutate → run tests → evaluate
 - Surviving mutants = test gaps
 
 ### 3. The Vitest Browser Mode Problem
+
 - Stryker's instrumentation assumes Node.js execution
 - Browser mode runs in actual Chromium via Playwright
 - Switching to Node-based testing loses the behavior you're testing
 
 ### 4. AI Agents as Manual Mutation Testers
+
 - The algorithm is simple enough for agents to execute
 - Claude Code can: read code, apply mutations, run tests, record results, restore, report
 - The mutation testing skill with operator priority tables
 
 ### 5. Real Example: Settings Feature
+
 - Integration tests looked comprehensive
 - Results: 38% mutation score (5 killed, 8 survived)
 - Three surviving mutants with code examples
 - The fixes: specific tests for each gap
 
 ### 6. How to Set This Up
+
 - Creating the skill file
 - Invoking it
 - Reviewing and acting on results
 
 ### 7. When to Use This Approach
+
 - Good fit: browser mode, Playwright, small codebases, pre-merge review
 - Not ideal: large codebases, CI automation, strict thresholds
 
 ### 8. Key Takeaways
+
 - Coverage doesn't equal confidence
 - Mutation testing reveals gaps
 - AI agents can execute the algorithm
@@ -76,14 +84,15 @@ Code coverage lies. A test that exercises a line doesn't mean it verifies that l
 
 ```typescript
 // 100% code coverage, 0% usefulness
-it('processes', () => {
-  processOrder(order) // No assertion!
-})
+it("processes", () => {
+  processOrder(order); // No assertion!
+});
 ```
 
 Mutation testing flips the question. Instead of asking "did tests run this code?", it asks **"if I break this code, do tests fail?"**
 
 The process:
+
 1. **Mutate**: Introduce a small bug (change `>` to `>=`, swap `&&` for `||`, delete a line)
 2. **Run tests**: Execute your test suite against the mutated code
 3. **Evaluate**: If tests pass with the bug, your tests are weak. If tests fail, they caught it.
@@ -97,6 +106,7 @@ A mutation that tests fail to catch is a "surviving mutant"—proof of a test ga
 Stryker, the most popular mutation testing framework for JavaScript, doesn't support Vitest's browser mode. Their instrumentation assumes Node.js execution, but browser mode runs tests in actual Chromium via Playwright.
 
 My setup:
+
 - **Framework**: Vitest 4 with `browser.enabled: true`
 - **Provider**: Playwright (Chromium)
 - **Test style**: Integration tests with real DOM
@@ -119,6 +129,7 @@ The mutation testing algorithm is simple enough that an AI coding agent can exec
 I adapted a Claude Code skill originally created by [Paul Hammond](https://www.linkedin.com/in/paulhammond/) that codifies this workflow.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Agent["AI Agent Workflow"]
@@ -146,6 +157,7 @@ flowchart TD
     style L fill:#f96,stroke:#333
     style K fill:#6f9,stroke:#333
 </pre>
+
 ::
 
 #### The Mutation Testing Skill
@@ -155,35 +167,35 @@ The skill defines mutation operators in priority order:
 **Priority 1 - Boundaries** (most likely to survive):
 
 | Original | Mutate To |
-|----------|-----------|
-| `<` | `<=` |
-| `>` | `>=` |
-| `<=` | `<` |
-| `>=` | `>` |
+| -------- | --------- |
+| `<`      | `<=`      |
+| `>`      | `>=`      |
+| `<=`     | `<`       |
+| `>=`     | `>`       |
 
 **Priority 2 - Boolean Logic**:
 
-| Original | Mutate To |
-|----------|-----------|
-| `&&` | `\|\|` |
-| `\|\|` | `&&` |
+| Original     | Mutate To   |
+| ------------ | ----------- |
+| `&&`         | `\|\|`      |
+| `\|\|`       | `&&`        |
 | `!condition` | `condition` |
 
 **Priority 3 - Return Values**:
 
-| Original | Mutate To |
-|----------|-----------|
-| `return x` | `return null` |
+| Original      | Mutate To      |
+| ------------- | -------------- |
+| `return x`    | `return null`  |
 | `return true` | `return false` |
-| Early return | Remove it |
+| Early return  | Remove it      |
 
 **Priority 4 - Statement Removal**:
 
-| Original | Mutate To |
-|----------|-----------|
-| `array.push(x)` | Remove |
-| `await save(x)` | Remove |
-| `emit('event')` | Remove |
+| Original        | Mutate To |
+| --------------- | --------- |
+| `array.push(x)` | Remove    |
+| `await save(x)` | Remove    |
+| `emit('event')` | Remove    |
 
 The agent applies each mutation one at a time, runs tests, records results, and restores the original code immediately.
 
@@ -201,10 +213,10 @@ Here's what the AI agent found:
 
 ```typescript
 // Original (stores/settings.ts:65)
-Math.min(Math.max(volume, 0.5), 1)
+Math.min(Math.max(volume, 0.5), 1);
 
 // Mutation: Change 0.5 to 0.4
-Math.min(Math.max(volume, 0.4), 1)
+Math.min(Math.max(volume, 0.4), 1);
 
 // Result: Tests PASSED -> Mutant SURVIVED
 ```
@@ -215,10 +227,10 @@ My tests never verified the minimum volume constraint. A bug changing the minimu
 
 ```typescript
 // Original (composables/useTheme.ts:26)
-newMode === 'dark'
+newMode === "dark";
 
 // Mutation: Negate the condition
-newMode !== 'dark'
+newMode !== "dark";
 
 // Result: Tests PASSED -> Mutant SURVIVED
 ```
@@ -229,10 +241,10 @@ My test checked that clicking the toggle changed the stored preference. It never
 
 ```typescript
 // Original (stores/settings.ts:28)
-if (error) return
+if (error) return;
 
 // Mutation: Negate the condition
-if (!error) return
+if (!error) return;
 
 // Result: Tests PASSED -> Mutant SURVIVED
 ```
@@ -245,23 +257,23 @@ The agent suggested specific tests for each surviving mutant:
 
 ```typescript
 // Fix for Mutant #1: Boundary test
-it('volume slider has minimum value constraint of 50%', async () => {
-  const volumeSlider = page.getByTestId('timer-sound-volume-slider')
-  await expect.poll(async () => {
-    const el = await volumeSlider.element()
-    return el.getAttribute('min')
-  }).toBe('0.5')
-})
+it("volume slider has minimum value constraint of 50%", async () => {
+  const volumeSlider = page.getByTestId("timer-sound-volume-slider");
+  await expect
+    .poll(async () => {
+      const el = await volumeSlider.element();
+      return el.getAttribute("min");
+    })
+    .toBe("0.5");
+});
 
 // Fix for Mutant #2: DOM verification
-it('adds dark class to html element when dark mode enabled', async () => {
-  const themeToggle = page.getByTestId('theme-toggle')
-  await userEvent.click(themeToggle)
+it("adds dark class to html element when dark mode enabled", async () => {
+  const themeToggle = page.getByTestId("theme-toggle");
+  await userEvent.click(themeToggle);
 
-  await expect.poll(() =>
-    document.documentElement.classList.contains('dark')
-  ).toBe(true)
-})
+  await expect.poll(() => document.documentElement.classList.contains("dark")).toBe(true);
+});
 ```
 
 ---
@@ -290,8 +302,8 @@ Execute this workflow for each function:
 
 ## Report Format
 
-| Mutation | Location | Result | Action Needed |
-|----------|----------|--------|---------------|
+| Mutation    | Location   | Result   | Action Needed     |
+| ----------- | ---------- | -------- | ----------------- |
 | `>` -> `>=` | file.ts:42 | SURVIVED | Add boundary test |
 ```
 
@@ -302,6 +314,7 @@ claude "Run mutation testing on the settings feature"
 ```
 
 The agent will:
+
 - Find changed files on your branch
 - Identify testable functions
 - Apply mutations systematically
@@ -310,6 +323,7 @@ The agent will:
 #### Step 3: Review and Fix
 
 The agent produces a markdown report. Review each surviving mutant and decide:
+
 - Add the suggested test
 - Accept the risk (document why)
 - Refactor the code to be more testable
@@ -319,6 +333,7 @@ The agent produces a markdown report. Review each surviving mutant and decide:
 ### When to Use This Approach
 
 **Good fit:**
+
 - Vitest browser mode (no Stryker support)
 - Playwright component testing
 - Small-to-medium codebases
@@ -326,6 +341,7 @@ The agent produces a markdown report. Review each surviving mutant and decide:
 - Learning what makes tests effective
 
 **Not ideal for:**
+
 - Large codebases needing full mutation coverage
 - CI/CD automation (manual agent invocation)
 - Strict mutation score thresholds

@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { NuxtLink } from '#components'
-import type { ChatMessage } from '~/composables/useChatHistory'
+import { NuxtLink } from "#components";
+import type { ChatMessage } from "~/composables/useChatHistory";
 
 interface Props {
-  message: Pick<ChatMessage, 'id' | 'role' | 'content' | 'sources'>
-  messageClass: string
-  sourceLinkClass: string
+  message: Pick<ChatMessage, "id" | "role" | "content" | "sources">;
+  messageClass: string;
+  sourceLinkClass: string;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
 function handleSourceClick(): void {
-  emit('close')
+  emit("close");
 }
 </script>
 

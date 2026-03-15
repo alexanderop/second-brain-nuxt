@@ -1,43 +1,47 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { NuxtLink, UButton, UIcon } from '#components'
-import type { PodcastItem } from '~/types/content'
-import { handleImageError } from '~/utils/imageErrorHandler'
+import { computed } from "vue";
+import { NuxtLink, UButton, UIcon } from "#components";
+import type { PodcastItem } from "~/types/content";
+import { handleImageError } from "~/utils/imageErrorHandler";
 
 const props = defineProps<{
-  podcast: PodcastItem
-  hosts: Array<{ slug: string, name: string }>
-}>()
+  podcast: PodcastItem;
+  hosts: Array<{ slug: string; name: string }>;
+}>();
 
 const platformIcons: Record<string, string> = {
-  spotify: 'i-simple-icons-spotify',
-  apple: 'i-simple-icons-applepodcasts',
-  youtube: 'i-simple-icons-youtube',
-  rss: 'i-lucide-rss',
-}
+  spotify: "i-simple-icons-spotify",
+  apple: "i-simple-icons-applepodcasts",
+  youtube: "i-simple-icons-youtube",
+  rss: "i-lucide-rss",
+};
 
 const platformLabels: Record<string, string> = {
-  spotify: 'Spotify',
-  apple: 'Apple Podcasts',
-  youtube: 'YouTube',
-  rss: 'RSS',
-}
+  spotify: "Spotify",
+  apple: "Apple Podcasts",
+  youtube: "YouTube",
+  rss: "RSS",
+};
 
 const platformLinks = computed(() => {
-  if (!props.podcast.platforms) return []
+  if (!props.podcast.platforms) return [];
   return Object.entries(props.podcast.platforms).map(([platform, url]) => ({
     platform,
     url,
-    icon: platformIcons[platform] || 'i-lucide-link',
+    icon: platformIcons[platform] || "i-lucide-link",
     label: platformLabels[platform] || platform,
-  }))
-})
+  }));
+});
 </script>
 
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-3 mb-4">
-      <NuxtLink to="/podcasts" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]" aria-label="Back to podcasts">
+      <NuxtLink
+        to="/podcasts"
+        class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
+        aria-label="Back to podcasts"
+      >
         <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
       </NuxtLink>
       <UIcon name="i-lucide-podcast" class="size-6" />
@@ -52,7 +56,7 @@ const platformLinks = computed(() => {
           :alt="podcast.name"
           class="size-full object-cover"
           @error="handleImageError"
-        >
+        />
         <div
           v-if="!podcast.artwork"
           class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"

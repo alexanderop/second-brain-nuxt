@@ -60,10 +60,10 @@ No prerequisites required. Clear's accessible writing style, chapter summaries, 
 A framework for building good habits and breaking bad ones:
 
 | To Build a Good Habit | To Break a Bad Habit |
-|----------------------|---------------------|
-| 1. Make it obvious | Make it invisible |
+| --------------------- | -------------------- |
+| 1. Make it obvious    | Make it invisible    |
 | 2. Make it attractive | Make it unattractive |
-| 3. Make it easy | Make it difficult |
+| 3. Make it easy       | Make it difficult    |
 | 4. Make it satisfying | Make it unsatisfying |
 
 ## Key Concepts
@@ -77,6 +77,7 @@ A framework for building good habits and breaking bad ones:
 ## The Habit Loop
 
 ::mermaid
+
 <pre>
 graph LR
     C[Cue] --> CR[Craving]
@@ -84,6 +85,7 @@ graph LR
     R --> RW[Reward]
     RW -.->|Reinforces| C
 </pre>
+
 ::
 
 ## Highlights

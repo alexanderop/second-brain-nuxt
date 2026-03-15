@@ -38,7 +38,7 @@ Phase 6: Save Enhanced Note
    └─ Insert sections, preserve original
 
 Phase 7: Quality Check
-   └─ Run pnpm lint:fix && pnpm typecheck
+   └─ Run vp check && pnpm typecheck
 ```
 
 ---
@@ -57,6 +57,7 @@ Accept a talk slug, title, or partial name as argument:
 3. **Filter to talks only**: Read matching files and verify `type: talk` in frontmatter
 
 **Outcomes:**
+
 - Single match → proceed with that file
 - Multiple matches → list options for user to choose
 - No match → list available talks with `type: talk`
@@ -64,10 +65,12 @@ Accept a talk slug, title, or partial name as argument:
 ### 1.2 Validate and Extract
 
 Read the note and verify:
+
 1. Frontmatter has `type: talk`
 2. Has required fields: `title`, `url`, `authors`
 
 Extract and store:
+
 - **URL**: YouTube video URL for transcript fetching
 - **Frontmatter**: title, authors, conference, summary
 - **Opening paragraph**: First paragraph before any `##` heading
@@ -88,6 +91,7 @@ python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py '{url}' --
 ```
 
 This returns structured data:
+
 ```json
 {
   "video_id": "abc123",
@@ -97,8 +101,8 @@ This returns structured data:
   "total_duration_formatted": "45:00",
   "segment_count": 90,
   "segments": [
-    {"start": 0.0, "timestamp": "0:00", "duration": 30.5, "text": "..."},
-    {"start": 30.5, "timestamp": "0:30", "duration": 28.2, "text": "..."}
+    { "start": 0.0, "timestamp": "0:00", "duration": 30.5, "text": "..." },
+    { "start": 30.5, "timestamp": "0:30", "duration": 28.2, "text": "..." }
   ]
 }
 ```
@@ -106,6 +110,7 @@ This returns structured data:
 ### 2.2 Handle Transcript Failures
 
 If transcript unavailable:
+
 1. **Check for manual transcript**: `--list` flag shows available options
 2. **Try alternative language**: Use `--lang` flag
 3. **Fall back to web research**: Switch to WebSearch-based analysis (like enhancing-notes)
@@ -126,110 +131,121 @@ Read `references/chunking-strategy.md` and `references/insight-extraction.md` be
 **Agent 1 - Key Insights:**
 Task tool with subagent_type: "general-purpose"
 prompt: |
-  Analyze this talk transcript to extract 8-12 key insights.
+Analyze this talk transcript to extract 8-12 key insights.
 
-  TRANSCRIPT (with timestamps):
-  {timestamped_transcript}
+TRANSCRIPT (with timestamps):
+{timestamped_transcript}
 
-  For each insight:
-  1. Identify a specific, standalone idea (not vague)
-  2. Note the timestamp where it's discussed
-  3. Write 2-3 sentences explaining with concrete detail
-  4. Use bold title format
+For each insight:
 
-  Output format for each insight:
-  **[Insight Title]** (MM:SS) - [2-3 sentence explanation with specific examples or data from the talk]
+1. Identify a specific, standalone idea (not vague)
+2. Note the timestamp where it's discussed
+3. Write 2-3 sentences explaining with concrete detail
+4. Use bold title format
 
-  Guidelines from references/insight-extraction.md:
-  - Each insight must be self-contained and valuable alone
-  - Include concrete examples, data, or frameworks mentioned
-  - Progress from foundational to advanced concepts
-  - Avoid generic statements like "the speaker emphasizes the importance of X"
+Output format for each insight:
+**[Insight Title]** (MM:SS) - [2-3 sentence explanation with specific examples or data from the talk]
+
+Guidelines from references/insight-extraction.md:
+
+- Each insight must be self-contained and valuable alone
+- Include concrete examples, data, or frameworks mentioned
+- Progress from foundational to advanced concepts
+- Avoid generic statements like "the speaker emphasizes the importance of X"
 
 **Agent 2 - Talk Structure:**
 Task tool with subagent_type: "general-purpose"
 prompt: |
-  Analyze this transcript to identify the talk's structure.
+Analyze this transcript to identify the talk's structure.
 
-  TRANSCRIPT (with timestamps):
-  {timestamped_transcript}
+TRANSCRIPT (with timestamps):
+{timestamped_transcript}
 
-  Identify 4-7 major sections with:
-  1. Section title (descriptive, 2-4 words)
-  2. Starting timestamp
-  3. Brief description (1 sentence)
+Identify 4-7 major sections with:
 
-  Look for:
-  - Introduction/opening hook
-  - Major topic transitions
-  - Key examples or stories
-  - Conclusion/call to action
+1. Section title (descriptive, 2-4 words)
+2. Starting timestamp
+3. Brief description (1 sentence)
 
-  Output format:
-  1. **[Section Title]** (MM:SS) - [One sentence description]
-  2. **[Section Title]** (MM:SS) - [Description]
-  ...
+Look for:
+
+- Introduction/opening hook
+- Major topic transitions
+- Key examples or stories
+- Conclusion/call to action
+
+Output format:
+
+1. **[Section Title]** (MM:SS) - [One sentence description]
+2. **[Section Title]** (MM:SS) - [Description]
+   ...
 
 **Agent 3 - Notable Quotes:**
 Task tool with subagent_type: "general-purpose"
 prompt: |
-  Extract the 3 most powerful, quotable moments from this talk.
+Extract the 3 most powerful, quotable moments from this talk.
 
-  TRANSCRIPT (with timestamps):
-  {timestamped_transcript}
+TRANSCRIPT (with timestamps):
+{timestamped_transcript}
 
-  Selection criteria:
-  - Captures the talk's core philosophy
-  - Memorable and shareable phrasing
-  - Represents different aspects of the talk
-  - Surprising insight or contrarian view
+Selection criteria:
 
-  For each quote:
-  1. Extract the exact words (clean up filler words if needed)
-  2. Note the timestamp
-  3. Keep under 40 words each
+- Captures the talk's core philosophy
+- Memorable and shareable phrasing
+- Represents different aspects of the talk
+- Surprising insight or contrarian view
 
-  Output format:
-  > "Quote text here." (MM:SS)
+For each quote:
 
-  > "Second quote here." (MM:SS)
+1. Extract the exact words (clean up filler words if needed)
+2. Note the timestamp
+3. Keep under 40 words each
 
-  > "Third quote here." (MM:SS)
+Output format:
+
+> "Quote text here." (MM:SS)
+
+> "Second quote here." (MM:SS)
+
+> "Third quote here." (MM:SS)
 
 **Agent 4 - Audience & Actions:**
 Task tool with subagent_type: "general-purpose"
 prompt: |
-  Analyze this talk to identify the target audience and actionable takeaways.
+Analyze this talk to identify the target audience and actionable takeaways.
 
-  TRANSCRIPT (with timestamps):
-  {timestamped_transcript}
+TRANSCRIPT (with timestamps):
+{timestamped_transcript}
 
-  TALK INFO:
-  Title: {title}
-  Speaker: {author}
-  Conference: {conference}
+TALK INFO:
+Title: {title}
+Speaker: {author}
+Conference: {conference}
 
-  Generate:
+Generate:
 
-  1. WHO SHOULD WATCH (1-2 paragraphs):
-     - Professional context (developers, designers, managers, etc.)
-     - Problems they're trying to solve
-     - What they'll gain from watching
-     - Any prerequisites or background knowledge needed
+1. WHO SHOULD WATCH (1-2 paragraphs):
+   - Professional context (developers, designers, managers, etc.)
+   - Problems they're trying to solve
+   - What they'll gain from watching
+   - Any prerequisites or background knowledge needed
 
-  2. ACTION ITEMS (3-5 concrete actions):
-     - Specific, actionable next steps viewers can take
-     - Based on explicit or implicit recommendations in the talk
-     - Checkbox format: - [ ] Action item
+2. ACTION ITEMS (3-5 concrete actions):
+   - Specific, actionable next steps viewers can take
+   - Based on explicit or implicit recommendations in the talk
+   - Checkbox format: - [ ] Action item
 
-  Output format:
-  ## Who Should Watch
-  [1-2 paragraphs]
+Output format:
 
-  ## Action Items
-  - [ ] First action
-  - [ ] Second action
-  ...
+## Who Should Watch
+
+[1-2 paragraphs]
+
+## Action Items
+
+- [ ] First action
+- [ ] Second action
+      ...
 ```
 
 Collect all results via `TaskOutput` (blocking).
@@ -237,6 +253,7 @@ Collect all results via `TaskOutput` (blocking).
 ### Writing Style Reference
 
 Before generating content, read `.claude/skills/writing-style/SKILL.md` for the full writing guidelines. Key points:
+
 - **Active voice**: "The speaker argues..." not "It is argued..."
 - **No boilerplate**: Jump straight to insights, no "This talk explores..."
 - **End with emphasis**: Put the key point at the end of sentences
@@ -252,11 +269,13 @@ Using transcript analysis results, generate six new sections:
 ### 4.1 Core Message
 
 Write the talk's thesis in 1-2 sentences:
+
 - Capture the central argument or insight
 - Be concise (under 50 words)
 - Make it memorable and quotable
 
 **Example:**
+
 > Local-first software must survive not just network outages, but the complete disappearance of its creators. The key is commoditized sync infrastructure with open protocols.
 
 ### 4.2 Key Insights
@@ -264,11 +283,13 @@ Write the talk's thesis in 1-2 sentences:
 Compile 8-12 numbered insights from Agent 1:
 
 **Format:**
+
 ```markdown
 1. **[Insight Title]** (12:34) - [2-3 sentence explanation with specific detail]
 ```
 
 **Guidelines:**
+
 - Each insight should be standalone and valuable
 - Timestamp links to the moment in the video
 - Include concrete examples or data when mentioned
@@ -276,6 +297,7 @@ Compile 8-12 numbered insights from Agent 1:
 - Avoid generic statements - be specific
 
 **Example:**
+
 ```markdown
 1. **CRDTs Are Necessary But Not Sufficient** (8:45) - Skiff, built on yjs CRDTs, still shut down when Notion acquired it. Technology alone doesn't guarantee resilience—the entire application architecture must be built for independence.
 
@@ -287,6 +309,7 @@ Compile 8-12 numbered insights from Agent 1:
 Compile section overview from Agent 2:
 
 **Format:**
+
 ```markdown
 1. **Introduction** (0:00) - Sets up the problem of cloud dependency
 2. **Historical Context** (4:30) - Traces local-first from CRDTs to today
@@ -300,6 +323,7 @@ Compile section overview from Agent 2:
 Select 3 quotes from Agent 3:
 
 **Format:**
+
 ```markdown
 > "Quote text here." (12:34)
 
@@ -313,6 +337,7 @@ Clean blockquotes with timestamps, no attribution needed (speaker is in frontmat
 ### 4.5 Who Should Watch
 
 Use Agent 4's audience analysis (1-2 paragraphs):
+
 - Professional context
 - Problems they're trying to solve
 - What they'll gain
@@ -321,6 +346,7 @@ Use Agent 4's audience analysis (1-2 paragraphs):
 ### 4.6 Action Items
 
 Use Agent 4's actionable takeaways:
+
 - 3-5 concrete next steps
 - Checkbox format for actionability
 - Based on talk recommendations
@@ -339,21 +365,27 @@ Display the six generated sections in a formatted preview:
 ## Preview of Enhanced Content
 
 ### Core Message
+
 [Generated core message]
 
 ### Key Insights
+
 [Generated 8-12 timestamped insights]
 
 ### Talk Structure
+
 [Generated section overview]
 
 ### Notable Quotes
+
 [3 timestamped quotes]
 
 ### Who Should Watch
+
 [Generated audience description]
 
 ### Action Items
+
 [Generated action items]
 ```
 
@@ -408,13 +440,13 @@ Insert new sections after the opening paragraph, before existing headings:
 
 1. **[Title]** (timestamp) - [Explanation]
 2. **[Title]** (timestamp) - [Explanation]
-...
+   ...
 
 ## Talk Structure
 
 1. **[Section]** (timestamp) - [Description]
 2. **[Section]** (timestamp) - [Description]
-...
+   ...
 
 ## Notable Quotes
 
@@ -439,12 +471,14 @@ Insert new sections after the opening paragraph, before existing headings:
 (original body content preserved below)
 
 ## [Original sections]
+
 ...
 ```
 
 ### 6.2 Preserve Original Content
 
 **Critical:** Never delete existing content:
+
 - Keep all frontmatter fields
 - Keep opening paragraph
 - Keep all original `##` sections and their content
@@ -459,15 +493,17 @@ Use the Edit tool to insert the new sections at the correct position.
 ### 6.4 Confirmation
 
 Report to user:
+
 ```markdown
 Saved: content/{slug}.md
-  - Core Message: [word count] words
-  - Key Insights: [count] timestamped insights
-  - Talk Structure: [count] sections
-  - Notable Quotes: 3 quotes
-  - Who Should Watch: added
-  - Action Items: [count] items
-  - Original content: preserved
+
+- Core Message: [word count] words
+- Key Insights: [count] timestamped insights
+- Talk Structure: [count] sections
+- Notable Quotes: 3 quotes
+- Who Should Watch: added
+- Action Items: [count] items
+- Original content: preserved
 ```
 
 ---
@@ -477,7 +513,7 @@ Saved: content/{slug}.md
 Run linter and type check to catch any issues:
 
 ```bash
-pnpm lint:fix && pnpm typecheck
+vp check && pnpm typecheck
 ```
 
 If errors are found, fix them before completing the task.
@@ -486,20 +522,21 @@ If errors are found, fix them before completing the task.
 
 ## Error Recovery
 
-| Error | Recovery |
-|-------|----------|
-| Talk not found | List available talks with `type: talk` |
-| Not a talk type | Inform user skill only works on talks |
-| Transcript unavailable | Fall back to WebSearch analysis |
-| Agent analysis fails | Retry with simplified prompts |
-| User rejects content | Allow regeneration with feedback |
-| No insights extracted | Try broader analysis or web research |
+| Error                  | Recovery                               |
+| ---------------------- | -------------------------------------- |
+| Talk not found         | List available talks with `type: talk` |
+| Not a talk type        | Inform user skill only works on talks  |
+| Transcript unavailable | Fall back to WebSearch analysis        |
+| Agent analysis fails   | Retry with simplified prompts          |
+| User rejects content   | Allow regeneration with feedback       |
+| No insights extracted  | Try broader analysis or web research   |
 
 ---
 
 ## Quality Checklist
 
 Before saving, verify:
+
 - [ ] Talk note exists and has `type: talk`
 - [ ] Transcript was fetched (or web research fallback used)
 - [ ] Core Message is under 50 words

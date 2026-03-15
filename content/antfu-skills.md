@@ -61,6 +61,7 @@ The architecture separates skill tiers by maintenance model:
 3. **Vendored** (`skills-vendored/`): Submodules pointing to external skill repos
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph repo["antfu/skills"]
@@ -73,6 +74,7 @@ graph TD
     Docs[Official Docs<br/>Vue, Nuxt, Vite...] --> G
     Ext[External Repos<br/>Slidev, VueUse...] -.->|submodule| V
 </pre>
+
 ::
 
 This structure allows ecosystem skills to stay current automatically while personal preferences remain manually curated.

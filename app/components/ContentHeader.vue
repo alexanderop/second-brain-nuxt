@@ -1,61 +1,60 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
-import { computed } from 'vue'
-import { useClipboard } from '@vueuse/core'
-import { useRequestURL } from '#imports'
-import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components'
-import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
-import BaseTagPill from '~/components/BaseTagPill.vue'
-import BaseRatingDisplay from '~/components/BaseRatingDisplay.vue'
-import type { ContentItem, NewsletterItem, PodcastItem } from '~/types/content'
-import { formatDate } from '~/utils/formatDate'
+import type { DropdownMenuItem } from "@nuxt/ui";
+import { computed } from "vue";
+import { useClipboard } from "@vueuse/core";
+import { useRequestURL } from "#imports";
+import { NuxtLink, UButton, UDropdownMenu, UIcon } from "#components";
+import BaseTypeIcon from "~/components/BaseTypeIcon.vue";
+import BaseTagPill from "~/components/BaseTagPill.vue";
+import BaseRatingDisplay from "~/components/BaseRatingDisplay.vue";
+import type { ContentItem, NewsletterItem, PodcastItem } from "~/types/content";
+import { formatDate } from "~/utils/formatDate";
 
 const props = defineProps<{
-  content: ContentItem
-  podcast?: PodcastItem
-  newsletter?: NewsletterItem
-  hosts?: Array<{ slug: string, name: string }>
-}>()
+  content: ContentItem;
+  podcast?: PodcastItem;
+  newsletter?: NewsletterItem;
+  hosts?: Array<{ slug: string; name: string }>;
+}>();
 
-const { copy, copied } = useClipboard()
-const requestUrl = useRequestURL()
+const { copy, copied } = useClipboard();
+const requestUrl = useRequestURL();
 
 const copyItems = computed<DropdownMenuItem[]>(() => {
   const items: DropdownMenuItem[] = [
     {
-      label: 'Copy Wiki',
-      icon: 'i-lucide-link',
+      label: "Copy Wiki",
+      icon: "i-lucide-link",
       onSelect: () => copy(`[[${props.content.slug}]]`),
     },
     {
-      label: 'Copy URL',
-      icon: 'i-lucide-globe',
+      label: "Copy URL",
+      icon: "i-lucide-globe",
       onSelect: () => copy(`${requestUrl.origin}/${props.content.slug}`),
     },
     {
-      label: 'Copy Markdown',
-      icon: 'i-lucide-file-text',
+      label: "Copy Markdown",
+      icon: "i-lucide-file-text",
       onSelect: async () => {
-        const { raw } = await $fetch<{ raw: string }>(`/api/raw-content/${props.content.slug}`)
-        copy(raw)
+        const { raw } = await $fetch<{ raw: string }>(`/api/raw-content/${props.content.slug}`);
+        copy(raw);
       },
     },
-  ]
+  ];
 
   // Add Copy Source option if origin URL exists
   if (props.content.url) {
     items.push({
-      label: 'Copy Source',
-      icon: 'i-lucide-external-link',
+      label: "Copy Source",
+      icon: "i-lucide-external-link",
       onSelect: () => {
-        if (props.content.url)
-          copy(props.content.url)
+        if (props.content.url) copy(props.content.url);
       },
-    })
+    });
   }
 
-  return items
-})
+  return items;
+});
 </script>
 
 <template>
@@ -81,8 +80,11 @@ const copyItems = computed<DropdownMenuItem[]>(() => {
             :src="podcast.artwork"
             :alt="podcast.name"
             class="size-full object-cover"
+          />
+          <div
+            v-else
+            class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
           >
-          <div v-else class="size-full flex items-center justify-center text-[var(--ui-text-muted)]">
             <UIcon name="i-lucide-podcast" class="size-5" />
           </div>
         </div>
@@ -102,8 +104,11 @@ const copyItems = computed<DropdownMenuItem[]>(() => {
             :src="newsletter.logo"
             :alt="newsletter.name"
             class="size-full object-cover"
+          />
+          <div
+            v-else
+            class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
           >
-          <div v-else class="size-full flex items-center justify-center text-[var(--ui-text-muted)]">
             <UIcon name="i-lucide-newspaper" class="size-5" />
           </div>
         </div>
@@ -112,7 +117,10 @@ const copyItems = computed<DropdownMenuItem[]>(() => {
     </div>
 
     <!-- Hosts and guests for podcast episodes -->
-    <div v-if="podcast && (hosts?.length || content.guests?.length)" class="mb-4 text-[var(--ui-text-muted)]">
+    <div
+      v-if="podcast && (hosts?.length || content.guests?.length)"
+      class="mb-4 text-[var(--ui-text-muted)]"
+    >
       <template v-if="content.guests?.length">
         <span>Guest: </span>
         <template v-for="(guest, index) in content.guests" :key="guest">
@@ -154,7 +162,7 @@ const copyItems = computed<DropdownMenuItem[]>(() => {
       </template>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <BaseTagPill v-for="tag in (content.tags ?? [])" :key="tag" :tag="tag" />
+      <BaseTagPill v-for="tag in content.tags ?? []" :key="tag" :tag="tag" />
       <BaseRatingDisplay v-if="content.rating" :rating="content.rating" />
       <UDropdownMenu :items="copyItems" class="ml-2">
         <UButton

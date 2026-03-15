@@ -1,263 +1,268 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { watchDebounced } from '@vueuse/core'
-import { useAsyncData, defineShortcuts, navigateTo, queryCollection, queryCollectionSearchSections } from '#imports'
-import { usePageTitle } from '~/composables/usePageTitle'
-import { NuxtLink, UInput, UKbd, UAvatar } from '#components'
-import Fuse from 'fuse.js'
-import type { FuseResult } from 'fuse.js'
-import { getSnippet, highlightMatch } from '#shared/utils/text'
+import { ref, computed, watch } from "vue";
+import { watchDebounced } from "@vueuse/core";
+import {
+  useAsyncData,
+  defineShortcuts,
+  navigateTo,
+  queryCollection,
+  queryCollectionSearchSections,
+} from "#imports";
+import { usePageTitle } from "~/composables/usePageTitle";
+import { NuxtLink, UInput, UKbd, UAvatar } from "#components";
+import Fuse from "fuse.js";
+import type { FuseResult } from "fuse.js";
+import { getSnippet, highlightMatch } from "#shared/utils/text";
 
 interface SearchSection {
-  id: string
-  title: string
-  titles: string[]
-  content: string
-  level: number
+  id: string;
+  title: string;
+  titles: string[];
+  content: string;
+  level: number;
 }
 
 interface Author {
-  name: string
-  slug: string
-  avatar?: string
+  name: string;
+  slug: string;
+  avatar?: string;
 }
 
 interface SearchableItem {
-  type: 'content' | 'author'
+  type: "content" | "author";
   // Content fields
-  id?: string
-  title?: string
-  content?: string
-  titles?: string[]
-  level?: number
+  id?: string;
+  title?: string;
+  content?: string;
+  titles?: string[];
+  level?: number;
   // Metadata fields (enriched from content collection)
-  tags?: string[]
-  contentType?: string
-  authorSlugs?: string[]
+  tags?: string[];
+  contentType?: string;
+  authorSlugs?: string[];
   // Author fields
-  name?: string
-  slug?: string
-  avatar?: string
+  name?: string;
+  slug?: string;
+  avatar?: string;
 }
 
 interface SearchResult {
-  id: string
-  type: 'content' | 'author'
-  path: string
-  title: string
-  snippet: string
-  highlightedSnippet: string
+  id: string;
+  type: "content" | "author";
+  path: string;
+  title: string;
+  snippet: string;
+  highlightedSnippet: string;
   // Author fields
-  author?: Author
-  highlightedName?: string
+  author?: Author;
+  highlightedName?: string;
 }
 
-const searchTerm = ref('')
-const debouncedSearch = ref('')
+const searchTerm = ref("");
+const debouncedSearch = ref("");
 
 watchDebounced(
   searchTerm,
   (value) => {
-    debouncedSearch.value = value
+    debouncedSearch.value = value;
   },
   { debounce: 250 },
-)
+);
 
 // Fetch search sections with full body content
-const { data: searchSections } = await useAsyncData(
-  'search-sections',
-  () => queryCollectionSearchSections('content'),
-)
+const { data: searchSections } = await useAsyncData("search-sections", () =>
+  queryCollectionSearchSections("content"),
+);
 
 // Fetch authors for search
-const { data: authors } = await useAsyncData(
-  'search-authors',
-  () => queryCollection('authors').select('name', 'slug', 'avatar').all(),
-)
+const { data: authors } = await useAsyncData("search-authors", () =>
+  queryCollection("authors").select("name", "slug", "avatar").all(),
+);
 
 // Fetch all content for default display (when no search term)
-const { data: allContent } = await useAsyncData('all-content', () => {
-  return queryCollection('content').order('date', 'DESC').all()
-})
+const { data: allContent } = await useAsyncData("all-content", () => {
+  return queryCollection("content").order("date", "DESC").all();
+});
 
 // Build a lookup map: path → { tags, type, authors }
 const contentMetadata = computed(() => {
-  if (!allContent.value) return new Map<string, { tags: string[], type: string, authors: string[] }>()
-  return new Map(allContent.value.map(c => [
-    `/${c.stem}`,
-    { tags: c.tags ?? [], type: c.type, authors: c.authors ?? [] },
-  ]))
-})
+  if (!allContent.value)
+    return new Map<string, { tags: string[]; type: string; authors: string[] }>();
+  return new Map(
+    allContent.value.map((c) => [
+      `/${c.stem}`,
+      { tags: c.tags ?? [], type: c.type, authors: c.authors ?? [] },
+    ]),
+  );
+});
 
 // Fuse.js configuration for full-text search
 const FUSE_OPTIONS = {
   keys: [
-    { name: 'title', weight: 1 },
-    { name: 'content', weight: 0.7 },
-    { name: 'titles', weight: 0.8 },
-    { name: 'name', weight: 1 }, // Author name
-    { name: 'tags', weight: 0.9 },
-    { name: 'contentType', weight: 0.6 },
-    { name: 'authorSlugs', weight: 0.8 },
+    { name: "title", weight: 1 },
+    { name: "content", weight: 0.7 },
+    { name: "titles", weight: 0.8 },
+    { name: "name", weight: 1 }, // Author name
+    { name: "tags", weight: 0.9 },
+    { name: "contentType", weight: 0.6 },
+    { name: "authorSlugs", weight: 0.8 },
   ],
   includeMatches: true,
   threshold: 0.4,
   ignoreLocation: true,
   minMatchCharLength: 2,
-}
+};
 
 // Helper to enrich section with metadata
 function enrichSection(
   section: SearchSection,
-  metadataMap: Map<string, { tags: string[], type: string, authors: string[] }>,
+  metadataMap: Map<string, { tags: string[]; type: string; authors: string[] }>,
 ): SearchableItem {
-  const path = (section.id ?? '').split('#')[0] ?? ''
-  const meta = metadataMap.get(path)
+  const path = (section.id ?? "").split("#")[0] ?? "";
+  const meta = metadataMap.get(path);
   return {
-    type: 'content',
+    type: "content",
     ...section,
     tags: meta?.tags,
     contentType: meta?.type,
     authorSlugs: meta?.authors,
-  }
+  };
 }
 
 // Create Fuse instance for full-text search (content + authors)
 const fuse = computed(() => {
-  const sections = searchSections.value ?? []
-  const authorList = authors.value ?? []
+  const sections = searchSections.value ?? [];
+  const authorList = authors.value ?? [];
 
-  const contentItems = sections.map(s => enrichSection(s, contentMetadata.value))
-  const authorItems: SearchableItem[] = authorList.map(a => ({ type: 'author', ...a }))
-  const items = [...contentItems, ...authorItems]
+  const contentItems = sections.map((s) => enrichSection(s, contentMetadata.value));
+  const authorItems: SearchableItem[] = authorList.map((a) => ({ type: "author", ...a }));
+  const items = [...contentItems, ...authorItems];
 
-  return items.length > 0 ? new Fuse(items, FUSE_OPTIONS) : null
-})
+  return items.length > 0 ? new Fuse(items, FUSE_OPTIONS) : null;
+});
 
 // Helper: Extract snippet and highlighted version from match results
 function extractSnippetFromMatch(
   result: FuseResult<SearchableItem>,
   searchTerm: string,
-): { snippet: string, highlightedSnippet: string } {
-  const contentMatch = result.matches?.find(m => m.key === 'content')
-  const titleMatch = result.matches?.find(m => m.key === 'title')
+): { snippet: string; highlightedSnippet: string } {
+  const contentMatch = result.matches?.find((m) => m.key === "content");
+  const titleMatch = result.matches?.find((m) => m.key === "title");
 
   if (contentMatch?.value) {
-    const snippet = getSnippet(contentMatch.value, searchTerm)
-    return { snippet, highlightedSnippet: highlightMatch(snippet, searchTerm) }
+    const snippet = getSnippet(contentMatch.value, searchTerm);
+    return { snippet, highlightedSnippet: highlightMatch(snippet, searchTerm) };
   }
 
   if (titleMatch?.value) {
-    const snippet = result.item.content?.slice(0, 150) ?? ''
-    return { snippet, highlightedSnippet: snippet }
+    const snippet = result.item.content?.slice(0, 150) ?? "";
+    return { snippet, highlightedSnippet: snippet };
   }
 
-  return { snippet: '', highlightedSnippet: '' }
+  return { snippet: "", highlightedSnippet: "" };
 }
 
 // Helper: Create content search result from fuse result
 function createContentResult(result: FuseResult<SearchableItem>, searchTerm: string): SearchResult {
-  const item = result.item
-  const path = (item.id ?? '').split('#')[0] || item.id || ''
-  const title = item.titles?.[0] || item.title || path
-  const { snippet, highlightedSnippet } = extractSnippetFromMatch(result, searchTerm)
+  const item = result.item;
+  const path = (item.id ?? "").split("#")[0] || item.id || "";
+  const title = item.titles?.[0] || item.title || path;
+  const { snippet, highlightedSnippet } = extractSnippetFromMatch(result, searchTerm);
 
-  return { id: path, type: 'content', path, title, snippet, highlightedSnippet }
+  return { id: path, type: "content", path, title, snippet, highlightedSnippet };
 }
 
 // Helper: Create author search result
 function createAuthorResult(item: SearchableItem, searchTerm: string): SearchResult {
-  const authorSlug = item.slug ?? ''
-  const authorName = item.name ?? ''
+  const authorSlug = item.slug ?? "";
+  const authorName = item.name ?? "";
   return {
     id: `author:${authorSlug}`,
-    type: 'author',
+    type: "author",
     path: `/authors/${encodeURIComponent(authorSlug)}`,
     title: authorName,
-    snippet: 'Author',
-    highlightedSnippet: 'Author',
+    snippet: "Author",
+    highlightedSnippet: "Author",
     author: { name: authorName, slug: authorSlug, avatar: item.avatar },
     highlightedName: highlightMatch(authorName, searchTerm),
-  }
+  };
 }
 
 // Group sections by document and return search results
 function processSearchResults(fuseResults: FuseResult<SearchableItem>[]): SearchResult[] {
-  const resultMap = new Map<string, SearchResult>()
+  const resultMap = new Map<string, SearchResult>();
 
   for (const result of fuseResults) {
-    const item = result.item
+    const item = result.item;
 
-    if (item.type === 'author') {
-      const key = `author:${item.slug ?? ''}`
+    if (item.type === "author") {
+      const key = `author:${item.slug ?? ""}`;
       if (!resultMap.has(key)) {
-        resultMap.set(key, createAuthorResult(item, debouncedSearch.value))
+        resultMap.set(key, createAuthorResult(item, debouncedSearch.value));
       }
-      continue
+      continue;
     }
 
-    const path = (item.id ?? '').split('#')[0] || item.id || ''
+    const path = (item.id ?? "").split("#")[0] || item.id || "";
     if (!resultMap.has(path)) {
-      resultMap.set(path, createContentResult(result, debouncedSearch.value))
+      resultMap.set(path, createContentResult(result, debouncedSearch.value));
     }
   }
 
-  return Array.from(resultMap.values())
+  return Array.from(resultMap.values());
 }
 
 // Computed search results using keyword (Fuse.js) search
 const results = computed<SearchResult[]>(() => {
-  if (!debouncedSearch.value) return []
-  if (!fuse.value) return []
+  if (!debouncedSearch.value) return [];
+  if (!fuse.value) return [];
 
-  const fuseResults = fuse.value.search(debouncedSearch.value)
-  return processSearchResults(fuseResults)
-})
+  const fuseResults = fuse.value.search(debouncedSearch.value);
+  return processSearchResults(fuseResults);
+});
 
 // Default content when no search term
 const defaultContent = computed(() => {
-  return allContent.value?.slice(0, 10) ?? []
-})
+  return allContent.value?.slice(0, 10) ?? [];
+});
 
-const selectedIndex = ref(-1)
+const selectedIndex = ref(-1);
 
 // List navigation shortcuts
 defineShortcuts({
-  'j': () => {
-    const length = debouncedSearch.value ? results.value.length : defaultContent.value.length
-    if (length === 0) return
-    selectedIndex.value = Math.min(selectedIndex.value + 1, length - 1)
+  j: () => {
+    const length = debouncedSearch.value ? results.value.length : defaultContent.value.length;
+    if (length === 0) return;
+    selectedIndex.value = Math.min(selectedIndex.value + 1, length - 1);
   },
-  'k': () => {
-    const length = debouncedSearch.value ? results.value.length : defaultContent.value.length
-    if (length === 0) return
-    selectedIndex.value = Math.max(selectedIndex.value - 1, 0)
+  k: () => {
+    const length = debouncedSearch.value ? results.value.length : defaultContent.value.length;
+    if (length === 0) return;
+    selectedIndex.value = Math.max(selectedIndex.value - 1, 0);
   },
-  'enter': () => {
-    if (selectedIndex.value < 0) return
+  enter: () => {
+    if (selectedIndex.value < 0) return;
     if (debouncedSearch.value && results.value.length) {
-      const item = results.value[selectedIndex.value]
-      if (item) void navigateTo(item.path)
-      return
+      const item = results.value[selectedIndex.value];
+      if (item) void navigateTo(item.path);
+      return;
     }
-    const item = defaultContent.value[selectedIndex.value]
-    if (item) void navigateTo(`/${item.stem}`)
+    const item = defaultContent.value[selectedIndex.value];
+    if (item) void navigateTo(`/${item.stem}`);
   },
-})
+});
 
 // Reset selection when search changes
 watch(debouncedSearch, () => {
-  selectedIndex.value = -1
-})
+  selectedIndex.value = -1;
+});
 
-usePageTitle('Search')
+usePageTitle("Search");
 </script>
 
 <template>
   <div>
-    <h1 class="text-2xl font-semibold mb-6">
-      Search
-    </h1>
+    <h1 class="text-2xl font-semibold mb-6">Search</h1>
 
     <UInput
       v-model="searchTerm"
@@ -272,7 +277,7 @@ usePageTitle('Search')
     <!-- Search results -->
     <div v-if="debouncedSearch && results.length">
       <p class="text-sm text-[var(--ui-text-muted)] mb-4" role="status" aria-live="polite">
-        {{ results.length }} result{{ results.length === 1 ? '' : 's' }}
+        {{ results.length }} result{{ results.length === 1 ? "" : "s" }}
       </p>
       <div class="space-y-4">
         <NuxtLink
@@ -280,7 +285,9 @@ usePageTitle('Search')
           :key="result.id"
           :to="result.path"
           class="block p-4 rounded-lg border border-[var(--ui-border)] transition-colors"
-          :class="index === selectedIndex ? 'bg-[var(--ui-bg-muted)]' : 'hover:bg-[var(--ui-bg-muted)]'"
+          :class="
+            index === selectedIndex ? 'bg-[var(--ui-bg-muted)]' : 'hover:bg-[var(--ui-bg-muted)]'
+          "
         >
           <!-- Author result -->
           <div v-if="result.type === 'author'" class="flex items-center gap-3">
@@ -291,13 +298,8 @@ usePageTitle('Search')
               class="shrink-0"
             />
             <div>
-              <h3
-                class="font-medium"
-                v-html="result.highlightedName"
-              />
-              <p class="text-sm text-[var(--ui-text-muted)]">
-                Author
-              </p>
+              <h3 class="font-medium" v-html="result.highlightedName" />
+              <p class="text-sm text-[var(--ui-text-muted)]">Author</p>
             </div>
           </div>
 
@@ -323,16 +325,16 @@ usePageTitle('Search')
 
     <!-- Default content when not searching -->
     <div v-else-if="defaultContent.length">
-      <p class="text-sm text-[var(--ui-text-muted)] mb-4">
-        Recent content
-      </p>
+      <p class="text-sm text-[var(--ui-text-muted)] mb-4">Recent content</p>
       <div class="space-y-4">
         <NuxtLink
           v-for="(item, index) in defaultContent"
           :key="item.id"
           :to="`/${item.stem}`"
           class="block p-4 rounded-lg border border-[var(--ui-border)] transition-colors"
-          :class="index === selectedIndex ? 'bg-[var(--ui-bg-muted)]' : 'hover:bg-[var(--ui-bg-muted)]'"
+          :class="
+            index === selectedIndex ? 'bg-[var(--ui-bg-muted)]' : 'hover:bg-[var(--ui-bg-muted)]'
+          "
         >
           <h3 class="font-medium">
             {{ item.title }}
@@ -347,9 +349,7 @@ usePageTitle('Search')
     <!-- Empty state -->
     <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
       <p>Start typing to search your knowledge base</p>
-      <p class="text-sm mt-2">
-        Use <UKbd>⌘K</UKbd> anywhere to open quick search
-      </p>
+      <p class="text-sm mt-2">Use <UKbd>⌘K</UKbd> anywhere to open quick search</p>
     </div>
   </div>
 </template>

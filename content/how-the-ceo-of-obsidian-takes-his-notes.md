@@ -22,9 +22,10 @@ Notes are plain markdown files that outlast any software. If Obsidian disappears
 
 ### Flat Structure with Properties
 
-Most notes live in the vault root—no nested folders. Instead of deciding *where* a note belongs, add **categories as properties**. A single note can belong to multiple categories without duplication.
+Most notes live in the vault root—no nested folders. Instead of deciding _where_ a note belongs, add **categories as properties**. A single note can belong to multiple categories without duplication.
 
 The only folders Steph keeps:
+
 - **References** — things outside your world (people, movies, books)
 - **Attachments** — images and files
 - **Templates** — starting points for new notes
@@ -49,6 +50,7 @@ Objectify reusable ideas as **evergreen notes**—atomic insights you reference 
 ### Rating System
 
 A 1-7 scale marks importance:
+
 - **7** — Life-changing
 - **4** — Worth remembering
 - **1** — Negatively impactful
@@ -57,7 +59,7 @@ Apply ratings to anything: books, movies, meetings, experiences.
 
 ### Composable Templates
 
-Templates don't overlap—they stack. A person who's also an author gets both the `people` and `author` templates applied, showing meetings *and* books they've written.
+Templates don't overlap—they stack. A person who's also an author gets both the `people` and `author` templates applied, showing meetings _and_ books they've written.
 
 ## The Daily Rhythm
 

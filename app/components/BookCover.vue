@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps<{
-  cover: string
-  title?: string
-}>()
+  cover: string;
+  title?: string;
+}>();
 </script>
 
 <template>
@@ -12,6 +12,6 @@ defineProps<{
       :alt="`Cover of ${title ?? 'book'}`"
       class="max-w-xs rounded-lg shadow-lg border border-[var(--ui-border)]"
       loading="lazy"
-    >
+    />
   </div>
 </template>

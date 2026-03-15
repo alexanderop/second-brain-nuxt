@@ -24,11 +24,13 @@ Use prompt chaining when you have clear subtasks. Breaking down work reduces con
 ## The Trade-offs
 
 **Benefits:**
+
 - Reduced context load per LLM call
 - Deterministic gates between steps (conditionals that don't need LLM)
 - Improved reliability through tightly constrained calls
 
 **Costs:**
+
 - Increased maintenance from prompt proliferation
 - Higher latency (more round trips)
 - May become unnecessary as models handle complexity better

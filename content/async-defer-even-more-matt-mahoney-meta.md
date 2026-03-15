@@ -47,6 +47,7 @@ Splitting into two queries solves the compute problem but adds state management 
 @async is a fragment spread directive. When the `if` argument is true, it skips the data entirely.
 
 At persist time, the directive transforms the query:
+
 - Replaces `@async` with `@skip`
 - Adds an ID field for refetching
 - Adds a `__fulfilled` field to track whether data exists

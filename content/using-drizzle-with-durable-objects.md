@@ -27,6 +27,7 @@ Drizzle ORM added support for Cloudflare's Durable Objects with SQLite, enabling
 ## Setup Flow
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Install drizzle-orm & drizzle-kit] --> B[Configure drizzle.config.ts]
@@ -34,6 +35,7 @@ flowchart LR
     C --> D[Create repository class]
     D --> E[Run drizzle-kit generate]
 </pre>
+
 ::
 
 ## Code Snippets
@@ -45,10 +47,10 @@ The config specifies SQLite dialect with the Durable Objects driver.
 ```typescript
 // drizzle.config.ts
 export default {
-  dialect: 'sqlite',
-  driver: 'durable-sqlite',
+  dialect: "sqlite",
+  driver: "durable-sqlite",
   // ... schema and output paths
-}
+};
 ```
 
 ### Repository Initialization
@@ -57,14 +59,14 @@ Wrap migration in `blockConcurrencyWhile()` to prevent concurrent requests durin
 
 ```typescript
 class Repository {
-  private db: DrizzleDatabase
+  private db: DrizzleDatabase;
 
   constructor(storage: DurableObjectStorage) {
-    this.db = drizzle(storage)
+    this.db = drizzle(storage);
 
     storage.blockConcurrencyWhile(async () => {
-      await migrate(this.db, migrations)
-    })
+      await migrate(this.db, migrations);
+    });
   }
 }
 ```

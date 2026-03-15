@@ -25,7 +25,7 @@ The talk is a masterclass in the gap between "we'll use CRDTs" and actually ship
 
 ### The Block Model Complicates Everything
 
-Notion organizes content into blocks — reorderable, nestable, splittable, mergeable units. Text in one block can be split across two blocks, or two blocks can merge into one. This fundamentally changes the conflict resolution problem: you can't just resolve text conflicts within a single document. You need to resolve conflicts *across* blocks that may have been concurrently restructured.
+Notion organizes content into blocks — reorderable, nestable, splittable, mergeable units. Text in one block can be split across two blocks, or two blocks can merge into one. This fundamentally changes the conflict resolution problem: you can't just resolve text conflicts within a single document. You need to resolve conflicts _across_ blocks that may have been concurrently restructured.
 
 ### RGA Gets You Started, Not Finished
 
@@ -36,6 +36,7 @@ Notion uses RGA (Replicated Growable Array) — each character gets a unique ID 
 To handle splits and merges, Notion introduced **text slices** — segments of text with a start item, end item, and text items in between. A **split item** marks where a slice was divided. These slices form trees (text slice trees) per block, where splits create child nodes. Moving text between blocks means moving slices between trees.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A[Insert Operation] --> B{Find target block}
@@ -57,6 +58,7 @@ flowchart TD
         P[Search Label] -->|Prefix matching| Q[Narrows block search]
     end
 </pre>
+
 ::
 
 ### The Text Instance Trick

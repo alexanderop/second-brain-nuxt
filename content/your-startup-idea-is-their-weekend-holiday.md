@@ -17,6 +17,7 @@ date: 2026-02-14
 Andreas Klinger — former CTO of Product Hunt, now running PROTOTYPE fund — lays out the uncomfortable math for SaaS founders: the same tools that make building software trivially easy also make your product trivially replaceable. Your great SaaS idea? It's Christopher Janz's weekend project now.
 
 ::mermaid
+
 <pre>
 mindmap
     root((SaaS in the AI Era))
@@ -52,6 +53,7 @@ mindmap
             Vibe-coded app governance
                 Securing and standardizing ad-hoc apps
 </pre>
+
 ::
 
 ## Key Takeaways

@@ -26,6 +26,7 @@ Lambda durable functions solve the problem of building reliable long-running wor
 ## How Checkpoint/Replay Works
 
 ::mermaid
+
 <pre>
 flowchart LR
     Start[Function Start] --> Run[Execute Code]
@@ -42,6 +43,7 @@ flowchart LR
     UseStored --> Continue
     Execute --> Store
 </pre>
+
 ::
 
 The SDK wraps your Lambda handler and provides a `DurableContext` with access to steps and waits. You write sequential code; the SDK handles state management transparently.
@@ -55,11 +57,11 @@ The SDK wraps your Lambda handler and provides a `DurableContext` with access to
 
 ## Trade-offs
 
-| Benefit | Consideration |
-|---------|--------------|
-| Executions up to 1 year | Only JS/TS/Python supported |
-| No compute charges during waits | Requires SDK adoption |
-| Automatic retry and recovery | Code must be deterministic for replay |
+| Benefit                         | Consideration                           |
+| ------------------------------- | --------------------------------------- |
+| Executions up to 1 year         | Only JS/TS/Python supported             |
+| No compute charges during waits | Requires SDK adoption                   |
+| Automatic retry and recovery    | Code must be deterministic for replay   |
 | Familiar sequential programming | Learning curve for checkpoint semantics |
 
 ## Connections

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { UButton } from '#components'
-import { useSiteConfig } from '~/composables/useSiteConfig'
+import { UButton } from "#components";
+import { useSiteConfig } from "~/composables/useSiteConfig";
 
-const { social } = useSiteConfig()
+const { social } = useSiteConfig();
 </script>
 
 <template>

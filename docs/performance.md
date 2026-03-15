@@ -6,16 +6,16 @@ D3 is modular. Importing `import * as d3 from 'd3'` bundles ~273KB. Instead, imp
 
 ```typescript
 // ❌ Imports entire D3 library
-import * as d3 from 'd3'
+import * as d3 from "d3";
 
 // ✅ Tree-shakeable - only imports what you use
-import { select } from 'd3-selection'
-import { scaleLinear, scaleBand } from 'd3-scale'
-import { forceSimulation, forceLink } from 'd3-force'
-import { line, area, curveMonotoneX } from 'd3-shape'
-import { max, extent } from 'd3-array'
-import { zoom, zoomIdentity } from 'd3-zoom'
-import { drag } from 'd3-drag'
+import { select } from "d3-selection";
+import { scaleLinear, scaleBand } from "d3-scale";
+import { forceSimulation, forceLink } from "d3-force";
+import { line, area, curveMonotoneX } from "d3-shape";
+import { max, extent } from "d3-array";
+import { zoom, zoomIdentity } from "d3-zoom";
+import { drag } from "d3-drag";
 ```
 
 For TypeScript, install the corresponding type packages:
@@ -63,16 +63,17 @@ Key differences from standard Vite/SPA setups:
 
 Testing all pre-rendered pages is impractical (133 pages × 3 runs × ~15s = 1+ hour). Instead, test representative page types:
 
-| URL | Tests |
-|-----|-------|
-| `/` | Homepage, core layout, main assets |
-| `/atomic-habits` | Content note rendering |
-| `/authors` | Collection listing queries |
-| `/authors/aaron-francis` | Detail page pattern |
+| URL                      | Tests                              |
+| ------------------------ | ---------------------------------- |
+| `/`                      | Homepage, core layout, main assets |
+| `/atomic-habits`         | Content note rendering             |
+| `/authors`               | Collection listing queries         |
+| `/authors/aaron-francis` | Detail page pattern                |
 
 ### Thresholds
 
 Current budgets (moderate):
+
 - Performance: 75%
 - Accessibility: 95%
 - Best Practices: 90%

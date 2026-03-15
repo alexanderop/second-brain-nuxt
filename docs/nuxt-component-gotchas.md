@@ -23,6 +23,7 @@ Common pitfalls when building Vue components in Nuxt.
 ```
 
 **Key points:**
+
 - `custom` prevents rendering `<a>`, gives full markup control
 - `v-slot="{ navigate }"` exposes the navigation function
 - Inner links use `@click.stop` to prevent triggering card navigation
@@ -46,7 +47,7 @@ runtimeConfig: {
 ```vue
 <!-- Client-side (Vue) -->
 <script setup>
-const featureEnabled = import.meta.dev
+const featureEnabled = import.meta.dev;
 </script>
 
 <template>
@@ -58,13 +59,14 @@ const featureEnabled = import.meta.dev
 // Server-side (Nitro)
 export default defineEventHandler((event) => {
   if (!import.meta.dev) {
-    throw createError({ statusCode: 404 })
+    throw createError({ statusCode: 404 });
   }
   // Dev-only logic...
-})
+});
 ```
 
 **Benefits:**
+
 - Build-time constant - dead code eliminated in production
 - No environment variables needed
 - Works on both client and server

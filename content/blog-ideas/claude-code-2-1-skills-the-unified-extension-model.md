@@ -29,29 +29,29 @@ Skills in Claude Code 2.1 aren't just "markdown files that teach Claude things" 
 
 **New in 2.1:**
 
-| Field | Purpose |
-|-------|---------|
-| `context: fork` | Run skill in isolated sub-agent context |
-| `agent` | Specify agent type: `Explore`, `Plan`, `general-purpose`, or custom |
-| `hooks` | Define PreToolUse, PostToolUse, Stop hooks scoped to skill lifecycle |
-| `once: true` | Hook runs once then auto-removes |
+| Field           | Purpose                                                              |
+| --------------- | -------------------------------------------------------------------- |
+| `context: fork` | Run skill in isolated sub-agent context                              |
+| `agent`         | Specify agent type: `Explore`, `Plan`, `general-purpose`, or custom  |
+| `hooks`         | Define PreToolUse, PostToolUse, Stop hooks scoped to skill lifecycle |
+| `once: true`    | Hook runs once then auto-removes                                     |
 
 **All frontmatter fields:**
 
 ```yaml
 ---
-name: my-skill                    # Required: lowercase, hyphens, max 64 chars
-description: "..."                # Required: max 1024 chars, include trigger keywords
-allowed-tools:                    # Optional: YAML list or comma-separated
+name: my-skill # Required: lowercase, hyphens, max 64 chars
+description: "..." # Required: max 1024 chars, include trigger keywords
+allowed-tools: # Optional: YAML list or comma-separated
   - Read
   - Grep
-  - Bash(git add:*)              # Wildcard syntax for specific commands
-model: claude-sonnet-4-20250514  # Optional: specific model
-context: fork                     # Optional: isolated execution
-agent: Explore                    # Optional: agent type when forked
-user-invocable: true             # Optional: show in slash menu (default true)
-disable-model-invocation: false  # Optional: block Skill tool invocation
-hooks:                           # Optional: lifecycle hooks
+  - Bash(git add:*) # Wildcard syntax for specific commands
+model: claude-sonnet-4-20250514 # Optional: specific model
+context: fork # Optional: isolated execution
+agent: Explore # Optional: agent type when forked
+user-invocable: true # Optional: show in slash menu (default true)
+disable-model-invocation: false # Optional: block Skill tool invocation
+hooks: # Optional: lifecycle hooks
   PreToolUse:
     - matcher: "Bash"
       hooks:
@@ -71,11 +71,13 @@ hooks:                           # Optional: lifecycle hooks
 ### 4. `context: fork` + `agent`: Skills as Subagents
 
 **Why fork?**
+
 - Main conversation stays clean—only final result returns
 - Isolated context for complex multi-step operations
 - Cost optimization with cheaper models
 
 **The `agent` field options:**
+
 - `Explore` - Fast, read-only (Haiku model)
 - `Plan` - Analysis and planning (Sonnet model)
 - `general-purpose` - Full tool access (Sonnet model)
@@ -94,15 +96,18 @@ model: haiku
 ### 5. Hooks in Skill Frontmatter
 
 **Supported events:**
+
 - `PreToolUse` - Before tool execution (can block)
 - `PostToolUse` - After tool execution
 - `Stop` - When skill finishes
 
 **Key feature: `once: true`**
+
 - Hook runs once per session, then auto-removes
 - Perfect for one-time validations or setup checks
 
 **Complete example:**
+
 ```yaml
 ---
 name: secure-operations
@@ -126,13 +131,14 @@ hooks:
 
 ### 6. Visibility Controls: Two Different Settings
 
-| Setting | Slash menu | Skill tool | Auto-discovery |
-|---------|-----------|------------|----------------|
-| `user-invocable: true` (default) | Visible | Allowed | Yes |
-| `user-invocable: false` | Hidden | Allowed | Yes |
-| `disable-model-invocation: true` | Visible | **Blocked** | Yes |
+| Setting                          | Slash menu | Skill tool  | Auto-discovery |
+| -------------------------------- | ---------- | ----------- | -------------- |
+| `user-invocable: true` (default) | Visible    | Allowed     | Yes            |
+| `user-invocable: false`          | Hidden     | Allowed     | Yes            |
+| `disable-model-invocation: true` | Visible    | **Blocked** | Yes            |
 
 **Key distinction:**
+
 - `user-invocable: false` = hides from slash menu but Claude can still invoke via Skill tool
 - `disable-model-invocation: true` = prevents Claude from invoking programmatically at all
 
@@ -143,13 +149,13 @@ Before: "Should I use a skill, slash command, or subagent?"
 After:  "Just make it a skill"
 ```
 
-| Use case | Solution |
-|----------|----------|
+| Use case                | Solution                               |
+| ----------------------- | -------------------------------------- |
 | User-invocable workflow | Skill (default `user-invocable: true`) |
-| Isolated context | Skill with `context: fork` |
-| Specific model | Skill with `model:` |
-| Event-driven logic | Skill with `hooks:` |
-| Dynamic runtime prompt | Task tool (the exception) |
+| Isolated context        | Skill with `context: fork`             |
+| Specific model          | Skill with `model:`                    |
+| Event-driven logic      | Skill with `hooks:`                    |
+| Dynamic runtime prompt  | Task tool (the exception)              |
 
 ### 8. Skills and Subagents: Two-Way Interaction
 
@@ -191,6 +197,7 @@ my-skill/
 ```
 
 **Token optimization:**
+
 - Keep `SKILL.md` under 500 lines
 - Utility scripts execute without consuming tokens (only output counts)
 - Claude loads supporting files only when needed
@@ -198,15 +205,18 @@ my-skill/
 ### 11. Migration Guide
 
 **From slash commands:**
+
 - Move from `~/.claude/commands/` to `~/.claude/skills/`
 - Add frontmatter with `name` and `description`
 - Benefit: auto-discovery + slash menu visibility
 
 **From hook scripts:**
+
 - Embed hooks directly in skill frontmatter
 - Benefit: hooks scoped to skill lifecycle, cleaned up automatically
 
 **From Task tool static workflows:**
+
 - Convert to skills with `context: fork`
 - Benefit: no runtime prompt composition needed
 

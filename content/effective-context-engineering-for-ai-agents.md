@@ -38,6 +38,7 @@ Three strategies address extended task timelines:
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Context["Context Window (Finite)"]
@@ -52,6 +53,7 @@ flowchart LR
     Model --> Action[Tool Call / Response]
     Action -.->|Summarize| External
 </pre>
+
 ::
 
 ## Practical Implications

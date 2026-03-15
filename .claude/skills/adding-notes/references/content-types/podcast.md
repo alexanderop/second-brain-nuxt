@@ -5,6 +5,7 @@ Podcast episodes link to their parent show via the `podcast` field.
 ## Detection
 
 Content is a podcast if:
+
 - URL: spotify.com/episode, podcasts.apple.com/episode
 - YouTube from known podcast channel (see `youtube.md` for list)
 - Title/description signals: "podcast", "episode", "ep.", "#123", "today's guest"
@@ -15,44 +16,52 @@ Content is a podcast if:
 ## Metadata Collection
 
 **Agent A - Episode Metadata:**
-- For YouTube podcasts: `get-youtube-metadata.sh`
+
+- For YouTube podcasts: `.claude/skills/adding-notes/scripts/get-youtube-metadata.sh`
 - For Spotify/Apple: WebFetch to extract title, show name, description
 
 **Agent B - Podcast Profile Check:**
+
 ```bash
 ls content/podcasts/ | grep -i "show-name-slug"
 ```
+
 If NOT found → see `references/podcast-profile-creation.md`
 
 **Agent C - Platform URLs:**
 Search for episode on multiple platforms:
+
 - Spotify: `site:open.spotify.com "Episode Title"`
 - Apple: `site:podcasts.apple.com "Episode Title"`
 - YouTube: `site:youtube.com "Episode Title" "Show Name"`
 
 **Agent D - Transcript Sourcing:**
 
-| Priority | Source | Method | Quality |
-|----------|--------|--------|---------|
-| 1 | YouTube version | `get-youtube-transcript.py` | High |
-| 2 | Show notes page | WebFetch episode URL | Medium |
-| 3 | Spotify native | Chrome extension JSON | High |
-| 4 | Description only | Spotify/Apple metadata | Low |
+| Priority | Source           | Method                                                                  | Quality |
+| -------- | ---------------- | ----------------------------------------------------------------------- | ------- |
+| 1        | YouTube version  | `python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py` | High    |
+| 2        | Show notes page  | WebFetch episode URL                                                    | Medium  |
+| 3        | Spotify native   | Chrome extension JSON                                                   | High    |
+| 4        | Description only | Spotify/Apple metadata                                                  | Low     |
 
 **Step 1:** Search for YouTube version
+
 ```text
 WebSearch: "{episode_title}" "{show_name}" site:youtube.com
 ```
 
 **Step 2:** Fetch show notes from podcast website
+
 ```text
 WebFetch: {podcast.website}/{episode-slug}/
 ```
+
 Extract: timestamps, links/resources, sponsors
 
 **Step 3:** Parse timestamps
+
 ```bash
-python3 scripts/get-podcast-transcript.py --parse-timestamps <<< "$SHOW_NOTES"
+python3 .claude/skills/adding-notes/scripts/get-podcast-transcript.py --parse-timestamps <<< "$SHOW_NOTES"
 ```
 
 **Step 4:** Set `transcript_source` field based on what was available.
@@ -89,12 +98,12 @@ date: 2026-01-01
 
 ## Podcast-specific Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `podcast` | Yes | Slug of show in `content/podcasts/` |
-| `guests` | No | Guest author slugs (not hosts) |
-| `urls` | No | Array of `{platform, url}` |
-| `transcript_source` | Yes | `youtube`, `show_notes`, `spotify_native`, `description_only` |
+| Field               | Required | Description                                                   |
+| ------------------- | -------- | ------------------------------------------------------------- |
+| `podcast`           | Yes      | Slug of show in `content/podcasts/`                           |
+| `guests`            | No       | Guest author slugs (not hosts)                                |
+| `urls`              | No       | Array of `{platform, url}`                                    |
+| `transcript_source` | Yes      | `youtube`, `show_notes`, `spotify_native`, `description_only` |
 
 ### Hosts vs Guests
 
@@ -106,14 +115,15 @@ date: 2026-01-01
 
 ## Transcript Source Quality
 
-| Source | Quality | Note Structure |
-|--------|---------|----------------|
-| `youtube` | High | Full quotes, timestamps, specific examples |
-| `show_notes` | Medium | Timestamps + links, limited detail |
-| `spotify_native` | High | Full transcript with timestamps |
-| `description_only` | Low | Add disclaimer, summary only |
+| Source             | Quality | Note Structure                             |
+| ------------------ | ------- | ------------------------------------------ |
+| `youtube`          | High    | Full quotes, timestamps, specific examples |
+| `show_notes`       | Medium  | Timestamps + links, limited detail         |
+| `spotify_native`   | High    | Full transcript with timestamps            |
+| `description_only` | Low     | Add disclaimer, summary only               |
 
 **If `description_only`:** Add this disclaimer at the top of body:
+
 ```markdown
 > **Note:** This summary is based on the episode description only.
 > Full transcript was not available.
@@ -126,12 +136,12 @@ date: 2026-01-01
 ```markdown
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introduction |
+| Time  | Topic                 |
+| ----- | --------------------- |
+| 00:00 | Introduction          |
 | 05:30 | Main topic discussion |
-| 25:00 | Deep dive segment |
-| 45:00 | Closing thoughts |
+| 25:00 | Deep dive segment     |
+| 45:00 | Closing thoughts      |
 
 ## Key Arguments
 
@@ -171,17 +181,18 @@ Include reasoning given, not just the claim.]
 
 ## Content Structure by Podcast Type
 
-| Type | Focus | Examples |
-|------|-------|----------|
-| News/Analysis | Predictions Made, specific claims | Doppelgänger, All-In |
-| Interview | Key Arguments from guest, Quotes | Lex Fridman, Diary of a CEO |
-| Educational | Protocols, Actionable advice | Huberman Lab |
+| Type          | Focus                             | Examples                    |
+| ------------- | --------------------------------- | --------------------------- |
+| News/Analysis | Predictions Made, specific claims | Doppelgänger, All-In        |
+| Interview     | Key Arguments from guest, Quotes  | Lex Fridman, Diary of a CEO |
+| Educational   | Protocols, Actionable advice      | Huberman Lab                |
 
 ---
 
 ## Validation
 
 Episode-specific validator checks:
+
 - `podcast` field references existing profile in `content/podcasts/`
 - Warn if guest appears in podcast's hosts list (unusual)
 - Warn if episode has no guests and no authors (unclear attribution)
@@ -202,12 +213,14 @@ Episode-specific validator checks:
 **Priority: MEDIUM** — Podcasts occasionally present frameworks worth visualizing.
 
 **Look for these triggers:**
+
 - Guest describes a named methodology or framework
 - Discussion of a process or workflow
 - Mental model or decision framework explained
 - Host/guest draws on whiteboard or references a visual
 
 **Common skip reasons:**
+
 - Discussion-based without visual concepts
 - News/commentary format
 - Interview without framework content

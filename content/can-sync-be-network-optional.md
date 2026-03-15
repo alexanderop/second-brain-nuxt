@@ -22,6 +22,7 @@ Brendan O'Brien (b5), CEO of n0 and creator of Iroh, delivers the talk a network
 The core move: stop treating sync as a single problem. Different use cases occupy different positions in a tradeoff space O'Brien calls "amps and ohms" — and the engineering implications of those positions are radically different.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Sync &
@@ -70,6 +71,7 @@ Network Optionality))
                 Fractal
                 Same terminal units
 </pre>
+
 ::
 
 ## Key Arguments

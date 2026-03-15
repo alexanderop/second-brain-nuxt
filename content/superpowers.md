@@ -32,12 +32,14 @@ Run `/help` to verify the new commands appear.
 ## Core Skills
 
 **Development Process:**
+
 - Brainstorming: refines requirements through targeted questions
 - Implementation plans: breaks work into 2-5 minute tasks
 - Subagent execution: coordinates parallel work streams
 - TDD cycles: enforces RED-GREEN-REFACTOR discipline
 
 **Supporting Tools:**
+
 - Git worktree management for parallel branches
 - Code review workflows
 - Root-cause debugging with systematic analysis

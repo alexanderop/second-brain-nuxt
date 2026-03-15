@@ -18,9 +18,10 @@ date: 2024-10-31
 
 Every discussion about sync engines devolves into "just use CRDTs" vs "just use a server" — as if the choice were that simple. Jayakar, drawing on a decade of sync work at Dropbox, argues the real issue is that people lack a shared vocabulary for the tradeoff space. His solution: a nine-dimension taxonomy that plots any sync platform from Automerge to Valorant.
 
-This is the cartography the sync space has been missing. Not a "which engine should I pick" guide, but a coordinate system for understanding *why* different engines make different choices.
+This is the cartography the sync space has been missing. Not a "which engine should I pick" guide, but a coordinate system for understanding _why_ different engines make different choices.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Nine Dimensions
@@ -59,6 +60,7 @@ of Sync))
                 Weak last-writer-wins
                 Strong transactions
 </pre>
+
 ::
 
 ## Key Insights

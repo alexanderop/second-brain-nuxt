@@ -30,6 +30,7 @@ Anthropic shipped native agent teams into Claude Code, a feature the OpenClaw co
 ## Diagram
 
 ::mermaid
+
 <pre>
 graph TD
     User[User Prompt] --> Lead[Lead Agent]
@@ -44,6 +45,7 @@ graph TD
     T3 --> TL
     TL -->|coordinates| Lead
 </pre>
+
 ::
 
 ## Best Practices

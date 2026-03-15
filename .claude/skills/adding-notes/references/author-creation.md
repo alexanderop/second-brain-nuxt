@@ -5,6 +5,7 @@ Detailed guidance for creating author profiles in Phase 3.
 ## When Authors Are Required
 
 External content types require authors in frontmatter:
+
 - youtube, podcast, article, book, manga, movie, tv, tweet, course, reddit, github
 
 ## Author Creation Workflow
@@ -19,6 +20,7 @@ For each author not found via Glob search:
    - `socials`: twitter, github, linkedin, youtube handles (not full URLs)
 
 3. **Write frontmatter directly** (no script needed):
+
    ```yaml
    ---
    name: "Author Name"
@@ -40,11 +42,13 @@ For each author not found via Glob search:
 ## Avatar Fallbacks
 
 **Priority order:**
+
 1. Official headshot from website
 2. Twitter profile image
 3. GitHub avatar: `https://avatars.githubusercontent.com/[github-handle]`
 
 If GitHub handle is known but no other avatar found:
+
 ```text
 https://avatars.githubusercontent.com/ccssmnn
 ```
@@ -75,10 +79,10 @@ https://avatars.githubusercontent.com/ccssmnn
 Use the fuzzy-matching script — it handles aliases, initials, and partial name matches (87 lines of matching logic):
 
 ```bash
-scripts/check-author-exists.sh "Author Name"
+.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
 ```
 
-To browse existing authors: `scripts/list-existing-authors.sh [term]`
+To browse existing authors: `.claude/skills/adding-notes/scripts/list-existing-authors.sh [term]`
 
 **Fallback** if scripts are unavailable: `Glob: content/authors/*{lastname}*.md`
 
@@ -90,7 +94,7 @@ If partial matches found, read the files to verify identity before reusing or cr
 ---
 name: "Author Name"
 slug: "author-name"
-aliases:                    # Optional: alternate names for lookup
+aliases: # Optional: alternate names for lookup
   - "Full Legal Name"
   - "Common Nickname"
 avatar: "https://..."

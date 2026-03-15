@@ -36,7 +36,7 @@ James adds the environmental explanation: React becoming mundane freed up the "i
 Each builder has a subtly different definition, and the differences reveal their values:
 
 - **Aaron (Zero):** Sync means data on the client for speed. Full stop. The dropdown can be instant, but if clicking it takes a second to cross the earth, you've lost.
-- **James (Convex):** Sync means synchronizing *query results*, not raw tables. He cares less about performance and more about architectural simplicity—if the data is available, the client can render it.
+- **James (Convex):** Sync means synchronizing _query results_, not raw tables. He cares less about performance and more about architectural simplicity—if the data is available, the client can render it.
 - **Johannes (Livestore):** Sync trades off differently depending on audience. Building for a person or a family? Sync the whole thing. Building Slack? Entirely different calculus.
 - **Kyle (ElectricSQL):** Sync is the abstraction that makes server data appear on the client as if by magic—the "React of data transfer."
 
@@ -49,6 +49,7 @@ Johannes sits at the opposite end. [[livestore]] uses event sourcing with client
 Aaron and Kyle land in the middle. Zero maintains a normalized client cache with a streaming query engine—online-first rather than offline-first. ElectricSQL takes the most modular approach: stream Postgres "shapes" (table subsets) via HTTP, plug in whatever client store you want.
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph SA["Server Authoritative"]
@@ -75,6 +76,7 @@ Full data ownership`"]
     end
     SA -.-> OF -.-> LF
 </pre>
+
 ::
 
 ### AI Makes Sync More Important, Not Less
@@ -131,18 +133,18 @@ On the client, this runs as a **reactive SQLite** database at 120fps. Events com
 
 The panel's most valuable contribution is making trade-offs explicit. Every engine sacrifices something:
 
-| | **Convex** | **Zero** | **ElectricSQL** | **Livestore** |
-|---|---|---|---|---|
-| **Source of truth** | Server | Server (cache on client) | Postgres | Client (event log) |
-| **What syncs** | Query results | Normalized rows | Postgres shapes | Events |
-| **Where queries run** | Server | Client + server | Client (TanStack DB) | Client (SQLite) |
-| **Offline reads** | No (optimistic only) | Yes (from cache) | Yes (from local store) | Yes (full dataset) |
-| **Offline writes** | No | No (deferred) | Your choice | Yes |
-| **Consistency** | Strong (transactional) | Eventual | Depends on write path | Event-sourced |
-| **Access control** | Built-in | Built-in | Your responsibility | Not a focus |
-| **Target apps** | Collaborative business | Linear-quality online | Brownfield Postgres | Personal/small group |
-| **Integration** | Vertical (full platform) | Vertical | Modular (pluggable) | Vertical |
-| **Query language** | TypeScript functions | Custom (zql) | SQL-like (TanStack DB) | Full SQLite |
+|                       | **Convex**               | **Zero**                 | **ElectricSQL**        | **Livestore**        |
+| --------------------- | ------------------------ | ------------------------ | ---------------------- | -------------------- |
+| **Source of truth**   | Server                   | Server (cache on client) | Postgres               | Client (event log)   |
+| **What syncs**        | Query results            | Normalized rows          | Postgres shapes        | Events               |
+| **Where queries run** | Server                   | Client + server          | Client (TanStack DB)   | Client (SQLite)      |
+| **Offline reads**     | No (optimistic only)     | Yes (from cache)         | Yes (from local store) | Yes (full dataset)   |
+| **Offline writes**    | No                       | No (deferred)            | Your choice            | Yes                  |
+| **Consistency**       | Strong (transactional)   | Eventual                 | Depends on write path  | Event-sourced        |
+| **Access control**    | Built-in                 | Built-in                 | Your responsibility    | Not a focus          |
+| **Target apps**       | Collaborative business   | Linear-quality online    | Brownfield Postgres    | Personal/small group |
+| **Integration**       | Vertical (full platform) | Vertical                 | Modular (pluggable)    | Vertical             |
+| **Query language**    | TypeScript functions     | Custom (zql)             | SQL-like (TanStack DB) | Full SQLite          |
 
 ### The Complexity Multiplier: Access Control
 

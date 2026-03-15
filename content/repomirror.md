@@ -61,6 +61,7 @@ For single iterations, use `repomirror sync` instead.
 The team discovered that simpler prompts outperform complex ones. A 103-word prompt beat a 1,500-word version—the longer prompt made the agent "slower and dumber."
 
 **Emergent behaviors** surprised the team:
+
 - Agents wrote tests without being asked
 - Projects stayed focused without scope drift
 - Agents self-terminated when detecting loops

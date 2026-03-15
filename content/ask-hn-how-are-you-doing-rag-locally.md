@@ -19,21 +19,25 @@ A Hacker News discussion reveals that practitioners building local RAG systems f
 ## Key Approaches
 
 **Keyword-first retrieval:**
+
 - SQLite with FTS5 for full-text search
 - BM25 for keyword ranking
 - Trigram indexing for fuzzy matching
 
 **Vector databases (when needed):**
+
 - sqlite-vec and pgvector for embedded solutions
 - Qdrant and LanceDB for standalone vector stores
 - Smaller embedding models like `mxbai-embed-large` work well on CPU
 
 **Hybrid search:**
+
 - Combine BM25 keyword search with semantic embeddings
 - Postgres, DuckDB, or dedicated tools handle both
 - Reciprocal Rank Fusion to merge result sets
 
 **Agentic retrieval:**
+
 - Give the LLM tools like ripgrep and LSP integration
 - Let the model decide what to search for
 - Works especially well for code search

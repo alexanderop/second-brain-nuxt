@@ -21,16 +21,16 @@ date: 2025-07-30
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Intro — what makes apps feel fast |
-| 08:23 | [[livestore]] — deep dive |
-| 18:01 | Zero (Replicache) — how it works |
+| Time  | Topic                                   |
+| ----- | --------------------------------------- |
+| 00:00 | Intro — what makes apps feel fast       |
+| 08:23 | [[livestore]] — deep dive               |
+| 18:01 | Zero (Replicache) — how it works        |
 | 21:58 | [[instantdb]] — overview and trade-offs |
-| 24:43 | [[convex]] — reactive backend |
-| 27:54 | ElectricSQL — Postgres sync |
-| 29:48 | [[powersync]] and PartyKit |
-| 30:51 | How to choose the right sync engine |
+| 24:43 | [[convex]] — reactive backend           |
+| 27:54 | ElectricSQL — Postgres sync             |
+| 29:48 | [[powersync]] and PartyKit              |
+| 30:51 | How to choose the right sync engine     |
 
 ## Key Takeaways
 

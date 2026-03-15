@@ -24,24 +24,24 @@ date: 2026-01-02
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 0:00 | Florence Gaub über deutsche Zukunftsangst und Pessimismus |
-| 2:32 | Moralismus, Schwarzseherei und der nationale Pessimismus |
-| 5:48 | Warum Demokratien Zukunftsangst fördern und Diktaturen Optimismus |
-| 7:50 | Das Fehlen positiver Zukunftsbilder in liberalen Demokratien |
-| 10:14 | Selbstwirksamkeit und Utopie: Das finnische Modell der Zukunftsplanung |
-| 15:19 | Richards biologische Werkseinstellung und die Angst vor Verlust |
-| 18:39 | Familiäre Prägung, kleine Länder und das Problem der "Luft nach oben" |
-| 20:43 | Florence's Familienerbe und Richards melancholischer Marxist |
-| 25:16 | Geschichtsverständnis, Optimismus und die Rolle des Naturells |
-| 29:25 | Warum positive Geschichten und politische Visionen fehlen |
-| 32:43 | Ökologische Katastrophe, Innovationsdilemma und das Versprechen der KI |
-| 37:52 | Vom "Untergang des Übermorgenlandes" zur "Crazy guten Zukunft" |
-| 41:42 | Nationale Zukunftsprozesse und die positive Science-Fiction des Solar Punk |
-| 48:42 | Künstliche Intelligenz, Arbeitsgesellschaft und der "scheiß Wohlstand" |
-| 55:01 | Wie unser Gehirn Zukunft, Gegenwart und Vergangenheit verarbeitet |
-| 57:15 | Die Verklärung der Vergangenheit und der "Optimism Bias" |
+| Time    | Topic                                                                       |
+| ------- | --------------------------------------------------------------------------- |
+| 0:00    | Florence Gaub über deutsche Zukunftsangst und Pessimismus                   |
+| 2:32    | Moralismus, Schwarzseherei und der nationale Pessimismus                    |
+| 5:48    | Warum Demokratien Zukunftsangst fördern und Diktaturen Optimismus           |
+| 7:50    | Das Fehlen positiver Zukunftsbilder in liberalen Demokratien                |
+| 10:14   | Selbstwirksamkeit und Utopie: Das finnische Modell der Zukunftsplanung      |
+| 15:19   | Richards biologische Werkseinstellung und die Angst vor Verlust             |
+| 18:39   | Familiäre Prägung, kleine Länder und das Problem der "Luft nach oben"       |
+| 20:43   | Florence's Familienerbe und Richards melancholischer Marxist                |
+| 25:16   | Geschichtsverständnis, Optimismus und die Rolle des Naturells               |
+| 29:25   | Warum positive Geschichten und politische Visionen fehlen                   |
+| 32:43   | Ökologische Katastrophe, Innovationsdilemma und das Versprechen der KI      |
+| 37:52   | Vom "Untergang des Übermorgenlandes" zur "Crazy guten Zukunft"              |
+| 41:42   | Nationale Zukunftsprozesse und die positive Science-Fiction des Solar Punk  |
+| 48:42   | Künstliche Intelligenz, Arbeitsgesellschaft und der "scheiß Wohlstand"      |
+| 55:01   | Wie unser Gehirn Zukunft, Gegenwart und Vergangenheit verarbeitet           |
+| 57:15   | Die Verklärung der Vergangenheit und der "Optimism Bias"                    |
 | 1:00:01 | Ein optimistischer Abschluss und das Versprechen weiterer Zukunftsgespräche |
 
 ## Key Arguments

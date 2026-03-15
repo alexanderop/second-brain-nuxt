@@ -26,6 +26,7 @@ This is the same pattern [[12-factor-agents]] advocates, but now we're seeing it
 - **Blueprints are the real innovation.** Hybrid orchestration that mixes deterministic and agentic steps. Setup, lint, push, and PR creation are hardcoded. Code generation and fixing are agentic. This reduces token usage, improves reliability, and lets teams customize workflows without touching agent internals. The phrase that captures it: putting LLMs in contained boxes.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Blueprint["Blueprint: Hybrid Orchestration"]
@@ -51,6 +52,7 @@ flowchart TD
         Create PR anyway`"]
     end
 </pre>
+
 ::
 
 - **Toolshed grew from 400 to 500 MCP tools.** Stripe's centralized MCP server now houses nearly 500 tools for documentation, tickets, build statuses, and code intelligence. The tool discovery layer matters more than any individual tool — agents get curated subsets, not the full firehose.

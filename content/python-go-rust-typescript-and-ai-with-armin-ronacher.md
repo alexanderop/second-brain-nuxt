@@ -23,23 +23,23 @@ date: 2026-02-25
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introduction |
-| ~02:00 | Python 2 to 3 migration: lessons learned |
-| ~08:00 | Comparing Python, Rust, Go, TypeScript tradeoffs |
-| ~16:00 | Why Armin chose Go for his new startup |
+| Time   | Topic                                                              |
+| ------ | ------------------------------------------------------------------ |
+| 00:00  | Introduction                                                       |
+| ~02:00 | Python 2 to 3 migration: lessons learned                           |
+| ~08:00 | Comparing Python, Rust, Go, TypeScript tradeoffs                   |
+| ~16:00 | Why Armin chose Go for his new startup                             |
 | ~24:00 | The npm dependency problem and why unified codebases are overrated |
-| ~28:00 | AI code generation reducing the need for one-language stacks |
+| ~28:00 | AI code generation reducing the need for one-language stacks       |
 | ~30:00 | Using AI agents at a two-person startup — 80% agent-generated code |
-| ~36:00 | What changed Armin's mind on AI tools |
-| ~42:00 | What AI changes and doesn't change about software engineering |
-| ~46:00 | Language choice matters MORE with AI |
-| ~50:00 | Agentic coding addiction and the slot machine effect |
-| ~56:00 | Error handling lessons from 10 years at Sentry |
-| ~64:00 | TypeScript didn't measurably reduce JavaScript error rates |
-| ~74:00 | Language design: performance vs. debuggability |
-| ~78:00 | Advice for engineers joining startups |
+| ~36:00 | What changed Armin's mind on AI tools                              |
+| ~42:00 | What AI changes and doesn't change about software engineering      |
+| ~46:00 | Language choice matters MORE with AI                               |
+| ~50:00 | Agentic coding addiction and the slot machine effect               |
+| ~56:00 | Error handling lessons from 10 years at Sentry                     |
+| ~64:00 | TypeScript didn't measurably reduce JavaScript error rates         |
+| ~74:00 | Language design: performance vs. debuggability                     |
+| ~78:00 | Advice for engineers joining startups                              |
 
 ## Key Arguments
 
@@ -84,6 +84,7 @@ AI quality varies dramatically by target language. The runtime tradeoffs — gar
 The expected reduction in null-related errors from TypeScript adoption was offset by increasing application complexity — microservices with misaligned versions, React hydration errors, the sheer growth of code volume. The error monitoring business is safe because code volume and complexity grow faster than type systems can reduce errors.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A{What are you building?} -->|Binary data processing| R[Rust]
@@ -106,6 +107,7 @@ Unavoidable in every company`"]
     T -.- TN["`**Tradeoff:** npm dependency sprawl
 Keep it in the browser`"]
 </pre>
+
 ::
 
 ## Predictions

@@ -42,16 +42,17 @@ The supervision challenge: effective Claude oversight requires the technical ski
 
 ### Usage Evolution (Feb → Aug 2025)
 
-| Metric | February | August |
-|--------|----------|--------|
-| Task complexity (1-5) | 3.2 | 3.8 |
-| Max consecutive autonomous actions | 9.8 | 21.2 |
-| Human turns per task | 6.2 | 4.1 |
-| Feature implementation share | 14.3% | 36.9% |
+| Metric                             | February | August |
+| ---------------------------------- | -------- | ------ |
+| Task complexity (1-5)              | 3.2      | 3.8    |
+| Max consecutive autonomous actions | 9.8      | 21.2   |
+| Human turns per task               | 6.2      | 4.1    |
+| Feature implementation share       | 14.3%    | 36.9%  |
 
 ## Delegation Patterns
 
 Engineers delegate tasks that are:
+
 - **Easily verifiable** — can check correctness quickly
 - **Low-stakes** — mistakes won't cause major damage
 - **Outside their context** — unfamiliar codebases or languages

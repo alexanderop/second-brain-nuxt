@@ -40,18 +40,18 @@ npx nuxi module add @nuxt/a11y
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@nuxt/a11y'],
+  modules: ["@nuxt/a11y"],
   a11y: {
     // Enable auto-scanning on interactions
     autoScan: true,
     // Configure axe-core options
     axe: {
       runOptions: {
-        runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
-      }
-    }
-  }
-})
+        runOnly: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"],
+      },
+    },
+  },
+});
 ```
 
 ## Technical Details

@@ -19,6 +19,7 @@ Yegge's been one of the loudest evangelists for AI coding — co-wrote a book on
 The core insight isn't that AI makes you tired (obvious). It's the **value capture problem**: if AI makes you 10x productive, that surplus value has to go somewhere, and the fight over who gets it is destroying people on both sides.
 
 ::mermaid
+
 <pre>
 mindmap
     root((The AI Vampire))
@@ -54,6 +55,7 @@ mindmap
             Close the computer
             Fight the vampire
 </pre>
+
 ::
 
 ## Key Points

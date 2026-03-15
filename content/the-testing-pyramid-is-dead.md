@@ -25,6 +25,7 @@ The testing pyramid was designed for C++ and Java in 2009. Modern JavaScript too
 ## The Alternative
 
 Draw your own testing shape. Consider:
+
 - Team size and structure
 - Architecture (monolith vs. microservices)
 - Risk tolerance

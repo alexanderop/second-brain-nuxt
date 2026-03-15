@@ -108,6 +108,7 @@ Lindquist treats stop hooks as the pre-commit/pre-push CI that runs before code 
 `settings.json` gets committed to the repo — every engineer on the team gets the same hooks automatically. `settings.local.json` stays gitignored for personal customizations. An engineering leader should assign someone to configure baseline hooks for key repositories, so every developer benefits from automated quality gates when using Claude Code.
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Claude finishes task] --> B{Files changed?}
@@ -119,6 +120,7 @@ flowchart LR
     E -->|No| G[Auto-commit]
     G --> C
 </pre>
+
 ::
 
 ## Technique 4: Building Personal CLI Tools

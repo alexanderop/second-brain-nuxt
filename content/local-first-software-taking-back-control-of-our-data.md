@@ -35,6 +35,7 @@ Cloud software made us renters of our own data. Local-first software reverses th
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph Cloud-First["Cloud-First (Traditional)"]
@@ -49,6 +50,7 @@ graph LR
         D1 <-.->|P2P| D2
     end
 </pre>
+
 ::
 
 ## Notable Quotes

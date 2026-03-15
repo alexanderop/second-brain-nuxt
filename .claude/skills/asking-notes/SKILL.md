@@ -54,11 +54,11 @@ After answering, highlight what's missing from the knowledge base and suggest re
 
 ## Sources Used
 
-| Note | Type | Relevance |
-|------|------|-----------|
+| Note       | Type    | Relevance            |
+| ---------- | ------- | -------------------- |
 | [[slug-1]] | article | Core source on topic |
-| [[slug-2]] | book | Supporting framework |
-| [[slug-3]] | podcast | Practical examples |
+| [[slug-2]] | book    | Supporting framework |
+| [[slug-3]] | podcast | Practical examples   |
 
 ## Gaps & Follow-ups
 

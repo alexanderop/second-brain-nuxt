@@ -31,6 +31,7 @@ u/fredandlunchbox, a staff engineer using AI tools extensively, provides the mos
 **Be realistic about scale:** "Must scale to a billion users" is fantasy. Start with 10 concurrent users and expand from there.
 
 **Technical guardrails:**
+
 - Favor a mono repo
 - Use TypeScript for better guardrails and ecosystem support
 - Verify libraries—avoid esoteric packages with 2 stars and years-old updates

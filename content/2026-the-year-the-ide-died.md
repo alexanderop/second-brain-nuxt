@@ -36,6 +36,7 @@ OpenAI faces an internal crisis: engineers using Codex are so much more producti
 ### Leaders Who Ship
 
 Gene Kim shares case studies of non-engineers shipping production code:
+
 - **Dr. Top Pal at Fidelity**: Frustrated by 5-month estimates, he vibe-coded a critical application in 5 days—now the junior engineer maintains it
 - **Cisco's experiment**: 100 top leaders required to ship one feature via vibe coding in Q4
 - **The sobering quote**: "When I told my team I wrote an app with 60,000 lines of AI-generated code I haven't looked at, they all looked at me as if they wished I were dead."
@@ -43,6 +44,7 @@ Gene Kim shares case studies of non-engineers shipping production code:
 ### FAFO: Why People Vibe Code
 
 Kim offers a framework for adoption:
+
 - **Faster**: The obvious benefit, but the most superficial
 - **Ambitious**: The impossible becomes possible; tedious tasks become free
 - **Alone**: Coordination costs vanish—domain expert plus developer might be a team of two
@@ -56,6 +58,7 @@ Kim shares unpublished Dora research: trust in AI correlates directly with time 
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Current["Current Era (Drills & Saws)"]
@@ -75,6 +78,7 @@ flowchart LR
 
     Current -->|"Transition"| Future
 </pre>
+
 ::
 
 ## Notable Quotes

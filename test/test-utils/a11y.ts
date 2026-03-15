@@ -15,20 +15,19 @@
  * Note: Automated tests catch ~30% of a11y issues.
  * Manual testing and user feedback remain essential.
  */
-import { axe } from 'vitest-axe'
-import * as matchers from 'vitest-axe/matchers'
-import { expect } from 'vitest'
+import { axe } from "vitest-axe";
+import * as matchers from "vitest-axe/matchers";
+import { expect } from "vite-plus/test";
 
 // Augment Vitest's Assertion interface for vitest-axe matchers
-declare module 'vitest' {
-   
+declare module "vite-plus/test" {
   interface Assertion<T> extends CustomMatchers<T> {}
 }
 
 interface CustomMatchers<_T = unknown> {
-  toHaveNoViolations(): void
+  toHaveNoViolations(): void;
 }
 
-expect.extend(matchers)
+expect.extend(matchers);
 
-export { axe }
+export { axe };

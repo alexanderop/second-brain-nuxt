@@ -14,7 +14,7 @@ summary: "Evolutionary architecture supports guided incremental change through f
 date: 2026-01-03
 ---
 
-An evolutionary architecture supports guided incremental change across multiple dimensions. The key insight: you can't design a roller skate that becomes a lorry by adding parts, but you *can* evolve an architecture to support new capabilities over time.
+An evolutionary architecture supports guided incremental change across multiple dimensions. The key insight: you can't design a roller skate that becomes a lorry by adding parts, but you _can_ evolve an architecture to support new capabilities over time.
 
 ## The Three Parts of Evolutionary Architecture
 
@@ -29,11 +29,12 @@ An evolutionary architecture supports guided incremental change across multiple 
 A fitness function is any mechanism that provides an objective integrity assessment of architecture characteristics. They're like unit tests, but for capabilities rather than behavior.
 
 Three categories:
+
 - **Metrics and static analysis** — Cyclic dependencies, coupling
 - **Runtime monitors** — Performance, scalability, elasticity
 - **Chaos engineering** — Availability under stress
 
-The key difference from regular testing: QA validates *behavior* (your domain), while fitness functions validate *characteristics* (scalability, security, maintainability).
+The key difference from regular testing: QA validates _behavior_ (your domain), while fitness functions validate _characteristics_ (scalability, security, maintainability).
 
 ## Automated Governance
 
@@ -42,6 +43,7 @@ When developers click "auto-import" in their IDE, they don't notice when it crea
 The solution: wire fitness functions into continuous integration. Architects write the rules once, and the build enforces them forever.
 
 Netflix's Simian Army demonstrates this at scale:
+
 - **Chaos Monkey** — Randomly kills servers
 - **Latency Monkey** — Tortures network latency
 - **Janitor Monkey** — Removes unused services (cloud burn rate fitness function)

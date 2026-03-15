@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { NuxtLink, UIcon } from '#components'
-import type { PodcastItem } from '~/types/content'
-import { handleImageError } from '~/utils/imageErrorHandler'
+import { NuxtLink, UIcon } from "#components";
+import type { PodcastItem } from "~/types/content";
+import { handleImageError } from "~/utils/imageErrorHandler";
 
 defineProps<{
-  podcast: PodcastItem
-  episodeCount: number
-}>()
+  podcast: PodcastItem;
+  episodeCount: number;
+}>();
 </script>
 
 <template>
@@ -21,17 +21,14 @@ defineProps<{
         :alt="podcast.name"
         class="size-full object-cover"
         @error="handleImageError"
-      >
+      />
       <div
         v-if="!podcast.artwork"
         class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
       >
         <UIcon name="i-lucide-podcast" class="size-8" />
       </div>
-      <div
-        v-else
-        class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
-      >
+      <div v-else class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden">
         <UIcon name="i-lucide-podcast" class="size-8" />
       </div>
     </div>
@@ -40,7 +37,7 @@ defineProps<{
         {{ podcast.name }}
       </h3>
       <p class="text-sm text-[var(--ui-text-muted)]">
-        {{ episodeCount }} {{ episodeCount === 1 ? 'episode' : 'episodes' }}
+        {{ episodeCount }} {{ episodeCount === 1 ? "episode" : "episodes" }}
       </p>
     </div>
   </NuxtLink>

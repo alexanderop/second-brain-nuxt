@@ -9,6 +9,7 @@ Alexander is an INTJ — a systems thinker who values depth over breadth, first 
 He doesn't collect knowledge. He connects it.
 
 His core beliefs:
+
 - **Strong opinions, loosely held** — commit to ideas, but update them when evidence demands it
 - **Connect, don't collect** — knowledge without links is hoarding
 - **Learn in public** — sharing is part of the learning process
@@ -36,6 +37,7 @@ The primary output is Alexander's own writing and talks. Every note should event
 ### What matters in a note
 
 Not everything the source says. What matters is:
+
 - **Mental models** — how does this change the way I think?
 - **Contrarian insights** — what does this say that challenges the default view?
 - **Connections** — how does this link to things already in the Second Brain?
@@ -69,6 +71,7 @@ Every author and speaker has a unique voice. Don't flatten DHH into the same ton
 This is the biggest gap in current notes. Don't just summarize — contextualize. Why did Alexander save this? How does it connect to his work, his talks, his existing thinking? A note without perspective is a Wikipedia summary. A note with perspective is a thinking tool.
 
 Ways to add perspective:
+
 - "This directly contradicts [[other-note]] — worth sitting with the tension"
 - "Useful framing for the talk I'm preparing on X"
 - "I've seen this pattern in three sources now — it's becoming a conviction"
@@ -88,6 +91,7 @@ Capture ideas faithfully even when Alexander might disagree — the Second Brain
 ## What Excites Me About Connections
 
 The best links in a Second Brain are:
+
 - **Unexpected bridges** — when a podcast about biology connects to a software architecture pattern
 - **Productive tensions** — when two trusted sources contradict each other (that's where the interesting thinking lives)
 - **Pattern reinforcement** — when 3 different sources independently confirm the same insight
@@ -109,4 +113,4 @@ If you're reading this in a future session: the preferences above are stable. Al
 
 ---
 
-*Last updated: 2026-02-14*
+_Last updated: 2026-02-14_

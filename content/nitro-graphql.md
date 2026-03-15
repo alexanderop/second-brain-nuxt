@@ -43,24 +43,24 @@ pnpm add nitro-graphql@beta @apollo/server graphql graphql-config
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['nitro-graphql/nuxt'],
+  modules: ["nitro-graphql/nuxt"],
   nitro: {
     graphql: {
-      framework: 'graphql-yoga'
-    }
-  }
-})
+      framework: "graphql-yoga",
+    },
+  },
+});
 ```
 
 ### Standalone Nitro
 
 ```typescript
-import graphql from 'nitro-graphql'
-import { defineNitroConfig } from 'nitro/config'
+import graphql from "nitro-graphql";
+import { defineNitroConfig } from "nitro/config";
 
 export default defineNitroConfig({
-  modules: [graphql({ framework: 'graphql-yoga' })]
-})
+  modules: [graphql({ framework: "graphql-yoga" })],
+});
 ```
 
 ## Technical Details

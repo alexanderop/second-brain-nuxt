@@ -7,6 +7,7 @@
 ## Epic 1: Enhanced Discovery
 
 ### 1.1 Unlinked Mentions
+
 **Priority**: P1 (High)
 **Complexity**: Medium
 
@@ -14,6 +15,7 @@
 As a user browsing a note, I want to see other notes that mention this topic without explicit wiki-links, so that I can discover hidden connections in my knowledge base.
 
 **Acceptance Criteria**
+
 - [ ] Backlinks section shows two subsections: "Linked" and "Mentions"
 - [ ] Mentions searches for the note's title (case-insensitive) in all other notes
 - [ ] Mentions excludes notes that already have explicit `[[links]]`
@@ -23,6 +25,7 @@ As a user browsing a note, I want to see other notes that mention this topic wit
 ---
 
 ### 1.2 Local Graph View
+
 **Priority**: P1 (High)
 **Complexity**: Medium
 
@@ -30,6 +33,7 @@ As a user browsing a note, I want to see other notes that mention this topic wit
 As a user viewing a note, I want to see a focused graph of just this note's connections, so that I can explore related content without the noise of the full graph.
 
 **Acceptance Criteria**
+
 - [ ] Each note page has a "Local Graph" toggle/section
 - [ ] Shows the current note as center node
 - [ ] Shows 1-degree connections (notes this links to + backlinks)
@@ -40,6 +44,7 @@ As a user viewing a note, I want to see a focused graph of just this note's conn
 ---
 
 ### 1.3 Related Content Suggestions
+
 **Priority**: P2 (Medium)
 **Complexity**: Medium
 
@@ -47,6 +52,7 @@ As a user viewing a note, I want to see a focused graph of just this note's conn
 As a user reading a note, I want to see suggested related resources, so that I can explore similar content I may have forgotten about.
 
 **Acceptance Criteria**
+
 - [ ] "Related" section appears on note pages (below backlinks)
 - [ ] Algorithm considers: shared tags, shared links, title/content similarity
 - [ ] Shows top 5 related notes with type icon and title
@@ -56,6 +62,7 @@ As a user reading a note, I want to see suggested related resources, so that I c
 ---
 
 ### 1.4 Random Note
+
 **Priority**: P2 (Medium)
 **Complexity**: Low
 
@@ -63,6 +70,7 @@ As a user reading a note, I want to see suggested related resources, so that I c
 As a user, I want to surface a random note from my collection, so that I can rediscover forgotten resources and make new connections.
 
 **Acceptance Criteria**
+
 - [ ] "Random" button in header navigation
 - [ ] Navigates to a random note from the collection
 - [ ] Keyboard shortcut: `g r` (go random)
@@ -73,6 +81,7 @@ As a user, I want to surface a random note from my collection, so that I can red
 ## Epic 2: Organization & Status
 
 ### 2.1 Reading Status Field
+
 **Priority**: P1 (High)
 **Complexity**: Low
 
@@ -80,6 +89,7 @@ As a user, I want to surface a random note from my collection, so that I can red
 As a user, I want to track the status of my resources, so that I can see what I've processed vs what's still in my queue.
 
 **Acceptance Criteria**
+
 - [ ] New frontmatter field: `status` (enum: `inbox`, `reading`, `processed`, `evergreen`)
 - [ ] Status displayed as badge on note header
 - [ ] Status filter on homepage and type pages
@@ -87,13 +97,15 @@ As a user, I want to track the status of my resources, so that I can see what I'
 - [ ] Color coding: inbox (gray), reading (blue), processed (green), evergreen (amber)
 
 **Schema Change**
+
 ```ts
-status: z.enum(['inbox', 'reading', 'processed', 'evergreen']).optional()
+status: z.enum(["inbox", "reading", "processed", "evergreen"]).optional();
 ```
 
 ---
 
 ### 2.2 Inbox / Reading Queue Page
+
 **Priority**: P2 (Medium)
 **Complexity**: Low
 
@@ -101,6 +113,7 @@ status: z.enum(['inbox', 'reading', 'processed', 'evergreen']).optional()
 As a user, I want a dedicated page showing unprocessed resources, so that I can see what needs my attention.
 
 **Acceptance Criteria**
+
 - [ ] New route: `/inbox`
 - [ ] Shows all notes with `status: inbox` or `status: reading`
 - [ ] Sorted by date added (oldest first - FIFO)
@@ -110,6 +123,7 @@ As a user, I want a dedicated page showing unprocessed resources, so that I can 
 ---
 
 ### 2.3 Favorites / Pinned Notes
+
 **Priority**: P2 (Medium)
 **Complexity**: Low
 
@@ -117,6 +131,7 @@ As a user, I want a dedicated page showing unprocessed resources, so that I can 
 As a user, I want to pin important notes, so that I can quickly access my most referenced resources.
 
 **Acceptance Criteria**
+
 - [ ] New frontmatter field: `pinned: true`
 - [ ] Pinned notes appear in a "Pinned" section on homepage (above recent)
 - [ ] Star icon on pinned note cards
@@ -126,6 +141,7 @@ As a user, I want to pin important notes, so that I can quickly access my most r
 ---
 
 ### 2.4 Sort Options
+
 **Priority**: P3 (Low)
 **Complexity**: Low
 
@@ -133,6 +149,7 @@ As a user, I want to pin important notes, so that I can quickly access my most r
 As a user browsing lists, I want to sort by different criteria, so that I can find what I'm looking for faster.
 
 **Acceptance Criteria**
+
 - [ ] Sort dropdown on list pages (home, tags, type)
 - [ ] Options: Date (newest), Date (oldest), Title (A-Z), Most Connected
 - [ ] Persists sort preference in localStorage
@@ -143,6 +160,7 @@ As a user browsing lists, I want to sort by different criteria, so that I can fi
 ## Epic 3: Improved Browsing
 
 ### 3.1 Hover Previews
+
 **Priority**: P3 (Low)
 **Complexity**: Medium
 
@@ -150,6 +168,7 @@ As a user browsing lists, I want to sort by different criteria, so that I can fi
 As a user reading a note, I want to preview linked notes on hover, so that I can get context without navigating away.
 
 **Acceptance Criteria**
+
 - [ ] Hovering over a wiki-link shows a tooltip/popover
 - [ ] Popover shows: title, type, summary (first 200 chars)
 - [ ] Delay before showing: 300ms
@@ -159,6 +178,7 @@ As a user reading a note, I want to preview linked notes on hover, so that I can
 ---
 
 ### 3.2 Table of Contents / Outline
+
 **Priority**: P3 (Low)
 **Complexity**: Low
 
@@ -166,6 +186,7 @@ As a user reading a note, I want to preview linked notes on hover, so that I can
 As a user reading a long note, I want to see the document outline, so that I can navigate to specific sections.
 
 **Acceptance Criteria**
+
 - [ ] Sidebar or floating TOC on note pages
 - [ ] Extracts all headings (h2, h3, h4)
 - [ ] Clicking heading scrolls to that section
@@ -175,6 +196,7 @@ As a user reading a long note, I want to see the document outline, so that I can
 ---
 
 ### 3.3 Copy Share Link
+
 **Priority**: P2 (Medium)
 **Complexity**: Low
 
@@ -182,6 +204,7 @@ As a user reading a long note, I want to see the document outline, so that I can
 As a user, I want to easily share a note with others, so that I can reference my resources in conversations.
 
 **Acceptance Criteria**
+
 - [ ] "Share" button on note header (next to existing copy link)
 - [ ] Copies full URL to clipboard
 - [ ] Toast confirmation: "Link copied!"
@@ -192,6 +215,7 @@ As a user, I want to easily share a note with others, so that I can reference my
 ## Epic 4: Maps of Content (MOCs)
 
 ### 4.1 MOC Note Type
+
 **Priority**: P2 (Medium)
 **Complexity**: Low
 
@@ -199,6 +223,7 @@ As a user, I want to easily share a note with others, so that I can reference my
 As a user, I want to create curated index notes, so that I can organize related resources around a topic.
 
 **Acceptance Criteria**
+
 - [ ] New content type: `moc` (Map of Content)
 - [ ] MOC icon: `Map` or `Compass`
 - [ ] MOCs displayed prominently (special styling)
@@ -208,6 +233,7 @@ As a user, I want to create curated index notes, so that I can organize related 
 ---
 
 ### 4.2 MOC Discovery
+
 **Priority**: P3 (Low)
 **Complexity**: Low
 
@@ -215,6 +241,7 @@ As a user, I want to create curated index notes, so that I can organize related 
 As a user viewing a note, I want to see which MOCs reference it, so that I can understand how it fits in my knowledge structure.
 
 **Acceptance Criteria**
+
 - [ ] "Appears in" section on note pages
 - [ ] Shows MOCs that link to this note
 - [ ] Displayed above regular backlinks
@@ -225,6 +252,7 @@ As a user viewing a note, I want to see which MOCs reference it, so that I can u
 ## Epic 5: Enhanced Graph
 
 ### 5.1 Graph Search
+
 **Priority**: P3 (Low)
 **Complexity**: Medium
 
@@ -232,6 +260,7 @@ As a user viewing a note, I want to see which MOCs reference it, so that I can u
 As a user on the graph page, I want to search for a specific node, so that I can quickly locate and center on a note.
 
 **Acceptance Criteria**
+
 - [ ] Search input on graph page
 - [ ] Autocomplete with note titles
 - [ ] Selecting a result centers and highlights that node
@@ -240,6 +269,7 @@ As a user on the graph page, I want to search for a specific node, so that I can
 ---
 
 ### 5.2 Graph Clustering
+
 **Priority**: P3 (Low)
 **Complexity**: High
 
@@ -247,6 +277,7 @@ As a user on the graph page, I want to search for a specific node, so that I can
 As a user, I want to see visual clusters of related content, so that I can identify knowledge themes.
 
 **Acceptance Criteria**
+
 - [ ] Option to color nodes by cluster (auto-detected)
 - [ ] Clusters based on link density
 - [ ] Cluster labels shown on hover
@@ -256,13 +287,13 @@ As a user, I want to see visual clusters of related content, so that I can ident
 
 ## Implementation Order
 
-| Phase | Features | Focus |
-|-------|----------|-------|
+| Phase       | Features                                                 | Focus                 |
+| ----------- | -------------------------------------------------------- | --------------------- |
 | **Phase 1** | 1.1 Unlinked Mentions, 2.1 Status Field, 1.4 Random Note | Quick wins, discovery |
-| **Phase 2** | 1.2 Local Graph, 2.2 Inbox Page, 2.3 Favorites | Organization |
-| **Phase 3** | 1.3 Related Content, 3.3 Share Link, 4.1 MOC Type | Connections |
-| **Phase 4** | 3.1 Hover Previews, 3.2 TOC, 2.4 Sort Options | Polish |
-| **Phase 5** | 5.1 Graph Search, 4.2 MOC Discovery, 5.2 Clustering | Advanced |
+| **Phase 2** | 1.2 Local Graph, 2.2 Inbox Page, 2.3 Favorites           | Organization          |
+| **Phase 3** | 1.3 Related Content, 3.3 Share Link, 4.1 MOC Type        | Connections           |
+| **Phase 4** | 3.1 Hover Previews, 3.2 TOC, 2.4 Sort Options            | Polish                |
+| **Phase 5** | 5.1 Graph Search, 4.2 MOC Discovery, 5.2 Clustering      | Advanced              |
 
 ---
 
@@ -274,8 +305,8 @@ When implementing features via Claude Code:
 2. **New routes**: Create in `app/pages/`
 3. **Shared logic**: Add composables in `app/composables/`
 4. **API endpoints**: Add in `server/api/`
-5. **After changes**: Run `pnpm lint:fix && pnpm typecheck`
+5. **After changes**: Run `vp check && pnpm typecheck`
 
 ---
 
-*Last updated: January 2025*
+_Last updated: January 2025_

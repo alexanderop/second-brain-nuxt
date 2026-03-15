@@ -48,6 +48,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 Each workflow stage feeds the next. Plans inform execution, execution surfaces issues in review, and reviews capture patterns that improve future plans.
 
 ::mermaid
+
 <pre>
 flowchart LR
     Plan["/workflows:plan<br/>Blueprint"] --> Work["/workflows:work<br/>Execute"]
@@ -55,6 +56,7 @@ flowchart LR
     Review --> Compound["/workflows:compound<br/>Document Patterns"]
     Compound -.->|"reusable patterns<br/>inform future plans"| Plan
 </pre>
+
 ::
 
 The feedback loop is the differentiator. Most AI coding tools optimize for speed of execution. Compound engineering optimizes for speed of learning—each cycle produces not just working code, but documented patterns that make the next cycle faster and more reliable.

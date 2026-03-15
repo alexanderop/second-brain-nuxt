@@ -24,7 +24,7 @@ What makes this compelling isn't the benchmark score. It's the process: months o
 
 - **Supervised fine-tuning is surprisingly accessible.** The core loop is simple: gather instruction-response pairs, feed them to a base model, nudge its parameters. PewDiePie collected ~100K coding samples and trained on Qwen 32B using publicly available techniques from DeepSeek's research.
 
-- **Data quality is everything.** The first training run made the model *worse*. Synthetic data from LLMs looks perfect but hides subtle errors — "razor blades in burgers." A broken test harness let garbage data through. Garbage in, garbage out is not a cliché here; it's a debugging session.
+- **Data quality is everything.** The first training run made the model _worse_. Synthetic data from LLMs looks perfect but hides subtle errors — "razor blades in burgers." A broken test harness let garbage data through. Garbage in, garbage out is not a cliché here; it's a debugging session.
 
 - **Chinese AI research is remarkably open.** DeepSeek released their full model weights and detailed training documentation. PewDiePie's entire approach was built on this openness — a stark contrast to Western labs that guard their processes. The irony of China being the open-source champion wasn't lost on him.
 
@@ -37,6 +37,7 @@ What makes this compelling isn't the benchmark score. It's the process: months o
 ## The Training Journey
 
 ::mermaid
+
 <pre>
 flowchart TD
     A[Gather 100K training samples] --> B[Fine-tune Qwen 32B]
@@ -58,6 +59,7 @@ flowchart TD
     P --> Q[Post-training 1500 samples]
     Q --> R[Final score: 39.1%]
 </pre>
+
 ::
 
 ## Notable Quotes

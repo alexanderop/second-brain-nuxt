@@ -1,44 +1,40 @@
 <script setup lang="ts">
-import { UIcon } from '#components'
-import type { ContentType } from '~/constants/contentTypes'
+import { UIcon } from "#components";
+import type { ContentType } from "~/constants/contentTypes";
 
 defineProps<{
-  type: ContentType
-  size?: 'sm' | 'md' | 'lg'
-}>()
+  type: ContentType;
+  size?: "sm" | "md" | "lg";
+}>();
 
 // Using satisfies ensures TypeScript errors if a ContentType is missing from iconMap
 const iconMap = {
-  youtube: 'i-lucide-youtube',
-  podcast: 'i-lucide-mic',
-  article: 'i-lucide-file-text',
-  book: 'i-lucide-book-open',
-  manga: 'i-lucide-book-image',
-  movie: 'i-lucide-clapperboard',
-  tv: 'i-lucide-tv',
-  tweet: 'i-lucide-message-circle',
-  quote: 'i-lucide-quote',
-  course: 'i-lucide-graduation-cap',
-  note: 'i-lucide-pencil',
-  evergreen: 'i-lucide-leaf',
-  map: 'i-lucide-hexagon',
-  reddit: 'i-lucide-message-square',
-  github: 'i-lucide-github',
-  newsletter: 'i-lucide-newspaper',
-  talk: 'i-lucide-presentation',
-} satisfies Record<ContentType, string>
+  youtube: "i-lucide-youtube",
+  podcast: "i-lucide-mic",
+  article: "i-lucide-file-text",
+  book: "i-lucide-book-open",
+  manga: "i-lucide-book-image",
+  movie: "i-lucide-clapperboard",
+  tv: "i-lucide-tv",
+  tweet: "i-lucide-message-circle",
+  quote: "i-lucide-quote",
+  course: "i-lucide-graduation-cap",
+  note: "i-lucide-pencil",
+  evergreen: "i-lucide-leaf",
+  map: "i-lucide-hexagon",
+  reddit: "i-lucide-message-square",
+  github: "i-lucide-github",
+  newsletter: "i-lucide-newspaper",
+  talk: "i-lucide-presentation",
+} satisfies Record<ContentType, string>;
 
 const sizeClasses = {
-  sm: 'size-4',
-  md: 'size-5',
-  lg: 'size-6',
-}
+  sm: "size-4",
+  md: "size-5",
+  lg: "size-6",
+};
 </script>
 
 <template>
-  <UIcon
-    :name="iconMap[type]"
-    :class="sizeClasses[size ?? 'md']"
-    aria-hidden="true"
-  />
+  <UIcon :name="iconMap[type]" :class="sizeClasses[size ?? 'md']" aria-hidden="true" />
 </template>

@@ -28,8 +28,8 @@ Map configuration types to actual components explicitly rather than using dynami
 const componentMap = {
   hero: HeroBlock,
   features: FeaturesBlock,
-  testimonials: TestimonialsBlock
-}
+  testimonials: TestimonialsBlock,
+};
 </script>
 
 <template>
@@ -47,6 +47,7 @@ This approach provides strong component boundaries, better type safety, and clea
 ### When to Use Config-driven UIs
 
 The pattern shines for:
+
 - **CMS-driven websites** where editors control page structure
 - **Page builders** with drag-and-drop interfaces
 - **A/B testing** where variants are defined in configuration
@@ -63,6 +64,7 @@ The pattern shines for:
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     Config[Config Data] --> Renderer[Dynamic Renderer]
@@ -71,6 +73,7 @@ flowchart LR
     Map --> Features[FeaturesBlock]
     Map --> Testimonials[TestimonialsBlock]
 </pre>
+
 ::
 
 ## Connections

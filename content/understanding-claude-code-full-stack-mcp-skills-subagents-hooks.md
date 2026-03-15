@@ -32,14 +32,14 @@ Claude Code functions as an AI agent orchestration platform, not just a coding a
 
 ## When to Use What
 
-| Need | Solution |
-|------|----------|
-| External tool integration | MCP servers |
-| Persistent project knowledge | CLAUDE.md |
-| Explicit reusable workflow | Slash command |
-| Parallel specialized work | Subagent |
-| Automatic post-action behavior | Hook |
-| Context-aware capabilities | Skill |
+| Need                           | Solution      |
+| ------------------------------ | ------------- |
+| External tool integration      | MCP servers   |
+| Persistent project knowledge   | CLAUDE.md     |
+| Explicit reusable workflow     | Slash command |
+| Parallel specialized work      | Subagent      |
+| Automatic post-action behavior | Hook          |
+| Context-aware capabilities     | Skill         |
 
 ## Code Snippets
 

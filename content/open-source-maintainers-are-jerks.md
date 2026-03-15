@@ -36,6 +36,7 @@ Open source traditionally attracts white males aged 18-25 who have time to volun
 ## The Contribution Decision Tree
 
 ::mermaid
+
 <pre>
 flowchart TD
     A{Can you influence<br/>the project?} -->|No| B[Be a User]
@@ -45,19 +46,20 @@ flowchart TD
     E -->|No| F[Be a Contributor]
     E -->|Yes| G[Be a Maintainer]
 </pre>
+
 ::
 
 ## Ways to Contribute
 
 Contributions extend far beyond code commits:
 
-| Level | Examples |
-|-------|----------|
-| **Financial** | Open Collective, Patreon (prefer Open Collective for tax efficiency) |
-| **Time** | Open Source Friday—reserve sprint time for employee contributions |
-| **Management** | Triage boards, prioritization, issue reproduction |
-| **Community** | Documentation, blog posts, design work |
-| **Code** | Bug fixes, features, pull requests |
+| Level          | Examples                                                             |
+| -------------- | -------------------------------------------------------------------- |
+| **Financial**  | Open Collective, Patreon (prefer Open Collective for tax efficiency) |
+| **Time**       | Open Source Friday—reserve sprint time for employee contributions    |
+| **Management** | Triage boards, prioritization, issue reproduction                    |
+| **Community**  | Documentation, blog posts, design work                               |
+| **Code**       | Bug fixes, features, pull requests                                   |
 
 The only bad contribution is no contribution.
 

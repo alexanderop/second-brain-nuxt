@@ -43,6 +43,7 @@ The German Verfassungsschutz (domestic intelligence) knew about White Date since
 The investigation workflow that exposed White Date:
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Web Scraping<br/>PageRank Analysis] --> B[Chatbot Deployment<br/>Ollama + Vicuña]
@@ -51,6 +52,7 @@ flowchart LR
     D --> E[Database Dump<br/>Simple URL Path]
     E --> F[8,000 Users<br/>Exposed]
 </pre>
+
 ::
 
 ## Notable Quotes

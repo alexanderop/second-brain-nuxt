@@ -25,6 +25,7 @@ The AIGNE framework implements this philosophy through a three-stage pipeline th
 The framework processes context through three distinct stages:
 
 ::mermaid
+
 <pre>
 flowchart LR
     C[Constructors] --> L[Loaders]
@@ -33,6 +34,7 @@ flowchart LR
     L -.->|"Prepare context"| E
     E -.->|"Assess quality"| Output[Agent Context]
 </pre>
+
 ::
 
 - **Constructors** - Mount various context sources (documents, APIs, databases) using consistent interfaces
@@ -44,6 +46,7 @@ flowchart LR
 The Unix philosophy "everything is a file" provides a blueprint for context management. Just as Unix abstracts hardware devices, pipes, and files behind a uniform interface, AIGNE abstracts RAG pipelines, memory stores, tool outputs, and user inputs behind consistent mounting and access patterns.
 
 This abstraction enables:
+
 - **Composability** - Mix and match context sources without rewriting agent logic
 - **Traceability** - Track which context influenced which decisions
 - **Access control** - Apply permissions to context sources, not just model capabilities
@@ -51,6 +54,7 @@ This abstraction enables:
 ## Applications
 
 The paper demonstrates two practical implementations:
+
 1. **Memory-equipped agents** - Persistent context that survives across sessions
 2. **GitHub assistants** - Repository context mounted and queried through the file system abstraction
 

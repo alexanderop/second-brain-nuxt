@@ -147,15 +147,15 @@ Ready to implement <feature-name>
 
 ## Quick Reference
 
-| Situation | Action |
-|-----------|--------|
-| `.worktrees/` exists | Use it (verify .gitignore) |
-| `worktrees/` exists | Use it (verify .gitignore) |
-| Both exist | Use `.worktrees/` |
-| Neither exists | Check CLAUDE.md/AGENTS.md → Ask user |
-| Directory not in .gitignore | Add it immediately + commit |
-| Tests fail during baseline | Report failures + ask |
-| No package.json/Cargo.toml | Skip dependency install |
+| Situation                   | Action                               |
+| --------------------------- | ------------------------------------ |
+| `.worktrees/` exists        | Use it (verify .gitignore)           |
+| `worktrees/` exists         | Use it (verify .gitignore)           |
+| Both exist                  | Use `.worktrees/`                    |
+| Neither exists              | Check CLAUDE.md/AGENTS.md → Ask user |
+| Directory not in .gitignore | Add it immediately + commit          |
+| Tests fail during baseline  | Report failures + ask                |
+| No package.json/Cargo.toml  | Skip dependency install              |
 
 ## Common Mistakes
 

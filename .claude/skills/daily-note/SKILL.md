@@ -55,6 +55,7 @@ options:
 ```
 
 Branch based on selection:
+
 - **Quick capture** → Phase 3A
 - **Morning check-in** → Phase 3B
 - **Evening reflection** → Phase 3C
@@ -165,6 +166,7 @@ options:
 ```
 
 If metrics selected, ask for values:
+
 - Steps: "How many steps today?"
 - Calories: "Total calories?"
 - Protein: "Total protein (g)?"
@@ -247,6 +249,7 @@ When a daily note already exists:
 ### 4.1 Display Current State
 
 Read the file and show:
+
 - Current mood and ratings
 - Habits already tracked
 - Metrics logged
@@ -295,12 +298,12 @@ private: true
 
 ## Metrics
 
-| Metric | Value | Target |
-|--------|-------|--------|
-| Steps | | 7000+ |
-| Calories | | < 2800 |
-| Protein | | 180g+ |
-| Eating window | | ✓ |
+| Metric        | Value | Target |
+| ------------- | ----- | ------ |
+| Steps         |       | 7000+  |
+| Calories      |       | < 2800 |
+| Protein       |       | 180g+  |
+| Eating window |       | ✓      |
 
 ## Morning Intentions
 
@@ -337,12 +340,12 @@ private: true
 
 Alexander's daily habits:
 
-| Habit | Target |
-|-------|--------|
-| Morning walk | Daily |
-| Read | 30 min |
-| Workout | Daily |
-| Deep work | 45 min |
+| Habit        | Target |
+| ------------ | ------ |
+| Morning walk | Daily  |
+| Read         | 30 min |
+| Workout      | Daily  |
+| Deep work    | 45 min |
 
 ---
 
@@ -350,11 +353,11 @@ Alexander's daily habits:
 
 Alexander's daily metrics:
 
-| Metric | Target | Format |
-|--------|--------|--------|
-| Steps | 7000+ | number |
-| Calories | < 2800 | number |
-| Protein | 180g+ | grams |
+| Metric        | Target              | Format |
+| ------------- | ------------------- | ------ |
+| Steps         | 7000+               | number |
+| Calories      | < 2800              | number |
+| Protein       | 180g+               | grams  |
 | Eating window | Nothing after 20:00 | ✓ or ✗ |
 
 ---
@@ -362,6 +365,7 @@ Alexander's daily metrics:
 ## Quality Checklist
 
 Before saving:
+
 - [ ] Filename matches `YYYY-MM-DD.md` format
 - [ ] Frontmatter has `type: daily` and `private: true`
 - [ ] Date in title and frontmatter match
@@ -383,10 +387,10 @@ Before saving:
 
 ## Error Recovery
 
-| Error | Recovery |
-|-------|----------|
-| User wants different date | Allow specifying date, adjust filename |
-| Wants to customize habits | Accept custom habit names |
-| Metric format unclear | Accept any format, don't enforce |
-| Section too long | Accept without truncation |
-| Wiki-link target doesn't exist | Warn but allow |
+| Error                          | Recovery                               |
+| ------------------------------ | -------------------------------------- |
+| User wants different date      | Allow specifying date, adjust filename |
+| Wants to customize habits      | Accept custom habit names              |
+| Metric format unclear          | Accept any format, don't enforce       |
+| Section too long               | Accept without truncation              |
+| Wiki-link target doesn't exist | Warn but allow                         |

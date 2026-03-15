@@ -32,6 +32,7 @@ VDD rests on four core principles:
 ## Diagram
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph VDD[Vibe-Driven Development]
@@ -45,6 +46,7 @@ graph TD
     EOI --> Quality
     HITL --> Quality
 </pre>
+
 ::
 
 ## Essential Patterns
@@ -59,6 +61,7 @@ The methodology introduces specific patterns for implementation:
 ## Target Audience
 
 VDD addresses developers frustrated with:
+
 - AI-generated code that looks right but breaks in production
 - Codebases that remain unclear despite having tests
 - Simple changes that cause unexpected cascading failures

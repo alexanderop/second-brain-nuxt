@@ -32,13 +32,13 @@ Nicholas Carlini, a researcher on Anthropic's Safeguards team, stress-tested a n
 
 ## Results
 
-| Metric | Value |
-|--------|-------|
-| Claude Code sessions | ~2,000 |
-| API cost | $20,000 |
-| Lines of code | 100,000 |
-| Architectures | x86, ARM, RISC-V |
-| GCC torture test pass rate | 99% |
+| Metric                     | Value            |
+| -------------------------- | ---------------- |
+| Claude Code sessions       | ~2,000           |
+| API cost                   | $20,000          |
+| Lines of code              | 100,000          |
+| Architectures              | x86, ARM, RISC-V |
+| GCC torture test pass rate | 99%              |
 
 The compiler can build Linux 6.9, QEMU, FFmpeg, SQLite, PostgreSQL, Redis—and it can compile and run Doom.
 
@@ -49,6 +49,7 @@ The compiler is not production-ready in every sense. It lacks the 16-bit x86 mod
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph AgentTeam["16 Parallel Claude Agents"]
@@ -71,6 +72,7 @@ graph TD
     CI -->|pass/fail| AgentTeam
     TV -->|validates| CI
 </pre>
+
 ::
 
 ## Connections

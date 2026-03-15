@@ -23,6 +23,7 @@ The rules compile into an `AGENTS.md` file designed for AI coding agents, enabli
 ## Optimization Priority
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Eliminate Waterfalls] --> B[Reduce Bundle Size]
@@ -30,6 +31,7 @@ flowchart LR
     C --> D[Client-Side Data Fetching]
     D --> E[Re-render Optimization]
 </pre>
+
 ::
 
 ## Key Concepts
@@ -46,14 +48,11 @@ Sequential awaits waste time when operations are independent.
 
 ```typescript
 // Before: Sequential (slow)
-const user = await getUser(id)
-const posts = await getPosts(id)
+const user = await getUser(id);
+const posts = await getPosts(id);
 
 // After: Parallel (fast)
-const [user, posts] = await Promise.all([
-  getUser(id),
-  getPosts(id),
-])
+const [user, posts] = await Promise.all([getUser(id), getPosts(id)]);
 ```
 
 ### Lazy State Initialization
@@ -62,10 +61,10 @@ Expensive computations in `useState` run on every render unless wrapped in a cal
 
 ```typescript
 // Before: Parses JSON on every render
-const [config] = useState(JSON.parse(localStorage.getItem('config')))
+const [config] = useState(JSON.parse(localStorage.getItem("config")));
 
 // After: Parses only once
-const [config] = useState(() => JSON.parse(localStorage.getItem('config')))
+const [config] = useState(() => JSON.parse(localStorage.getItem("config")));
 ```
 
 ## Installation

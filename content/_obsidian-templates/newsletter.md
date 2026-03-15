@@ -1,16 +1,17 @@
-<%*
+<%\*
 await tp.file.move("newsletter-drafts/" + tp.file.title)
 %>
+
 ---
+
 title: "Newsletter - {{date:YYYY-MM-DD}}"
 draft: true
+
 ---
 
 ## Hey there!
 
 <!-- Personal intro, what you've been up to -->
-
-
 
 ---
 
@@ -18,9 +19,9 @@ draft: true
 
 <!-- Your recent articles/content -->
 
-- **[Title](link)** - *TIL/Deep Dive* - Brief description
+- **[Title](link)** - _TIL/Deep Dive_ - Brief description
 
-- **[Title](link)** - *TIL/Deep Dive* - Brief description
+- **[Title](link)** - _TIL/Deep Dive_ - Brief description
 
 ---
 

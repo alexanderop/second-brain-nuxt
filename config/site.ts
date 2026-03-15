@@ -10,28 +10,28 @@ export const siteConfig = {
    * Production URL for the site (used for OG images, canonical URLs)
    * Set via NUXT_PUBLIC_SITE_URL environment variable on Vercel
    */
-  url: 'https://second-brain-nuxt.vercel.app',
+  url: "https://second-brain-nuxt.vercel.app",
 
   /**
    * Site name displayed in header, page titles, and PWA manifest
    */
-  name: 'Second Brain',
+  name: "Second Brain",
 
   /**
    * Short name for PWA (no spaces, used in app launcher)
    */
-  shortName: 'SecondBrain',
+  shortName: "SecondBrain",
 
   /**
    * Site description for SEO and PWA manifest
    */
-  description: 'Personal knowledge base with connected notes',
+  description: "Personal knowledge base with connected notes",
 
   /**
    * Theme color used in browser chrome and PWA
    * Should be a valid hex color (e.g., '#1a1a2e')
    */
-  themeColor: '#1a1a2e',
+  themeColor: "#1a1a2e",
 
   /**
    * Set to true to allow search engines to index your site
@@ -44,16 +44,16 @@ export const siteConfig = {
    * Each link requires: label, to (path), icon (Lucide icon class)
    */
   nav: [
-    { label: 'Home', to: '/', icon: 'i-lucide-home' },
-    { label: 'Table', to: '/table', icon: 'i-lucide-table-2' },
-    { label: 'Books', to: '/books', icon: 'i-lucide-book-open' },
-    { label: 'Podcasts', to: '/podcasts', icon: 'i-lucide-podcast' },
-    { label: 'Newsletters', to: '/newsletters', icon: 'i-lucide-newspaper' },
-    { label: 'Graph', to: '/graph', icon: 'i-lucide-network' },
-    { label: 'Stats', to: '/stats', icon: 'i-lucide-bar-chart-2' },
-    { label: 'Tags', to: '/tags', icon: 'i-lucide-tags' },
-    { label: 'Authors', to: '/authors', icon: 'i-lucide-users' },
-    { label: 'About', to: '/about', icon: 'i-lucide-user' },
+    { label: "Home", to: "/", icon: "i-lucide-home" },
+    { label: "Table", to: "/table", icon: "i-lucide-table-2" },
+    { label: "Books", to: "/books", icon: "i-lucide-book-open" },
+    { label: "Podcasts", to: "/podcasts", icon: "i-lucide-podcast" },
+    { label: "Newsletters", to: "/newsletters", icon: "i-lucide-newspaper" },
+    { label: "Graph", to: "/graph", icon: "i-lucide-network" },
+    { label: "Stats", to: "/stats", icon: "i-lucide-bar-chart-2" },
+    { label: "Tags", to: "/tags", icon: "i-lucide-tags" },
+    { label: "Authors", to: "/authors", icon: "i-lucide-users" },
+    { label: "About", to: "/about", icon: "i-lucide-user" },
   ],
 
   /**
@@ -63,33 +63,33 @@ export const siteConfig = {
    */
   shortcuts: {
     navigation: [
-      { keys: ['G', 'H'], to: '/', description: 'Go to home' },
-      { keys: ['G', 'B'], to: '/books', description: 'Go to books' },
-      { keys: ['G', 'P'], to: '/podcasts', description: 'Go to podcasts' },
-      { keys: ['G', 'N'], to: '/newsletters', description: 'Go to newsletters' },
-      { keys: ['G', 'G'], to: '/graph', description: 'Go to graph' },
-      { keys: ['G', 'T'], to: '/tags', description: 'Go to tags' },
-      { keys: ['G', 'A'], to: '/authors', description: 'Go to authors' },
-      { keys: ['G', 'S'], to: '/stats', description: 'Go to stats' },
-      { keys: ['R'], to: 'random', description: 'Go to random note' },
+      { keys: ["G", "H"], to: "/", description: "Go to home" },
+      { keys: ["G", "B"], to: "/books", description: "Go to books" },
+      { keys: ["G", "P"], to: "/podcasts", description: "Go to podcasts" },
+      { keys: ["G", "N"], to: "/newsletters", description: "Go to newsletters" },
+      { keys: ["G", "G"], to: "/graph", description: "Go to graph" },
+      { keys: ["G", "T"], to: "/tags", description: "Go to tags" },
+      { keys: ["G", "A"], to: "/authors", description: "Go to authors" },
+      { keys: ["G", "S"], to: "/stats", description: "Go to stats" },
+      { keys: ["R"], to: "random", description: "Go to random note" },
     ],
     actions: [
-      { keys: ['J'], description: 'Next item' },
-      { keys: ['K'], description: 'Previous item' },
-      { keys: ['Enter'], description: 'Open selected' },
-      { keys: ['O'], description: 'Open resource link' },
-      { keys: ['A'], description: 'Open author page' },
-      { keys: ['shift', 'L'], description: 'Copy wiki-link' },
-      { keys: ['shift', 'C'], description: 'Copy URL' },
+      { keys: ["J"], description: "Next item" },
+      { keys: ["K"], description: "Previous item" },
+      { keys: ["Enter"], description: "Open selected" },
+      { keys: ["O"], description: "Open resource link" },
+      { keys: ["A"], description: "Open author page" },
+      { keys: ["shift", "L"], description: "Copy wiki-link" },
+      { keys: ["shift", "C"], description: "Copy URL" },
     ],
     general: [
-      { keys: ['?'], description: 'Show keyboard shortcuts' },
-      { keys: ['meta', 'K'], description: 'Open search' },
-      { keys: ['/'], description: 'Open search' },
-      { keys: ['Esc'], description: 'Close modal / go back' },
-      { keys: ['meta', 'alt', 'T'], description: 'Toggle dark mode' },
-      { keys: ['meta', 'shift', '\\'], description: 'Toggle focus mode' },
-      { keys: [']'], description: 'Toggle table of contents' },
+      { keys: ["?"], description: "Show keyboard shortcuts" },
+      { keys: ["meta", "K"], description: "Open search" },
+      { keys: ["/"], description: "Open search" },
+      { keys: ["Esc"], description: "Close modal / go back" },
+      { keys: ["meta", "alt", "T"], description: "Toggle dark mode" },
+      { keys: ["meta", "shift", "\\"], description: "Toggle focus mode" },
+      { keys: ["]"], description: "Toggle table of contents" },
     ],
   },
 
@@ -98,12 +98,12 @@ export const siteConfig = {
    * Used in footer or about page
    */
   social: {
-    github: 'https://github.com/alexanderop/second-brain-nuxt',
-    twitter: '',
+    github: "https://github.com/alexanderop/second-brain-nuxt",
+    twitter: "",
   },
-} as const
+} as const;
 
 // Type exports for use in components
-export type SiteConfig = typeof siteConfig
-export type NavItem = (typeof siteConfig.nav)[number]
-export type ShortcutCategory = keyof typeof siteConfig.shortcuts
+export type SiteConfig = typeof siteConfig;
+export type NavItem = (typeof siteConfig.nav)[number];
+export type ShortcutCategory = keyof typeof siteConfig.shortcuts;

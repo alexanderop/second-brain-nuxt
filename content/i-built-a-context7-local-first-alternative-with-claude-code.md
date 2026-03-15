@@ -29,6 +29,7 @@ Context7 slashed its free tier from roughly 6,000 to 1,000 monthly requests, for
 ## Search Pipeline
 
 ::mermaid
+
 <pre>
 flowchart LR
     Q[FTS5 Query] --> R[BM25 Ranking]
@@ -37,6 +38,7 @@ flowchart LR
     T --> M[Merge Adjacent]
     M --> O[Formatted Output]
 </pre>
+
 ::
 
 ## Code Snippets

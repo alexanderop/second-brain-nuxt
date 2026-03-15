@@ -39,6 +39,7 @@ The most complex aspect: embedding the index directly into WebAssembly modules w
 ## Build Pipeline
 
 ::mermaid
+
 <pre>
 flowchart LR
     Docs[Markdown Docs] --> JSON[Convert to JSON]
@@ -48,17 +49,18 @@ flowchart LR
     FSST --> WASM[Patch into<br/>WASM Binary]
     WASM --> Deploy[Single 2.7MB<br/>Module]
 </pre>
+
 ::
 
 ## Results
 
 For VS Code's documentation (~3 MB markdown, ~3,700 documents):
 
-| Metric | Value |
-|--------|-------|
-| Index size | ~2.7 MB (Brotli compressed) |
-| Search speed | ~0.4ms per query |
-| Deployment | Single downloadable WebAssembly module |
+| Metric       | Value                                  |
+| ------------ | -------------------------------------- |
+| Index size   | ~2.7 MB (Brotli compressed)            |
+| Search speed | ~0.4ms per query                       |
+| Deployment   | Single downloadable WebAssembly module |
 
 ## Copilot's Role
 

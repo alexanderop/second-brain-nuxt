@@ -25,7 +25,7 @@ Claude Code ships with extensible skills (slash commands) that automate common w
 - Reduces unnecessary complexity, nesting, and redundancy
 - Improves variable and function naming
 - Follows project conventions from `CLAUDE.md`
-- Preserves all functionality — changes *how* code works, not *what* it does
+- Preserves all functionality — changes _how_ code works, not _what_ it does
 
 **Key rules it enforces:**
 

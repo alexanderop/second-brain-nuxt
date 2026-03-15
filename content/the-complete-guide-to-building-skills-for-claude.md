@@ -67,13 +67,13 @@ your-skill-name/
 
 ```yaml
 ---
-name: skill-name-in-kebab-case          # Required, matches folder name
-description: >                           # Required, under 1024 chars
+name: skill-name-in-kebab-case # Required, matches folder name
+description: > # Required, under 1024 chars
   What it does. Use when [trigger phrases].
-license: MIT                             # Optional
-compatibility: Environment requirements  # Optional, 1-500 chars
+license: MIT # Optional
+compatibility: Environment requirements # Optional, 1-500 chars
 allowed-tools: "Bash(python:*) WebFetch" # Optional
-metadata:                                # Optional
+metadata: # Optional
   author: Company Name
   version: 1.0.0
   mcp-server: server-name
@@ -97,6 +97,7 @@ The **description field is the most important part** — it determines whether C
 ## Five Workflow Patterns
 
 ::mermaid
+
 <pre>
 flowchart LR
     Plan[Plan Use Cases] --> Structure[Structure Skill Folder]
@@ -107,6 +108,7 @@ flowchart LR
     Iterate -->|Over-triggers| Write
     Iterate --> Distribute[Distribute]
 </pre>
+
 ::
 
 1. **Sequential workflow orchestration** — explicit step ordering with dependencies, validation at each stage, and rollback instructions. Example: customer onboarding that chains create_customer → setup_payment → create_subscription → send_email, with each step depending on the prior output.
@@ -143,16 +145,16 @@ The guide recommends iterating on a single challenging task until Claude succeed
 
 ## Troubleshooting
 
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| Won't upload: "Could not find SKILL.md" | Wrong filename | Rename to exactly `SKILL.md` (case-sensitive) |
-| Won't upload: "Invalid frontmatter" | YAML formatting | Check `---` delimiters, unclosed quotes |
-| Won't upload: "Invalid skill name" | Spaces or capitals | Use kebab-case only |
-| Never triggers | Vague description | Add specific trigger phrases and file types |
-| Triggers too often | Scope too broad | Add negative triggers, narrow scope: not "processes documents" but "processes PDF legal documents" |
-| Instructions ignored | Too verbose or buried | Keep SKILL.md under 5,000 words; move detail to `references/`; put critical rules at top |
-| MCP calls fail | Connection or naming | Verify MCP server shows "Connected"; tool names are case-sensitive; test MCP independently |
-| Inconsistent results | Ambiguous language | Use specifics with examples; bundle validation scripts for critical checks — code is deterministic, language interpretation isn't |
+| Problem                                 | Cause                 | Fix                                                                                                                               |
+| --------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Won't upload: "Could not find SKILL.md" | Wrong filename        | Rename to exactly `SKILL.md` (case-sensitive)                                                                                     |
+| Won't upload: "Invalid frontmatter"     | YAML formatting       | Check `---` delimiters, unclosed quotes                                                                                           |
+| Won't upload: "Invalid skill name"      | Spaces or capitals    | Use kebab-case only                                                                                                               |
+| Never triggers                          | Vague description     | Add specific trigger phrases and file types                                                                                       |
+| Triggers too often                      | Scope too broad       | Add negative triggers, narrow scope: not "processes documents" but "processes PDF legal documents"                                |
+| Instructions ignored                    | Too verbose or buried | Keep SKILL.md under 5,000 words; move detail to `references/`; put critical rules at top                                          |
+| MCP calls fail                          | Connection or naming  | Verify MCP server shows "Connected"; tool names are case-sensitive; test MCP independently                                        |
+| Inconsistent results                    | Ambiguous language    | Use specifics with examples; bundle validation scripts for critical checks — code is deterministic, language interpretation isn't |
 
 ## Distribution
 

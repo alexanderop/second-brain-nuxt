@@ -37,6 +37,7 @@ That framing alone makes this worth sitting with. Most AI discourse splits into 
 Dario lays out a graded progression that clarifies most disagreements about AI and jobs:
 
 ::mermaid
+
 <pre>
 flowchart LR
     A["90% of code<br/>written by AI"] --> B["100% of code"]
@@ -45,6 +46,7 @@ flowchart LR
     D --> E["New higher-level<br/>tasks created"]
     E --> F["Those tasks<br/>automated too"]
 </pre>
+
 ::
 
 Each step is qualitatively different. Conflating them causes most arguments about whether AI "replaces" developers. We're somewhere around the first two stages — which is transformative for productivity but doesn't eliminate the role.

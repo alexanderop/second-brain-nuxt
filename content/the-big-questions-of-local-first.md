@@ -26,6 +26,7 @@ Three of the four original [[local-first-software]] essay authors (Kleppmann, Wi
 The most useful framework from the discussion. Aaron proposes three rings to classify apps that use sync engines:
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph outer["Synced Applications"]
@@ -46,6 +47,7 @@ flowchart TD
         end
     end
 </pre>
+
 ::
 
 Most developers using Zero today sit in the outer ring — they want instant UI, not offline resilience. That's fine, Aaron argues. The inner ring is the aspiration, not the entry requirement.
@@ -54,7 +56,7 @@ Most developers using Zero today sit in the outer ring — they want instant UI,
 
 This is where the panel gets heated. Aaron temporarily disabled offline writes in Zero, and the reactions split perfectly along ideological lines:
 
-**Boodman's position:** CRDTs give developers a false sense of safety. Two concurrent edits to the same paragraph produce "consistent but nonsensical" results — text that neither user typed. The longer someone is offline, the more work they invest *and* the higher the chance of destructive merges. A cruel double whammy.
+**Boodman's position:** CRDTs give developers a false sense of safety. Two concurrent edits to the same paragraph produce "consistent but nonsensical" results — text that neither user typed. The longer someone is offline, the more work they invest _and_ the higher the chance of destructive merges. A cruel double whammy.
 
 **Kleppmann's position:** Blocking a user from editing their document on a train is patronizing. If you're the sole editor, there's zero conflict risk. The solution isn't to remove the capability — it's to build version-control UX (branching, diffing, review) for structured data, the way developers already do with Git.
 
@@ -91,6 +93,6 @@ This mirrors exactly the idealist vs. pragmatist framing from [[local-first-soft
 ## Connections
 
 - [[local-first-software]] — The foundational essay co-authored by three of the four panelists. Every argument in this panel traces back to whether the seven ideals are a north star or a shipping requirement
-- [[sync-panel-discussion]] — The companion panel at the same conference where Aaron Boodman debates sync architecture with different panelists (Cowling, Schickling, Mathews). That panel is about *how* to build sync; this one is about *why*
+- [[sync-panel-discussion]] — The companion panel at the same conference where Aaron Boodman debates sync architecture with different panelists (Cowling, Schickling, Mathews). That panel is about _how_ to build sync; this one is about _why_
 - [[local-first-software-pragmatism-vs-idealism]] — Adam Wiggins' solo talk articulating the idealist-pragmatist spectrum. This panel is the live version of that tension, with Kleppmann and Boodman embodying opposite poles
 - [[the-past-present-and-future-of-local-first]] — Kleppmann's keynote at the same conference where he proposes the definition that software must survive its creator's shutdown. His position in this panel is the debate-ready version of that definition

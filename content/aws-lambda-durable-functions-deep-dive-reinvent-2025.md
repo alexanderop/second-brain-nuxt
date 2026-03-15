@@ -53,6 +53,7 @@ Compensation logic (undoing work when something fails) is just more steps. Wrap 
 ## Diagram: Durable Execution Lifecycle
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Execution["Function Execution"]
@@ -73,6 +74,7 @@ flowchart TD
         SkipWait --> Continue[Continue Execution]
     end
 </pre>
+
 ::
 
 ## Notable Quotes
@@ -104,12 +106,12 @@ Eric rebuilt the Serverlesspresso application (originally Step Functions-based) 
 
 Both are valid choices. The talk offers this guidance:
 
-| Criterion | Durable Functions | Step Functions |
-|-----------|-------------------|----------------|
-| Primary use | Application code orchestration | AWS service orchestration |
-| Interface | Code (TypeScript, Python) | Visual workflow builder |
-| Learning curve | SDK primitives | ASL state machine language |
-| Debugging | Local testing with SAM | Step Functions console |
+| Criterion      | Durable Functions              | Step Functions             |
+| -------------- | ------------------------------ | -------------------------- |
+| Primary use    | Application code orchestration | AWS service orchestration  |
+| Interface      | Code (TypeScript, Python)      | Visual workflow builder    |
+| Learning curve | SDK primitives                 | ASL state machine language |
+| Debugging      | Local testing with SAM         | Step Functions console     |
 
 ## Connections
 

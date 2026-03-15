@@ -1,65 +1,63 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from '#components'
-import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
-import type { ContentType } from '~/constants/contentTypes'
+import { computed } from "vue";
+import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from "#components";
+import BaseTypeIcon from "~/components/BaseTypeIcon.vue";
+import type { ContentType } from "~/constants/contentTypes";
 
 interface GraphNode {
-  id: string
-  title: string
-  type: ContentType
-  tags: Array<string>
-  authors: Array<string>
-  summary?: string
-  connections?: number
-  maps?: Array<string>
-  isMap?: boolean
+  id: string;
+  title: string;
+  type: ContentType;
+  tags: Array<string>;
+  authors: Array<string>;
+  summary?: string;
+  connections?: number;
+  maps?: Array<string>;
+  isMap?: boolean;
 }
 
 const props = defineProps<{
-  node: GraphNode
-  outgoingLinks: Array<GraphNode>
-  backlinks: Array<GraphNode>
-}>()
+  node: GraphNode;
+  outgoingLinks: Array<GraphNode>;
+  backlinks: Array<GraphNode>;
+}>();
 
 const emit = defineEmits<{
-  close: []
-  selectNode: [node: GraphNode]
-}>()
+  close: [];
+  selectNode: [node: GraphNode];
+}>();
 
 const accordionItems = computed(() => {
-  const items: Array<{ value: string, label: string, icon: string, slot: string }> = []
+  const items: Array<{ value: string; label: string; icon: string; slot: string }> = [];
 
   if (props.outgoingLinks.length) {
     items.push({
-      value: 'links-to',
+      value: "links-to",
       label: `Links to (${props.outgoingLinks.length})`,
-      icon: 'i-lucide-arrow-right',
-      slot: 'links-to',
-    })
+      icon: "i-lucide-arrow-right",
+      slot: "links-to",
+    });
   }
 
   if (props.backlinks.length) {
     items.push({
-      value: 'linked-from',
+      value: "linked-from",
       label: `Linked from (${props.backlinks.length})`,
-      icon: 'i-lucide-arrow-left',
-      slot: 'linked-from',
-    })
+      icon: "i-lucide-arrow-left",
+      slot: "linked-from",
+    });
   }
 
-  return items
-})
+  return items;
+});
 
-const defaultAccordionValue = computed(() =>
-  accordionItems.value.map(item => item.value),
-)
+const defaultAccordionValue = computed(() => accordionItems.value.map((item) => item.value));
 
 // Count notes that belong to this map (for map nodes)
 const mapMemberCount = computed(() => {
-  if (!props.node.isMap) return 0
-  return props.outgoingLinks.length
-})
+  if (!props.node.isMap) return 0;
+  return props.outgoingLinks.length;
+});
 </script>
 
 <template>
@@ -101,7 +99,7 @@ const mapMemberCount = computed(() => {
       <div v-if="node.authors?.length" class="flex items-center gap-2 mb-4 text-sm">
         <UIcon name="i-lucide-user" class="size-4 text-[var(--ui-text-muted)]" />
         <span class="text-[var(--ui-text-muted)]">
-          {{ node.authors.join(', ') }}
+          {{ node.authors.join(", ") }}
         </span>
       </div>
 
@@ -119,7 +117,9 @@ const mapMemberCount = computed(() => {
 
       <!-- Map membership (for non-map nodes) -->
       <div v-if="node.maps?.length && !node.isMap" class="mb-4">
-        <div class="flex items-center gap-2 mb-2 text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider">
+        <div
+          class="flex items-center gap-2 mb-2 text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider"
+        >
           <UIcon name="i-lucide-hexagon" class="size-3.5" />
           Member of
         </div>
@@ -205,9 +205,7 @@ const mapMemberCount = computed(() => {
       </UAccordion>
 
       <template v-if="!outgoingLinks.length && !backlinks.length" #footer>
-        <p class="text-sm text-[var(--ui-text-muted)] text-center">
-          No connections found
-        </p>
+        <p class="text-sm text-[var(--ui-text-muted)] text-center">No connections found</p>
       </template>
     </UCard>
   </aside>

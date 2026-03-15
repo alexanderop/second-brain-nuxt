@@ -20,6 +20,7 @@ The article reads like a field report from someone who's actually migrated 20+ p
 ## The Replacements
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Before["Old Stack"]
@@ -44,6 +45,7 @@ flowchart LR
         react["React"]
     end
 </pre>
+
 ::
 
 **tsgo** — TypeScript rewritten in Go. 10x faster type checking, and it actually caught type errors the original `tsc` missed. After 20+ projects from 1K to 1M lines, Nakazawa considers it production-ready. The migration path: switch to tsdown or Vite first, then swap `tsc` for `tsgo`.

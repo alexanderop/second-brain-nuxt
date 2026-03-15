@@ -37,12 +37,15 @@ Instead of letting conversations grow until they fail, compress context proactiv
 A three-phase workflow that keeps you in the "smart zone":
 
 ### Research
+
 Understand how the system works. Find the right files. Stay objective. Output: compressed document of what matters.
 
 ### Plan
+
 Outline exact steps with file names, line snippets, and how to test after each change. A good plan makes even simple models succeed.
 
 ### Implement
+
 Execute the plan with low context. The least exciting but most reliable phase.
 
 ## Mental Alignment
@@ -55,11 +58,11 @@ There is no perfect prompt. AI amplifies thinking you've done — or haven't. Ba
 
 ## When to Use This
 
-| Complexity | Approach |
-|------------|----------|
-| Button color change | Just talk to the agent |
-| Small feature | Simple plan, implement |
-| Medium feature | One research, then plan |
+| Complexity              | Approach                 |
+| ----------------------- | ------------------------ |
+| Button color change     | Just talk to the agent   |
+| Small feature           | Simple plan, implement   |
+| Medium feature          | One research, then plan  |
 | Complex brownfield work | Full RPI with compaction |
 
 Getting it right takes reps. Pick one tool, get it wrong repeatedly, and learn to calibrate.

@@ -20,16 +20,16 @@ date: 2026-01-23
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introduction and New Year health advice |
-| 05:00 | Why calorie-centric weight loss fails |
-| 12:00 | Insulin as the master metabolic hormone |
+| Time  | Topic                                      |
+| ----- | ------------------------------------------ |
+| 00:00 | Introduction and New Year health advice    |
+| 05:00 | Why calorie-centric weight loss fails      |
+| 12:00 | Insulin as the master metabolic hormone    |
 | 18:00 | The type 1 diabetes weight gain phenomenon |
-| 25:00 | Ketones and the ketogenic diet explained |
-| 35:00 | Ketones for brain and heart health |
-| 45:00 | Exogenous ketones and how to measure them |
-| 55:00 | Sex differences in ketogenic diets |
+| 25:00 | Ketones and the ketogenic diet explained   |
+| 35:00 | Ketones for brain and heart health         |
+| 45:00 | Exogenous ketones and how to measure them  |
+| 55:00 | Sex differences in ketogenic diets         |
 
 ## Key Arguments
 
@@ -52,6 +52,7 @@ Bikman's lab found that ketones increase the metabolic rate in fat tissue by thr
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph HighInsulin[High Insulin State]
@@ -72,6 +73,7 @@ graph TD
         LI_Brain --> LI_Satiety[No Hunger]
     end
 </pre>
+
 ::
 
 ## Notable Quotes

@@ -23,16 +23,17 @@ date: 2026-01-06
 
 ## Tech Stack
 
-| Technology | Role |
-|------------|------|
-| Next.js 16 | React framework with App Router |
-| React | UI components and state management |
-| Convex | Real-time backend and database |
-| AI Integration | Code assistance features |
+| Technology     | Role                               |
+| -------------- | ---------------------------------- |
+| Next.js 16     | React framework with App Router    |
+| React          | UI components and state management |
+| Convex         | Real-time backend and database     |
+| AI Integration | Code assistance features           |
 
 ## What You'll Build
 
 A Cursor-inspired IDE clone that combines:
+
 - Code editor interface with syntax highlighting
 - AI-powered code suggestions and completions
 - Real-time collaboration capabilities via Convex

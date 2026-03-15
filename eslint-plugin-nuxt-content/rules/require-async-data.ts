@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint'
+import type { Rule } from "eslint";
 
 const HELP_MESSAGE = `
 Wrap queryCollection() with useAsyncData() in composables to enable caching.
@@ -18,28 +18,28 @@ CORRECT:
     const { data } = useAsyncData('key', () => queryCollection('content').all())
     // data.value is cached and available instantly
   }
-`.trim()
+`.trim();
 
 /**
  * Check if a node is inside a useAsyncData callback
  */
 function isInsideUseAsyncData(node: any, ancestors: any[]): boolean {
   for (let i = ancestors.length - 1; i >= 0; i--) {
-    const ancestor = ancestors[i]
+    const ancestor = ancestors[i];
 
     // Check if this is a CallExpression with callee 'useAsyncData'
-    if (ancestor.type === 'CallExpression') {
-      const callee = ancestor.callee
-      if (callee.type === 'Identifier' && callee.name === 'useAsyncData') {
+    if (ancestor.type === "CallExpression") {
+      const callee = ancestor.callee;
+      if (callee.type === "Identifier" && callee.name === "useAsyncData") {
         // Check if our node is in the callback (2nd argument)
-        const callback = ancestor.arguments[1]
+        const callback = ancestor.arguments[1];
         if (callback && isNodeDescendant(node, callback)) {
-          return true
+          return true;
         }
       }
     }
   }
-  return false
+  return false;
 }
 
 /**
@@ -49,10 +49,12 @@ function isNodeDescendant(targetNode: any, containerNode: any): boolean {
   // Simple check: if they share the same range/location, target is inside container
   if (!targetNode.range || !containerNode.range) {
     // Fallback: assume true if we can't determine
-    return true
+    return true;
   }
 
-  return targetNode.range[0] >= containerNode.range[0] && targetNode.range[1] <= containerNode.range[1]
+  return (
+    targetNode.range[0] >= containerNode.range[0] && targetNode.range[1] <= containerNode.range[1]
+  );
 }
 
 /**
@@ -62,8 +64,8 @@ function isClientSideQueryCollection(node: any): boolean {
   // Server-side: queryCollection(event, 'collection')
   // Client-side: queryCollection('collection')
   // If first arg is a string literal, it's client-side
-  const firstArg = node.arguments[0]
-  return firstArg?.type === 'Literal' && typeof firstArg.value === 'string'
+  const firstArg = node.arguments[0];
+  return firstArg?.type === "Literal" && typeof firstArg.value === "string";
 }
 
 /**
@@ -74,22 +76,22 @@ function isClientSideQueryCollection(node: any): boolean {
 function isInsideHelperFunction(ancestors: any[]): boolean {
   for (const ancestor of ancestors) {
     // Named function declarations are helper functions
-    if (ancestor.type === 'FunctionDeclaration') {
-      return true
+    if (ancestor.type === "FunctionDeclaration") {
+      return true;
     }
     // Named function expressions (const foo = function() {})
-    if (ancestor.type === 'FunctionExpression') {
-      return true
+    if (ancestor.type === "FunctionExpression") {
+      return true;
     }
   }
-  return false
+  return false;
 }
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: 'problem',
+    type: "problem",
     docs: {
-      description: 'Require queryCollection in composables to be wrapped with useAsyncData',
+      description: "Require queryCollection in composables to be wrapped with useAsyncData",
       recommended: true,
     },
     messages: {
@@ -99,48 +101,48 @@ const rule: Rule.RuleModule = {
   },
 
   create(context) {
-    const filename = context.filename
+    const filename = context.filename;
 
     // Apply to composables and Vue components (client-side code)
-    const isComposable = filename.includes('/composables/')
-    const isVueComponent = filename.endsWith('.vue')
+    const isComposable = filename.includes("/composables/");
+    const isVueComponent = filename.endsWith(".vue");
 
     if (!isComposable && !isVueComponent) {
-      return {}
+      return {};
     }
 
     return {
       CallExpression(node) {
         // Check if this is a queryCollection call
-        const callee = node.callee
-        if (callee.type !== 'Identifier' || callee.name !== 'queryCollection') {
-          return
+        const callee = node.callee;
+        if (callee.type !== "Identifier" || callee.name !== "queryCollection") {
+          return;
         }
 
         // Skip server-side queryCollection (with event parameter)
         if (!isClientSideQueryCollection(node)) {
-          return
+          return;
         }
 
-        const sourceCode = context.sourceCode
-        const ancestors = sourceCode.getAncestors(node)
+        const sourceCode = context.sourceCode;
+        const ancestors = sourceCode.getAncestors(node);
 
         // For Vue components, skip helper functions
         // They might be called from within useAsyncData which is fine
         if (isVueComponent && isInsideHelperFunction(ancestors)) {
-          return
+          return;
         }
 
         // Check if it's inside useAsyncData
         if (!isInsideUseAsyncData(node, ancestors)) {
           context.report({
             node,
-            messageId: 'requireAsyncData',
-          })
+            messageId: "requireAsyncData",
+          });
         }
       },
-    }
+    };
   },
-}
+};
 
-export default rule
+export default rule;

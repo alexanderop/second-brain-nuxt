@@ -22,6 +22,7 @@ Peter Naur wrote in 1985 that a program is a theory — a shared mental model of
 AI and agentic coding tools accelerate this fragmentation. Code gets generated faster than anyone can build understanding. Each AI agent introduces invisible decisions that no human reviewed. The coordination overhead Fred Brooks warned about in The Mythical Man-Month doesn't disappear when the "extra hands" are AI agents — it multiplies.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Cognitive Debt))
@@ -43,6 +44,7 @@ mindmap
             Pair programming and TDD
             Regular knowledge-sharing checkpoints
 </pre>
+
 ::
 
 ## The Speed Paradox

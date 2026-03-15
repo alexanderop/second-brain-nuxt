@@ -32,6 +32,7 @@ The video examines a tic-tac-toe game with typical issues:
 ## The Solution
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Shell["Imperative Shell (Vue)"]
@@ -47,11 +48,13 @@ graph TD
     Core -->|new state| Shell
     Shell -->|current state| Core
 </pre>
+
 ::
 
 **Functional Core:** Pure functions that take current state as input and return new state. No side effects, no global variables.
 
 **Imperative Shell:** A thin Vue integration layer that:
+
 - Receives user input
 - Passes state to pure functions
 - Updates reactive state with returned values
@@ -59,23 +62,25 @@ graph TD
 ## Refactored Approach
 
 Instead of:
+
 ```javascript
 // Bad: mutates global, returns nothing
 function undo() {
-  currentMove--
+  currentMove--;
   // mutates board somehow
 }
 ```
 
 Use:
+
 ```javascript
 // Good: pure function, clear contract
 function undo(currentState) {
   return {
     ...currentState,
     currentMove: currentState.currentMove - 1,
-    board: currentState.history[currentState.currentMove - 1]
-  }
+    board: currentState.history[currentState.currentMove - 1],
+  };
 }
 ```
 

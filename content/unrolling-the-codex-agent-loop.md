@@ -26,6 +26,7 @@ Every agent follows the same fundamental pattern:
 **Inner loop** — Model generates output events. Tool call events trigger execution and result collection. Reasoning events get appended to context. Loop continues until a "done" event signals completion.
 
 ::mermaid
+
 <pre>
 flowchart LR
     User[User Input] --> Assemble[Assemble Prompt]
@@ -38,6 +39,7 @@ flowchart LR
     Events -->|Done| Response[Return to User]
     Response -.->|Next Turn| User
 </pre>
+
 ::
 
 ## Prompt Assembly

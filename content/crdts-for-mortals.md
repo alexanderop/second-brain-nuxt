@@ -41,6 +41,7 @@ This connects directly to [[a-gentle-introduction-to-crdts|Matt Wonlaw's CRDT in
 ### CRDTs Are Just Two Properties
 
 Strip away the academic language and CRDTs are data structures that are:
+
 - **Commutative** — order of applying changes doesn't matter
 - **Idempotent** — applying the same change multiple times has no additional effect
 
@@ -51,6 +52,7 @@ That's it. Those two properties let you "throw changes over the wall" — if sta
 The entire sync layer is one additional table — a `messages_crdt` table with columns: timestamp, dataset (table name), row (item ID), column, and value. Each message sets a single cell. If the timestamp is newer than what's stored, the value wins. If the row doesn't exist, it gets created.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A["Local App"] -->|"generates"| B["Messages\n(table, row, col, value, timestamp)"]
@@ -61,6 +63,7 @@ flowchart TD
     G["Merkle Tree"] -->|"verifies"| H["State Consistency\nacross devices"]
     C -.->|"tombstone\nfield = 1"| I["Soft Deletes"]
 </pre>
+
 ::
 
 Local mutations and remote sync follow the exact same code path — both generate messages and push them through the CRDT layer. Reading is just raw SQL. Deletes are soft: set a `tombstone` field to 1, filter on read.

@@ -32,35 +32,19 @@ Use `UButton` for all interactive actions. Prefer ghost or outline variants for 
 
 ```vue
 <!-- Navigation button -->
-<UButton
-  to="/books"
-  variant="ghost"
-  color="neutral"
-  icon="i-lucide-book-open"
->
+<UButton to="/books" variant="ghost" color="neutral" icon="i-lucide-book-open">
   Books
 </UButton>
 
 <!-- Action button -->
-<UButton
-  variant="outline"
-  color="neutral"
-  size="sm"
-  icon="i-lucide-copy"
-  @click="copyLink"
-/>
+<UButton variant="outline" color="neutral" size="sm" icon="i-lucide-copy" @click="copyLink" />
 
 <!-- Icon-only button -->
-<UButton
-  variant="ghost"
-  color="neutral"
-  icon="i-lucide-x"
-  aria-label="Close"
-  @click="close"
-/>
+<UButton variant="ghost" color="neutral" icon="i-lucide-x" aria-label="Close" @click="close" />
 ```
 
 **Conventions:**
+
 - Use `to` prop for navigation (renders as `<NuxtLink>`)
 - Use `@click` for actions
 - Always include `aria-label` for icon-only buttons
@@ -76,6 +60,7 @@ Use `UIcon` with Lucide icons via the `i-lucide-*` naming convention.
 ```
 
 **Common icons used:**
+
 - Navigation: `home`, `book-open`, `podcast`, `network`, `bar-chart-2`, `tags`, `users`
 - Actions: `search`, `copy`, `link`, `external-link`, `x`, `menu`
 - Content: `file-text`, `newspaper`, `video`, `pen-line`
@@ -92,6 +77,7 @@ Use `UBadge` for tags, labels, and status indicators.
 ```
 
 **Conventions:**
+
 - Use `variant="subtle"` for tags
 - Use `size="sm"` for inline badges
 - Keep color neutral unless semantic meaning requires otherwise
@@ -101,22 +87,14 @@ Use `UBadge` for tags, labels, and status indicators.
 Use `UAvatar` for author images and profile pictures.
 
 ```vue
-<UAvatar
-  :src="author.avatar"
-  :alt="author.name"
-  size="xl"
-/>
+<UAvatar :src="author.avatar" :alt="author.name" size="xl" />
 
 <!-- With fallback -->
-<UAvatar
-  :src="author.avatar"
-  :alt="author.name"
-  size="sm"
-  :ui="{ fallback: 'text-xs' }"
-/>
+<UAvatar :src="author.avatar" :alt="author.name" size="sm" :ui="{ fallback: 'text-xs' }" />
 ```
 
 **Conventions:**
+
 - Always provide `alt` text
 - Available sizes: `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
 - Fallback automatically shows initials
@@ -136,6 +114,7 @@ Use `UModal` for dialogs and overlays.
 ```
 
 **Conventions:**
+
 - Use `v-model:open` for two-way binding
 - Close on Escape key (built-in)
 - Provide close button within modal content
@@ -169,6 +148,7 @@ Use `UCommandPalette` for search interfaces with grouped results.
 ```
 
 **Conventions:**
+
 - Group results by type/category
 - Use Fuse.js options for fuzzy search configuration
 - Provide meaningful placeholders
@@ -185,17 +165,21 @@ Use `UDropdownMenu` for contextual actions.
 
 ```ts
 const menuItems = [
-  [{
-    label: 'Copy link',
-    icon: 'i-lucide-link',
-    onSelect: () => copyLink()
-  }],
-  [{
-    label: 'Open in new tab',
-    icon: 'i-lucide-external-link',
-    onSelect: () => openExternal()
-  }]
-]
+  [
+    {
+      label: "Copy link",
+      icon: "i-lucide-link",
+      onSelect: () => copyLink(),
+    },
+  ],
+  [
+    {
+      label: "Open in new tab",
+      icon: "i-lucide-external-link",
+      onSelect: () => openExternal(),
+    },
+  ],
+];
 ```
 
 ### Select Menu
@@ -204,19 +188,10 @@ Use `USelectMenu` for single or multi-select dropdowns.
 
 ```vue
 <!-- Single select -->
-<USelectMenu
-  v-model="selectedType"
-  :items="typeOptions"
-  placeholder="Select type"
-/>
+<USelectMenu v-model="selectedType" :items="typeOptions" placeholder="Select type" />
 
 <!-- Multi-select -->
-<USelectMenu
-  v-model="selectedTags"
-  :items="tagOptions"
-  multiple
-  placeholder="Filter by tags"
-/>
+<USelectMenu v-model="selectedTags" :items="tagOptions" multiple placeholder="Filter by tags" />
 ```
 
 ### Input
@@ -224,16 +199,11 @@ Use `USelectMenu` for single or multi-select dropdowns.
 Use `UInput` for text inputs.
 
 ```vue
-<UInput
-  v-model="searchTerm"
-  placeholder="Search..."
-  icon="i-lucide-search"
-  size="lg"
-  autofocus
-/>
+<UInput v-model="searchTerm" placeholder="Search..." icon="i-lucide-search" size="lg" autofocus />
 ```
 
 **Conventions:**
+
 - Use `icon` prop for leading icons
 - Use `size="lg"` for prominent inputs (search)
 - Use `autofocus` judiciously
@@ -243,7 +213,8 @@ Use `UInput` for text inputs.
 Use `UKbd` to display keyboard shortcuts.
 
 ```vue
-<UKbd>⌘</UKbd><UKbd>K</UKbd>
+<UKbd>⌘</UKbd>
+<UKbd>K</UKbd>
 ```
 
 ---
@@ -266,18 +237,18 @@ All colors use Nuxt UI CSS variables for automatic dark mode support. Never hard
 
 **Available variables:**
 
-| Variable | Usage |
-|----------|-------|
-| `--ui-text` | Primary text |
-| `--ui-text-muted` | Secondary/dimmed text |
-| `--ui-text-highlighted` | Emphasized text |
-| `--ui-text-dimmed` | Least important text |
-| `--ui-bg` | Primary background |
-| `--ui-bg-muted` | Secondary background |
-| `--ui-bg-elevated` | Elevated surfaces (cards, code blocks) |
-| `--ui-border` | Standard borders |
-| `--ui-border-accented` | Emphasized borders |
-| `--ui-primary` | Primary action color |
+| Variable                | Usage                                  |
+| ----------------------- | -------------------------------------- |
+| `--ui-text`             | Primary text                           |
+| `--ui-text-muted`       | Secondary/dimmed text                  |
+| `--ui-text-highlighted` | Emphasized text                        |
+| `--ui-text-dimmed`      | Least important text                   |
+| `--ui-bg`               | Primary background                     |
+| `--ui-bg-muted`         | Secondary background                   |
+| `--ui-bg-elevated`      | Elevated surfaces (cards, code blocks) |
+| `--ui-border`           | Standard borders                       |
+| `--ui-border-accented`  | Emphasized borders                     |
+| `--ui-primary`          | Primary action color                   |
 
 ### Common Styling Patterns
 
@@ -306,10 +277,7 @@ All colors use Nuxt UI CSS variables for automatic dark mode support. Never hard
 For rendered markdown, use Tailwind's prose classes with dark mode:
 
 ```vue
-<ContentRenderer
-  :value="content"
-  class="prose prose-neutral dark:prose-invert max-w-none"
-/>
+<ContentRenderer :value="content" class="prose prose-neutral dark:prose-invert max-w-none" />
 ```
 
 ### Transitions
@@ -341,14 +309,18 @@ Use consistent transition utilities:
 </template>
 
 <script setup lang="ts">
-import { watchDebounced } from '@vueuse/core'
+import { watchDebounced } from "@vueuse/core";
 
-const searchTerm = ref('')
-const debouncedTerm = ref('')
+const searchTerm = ref("");
+const debouncedTerm = ref("");
 
-watchDebounced(searchTerm, (value) => {
-  debouncedTerm.value = value
-}, { debounce: 300 })
+watchDebounced(
+  searchTerm,
+  (value) => {
+    debouncedTerm.value = value;
+  },
+  { debounce: 300 },
+);
 </script>
 ```
 
@@ -390,24 +362,24 @@ Use composables for complex filter state:
 ```ts
 // composables/useFilters.ts
 export function useFilters() {
-  const selectedTypes = ref<string[]>([])
-  const selectedTags = ref<string[]>([])
+  const selectedTypes = ref<string[]>([]);
+  const selectedTags = ref<string[]>([]);
 
-  const hasActiveFilters = computed(() =>
-    selectedTypes.value.length > 0 || selectedTags.value.length > 0
-  )
+  const hasActiveFilters = computed(
+    () => selectedTypes.value.length > 0 || selectedTags.value.length > 0,
+  );
 
   function clearFilters() {
-    selectedTypes.value = []
-    selectedTags.value = []
+    selectedTypes.value = [];
+    selectedTags.value = [];
   }
 
   return {
     selectedTypes,
     selectedTags,
     hasActiveFilters,
-    clearFilters
-  }
+    clearFilters,
+  };
 }
 ```
 
@@ -460,9 +432,7 @@ Standard content page structure:
     </ul>
 
     <!-- Empty state -->
-    <p v-if="!filteredItems.length" class="text-[var(--ui-text-muted)]">
-      No items found.
-    </p>
+    <p v-if="!filteredItems.length" class="text-[var(--ui-text-muted)]">No items found.</p>
   </div>
 </template>
 ```
@@ -525,8 +495,8 @@ defineShortcuts({
   meta_k: () => openSearch(),
 
   // Navigation with G prefix
-  'g-h': () => navigateTo('/'),
-  'g-b': () => navigateTo('/books'),
+  "g-h": () => navigateTo("/"),
+  "g-b": () => navigateTo("/books"),
 
   // List navigation
   j: () => selectNext(),
@@ -534,20 +504,20 @@ defineShortcuts({
   enter: () => openSelected(),
 
   // Close modals
-  escape: () => closeModal()
-})
+  escape: () => closeModal(),
+});
 ```
 
 ### Shortcut Conventions
 
-| Pattern | Usage | Example |
-|---------|-------|---------|
-| `meta_k` | Global actions | Search |
-| `g-{key}` | Go to page | `g-h` = Home |
-| `j/k` | List navigation | Move up/down |
-| `enter` | Confirm/open | Open selected |
-| `escape` | Cancel/close | Close modal |
-| `?` | Help | Show shortcuts |
+| Pattern   | Usage           | Example        |
+| --------- | --------------- | -------------- |
+| `meta_k`  | Global actions  | Search         |
+| `g-{key}` | Go to page      | `g-h` = Home   |
+| `j/k`     | List navigation | Move up/down   |
+| `enter`   | Confirm/open    | Open selected  |
+| `escape`  | Cancel/close    | Close modal    |
+| `?`       | Help            | Show shortcuts |
 
 ### Displaying Shortcuts
 
@@ -613,15 +583,11 @@ Show keyboard hints for discoverability:
 Use the `ui` prop for one-off customizations:
 
 ```vue
-<UButton
-  :ui="{ base: 'font-mono' }"
->
+<UButton :ui="{ base: 'font-mono' }">
   Code
 </UButton>
 
-<UAvatar
-  :ui="{ fallback: 'text-xs font-bold' }"
-/>
+<UAvatar :ui="{ fallback: 'text-xs font-bold' }" />
 ```
 
 For global customizations, use `app.config.ts`:
@@ -631,16 +597,16 @@ export default defineAppConfig({
   ui: {
     button: {
       defaultVariants: {
-        color: 'neutral'
-      }
+        color: "neutral",
+      },
     },
     contentToc: {
       slots: {
-        indicator: 'custom-indicator-class'
-      }
-    }
-  }
-})
+        indicator: "custom-indicator-class",
+      },
+    },
+  },
+});
 ```
 
 ---

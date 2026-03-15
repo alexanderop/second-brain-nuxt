@@ -25,34 +25,38 @@ This project includes skills for AI coding assistants (Claude Code, Cursor, Wind
 
 ### Available Skills
 
-| Skill | Trigger | What it does |
-|-------|---------|--------------|
-| **adding-notes** | "add a note", "save this article" | Create new notes from URLs with proper frontmatter |
-| **linking-notes** | "find connections", "what should I link to" | Discover wiki-link opportunities |
-| **reviewing-notes** | "review my notes", "find broken links" | Audit quality (missing summaries, orphans, broken links) |
-| **managing-tags** | "clean up tags", "merge tags" | Consolidate similar tags, fix naming |
-| **exploring-graph** | "analyze connections", "find orphans" | Graph analytics and insights |
-| **summarizing-topic** | "what do I know about X" | Synthesize knowledge across notes |
+| Skill                 | Trigger                                     | What it does                                             |
+| --------------------- | ------------------------------------------- | -------------------------------------------------------- |
+| **adding-notes**      | "add a note", "save this article"           | Create new notes from URLs with proper frontmatter       |
+| **linking-notes**     | "find connections", "what should I link to" | Discover wiki-link opportunities                         |
+| **reviewing-notes**   | "review my notes", "find broken links"      | Audit quality (missing summaries, orphans, broken links) |
+| **managing-tags**     | "clean up tags", "merge tags"               | Consolidate similar tags, fix naming                     |
+| **exploring-graph**   | "analyze connections", "find orphans"       | Graph analytics and insights                             |
+| **summarizing-topic** | "what do I know about X"                    | Synthesize knowledge across notes                        |
 
 ### Example Workflows
 
 **Adding Content:**
+
 ```text
 "Add this article to my notes: https://example.com/interesting-article"
 ```
 
 **Building Connections:**
+
 ```text
 "Find connections for my note on Vue composables"
 ```
 
 **Maintenance:**
+
 ```text
 "Review my knowledge base for quality issues"
 "Clean up my tags"
 ```
 
 **Learning:**
+
 ```text
 "What do I know about testing?"
 "Analyze my knowledge graph"

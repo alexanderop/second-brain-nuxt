@@ -45,7 +45,7 @@ Think like a C/C++ engineer. Context windows are literally arrays:
 - The LLM is essentially a sliding window over this array
 - **The less that window needs to slide, the better**
 
-There's no server-side memory. The array *is* the memory. So you want to allocate less and be deliberate about what goes in.
+There's no server-side memory. The array _is_ the memory. So you want to allocate less and be deliberate about what goes in.
 
 ## Setting Up Ralph
 
@@ -95,20 +95,20 @@ You are setting up a new project. Your job is to create the foundation for futur
 Use this JSON structure - it's less likely to be inappropriately modified than Markdown:
 
 {
-  "features": [
-    {
-      "id": 1,
-      "category": "functional",
-      "description": "User can open a new chat and see a welcome state",
-      "steps": [
-        "Navigate to main interface",
-        "Click the 'New Chat' button",
-        "Verify a new conversation is created",
-        "Check that chat area shows welcome state"
-      ],
-      "passes": false
-    }
-  ]
+"features": [
+{
+"id": 1,
+"category": "functional",
+"description": "User can open a new chat and see a welcome state",
+"steps": [
+"Navigate to main interface",
+"Click the 'New Chat' button",
+"Verify a new conversation is created",
+"Check that chat area shows welcome state"
+],
+"passes": false
+}
+]
 }
 
 CRITICAL: Create comprehensive features. For a web app, this might be 50-200+ features.
@@ -289,6 +289,7 @@ Run it with:
 The most important principle: **set only one goal and objective in that context window**.
 
 Why? As the context window fills up, the model gets "dumber." If you ask it to do multiple tasks:
+
 - Some results will be poor quality
 - The important finalizing work (running tests, committing) happens in the "dumb zone"
 - Previous completed goals still take up context space
@@ -342,6 +343,7 @@ Anthropic found a critical failure mode: Claude tends to mark features as comple
 ### End-to-End Testing with Browser Automation
 
 For web apps, connect Claude to browser automation tools. The Puppeteer MCP server lets Claude:
+
 - Navigate to pages
 - Click buttons and fill forms
 - Take screenshots to verify UI state
@@ -351,6 +353,7 @@ For web apps, connect Claude to browser automation tools. The Puppeteer MCP serv
 ## In your prompt, add:
 
 Before marking any feature as complete:
+
 1. Run the development server
 2. Use browser automation to test the feature as a user would
 3. Take a screenshot to verify the UI looks correct
@@ -364,6 +367,7 @@ This dramatically improves performance because Claude can identify bugs that are
 Most test runners output too many tokens. You only want the failing test case, not pages of passing tests.
 
 Create a wrapper script that:
+
 - Streams output normally
 - On failure, shows only the relevant error
 - Avoids `tail -100` (misses errors at the top)
@@ -374,6 +378,7 @@ Create a wrapper script that:
 Running `--dangerously-skip-permissions` is dangerous. Understand the risks:
 
 **The Lethal Trifecta:**
+
 1. Access to execute code/tools
 2. Access to the network
 3. Access to private data
@@ -385,11 +390,12 @@ If all three are present, you're at risk. Mitigation strategies:
 - Use a dedicated GCP/AWS VM
 - No public IP if possible
 - Only credentials it needs (deploy keys, API keys)
-- Think: "It's not *if* it gets compromised, it's *when*. What's the blast radius?"
+- Think: "It's not _if_ it gets compromised, it's _when_. What's the blast radius?"
 
 ### Never Run From Your Laptop
 
 Your laptop has:
+
 - Browser cookies (GitHub, Slack, etc.)
 - SSH keys
 - Cryptocurrency wallets
@@ -400,6 +406,7 @@ A compromised agent could exfiltrate all of this.
 ### Minimal Permissions
 
 The VM should only have:
+
 - Your Anthropic API key
 - Deploy keys for the specific repos it needs
 - Nothing else
@@ -409,12 +416,14 @@ The VM should only have:
 Anthropic has released an official Ralph plugin for Claude Code. The key difference:
 
 ### Pure Ralph (Bash Loop)
+
 - Fresh context window each iteration
 - No auto-compaction
 - Deterministic context allocation
 - You control exactly what goes in
 
 ### Plugin-Based Ralph
+
 - May use auto-compaction when context gets full
 - Compaction is lossy (can remove specs, objectives)
 - Context extends continuously rather than resetting
@@ -427,6 +436,7 @@ The recommendation: start with pure Ralph to understand the fundamentals, then e
 ### Human On The Loop (Not In The Loop)
 
 You're not injecting yourself into every decision. Instead:
+
 - Architect the loop upfront
 - Watch it like a fireplace
 - Notice patterns and tendencies
@@ -489,15 +499,15 @@ If your rules file is 5,000 tokens, that's 5,000 tokens of your budget on every 
 
 ## Common Failure Modes and Solutions
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| Agent declares victory too early | No clear feature list, or list is too vague | Use comprehensive `feature-list.json` with 50-200+ specific features |
-| Agent tries to one-shot everything | No incremental constraints | Prompt to work on ONE feature per session |
-| Leaves environment with bugs | No verification step at session start | Run `init.sh` and basic tests before starting new work |
-| Marks features complete prematurely | No end-to-end testing | Require browser automation/screenshot verification |
-| Spends time figuring out setup | No initialization script | Initializer agent creates `init.sh` |
-| Progress lost between sessions | No persistent memory | Use `claude-progress.txt` + git commits |
-| Inappropriately modifies task list | Using Markdown for features | Use JSON (harder to accidentally corrupt) |
+| Problem                             | Cause                                       | Solution                                                             |
+| ----------------------------------- | ------------------------------------------- | -------------------------------------------------------------------- |
+| Agent declares victory too early    | No clear feature list, or list is too vague | Use comprehensive `feature-list.json` with 50-200+ specific features |
+| Agent tries to one-shot everything  | No incremental constraints                  | Prompt to work on ONE feature per session                            |
+| Leaves environment with bugs        | No verification step at session start       | Run `init.sh` and basic tests before starting new work               |
+| Marks features complete prematurely | No end-to-end testing                       | Require browser automation/screenshot verification                   |
+| Spends time figuring out setup      | No initialization script                    | Initializer agent creates `init.sh`                                  |
+| Progress lost between sessions      | No persistent memory                        | Use `claude-progress.txt` + git commits                              |
+| Inappropriately modifies task list  | Using Markdown for features                 | Use JSON (harder to accidentally corrupt)                            |
 
 ## Troubleshooting
 
@@ -512,6 +522,7 @@ Solution: Remove any mention of "promise" or "complete" from places the LLM migh
 Problem: Keeps trying the same failing approach.
 
 Solutions:
+
 1. Check if the task is too large (break it down)
 2. Check if tests are flaky
 3. Add more specific guidance in specs
@@ -522,6 +533,7 @@ Solutions:
 Problem: Next session starts with bugs from previous session.
 
 Solution: Add verification at the START of each session. Prompt the agent to:
+
 1. Run `./init.sh`
 2. Do a basic end-to-end test
 3. Fix any broken state BEFORE starting new work

@@ -30,6 +30,7 @@ date: 2026-01-13
 Every coding agent—Cursor, Windsurf, Claude Code, OpenCode—is roughly 300 lines of code run in a loop. The models do the work, not the harness.
 
 ::mermaid
+
 <pre>
 flowchart LR
     U[User Input] --> S[Send to Server]
@@ -39,9 +40,11 @@ flowchart LR
     A --> S
     R -->|Text| O[Output to User]
 </pre>
+
 ::
 
 The fundamental tools that compose a coding agent:
+
 1. **Read** - Read files from the local filesystem
 2. **List** - Show what files exist in directories
 3. **Bash** - Execute shell commands
@@ -52,6 +55,7 @@ With these four primitives in a loop, you have a full coding agent.
 ## The New Interview Bar
 
 Huntley now preferences candidates who can:
+
 - Draw the inferencing loop on a whiteboard
 - Explain that the server has no memory—it's an array continually appended to
 - Define what a tool call is and how it triggers local execution

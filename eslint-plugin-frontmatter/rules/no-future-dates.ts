@@ -1,22 +1,22 @@
-import type { Rule } from 'eslint'
-import { parseFrontmatter } from '../utils/parse-frontmatter.ts'
-import type { YamlNode } from '../utils/types.ts'
+import type { Rule } from "eslint";
+import { parseFrontmatter } from "../utils/parse-frontmatter.ts";
+import type { YamlNode } from "../utils/types.ts";
 
-const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 /** Format a Date as YYYY-MM-DD string for comparison. */
 function formatDateAsIso(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: 'problem',
+    type: "problem",
     docs: {
-      description: 'Disallow future dates in frontmatter',
+      description: "Disallow future dates in frontmatter",
       recommended: true,
     },
     messages: {
@@ -29,42 +29,42 @@ const rule: Rule.RuleModule = {
   create(context) {
     return {
       yaml(node: YamlNode) {
-        const frontmatter = parseFrontmatter(node)
+        const frontmatter = parseFrontmatter(node);
         if (!frontmatter?.date) {
-          return
+          return;
         }
 
-        const dateValue = frontmatter.date
-        if (typeof dateValue !== 'string') {
-          return
+        const dateValue = frontmatter.date;
+        if (typeof dateValue !== "string") {
+          return;
         }
 
         if (!DATE_FORMAT_REGEX.test(dateValue)) {
           context.report({
             loc: node.position,
-            messageId: 'invalidDate',
+            messageId: "invalidDate",
             data: { date: dateValue },
-          })
-          return
+          });
+          return;
         }
 
         // Compare as strings to avoid timezone issues
         // Both are YYYY-MM-DD format, so string comparison works correctly
-        const todayStr = formatDateAsIso(new Date())
+        const todayStr = formatDateAsIso(new Date());
 
         if (dateValue > todayStr) {
           context.report({
             loc: node.position,
-            messageId: 'futureDate',
+            messageId: "futureDate",
             data: {
               date: dateValue,
               today: todayStr,
             },
-          })
+          });
         }
       },
-    }
+    };
   },
-}
+};
 
-export default rule
+export default rule;

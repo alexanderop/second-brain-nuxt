@@ -44,6 +44,7 @@ echo "pnpm typecheck && pnpm test" > .husky/pre-commit
 ## Feedback Loop Diagram
 
 ::mermaid
+
 <pre>
 flowchart LR
     Code[AI Writes Code] --> TS{TypeScript Check}
@@ -56,6 +57,7 @@ flowchart LR
     Husky -->|Blocked| Code
     Husky -->|Pass| Commit[Commit]
 </pre>
+
 ::
 
 ## Connections

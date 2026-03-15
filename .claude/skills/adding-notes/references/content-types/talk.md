@@ -5,6 +5,7 @@ Presentations at conferences, meetups, or keynotes.
 ## Detection
 
 YouTube video is a **talk** if:
+
 - Channel is a known talk channel (TED, Google, JSConf, etc.)
 - Title contains: "keynote", "talk", conference name + year
 - Single speaker presenting to audience
@@ -13,36 +14,40 @@ YouTube video is a **talk** if:
 
 ### Known Talk Channels
 
-| Channel Pattern | Conference |
-|-----------------|------------|
-| TED, TEDx Talks | TED |
-| Google, Google Developers | Google I/O, Chrome Dev Summit |
-| Apple | WWDC |
-| JSConf, ReactConf, VueConf | JS conferences |
-| Strange Loop | Strange Loop |
-| GOTO Conferences | GOTO |
-| InfoQ | QCon |
-| NDC Conferences | NDC |
+| Channel Pattern            | Conference                    |
+| -------------------------- | ----------------------------- |
+| TED, TEDx Talks            | TED                           |
+| Google, Google Developers  | Google I/O, Chrome Dev Summit |
+| Apple                      | WWDC                          |
+| JSConf, ReactConf, VueConf | JS conferences                |
+| Strange Loop               | Strange Loop                  |
+| GOTO Conferences           | GOTO                          |
+| InfoQ                      | QCon                          |
+| NDC Conferences            | NDC                           |
 
 ## Metadata Collection
 
 **Agent A - Metadata:**
+
 ```bash
 .claude/skills/adding-notes/scripts/get-youtube-metadata.sh 'URL'
 ```
 
 **Agent B - Transcript:**
+
 ```bash
 python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py 'URL'
 ```
 
 **Agent C - Speaker Check:**
+
 ```bash
 .claude/skills/adding-notes/scripts/check-author-exists.sh 'Speaker Name'
 ```
 
 **Agent D - Conference Detection:**
 Extract from title/description/channel:
+
 - Conference name
 - Year (e.g., "Strange Loop 2023", "WWDC 2024")
 
@@ -66,10 +71,10 @@ date: 2026-01-01
 
 ## Talk-specific Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `conference` | No | Conference name + year |
-| `authors` | Yes | Speaker slug |
+| Field        | Required | Description            |
+| ------------ | -------- | ---------------------- |
+| `conference` | No       | Conference name + year |
+| `authors`    | Yes      | Speaker slug           |
 
 ## Body Template
 
@@ -124,6 +129,7 @@ date: 2026-01-01
 ### Panel Discussions
 
 If truly conversational with multiple speakers:
+
 - Consider using `type: podcast` instead
 - See `content-types/podcast.md`
 
@@ -140,6 +146,7 @@ If truly conversational with multiple speakers:
 **Priority: HIGH** — Talks frequently present visual models on slides.
 
 **Look for these triggers:**
+
 - Speaker draws on whiteboard or shows diagram slide
 - References to "let me show you how this works"
 - Named frameworks or methodologies
@@ -148,6 +155,7 @@ If truly conversational with multiple speakers:
 - Comparisons of approaches (before/after, old/new way)
 
 **Mermaid types commonly used:**
+
 - `graph TD` — Hierarchies, organizational structures
 - `flowchart LR` — Processes, workflows, pipelines
 - `graph LR` with subgraphs — Comparisons, before/after

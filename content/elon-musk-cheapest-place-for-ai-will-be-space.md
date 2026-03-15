@@ -25,7 +25,7 @@ date: 2026-02-08
 
 - **Without breakthrough innovations, China will dominate.** China already refines roughly twice the world's ore output and will exceed 3x US electricity generation by 2026. Humanoid robotics and space infrastructure are the only asymmetric advantages available to the US.
 
-- **AI alignment works through mission design, not control mechanisms.** xAI's mission — "understand the universe" — implies propagating intelligence and consciousness forward, creating a natural incentive to preserve humanity. Making AI lie or accept contradictory axioms creates the real risk, referencing HAL from *2001* as the cautionary tale.
+- **AI alignment works through mission design, not control mechanisms.** xAI's mission — "understand the universe" — implies propagating intelligence and consciousness forward, creating a natural incentive to preserve humanity. Making AI lie or accept contradictory axioms creates the real risk, referencing HAL from _2001_ as the cautionary tale.
 
 - **Attack the limiting factor with maniacal urgency.** Musk's operational philosophy: identify the single constraint preventing progress and focus all energy there. The bottleneck shifts predictably — power now, chip fabrication in 3–4 years, then orbital launch capacity.
 
@@ -46,6 +46,7 @@ date: 2026-02-08
 The interview reveals a clear sequence of constraints for AI scaling:
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[2025–2026<br/>Power generation] --> B[2027–2029<br/>Chip fabrication]
@@ -54,6 +55,7 @@ flowchart LR
     B ---|"Exponential chip demand"| E[TeraFab<br/>Millions of wafers/month]
     C ---|"10,000+ launches/year"| F[Starship scaling<br/>Space solar arrays]
 </pre>
+
 ::
 
 Each phase requires identifying and removing the single biggest constraint before the next one becomes relevant. Musk calls this attacking the limiting factor with "maniacal urgency" rather than spreading effort across multiple areas.

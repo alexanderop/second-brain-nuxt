@@ -23,18 +23,18 @@ date: 2026-02-26
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introductions — framing the local-first discourse as a pendulum swing |
-| 04:00 | What "local-first" actually means vs. what people imply by it |
-| 08:00 | Source of truth, distributed state, forked versions |
-| 14:00 | Dropbox conflict resolution — duplicate copies, file moves, asymmetric deletes |
+| Time  | Topic                                                                               |
+| ----- | ----------------------------------------------------------------------------------- |
+| 00:00 | Introductions — framing the local-first discourse as a pendulum swing               |
+| 04:00 | What "local-first" actually means vs. what people imply by it                       |
+| 08:00 | Source of truth, distributed state, forked versions                                 |
+| 14:00 | Dropbox conflict resolution — duplicate copies, file moves, asymmetric deletes      |
 | 20:00 | Serializability and linearizability explained — why offline writes break guarantees |
-| 27:00 | User intent as product design — reconciliation as a human problem |
-| 33:00 | Caching vs. sync — optimistic updates and commit points |
-| 39:00 | LAN sync at Dropbox — commit points and transactions |
-| 45:00 | Firebase as cautionary tale — Arc security incident — RPC vs. direct DB access |
-| 50:00 | Closing — sync vs. RPC is a false choice |
+| 27:00 | User intent as product design — reconciliation as a human problem                   |
+| 33:00 | Caching vs. sync — optimistic updates and commit points                             |
+| 39:00 | LAN sync at Dropbox — commit points and transactions                                |
+| 45:00 | Firebase as cautionary tale — Arc security incident — RPC vs. direct DB access      |
+| 50:00 | Closing — sync vs. RPC is a false choice                                            |
 
 ## Key Arguments
 
@@ -42,7 +42,7 @@ date: 2026-02-26
 
 Almost nobody truly believes the client should be the authoritative source of truth — that would mean losing your data when you lose your device. What people actually mean: apps should feel responsive under latency or when offline. The movement is better understood as advocacy for better offline UX, not a philosophical rejection of servers.
 
-This maps directly to what I've been seeing in the local-first community. The label creates confusion between the *product goal* (responsive, offline-capable) and the *architecture* (client as source of truth, CRDTs everywhere). [[the-local-first-litmus-test]] tries to untangle exactly this distinction.
+This maps directly to what I've been seeing in the local-first community. The label creates confusion between the _product goal_ (responsive, offline-capable) and the _architecture_ (client as source of truth, CRDTs everywhere). [[the-local-first-litmus-test]] tries to untangle exactly this distinction.
 
 ### Offline Writes Break Serializability — Mathematically
 
@@ -74,6 +74,7 @@ This echoes [[crdts-solved-conflicts-not-sync]] — CRDTs handle the merge math 
 Firebase and Arc's security incident are offered as evidence. Exposing your database directly to clients — even with row-level security — is the wrong abstraction. Cowling's analogy: you don't talk to a library's internal variables, you talk to its API.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph problem[The Local-First Tension]
@@ -103,13 +104,14 @@ Business Logic`"]
     style problem fill:none,stroke:#666
     style recommended fill:none,stroke:#666
 </pre>
+
 ::
 
 ### Sync and RPC Are Complementary, Not Competing
 
-The false dichotomy of "sync engine vs. traditional server" misses the point. The right model: server-side functions handle business logic with access controls, results sync to clients via subscriptions, local cache gives instant UI. Most writes commit to the server immediately. Offline capability gets layered on *intentionally*, for specific use cases, with explicit commit points.
+The false dichotomy of "sync engine vs. traditional server" misses the point. The right model: server-side functions handle business logic with access controls, results sync to clients via subscriptions, local cache gives instant UI. Most writes commit to the server immediately. Offline capability gets layered on _intentionally_, for specific use cases, with explicit commit points.
 
-The "commit point" concept is the key mental model here. It's the precise moment an operation transitions from "not happened" to "happened." Dropbox's LAN sync optimization illustrates this beautifully — they'd send file chunks peer-to-peer over the local network *before* the server commit completed, making it feel impossibly fast while keeping the server as the real source of truth.
+The "commit point" concept is the key mental model here. It's the precise moment an operation transitions from "not happened" to "happened." Dropbox's LAN sync optimization illustrates this beautifully — they'd send file chunks peer-to-peer over the local network _before_ the server commit completed, making it feel impossibly fast while keeping the server as the real source of truth.
 
 ## Notable Quotes
 

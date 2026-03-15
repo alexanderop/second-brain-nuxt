@@ -37,6 +37,7 @@ Four new tools expose this system: `TaskCreate`, `TaskGet`, `TaskUpdate`, `TaskL
 ## Task System Architecture
 
 ::mermaid
+
 <pre>
 graph TD
     Main[Main Session] --> TaskList[(Task List<br/>.claude/tasks/)]
@@ -49,6 +50,7 @@ graph TD
     Wave1 --> Wave2[Wave 2: Dependent Tasks]
     Wave2 --> Wave3[Wave 3: Final Tasks]
 </pre>
+
 ::
 
 ## Practical Benefits

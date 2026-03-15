@@ -90,36 +90,33 @@ This agent operates within a Nuxt 4 application using:
 ```typescript
 // nuxt.config.ts - Configuration pattern
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   future: {
-    compatibilityVersion: 4
+    compatibilityVersion: 4,
   },
-  modules: [
-    '@nuxt/content',
-    '@nuxt/ui'
-  ],
+  modules: ["@nuxt/content", "@nuxt/ui"],
   runtimeConfig: {
-    apiSecret: '', // Server-only
+    apiSecret: "", // Server-only
     public: {
-      apiBase: '' // Client-accessible
-    }
-  }
-})
+      apiBase: "", // Client-accessible
+    },
+  },
+});
 ```
 
 ```vue
 <!-- Data fetching pattern: app/pages/posts/[id].vue -->
 <script setup lang="ts">
-const route = useRoute()
+const route = useRoute();
 
-const { data: post, error } = await useFetch(`/api/posts/${route.params.id}`)
+const { data: post, error } = await useFetch(`/api/posts/${route.params.id}`);
 
 if (error.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Post not found'
-  })
+    statusMessage: "Post not found",
+  });
 }
 </script>
 
@@ -134,50 +131,50 @@ if (error.value) {
 ```typescript
 // Server route pattern: server/api/posts/[id].get.ts
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  const id = getRouterParam(event, "id");
 
   // Fetch from database or external API
-  const post = await fetchPost(id)
+  const post = await fetchPost(id);
 
   if (!post) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Post not found'
-    })
+      statusMessage: "Post not found",
+    });
   }
 
-  return post
-})
+  return post;
+});
 ```
 
 ```typescript
 // Middleware pattern: app/middleware/auth.ts
 export default defineNuxtRouteMiddleware((to, from) => {
-  const user = useUser()
+  const user = useUser();
 
-  if (!user.value && to.path !== '/login') {
-    return navigateTo('/login')
+  if (!user.value && to.path !== "/login") {
+    return navigateTo("/login");
   }
-})
+});
 ```
 
 ```vue
 <!-- SEO pattern -->
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Page Title',
-  description: 'Page description',
-  ogTitle: 'Page Title',
-  ogDescription: 'Page description',
-  ogImage: '/og-image.png'
-})
+  title: "Page Title",
+  description: "Page description",
+  ogTitle: "Page Title",
+  ogDescription: "Page description",
+  ogImage: "/og-image.png",
+});
 </script>
 ```
 
 ```typescript
 // Composable pattern: app/composables/useUser.ts
 export function useUser() {
-  return useState<User | null>('user', () => null)
+  return useState<User | null>("user", () => null);
 }
 ```
 

@@ -26,6 +26,7 @@ node .claude/skills/weekly-newsletter/scripts/collect-weekly-notes.mjs
 ```
 
 The script outputs JSON with:
+
 - `week` - ISO week (e.g., "2026-W05")
 - `weekStart` - Monday date
 - `weekEnd` - Sunday date
@@ -33,6 +34,7 @@ The script outputs JSON with:
 - `tweets` - Array of tweets (if any)
 
 For a specific week:
+
 ```bash
 node .claude/skills/weekly-newsletter/scripts/collect-weekly-notes.mjs --week 2026-W04
 ```
@@ -43,24 +45,24 @@ node .claude/skills/weekly-newsletter/scripts/collect-weekly-notes.mjs --week 20
 
 Organize notes from the JSON output into sections based on their `type` field:
 
-| Type | Section Header |
-|------|----------------|
-| book | Books |
-| article | Articles |
-| podcast | Podcasts |
-| youtube | Videos |
-| talk | Talks |
-| github | GitHub Repos |
-| reddit | Reddit Threads |
-| tweet | Tweets |
+| Type       | Section Header    |
+| ---------- | ----------------- |
+| book       | Books             |
+| article    | Articles          |
+| podcast    | Podcasts          |
+| youtube    | Videos            |
+| talk       | Talks             |
+| github     | GitHub Repos      |
+| reddit     | Reddit Threads    |
+| tweet      | Tweets            |
 | newsletter | Newsletter Issues |
-| course | Courses |
-| movie | Movies |
-| tv | TV Shows |
-| manga | Manga |
-| note | Notes |
-| evergreen | Evergreens |
-| quote | Quotes |
+| course     | Courses           |
+| movie      | Movies            |
+| tv         | TV Shows          |
+| manga      | Manga             |
+| note       | Notes             |
+| evergreen  | Evergreens        |
+| quote      | Quotes            |
 
 Only include sections that have content.
 
@@ -73,13 +75,13 @@ Only include sections that have content.
 ```markdown
 ---
 title: "Weekly Digest: {Week Start} - {Week End}"
-date: {Today YYYY-MM-DD}
-week: {YYYY-Www}
+date: { Today YYYY-MM-DD }
+week: { YYYY-Www }
 ---
 
 # Weekly Digest
 
-*Resources added {Week Start} - {Week End}*
+_Resources added {Week Start} - {Week End}_
 
 ## Summary
 
@@ -154,6 +156,7 @@ Path: `content/newsletter-drafts/{YYYY-Www}.md`
 ### 5.3 Confirmation
 
 Display:
+
 - File path saved
 - Total notes included
 - Sections generated
@@ -162,18 +165,19 @@ Display:
 
 ## Edge Cases
 
-| Situation | Handling |
-|-----------|----------|
-| No notes added this week | Inform user, offer to check previous week |
-| Week already has newsletter | Offer to overwrite or append |
-| Note missing summary | Use "[No summary]" |
-| Mixed public/private notes | Script excludes private by default |
+| Situation                   | Handling                                  |
+| --------------------------- | ----------------------------------------- |
+| No notes added this week    | Inform user, offer to check previous week |
+| Week already has newsletter | Offer to overwrite or append              |
+| Note missing summary        | Use "[No summary]"                        |
+| Mixed public/private notes  | Script excludes private by default        |
 
 ---
 
 ## Quality Checklist
 
 Before saving:
+
 - [ ] Filename matches `YYYY-Www.md` format
 - [ ] Summaries are concise (1-2 sentences)
 - [ ] Wiki-links use `[[slug|title]]` format

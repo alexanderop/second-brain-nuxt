@@ -13,12 +13,12 @@ Auto-created when adding an article to a new newsletter.
 name: "Newsletter Name"
 slug: "newsletter-slug"
 description: "Tagline or about text"
-logo: "https://..."                  # Square-ish logo image URL
-website: "https://..."               # Newsletter homepage
+logo: "https://..." # Square-ish logo image URL
+website: "https://..." # Newsletter homepage
 authors:
   - author-slug
-platform: substack                   # Optional: substack, beehiiv, ghost, convertkit, buttondown, revue, mailchimp, other
-topics:                              # Optional: main topics covered
+platform: substack # Optional: substack, beehiiv, ghost, convertkit, buttondown, revue, mailchimp, other
+topics: # Optional: main topics covered
   - topic-1
   - topic-2
 ---
@@ -37,17 +37,18 @@ topics:                              # Optional: main topics covered
 
 ## Platform Detection
 
-| Platform | Signals |
-|----------|---------|
-| Substack | Domain contains `substack.com`, meta tags with "substack" |
-| beehiiv | Domain contains `beehiiv.com`, beehiiv meta tags |
-| Ghost | `/ghost/` in page source, Ghost meta tags |
-| ConvertKit | `convertkit.com` domain, ConvertKit branding |
-| Buttondown | `buttondown.email` domain |
+| Platform   | Signals                                                   |
+| ---------- | --------------------------------------------------------- |
+| Substack   | Domain contains `substack.com`, meta tags with "substack" |
+| beehiiv    | Domain contains `beehiiv.com`, beehiiv meta tags          |
+| Ghost      | `/ghost/` in page source, Ghost meta tags                 |
+| ConvertKit | `convertkit.com` domain, ConvertKit branding              |
+| Buttondown | `buttondown.email` domain                                 |
 
 ## Quality Checklist
 
 Before saving profile:
+
 - [ ] Name matches publication branding
 - [ ] Logo is square-ish, not article thumbnail
 - [ ] At least one author linked

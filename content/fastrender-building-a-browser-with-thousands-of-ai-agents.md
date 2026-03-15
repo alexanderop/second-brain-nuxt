@@ -29,6 +29,7 @@ Wilson Lin, a product engineer at Cursor, built FastRender—a functioning brows
 FastRender uses a hierarchical tree of planners and workers:
 
 ::mermaid
+
 <pre>
 graph TD
     Root[Root Planner<br/>Full Browser Scope] --> CSS[CSS Planner]
@@ -41,6 +42,7 @@ graph TD
     Layout --> W5[Worker: Flexbox]
     Layout --> W6[Worker: Table]
 </pre>
+
 ::
 
 - **Planners** own a scope and can delegate to sub-planners or workers

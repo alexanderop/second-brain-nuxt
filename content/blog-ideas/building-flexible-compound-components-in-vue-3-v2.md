@@ -18,7 +18,7 @@ updated: 2026-01-05
 
 # The 30-Modal Problem: How Compound Components Saved My Sanity
 
-*Design Systems, Vue 3, API Design — 8 min read*
+_Design Systems, Vue 3, API Design — 8 min read_
 
 ## The Problem That Started It All
 
@@ -87,13 +87,13 @@ Vue's `provide`/`inject` lets a parent component share state with any descendant
 ```ts
 // Parent provides
 provide(ModalContextKey, {
-  close: () => emit('close'),
-  titleId: 'modal-title-123'
-})
+  close: () => emit("close"),
+  titleId: "modal-title-123",
+});
 
 // Any descendant injects
-const context = inject(ModalContextKey)
-context?.close() // Works from anywhere inside the Modal
+const context = inject(ModalContextKey);
+context?.close(); // Works from anywhere inside the Modal
 ```
 
 This is how `ModalClose` can close the modal whether it's in the header, footer, or nested three levels deep.
@@ -103,17 +103,17 @@ This is how `ModalClose` can close the modal whether it's in the header, footer,
 When you want overridable styling, you need intelligent class merging. The `cn()` function (from [@sglara/cn](https://github.com/SGLara/cn)) combines `clsx` with `tailwind-merge`:
 
 ```ts
-import { cn } from '@sglara/cn'
+import { cn } from "@sglara/cn";
 
 // Later classes win on Tailwind conflicts
-cn('p-4', 'p-6')           // → "p-6"
-cn('gap-3', 'gap-6')       // → "gap-6"
+cn("p-4", "p-6"); // → "p-6"
+cn("gap-3", "gap-6"); // → "gap-6"
 
 // Non-conflicting classes are preserved
-cn('p-4 border-t', 'bg-gray-50') // → "p-4 border-t bg-gray-50"
+cn("p-4 border-t", "bg-gray-50"); // → "p-4 border-t bg-gray-50"
 
 // Conditional classes work too
-cn('flex', { 'opacity-50': isDisabled })
+cn("flex", { "opacity-50": isDisabled });
 ```
 
 Every compound component follows this pattern:
@@ -135,8 +135,8 @@ Here's roughly what our Modal looked like:
 ```vue
 <!-- Modal.vue -->
 <script setup lang="ts">
-defineProps<{ open: boolean; title: string }>()
-defineEmits<{ close: [] }>()
+defineProps<{ open: boolean; title: string }>();
+defineEmits<{ close: [] }>();
 </script>
 
 <template>
@@ -192,16 +192,16 @@ First, define what state the components share:
 
 ```ts
 // modal/context.ts
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from "vue";
 
 export interface ModalContext {
-  open: Ref<boolean>
-  close: () => void
-  titleId: string
-  descriptionId: string
+  open: Ref<boolean>;
+  close: () => void;
+  titleId: string;
+  descriptionId: string;
 }
 
-export const ModalContextKey: InjectionKey<ModalContext> = Symbol('Modal')
+export const ModalContextKey: InjectionKey<ModalContext> = Symbol("Modal");
 ```
 
 We include `titleId` and `descriptionId` for accessibility—more on that later.
@@ -213,21 +213,21 @@ The root sets up context and handles the portal:
 ```vue
 <!-- modal/ModalRoot.vue -->
 <script setup lang="ts">
-import { provide, toRef, useId } from 'vue'
-import { ModalContextKey } from './context'
+import { provide, toRef, useId } from "vue";
+import { ModalContextKey } from "./context";
 
-const props = defineProps<{ open: boolean }>()
-const emit = defineEmits<{ close: [] }>()
+const props = defineProps<{ open: boolean }>();
+const emit = defineEmits<{ close: [] }>();
 
-const titleId = useId()
-const descriptionId = useId()
+const titleId = useId();
+const descriptionId = useId();
 
 provide(ModalContextKey, {
-  open: toRef(props, 'open'),
-  close: () => emit('close'),
+  open: toRef(props, "open"),
+  close: () => emit("close"),
   titleId,
-  descriptionId
-})
+  descriptionId,
+});
 </script>
 
 <template>
@@ -244,12 +244,12 @@ Clicking the backdrop closes the modal:
 ```vue
 <!-- modal/ModalOverlay.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
-defineProps<{ class?: string }>()
-const context = inject(ModalContextKey)
+defineProps<{ class?: string }>();
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -277,27 +277,27 @@ This is where accessibility matters most:
 ```vue
 <!-- modal/ModalContent.vue -->
 <script setup lang="ts">
-import { inject, ref, onMounted, onUnmounted } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { inject, ref, onMounted, onUnmounted } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
-defineProps<{ class?: string }>()
-const context = inject(ModalContextKey)
-const contentRef = ref<HTMLElement>()
+defineProps<{ class?: string }>();
+const context = inject(ModalContextKey);
+const contentRef = ref<HTMLElement>();
 
 // Close on Escape key
 function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') context?.close()
+  if (e.key === "Escape") context?.close();
 }
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeydown)
-  contentRef.value?.focus()
-})
+  document.addEventListener("keydown", handleKeydown);
+  contentRef.value?.focus();
+});
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
-})
+  document.removeEventListener("keydown", handleKeydown);
+});
 </script>
 
 <template>
@@ -317,12 +317,14 @@ onUnmounted(() => {
       :aria-labelledby="context?.titleId"
       :aria-describedby="context?.descriptionId"
       tabindex="-1"
-      :class="cn(
-        'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
-        'w-full max-w-md bg-white rounded-lg shadow-xl',
-        'focus:outline-none',
-        $props.class
-      )"
+      :class="
+        cn(
+          'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
+          'w-full max-w-md bg-white rounded-lg shadow-xl',
+          'focus:outline-none',
+          $props.class,
+        )
+      "
       @click.stop
     >
       <slot />
@@ -332,6 +334,7 @@ onUnmounted(() => {
 ```
 
 **Key accessibility features:**
+
 - `role="dialog"` + `aria-modal="true"` — Screen readers announce it as a modal
 - `aria-labelledby` — Links to the title for context
 - `tabindex="-1"` — Makes it focusable for keyboard users
@@ -344,8 +347,8 @@ These follow the same simple pattern—defaults + override slot:
 ```vue
 <!-- modal/ModalHeader.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
-defineProps<{ class?: string }>()
+import { cn } from "@sglara/cn";
+defineProps<{ class?: string }>();
 </script>
 
 <template>
@@ -358,11 +361,11 @@ defineProps<{ class?: string }>()
 ```vue
 <!-- modal/ModalTitle.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
-defineProps<{ class?: string }>()
-const context = inject(ModalContextKey)
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
+defineProps<{ class?: string }>();
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -375,11 +378,11 @@ const context = inject(ModalContextKey)
 ```vue
 <!-- modal/ModalDescription.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
-defineProps<{ class?: string }>()
-const context = inject(ModalContextKey)
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
+defineProps<{ class?: string }>();
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -392,8 +395,8 @@ const context = inject(ModalContextKey)
 ```vue
 <!-- modal/ModalBody.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
-defineProps<{ class?: string }>()
+import { cn } from "@sglara/cn";
+defineProps<{ class?: string }>();
 </script>
 
 <template>
@@ -410,8 +413,8 @@ This is the component that would have saved me hours:
 ```vue
 <!-- modal/ModalFooter.vue -->
 <script setup lang="ts">
-import { cn } from '@sglara/cn'
-defineProps<{ class?: string }>()
+import { cn } from "@sglara/cn";
+defineProps<{ class?: string }>();
 </script>
 
 <template>
@@ -430,27 +433,31 @@ Works anywhere inside the modal tree:
 ```vue
 <!-- modal/ModalClose.vue -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
-defineProps<{ class?: string }>()
-const context = inject(ModalContextKey)
+defineProps<{ class?: string }>();
+const context = inject(ModalContextKey);
 </script>
 
 <template>
   <button
     type="button"
-    :class="cn(
-      'rounded-full p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100',
-      'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
-      $props.class
-    )"
+    :class="
+      cn(
+        'rounded-full p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+        'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+        $props.class,
+      )
+    "
     @click="context?.close()"
   >
     <slot>
       <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+        <path
+          d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+        />
       </svg>
     </slot>
   </button>
@@ -461,15 +468,15 @@ const context = inject(ModalContextKey)
 
 ```ts
 // modal/index.ts
-export { default as Modal } from './ModalRoot.vue'
-export { default as ModalOverlay } from './ModalOverlay.vue'
-export { default as ModalContent } from './ModalContent.vue'
-export { default as ModalHeader } from './ModalHeader.vue'
-export { default as ModalTitle } from './ModalTitle.vue'
-export { default as ModalDescription } from './ModalDescription.vue'
-export { default as ModalBody } from './ModalBody.vue'
-export { default as ModalFooter } from './ModalFooter.vue'
-export { default as ModalClose } from './ModalClose.vue'
+export { default as Modal } from "./ModalRoot.vue";
+export { default as ModalOverlay } from "./ModalOverlay.vue";
+export { default as ModalContent } from "./ModalContent.vue";
+export { default as ModalHeader } from "./ModalHeader.vue";
+export { default as ModalTitle } from "./ModalTitle.vue";
+export { default as ModalDescription } from "./ModalDescription.vue";
+export { default as ModalBody } from "./ModalBody.vue";
+export { default as ModalFooter } from "./ModalFooter.vue";
+export { default as ModalClose } from "./ModalClose.vue";
 ```
 
 ---
@@ -481,10 +488,15 @@ Now those same modals look like this:
 ```vue
 <script setup lang="ts">
 import {
-  Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalTitle, ModalClose,
-  ModalBody, ModalFooter
-} from '@/components/modal'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+  ModalBody,
+  ModalFooter,
+} from "@/components/modal";
 </script>
 
 <template>
@@ -577,42 +589,42 @@ What if you need size variants? [class-variance-authority](https://cva.style/doc
 
 ```ts
 // modal/variants.ts
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva, type VariantProps } from "class-variance-authority";
 
 export const modalContentVariants = cva(
   // Base styles (always applied)
-  'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl',
+  "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl",
   {
     variants: {
       size: {
-        sm: 'max-w-sm',
-        md: 'max-w-md',
-        lg: 'max-w-lg',
-        xl: 'max-w-xl',
-        full: 'max-w-[calc(100vw-2rem)]'
-      }
+        sm: "max-w-sm",
+        md: "max-w-md",
+        lg: "max-w-lg",
+        xl: "max-w-xl",
+        full: "max-w-[calc(100vw-2rem)]",
+      },
     },
     defaultVariants: {
-      size: 'md'
-    }
-  }
-)
+      size: "md",
+    },
+  },
+);
 
-export type ModalContentVariants = VariantProps<typeof modalContentVariants>
+export type ModalContentVariants = VariantProps<typeof modalContentVariants>;
 ```
 
 ```vue
 <!-- modal/ModalContent.vue with variants -->
 <script setup lang="ts">
-import { modalContentVariants, type ModalContentVariants } from './variants'
+import { modalContentVariants, type ModalContentVariants } from "./variants";
 
 interface Props extends ModalContentVariants {
-  class?: string
+  class?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'md'
-})
+  size: "md",
+});
 </script>
 
 <template>
@@ -629,6 +641,7 @@ const props = withDefaults(defineProps<Props>(), {
 ```
 
 **You get:**
+
 - Type-safe variant props with autocomplete
 - Centralized variant definitions
 - Still overridable via `class` prop
@@ -640,21 +653,24 @@ Sometimes you want `ModalClose` to be a link, not a button. The `asChild` patter
 ```vue
 <!-- modal/ModalClose.vue with asChild -->
 <script setup lang="ts">
-import { Primitive } from 'reka-ui'
-import { inject } from 'vue'
-import { ModalContextKey } from './context'
-import { cn } from '@sglara/cn'
+import { Primitive } from "reka-ui";
+import { inject } from "vue";
+import { ModalContextKey } from "./context";
+import { cn } from "@sglara/cn";
 
-const props = withDefaults(defineProps<{
-  class?: string
-  as?: string
-  asChild?: boolean
-}>(), {
-  as: 'button',
-  asChild: false
-})
+const props = withDefaults(
+  defineProps<{
+    class?: string;
+    as?: string;
+    asChild?: boolean;
+  }>(),
+  {
+    as: "button",
+    asChild: false,
+  },
+);
 
-const context = inject(ModalContextKey)
+const context = inject(ModalContextKey);
 </script>
 
 <template>
@@ -684,16 +700,16 @@ For production, you need to trap focus inside the modal. Use [@vueuse/integratio
 
 ```vue
 <script setup lang="ts">
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { useFocusTrap } from "@vueuse/integrations/useFocusTrap";
 
-const contentRef = ref<HTMLElement>()
+const contentRef = ref<HTMLElement>();
 const { activate, deactivate } = useFocusTrap(contentRef, {
   immediate: true,
-  allowOutsideClick: true
-})
+  allowOutsideClick: true,
+});
 
-onMounted(() => activate())
-onUnmounted(() => deactivate())
+onMounted(() => activate());
+onUnmounted(() => deactivate());
 </script>
 ```
 
@@ -703,13 +719,16 @@ Prevent background scrolling when modal is open:
 
 ```ts
 // In ModalRoot.vue
-import { useScrollLock } from '@vueuse/core'
+import { useScrollLock } from "@vueuse/core";
 
-const isLocked = useScrollLock(document.body)
+const isLocked = useScrollLock(document.body);
 
-watch(() => props.open, (open) => {
-  isLocked.value = open
-})
+watch(
+  () => props.open,
+  (open) => {
+    isLocked.value = open;
+  },
+);
 ```
 
 ---
@@ -722,17 +741,22 @@ More imports is the tradeoff. For teams that want simplicity most of the time, p
 <!-- SimpleModal.vue -->
 <script setup lang="ts">
 import {
-  Modal, ModalOverlay, ModalContent,
-  ModalHeader, ModalTitle, ModalClose,
-  ModalBody, ModalFooter
-} from './index'
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+  ModalBody,
+  ModalFooter,
+} from "./index";
 
 defineProps<{
-  open: boolean
-  title: string
-}>()
+  open: boolean;
+  title: string;
+}>();
 
-defineEmits<{ close: [] }>()
+defineEmits<{ close: [] }>();
 </script>
 
 <template>

@@ -28,6 +28,7 @@ Willison highlights research by Aruna Ranganathan and Xingqi Maggie Ye, who stud
 ## Intensification Cycle
 
 ::mermaid
+
 <pre>
 graph LR
     A[AI lowers<br/>effort per task] --> B[More tasks<br/>run in parallel]
@@ -36,6 +37,7 @@ graph LR
     D --> E["Just one<br/>more prompt"]
     E -.->|compulsive loop| B
 </pre>
+
 ::
 
 ## Connections

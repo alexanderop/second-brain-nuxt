@@ -68,4 +68,4 @@ Some truths can only be learned through experience: money won't fix your happine
 
 ## References
 
-Mentions *The Alchemist* by Paulo Coelho—the treasure was in the back garden all along.
+Mentions _The Alchemist_ by Paulo Coelho—the treasure was in the back garden all along.

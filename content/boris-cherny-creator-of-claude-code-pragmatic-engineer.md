@@ -23,29 +23,29 @@ rating: 5
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Intro and Boris's background |
-| 02:00 | Learning to code via Pokemon cards and TI-83 calculators |
-| 05:00 | Early startups and YC (Agile Diagnosis) |
-| 10:00 | Shadowing doctors — finding product-market fit |
-| 15:00 | The generalist engineer mindset |
-| 20:00 | Meta: code quality measurement and causal analysis |
-| 25:00 | Joining Anthropic — first PR rejected for being handwritten |
-| 30:00 | Origin story of Claude Code (from chatbot to agentic tool) |
-| 38:00 | Internal debate: should Anthropic keep Claude Code internal? |
+| Time  | Topic                                                                |
+| ----- | -------------------------------------------------------------------- |
+| 00:00 | Intro and Boris's background                                         |
+| 02:00 | Learning to code via Pokemon cards and TI-83 calculators             |
+| 05:00 | Early startups and YC (Agile Diagnosis)                              |
+| 10:00 | Shadowing doctors — finding product-market fit                       |
+| 15:00 | The generalist engineer mindset                                      |
+| 20:00 | Meta: code quality measurement and causal analysis                   |
+| 25:00 | Joining Anthropic — first PR rejected for being handwritten          |
+| 30:00 | Origin story of Claude Code (from chatbot to agentic tool)           |
+| 38:00 | Internal debate: should Anthropic keep Claude Code internal?         |
 | 42:00 | How the Claude Code team ships: 20-30 PRs/day, zero handwritten code |
-| 48:00 | Code review with AI: Claude reviews every PR, then human review |
-| 52:00 | Architecture of Claude Code — "it's very simple" |
-| 55:00 | RAG vs agentic search — why glob+grep won |
-| 60:00 | Permission system and sandboxing |
-| 65:00 | Member of Technical Staff — why flat titles matter |
-| 70:00 | No PRDs — prototyping over documentation |
-| 75:00 | Claude Cowork and agent teams |
-| 80:00 | Andrej Karpathy exchange — feeling behind as a programmer |
-| 85:00 | The printing press analogy |
-| 90:00 | Skills that still matter vs. skills to leave behind |
-| 95:00 | Book recommendations |
+| 48:00 | Code review with AI: Claude reviews every PR, then human review      |
+| 52:00 | Architecture of Claude Code — "it's very simple"                     |
+| 55:00 | RAG vs agentic search — why glob+grep won                            |
+| 60:00 | Permission system and sandboxing                                     |
+| 65:00 | Member of Technical Staff — why flat titles matter                   |
+| 70:00 | No PRDs — prototyping over documentation                             |
+| 75:00 | Claude Cowork and agent teams                                        |
+| 80:00 | Andrej Karpathy exchange — feeling behind as a programmer            |
+| 85:00 | The printing press analogy                                           |
+| 90:00 | Skills that still matter vs. skills to leave behind                  |
+| 95:00 | Book recommendations                                                 |
 
 ## Key Arguments
 
@@ -99,8 +99,8 @@ Sub-agents have fresh context windows that don't know about the parent context. 
 
 ## Resources Mentioned
 
-- *Accelerando* by Charles Stross — "essentially the product roadmap for the next 50 years"
-- *Functional Programming in Scala* — "teaches you how to think in types"
+- _Accelerando_ by Charles Stross — "essentially the product roadmap for the next 50 years"
+- _Functional Programming in Scala_ — "teaches you how to think in types"
 - Liu Cixin's short stories (Three-Body Problem author)
 - Claude Cowork — Anthropic's new product bringing agentic AI to non-engineers
 

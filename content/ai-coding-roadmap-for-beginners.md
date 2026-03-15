@@ -37,14 +37,17 @@ Before you use AI coding tools, understand how they work:
 Choose one and stick with it for at least a month:
 
 **GitHub Copilot** (VS Code)
+
 - Best for: VS Code users who want inline completions and chat
 - Start with: [Using Agents in VS Code](https://code.visualstudio.com/docs/copilot/agents/overview) to understand the four agent types
 
 **Claude Code** (Terminal)
+
 - Best for: Developers who prefer terminal workflows and want deeper customization
 - Start with: [Advent of Claude: 31 Days of Claude Code](https://adocomplete.com/advent-of-claude-2025/) - a 31-day progression from basics to advanced
 
 **Cursor**
+
 - Best for: Developers who want an all-in-one AI-native IDE
 - Start with: [Build and Deploy a Cursor Clone](https://www.youtube.com/watch?v=Xf9rHPNBMyQ) to understand how it works under the hood
 

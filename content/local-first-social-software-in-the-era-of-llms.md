@@ -17,7 +17,7 @@ date: 2026-02-22
 
 ## Overview
 
-Zhanna Sharipova, co-founder of Anytype, makes a move most local-first talks don't: she shifts the frame from data ownership to *relationship* ownership. The familiar pitch — your files, your device, no cloud dependency — is the starting point, not the destination. The real argument: when software becomes social, the communication channel connecting people is as valuable as the data itself. Lose access to a cloud platform and you don't just lose your files — you lose your connections to hundreds or thousands of people.
+Zhanna Sharipova, co-founder of Anytype, makes a move most local-first talks don't: she shifts the frame from data ownership to _relationship_ ownership. The familiar pitch — your files, your device, no cloud dependency — is the starting point, not the destination. The real argument: when software becomes social, the communication channel connecting people is as valuable as the data itself. Lose access to a cloud platform and you don't just lose your files — you lose your connections to hundreds or thousands of people.
 
 She backs this with a personal anchor. She grew up in the part of the world map that was behind the Berlin Wall. The venue of Local-First Conf sits where that wall once stood. In 2025, digital walls are fortifying again — and a single click can sever your connections to friends, family, and communities.
 
@@ -34,6 +34,7 @@ Anytype's approach combines three layers: Any Sync (a CRDT-based sync engine wit
 The demo showed chats that blur the line between messaging and structured data — a single space holds conversations, documents, feature requests, bug reports, and custom object types. Groups are highly customizable, combining chat, documents, and databases into one format.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Local-First Social))
@@ -67,6 +68,7 @@ mindmap
                 Private and secure
             Direct agent channels
 </pre>
+
 ::
 
 ### The Multi-Agent Future Needs Local-First Infrastructure

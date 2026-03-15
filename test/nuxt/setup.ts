@@ -9,4 +9,4 @@
  */
 
 // Currently no global setup needed - individual tests use registerEndpoint as needed
-export {}
+export {};

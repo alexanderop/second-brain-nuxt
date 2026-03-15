@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import type { ContentType } from '~/constants/contentTypes'
-import type { FilterState, TableAuthor } from '~/types/table'
+import type { ContentType } from "~/constants/contentTypes";
+import type { FilterState, TableAuthor } from "~/types/table";
 
 const props = defineProps<{
-  filters: FilterState
-  availableAuthors: TableAuthor[]
-}>()
+  filters: FilterState;
+  availableAuthors: TableAuthor[];
+}>();
 
 const emit = defineEmits<{
-  'remove-type': [type: ContentType]
-  'remove-tag': [tag: string]
-  'remove-author': [authorSlug: string]
-  'remove-rating-range': []
-  'clear-all': []
-}>()
+  "remove-type": [type: ContentType];
+  "remove-tag": [tag: string];
+  "remove-author": [authorSlug: string];
+  "remove-rating-range": [];
+  "clear-all": [];
+}>();
 
 function getAuthorName(slug: string): string {
-  return props.availableAuthors.find(a => a.slug === slug)?.name ?? slug
+  return props.availableAuthors.find((a) => a.slug === slug)?.name ?? slug;
 }
 </script>
 
@@ -29,11 +29,7 @@ function getAuthorName(slug: string): string {
       :aria-label="`Remove ${type} type filter`"
       @click="emit('remove-type', type)"
     >
-      <UBadge
-        variant="soft"
-        color="neutral"
-        class="cursor-pointer"
-      >
+      <UBadge variant="soft" color="neutral" class="cursor-pointer">
         {{ type }}
         <UIcon name="i-lucide-x" class="ml-1 size-3" />
       </UBadge>
@@ -46,11 +42,7 @@ function getAuthorName(slug: string): string {
       :aria-label="`Remove ${tag} tag filter`"
       @click="emit('remove-tag', tag)"
     >
-      <UBadge
-        variant="soft"
-        color="primary"
-        class="cursor-pointer"
-      >
+      <UBadge variant="soft" color="primary" class="cursor-pointer">
         {{ tag }}
         <UIcon name="i-lucide-x" class="ml-1 size-3" />
       </UBadge>
@@ -63,11 +55,7 @@ function getAuthorName(slug: string): string {
       :aria-label="`Remove ${getAuthorName(authorSlug)} author filter`"
       @click="emit('remove-author', authorSlug)"
     >
-      <UBadge
-        variant="soft"
-        color="secondary"
-        class="cursor-pointer"
-      >
+      <UBadge variant="soft" color="secondary" class="cursor-pointer">
         {{ getAuthorName(authorSlug) }}
         <UIcon name="i-lucide-x" class="ml-1 size-3" />
       </UBadge>
@@ -79,23 +67,14 @@ function getAuthorName(slug: string): string {
       aria-label="Remove rating range filter"
       @click="emit('remove-rating-range')"
     >
-      <UBadge
-        variant="soft"
-        color="warning"
-        class="cursor-pointer"
-      >
+      <UBadge variant="soft" color="warning" class="cursor-pointer">
         Rating: {{ filters.ratingRange[0] }}-{{ filters.ratingRange[1] }}
         <UIcon name="i-lucide-x" class="ml-1 size-3" />
       </UBadge>
     </button>
 
     <!-- Clear all button -->
-    <UButton
-      variant="ghost"
-      color="neutral"
-      size="xs"
-      @click="emit('clear-all')"
-    >
+    <UButton variant="ghost" color="neutral" size="xs" @click="emit('clear-all')">
       Clear all
     </UButton>
   </div>

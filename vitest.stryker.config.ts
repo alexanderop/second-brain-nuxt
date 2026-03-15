@@ -1,6 +1,6 @@
-import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitest/config'
-import { defineVitestProject } from '@nuxt/test-utils/config'
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite-plus";
+import { defineVitestProject } from "@nuxt/test-utils/config";
 
 // Vitest config for Stryker mutation testing
 // Includes both unit tests and nuxt tests
@@ -10,15 +10,17 @@ export default defineConfig({
       // Unit tests - fast, pure functions, no Nuxt runtime
       {
         test: {
-          name: 'unit',
-          include: ['test/unit/**/*.spec.ts'],
-          environment: 'node',
+          name: "unit",
+          include: ["test/unit/**/*.spec.ts"],
+          environment: "node",
         },
         resolve: {
           alias: {
-            '~': fileURLToPath(new URL('./app', import.meta.url)),
-            '~~': fileURLToPath(new URL('./', import.meta.url)),
-            '#imports': fileURLToPath(new URL('./test/test-utils/imports-mock.ts', import.meta.url)),
+            "~": fileURLToPath(new URL("./app", import.meta.url)),
+            "~~": fileURLToPath(new URL("./", import.meta.url)),
+            "#imports": fileURLToPath(
+              new URL("./test/test-utils/imports-mock.ts", import.meta.url),
+            ),
           },
         },
       },
@@ -26,9 +28,9 @@ export default defineConfig({
       // Nuxt tests - Nuxt environment
       await defineVitestProject({
         test: {
-          name: 'nuxt',
-          include: ['test/nuxt/**/*.spec.ts'],
-          environment: 'nuxt',
+          name: "nuxt",
+          include: ["test/nuxt/**/*.spec.ts"],
+          environment: "nuxt",
           environmentOptions: {
             nuxt: {
               mock: {
@@ -37,9 +39,9 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ['./test/nuxt/setup.ts'],
+          setupFiles: ["./test/nuxt/setup.ts"],
         },
       }),
     ],
   },
-})
+});

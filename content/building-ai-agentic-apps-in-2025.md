@@ -36,6 +36,7 @@ The abstraction provides:
 The agent loop—gather context, run inference, execute tool calls, repeat—feels familiar because it's the same pattern front-end frameworks have evolved through:
 
 ::mermaid
+
 <pre>
 flowchart LR
     C[Gather Context] --> I[Run Inference]
@@ -44,6 +45,7 @@ flowchart LR
     D -->|No| C
     D -->|Yes| Done[Return Result]
 </pre>
+
 ::
 
 Every framework generation (jQuery, Backbone, React) solved data fetching differently, but all moved toward pushing data to the UI rather than pulling on demand.
@@ -59,6 +61,7 @@ The solution: MCP servers should push data into the agent's context, forming a r
 Cloudflare's approach: define state and events as types, let a sync engine handle distribution. The tic-tac-toe demo pits two AI agents against each other on a shared board—the entire architecture fits in one slide because the sync engine handles all coordination.
 
 ::mermaid
+
 <pre>
 graph TD
     A1[Agent X] -->|subscribes| Board[Shared Board State]
@@ -66,6 +69,7 @@ graph TD
     Board -->|pushes moves| A1
     Board -->|pushes moves| A2
 </pre>
+
 ::
 
 ## Notable Quotes

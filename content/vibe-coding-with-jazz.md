@@ -19,29 +19,29 @@ date: 2026-03-08
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Intro — session structure and what to expect |
-| 01:04 | What is Jazz and Garden Computing |
-| 02:30 | The core insight: every stack is just reinventing shared state |
-| 04:26 | From HTML to React to Jazz — progressive steps of abstraction |
+| Time  | Topic                                                                  |
+| ----- | ---------------------------------------------------------------------- |
+| 00:00 | Intro — session structure and what to expect                           |
+| 01:04 | What is Jazz and Garden Computing                                      |
+| 02:30 | The core insight: every stack is just reinventing shared state         |
+| 04:26 | From HTML to React to Jazz — progressive steps of abstraction          |
 | 05:23 | Schema definition and `useCoState` — the Jazz equivalent of `useState` |
-| 06:51 | Live demo: building a chat app from scratch |
-| 08:22 | Creating objects and navigating by co-value IDs |
-| 10:13 | Jazz Inspector — looking under the hood |
-| 11:12 | Adding timestamps via built-in edit history |
-| 13:06 | Sharing the app live with the audience via port forwarding |
-| 15:25 | Accounts and profiles as co-values |
-| 17:17 | Editable usernames with instant sync |
-| 18:09 | Anonymous accounts and progressive authentication |
-| 18:39 | Adding image uploads — files as co-values |
-| 23:15 | Root and profile — per-user persistent state |
-| 24:43 | Schema migrations for evolving account data |
-| 27:08 | Offline-first sync — create locally, sync when online |
-| 27:37 | Showcase: Invoice Raider — end-to-end encrypted invoice management |
-| 29:32 | Showcase: Hend — AI-powered language learning app |
-| 30:31 | Getting started: `npx create-jazz-app` and AI tooling |
-| 31:59 | VIP Coder certification program |
+| 06:51 | Live demo: building a chat app from scratch                            |
+| 08:22 | Creating objects and navigating by co-value IDs                        |
+| 10:13 | Jazz Inspector — looking under the hood                                |
+| 11:12 | Adding timestamps via built-in edit history                            |
+| 13:06 | Sharing the app live with the audience via port forwarding             |
+| 15:25 | Accounts and profiles as co-values                                     |
+| 17:17 | Editable usernames with instant sync                                   |
+| 18:09 | Anonymous accounts and progressive authentication                      |
+| 18:39 | Adding image uploads — files as co-values                              |
+| 23:15 | Root and profile — per-user persistent state                           |
+| 24:43 | Schema migrations for evolving account data                            |
+| 27:08 | Offline-first sync — create locally, sync when online                  |
+| 27:37 | Showcase: Invoice Raider — end-to-end encrypted invoice management     |
+| 29:32 | Showcase: Hend — AI-powered language learning app                      |
+| 30:31 | Getting started: `npx create-jazz-app` and AI tooling                  |
+| 31:59 | VIP Coder certification program                                        |
 
 ## Key Arguments
 

@@ -32,9 +32,9 @@ The technique combines this extraction with LLMs to reconstruct working componen
 Every React DOM element has a property starting with `__reactFiber` that gives access to the fiber node.
 
 ```javascript
-const element = document.querySelector('.target-component')
-const fiberKey = Object.keys(element).find(key => key.startsWith('__reactFiber'))
-const fiber = element[fiberKey]
+const element = document.querySelector(".target-component");
+const fiberKey = Object.keys(element).find((key) => key.startsWith("__reactFiber"));
+const fiber = element[fiberKey];
 
 // fiber.type gives the component function/class
 // fiber.memoizedProps gives the props
@@ -47,13 +47,13 @@ You can traverse parent and child relationships through fiber properties.
 
 ```javascript
 function walkFiberTree(fiber, depth = 0) {
-  const name = fiber.type?.displayName || fiber.type?.name || 'Anonymous'
-  console.log('  '.repeat(depth) + name)
+  const name = fiber.type?.displayName || fiber.type?.name || "Anonymous";
+  console.log("  ".repeat(depth) + name);
 
-  let child = fiber.child
+  let child = fiber.child;
   while (child) {
-    walkFiberTree(child, depth + 1)
-    child = child.sibling
+    walkFiberTree(child, depth + 1);
+    child = child.sibling;
   }
 }
 ```

@@ -32,6 +32,7 @@ Steve Yegge introduces Gas Town, his multi-agent orchestration framework built i
 ## Agent Hierarchy
 
 ::mermaid
+
 <pre>
 graph TD
     Overseer[Overseer<br/>Human Operator] --> Mayor[Mayor<br/>Chief Dispatcher]
@@ -45,6 +46,7 @@ graph TD
     Polecats --> Git[(Git<br/>Persistent State)]
     Refinery --> Git
 </pre>
+
 ::
 
 ## Notable Quote

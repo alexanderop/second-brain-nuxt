@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { NuxtLink, UButton, UIcon } from '#components'
-import type { NewsletterItem } from '~/types/content'
+import { NuxtLink, UButton, UIcon } from "#components";
+import type { NewsletterItem } from "~/types/content";
 
 defineProps<{
-  newsletter: NewsletterItem
-  authorNames?: Record<string, string>
-}>()
+  newsletter: NewsletterItem;
+  authorNames?: Record<string, string>;
+}>();
 
 function handleImageError(event: Event) {
-  if (!(event.target instanceof HTMLImageElement)) return
-  event.target.style.display = 'none'
-  const fallback = event.target.nextElementSibling
+  if (!(event.target instanceof HTMLImageElement)) return;
+  event.target.style.display = "none";
+  const fallback = event.target.nextElementSibling;
   if (fallback instanceof HTMLElement) {
-    fallback.style.display = 'flex'
+    fallback.style.display = "flex";
   }
 }
 </script>
@@ -20,7 +20,11 @@ function handleImageError(event: Event) {
 <template>
   <header class="mb-8">
     <div class="flex items-center gap-3 mb-4">
-      <NuxtLink to="/newsletters" class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]" aria-label="Back to newsletters">
+      <NuxtLink
+        to="/newsletters"
+        class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
+        aria-label="Back to newsletters"
+      >
         <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
       </NuxtLink>
       <UIcon name="i-lucide-newspaper" class="size-6" />
@@ -35,7 +39,7 @@ function handleImageError(event: Event) {
           :alt="newsletter.name"
           class="size-full object-cover"
           @error="handleImageError"
-        >
+        />
         <div
           v-if="!newsletter.logo"
           class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"

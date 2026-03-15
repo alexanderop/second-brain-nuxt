@@ -23,6 +23,7 @@ Geoffrey Huntley, engineer at SourceCraft building AMP code, strips away the mys
 ### Agents Are Simple Loops
 
 The entire architecture of a coding agent reduces to:
+
 1. Take user input
 2. Call the LLM for inference
 3. Check if the model wants to call a tool
@@ -36,9 +37,9 @@ The entire architecture of a coding agent reduces to:
 
 LLMs fall into distinct behavioral categories:
 
-| Dimension | Low | High |
-|-----------|-----|------|
-| **Safety** | Grok (security research) | Anthropic, OpenAI (ethics-aligned) |
+| Dimension    | Low                                | High                               |
+| ------------ | ---------------------------------- | ---------------------------------- |
+| **Safety**   | Grok (security research)           | Anthropic, OpenAI (ethics-aligned) |
 | **Behavior** | Oracles (summarization, reasoning) | Agentic (tool-calling "squirrels") |
 
 Claude Sonnet is an "incremental squirrel" optimized for tool calls. O3 is an oracle for checking work. Combine them strategically.
@@ -71,6 +72,7 @@ That's it. Stack these primitives with tuning and prompt engineering, and you ha
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     Input[User Input] --> Inference[LLM Inference]
@@ -80,6 +82,7 @@ flowchart LR
     Result --> Inference
     Check -->|No| Output[Display Response]
 </pre>
+
 ::
 
 ## Practical Takeaways

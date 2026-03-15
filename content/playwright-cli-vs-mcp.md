@@ -34,6 +34,7 @@ CLI takes a file-first approach. Every output (snapshots, screenshots, page cont
 ## Decision Framework
 
 ::mermaid
+
 <pre>
 flowchart TD
     A{Does your agent have<br/>file system access?}
@@ -44,6 +45,7 @@ flowchart TD
     B --> F[✓ 4x fewer tokens<br/>✓ All commands enabled<br/>✓ Headless by default<br/>✓ Skill-based extensibility]
     C --> G[✓ Strict MCP standard<br/>✓ Works with any agent<br/>✓ Configurable tool set<br/>✓ Multi-browser support]
 </pre>
+
 ::
 
 ## CLI Setup

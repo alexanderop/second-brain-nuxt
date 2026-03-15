@@ -39,6 +39,7 @@ The approach embraces imperfection. Initial outputs are flawed, but each failure
 ## Trade-offs
 
 Ralph works best for greenfield projects where:
+
 - The output is "good enough" to ship or iterate on
 - Time-to-value matters more than perfection
 - The human can interpret failures and tune prompts

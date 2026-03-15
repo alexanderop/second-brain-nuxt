@@ -24,14 +24,17 @@ We are transitioning from an economy of scarcity to one of abundance, where expo
 ## Key Books
 
 ### Abundance: The Future is Better Than You Think (2012)
+
 **Authors:** Peter Diamandis & Steven Kotler
 
 The foundational book that established Diamandis's optimistic thesis about technology solving humanity's greatest challenges. It argues that exponential technologies are creating abundance in areas previously defined by scarcity—water, food, energy, healthcare, education.
 
 ### We Are As Gods: A Survival Guide for the Age of Abundance (2026)
+
 **Authors:** Peter Diamandis & Steven Kotler
 
 The latest book (releasing April 14, 2026) that directly addresses the age of abundance concept. Charts humanity's ascent from scarcity to superabundance through breakthroughs in:
+
 - AI and robotics
 - Genetics and longevity
 - Consciousness research
@@ -43,16 +46,19 @@ The book emphasizes a crucial challenge: humans need to evolve psychologically a
 Elon Musk has become a prominent voice predicting an imminent Age of Abundance, driven primarily by AI and humanoid robotics.
 
 ### AGI Timeline
+
 - **Prediction:** AGI (Artificial General Intelligence) will be achieved by the end of 2026 at the latest
 - This represents human-level intelligence across all cognitive tasks
 
 ### Humanoid Robots (Tesla Optimus)
+
 - **2025:** Tesla plans to produce over 100,000 Optimus units for internal use
 - **2026:** External sales begin
 - **Impact:** Musk calls Optimus the "biggest product of all time"
 - **Purpose:** Automate low-skill, repetitive jobs
 
 ### Universal High Income
+
 Musk's most striking prediction: instead of Universal Basic Income (UBI), the Age of Abundance will bring **Universal High Income**.
 
 > "We're headed for an age of abundance where anyone can have any goods and services they want. It won't be a case of universal basic income but universal high income."
@@ -65,11 +71,13 @@ The logic: By automating production through humanoid robots and AI, the cost of 
 While optimistic about the technological trajectory, both Diamandis and Musk acknowledge significant risks:
 
 ### From Musk
+
 - **"Digital Superintelligence"** working against humans
 - The "liars' dividend" - AI-generated misinformation becoming indistinguishable from reality
 - Need for AI safety and alignment
 
 ### From Diamandis
+
 - **Psychological evolution** - Humans evolved for scarcity; abundance requires new mental models
 - **Ethical frameworks** - "God-like" technological powers demand wisdom to wield responsibly
 - **Inequality risks** - Ensuring abundance benefits everyone, not just elites
@@ -87,6 +95,7 @@ While optimistic about the technological trajectory, both Diamandis and Musk ack
 The Age of Abundance represents a fundamental shift:
 
 **From:**
+
 - Scarcity economics
 - Zero-sum competition
 - Labor as primary value source
@@ -94,6 +103,7 @@ The Age of Abundance represents a fundamental shift:
 - Universal Basic Income discussions
 
 **To:**
+
 - Abundance economics
 - Positive-sum collaboration
 - AI/robots as primary producers

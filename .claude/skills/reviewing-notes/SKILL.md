@@ -22,12 +22,15 @@ ls content/*.md
 **Read each file and check for:**
 
 #### Missing or Weak Summaries
+
 - No `summary:` field in frontmatter
 - Summary is empty or very short (<10 words)
 - Summary doesn't capture the core idea
 
 #### Broken Wiki-Links
+
 Parse all `[[slug]]` patterns and verify each target exists:
+
 ```bash
 # Extract wiki-links from a file
 grep -o '\[\[[^]]*\]\]' content/note-name.md
@@ -37,18 +40,22 @@ ls content/target-slug.md
 ```
 
 #### Insufficient Tags
+
 - Notes with fewer than 2 tags
 - Notes with no tags at all
 
 #### Orphan Notes
+
 - No outgoing wiki-links (doesn't reference other notes)
 - No incoming wiki-links (not referenced by other notes)
 - Both = fully isolated
 
 #### Short Content
+
 - Body content under 100 words (may indicate incomplete note)
 
 #### Missing Required Frontmatter
+
 - No `title` field
 - No `type` field
 - Missing `date` field
@@ -61,10 +68,12 @@ Organize findings by severity:
 ## Quality Audit Report
 
 ### Critical Issues
+
 - **Broken Links**
   - `note-a.md`: links to [[non-existent]] (file not found)
 
 ### High Priority
+
 - **Missing Summaries**
   - `note-b.md`: no summary field
   - `note-c.md`: summary is empty
@@ -73,6 +82,7 @@ Organize findings by severity:
   - `isolated-note.md`: 0 incoming, 0 outgoing links
 
 ### Medium Priority
+
 - **Insufficient Tags** (<2 tags)
   - `note-d.md`: only 1 tag
 
@@ -80,24 +90,26 @@ Organize findings by severity:
   - `stub-note.md`: 45 words
 
 ### Low Priority
+
 - **Missing Optional Fields**
   - `note-e.md`: no date field
 ```
 
 ## Issue Categories
 
-| Issue | Severity | Impact |
-|-------|----------|--------|
-| Broken wiki-link | Critical | Navigation fails |
-| Missing summary | High | Poor discoverability |
-| Orphan note | High | Lost in graph |
-| <2 tags | Medium | Harder to find |
-| Short content | Medium | May be incomplete |
-| Missing date | Low | Timeline unclear |
+| Issue            | Severity | Impact               |
+| ---------------- | -------- | -------------------- |
+| Broken wiki-link | Critical | Navigation fails     |
+| Missing summary  | High     | Poor discoverability |
+| Orphan note      | High     | Lost in graph        |
+| <2 tags          | Medium   | Harder to find       |
+| Short content    | Medium   | May be incomplete    |
+| Missing date     | Low      | Timeline unclear     |
 
 ## Quality Checklist
 
 When reviewing:
+
 - [ ] Checked all content files
 - [ ] Verified each wiki-link target exists
 - [ ] Counted tags per note

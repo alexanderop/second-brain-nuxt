@@ -16,12 +16,12 @@ Obsidian introduced Base, a database feature for organizing notes through struct
 
 ## Obsidian Base vs Notion
 
-| Aspect | Obsidian Base | Notion |
-|--------|---------------|--------|
-| Structure | One database per vault | Multiple independent databases |
-| Speed | Fast | Slower |
-| Properties | Limited set | Extensive options |
-| Purpose | Structure information | Drive actions |
+| Aspect     | Obsidian Base          | Notion                         |
+| ---------- | ---------------------- | ------------------------------ |
+| Structure  | One database per vault | Multiple independent databases |
+| Speed      | Fast                   | Slower                         |
+| Properties | Limited set            | Extensive options              |
+| Purpose    | Structure information  | Drive actions                  |
 
 Obsidian Base focuses on information organization rather than replicating Notion's full database power.
 

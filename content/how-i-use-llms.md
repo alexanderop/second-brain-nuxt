@@ -24,6 +24,7 @@ The model has no calculator, no Python interpreter, no web browser by default. Y
 When you type a message and the model responds, you're both writing into a shared one-dimensional token sequence—the context window. This window is the model's working memory.
 
 Keep it lean:
+
 - **Start new chats** when switching topics. Old tokens distract the model and slow inference.
 - **Avoid overloading** the window with irrelevant information.
 - Longer contexts cost more and can reduce accuracy.
@@ -32,12 +33,12 @@ Keep it lean:
 
 Different models have different capabilities and price points. Always know which model you're using:
 
-| Provider | Free Tier | Paid Tier | Best Models |
-|----------|-----------|-----------|-------------|
-| OpenAI | GPT-4o mini | Plus ($20), Pro ($200) | GPT-4o, o1-pro |
-| Anthropic | Claude 3 Haiku | Pro | Claude 3.5 Sonnet |
-| Google | Limited | Gemini Advanced | Gemini |
-| xAI | Limited | Premium | Grok 3 |
+| Provider  | Free Tier      | Paid Tier              | Best Models       |
+| --------- | -------------- | ---------------------- | ----------------- |
+| OpenAI    | GPT-4o mini    | Plus ($20), Pro ($200) | GPT-4o, o1-pro    |
+| Anthropic | Claude 3 Haiku | Pro                    | Claude 3.5 Sonnet |
+| Google    | Limited        | Gemini Advanced        | Gemini            |
+| xAI       | Limited        | Premium                | Grok 3            |
 
 Free tiers use smaller, less capable models. For professional work, pay for the flagship models.
 
@@ -48,6 +49,7 @@ Reinforcement learning produces "thinking models" that reason before answering. 
 OpenAI's thinking models: o1, o3-mini, o1-pro (requires $200/month Pro tier).
 
 When to use them:
+
 - Complex coding bugs where standard models miss the issue
 - Math and logic problems requiring step-by-step reasoning
 - Tasks where accuracy matters more than speed
@@ -55,6 +57,7 @@ When to use them:
 ## When to Trust the Model
 
 Knowledge-based queries work well when:
+
 1. The information isn't recent (within the knowledge cutoff)
 2. The topic is frequently discussed on the internet
 3. The stakes are low enough to tolerate occasional errors

@@ -6,19 +6,19 @@ A dedicated collection for capturing and organizing tweets. Tweets are linked to
 
 ## Summary
 
-| Aspect | Decision |
-|--------|----------|
-| Input method | Tweet URL via CLI skill |
-| Content type | Separate `tweets` collection |
-| Metadata | Minimal (author, date, text) |
-| Author page | Separate "Tweets" section |
-| List page | None - access via author pages only |
-| Display | Card style (avatar + text + date) |
-| Slug format | Tweet ID (e.g., `tweet-1234567890`) |
-| Wiki-links | Full support |
-| Rating | Not supported |
-| Tags | Supported |
-| API | None - manual scraping/parsing |
+| Aspect       | Decision                            |
+| ------------ | ----------------------------------- |
+| Input method | Tweet URL via CLI skill             |
+| Content type | Separate `tweets` collection        |
+| Metadata     | Minimal (author, date, text)        |
+| Author page  | Separate "Tweets" section           |
+| List page    | None - access via author pages only |
+| Display      | Card style (avatar + text + date)   |
+| Slug format  | Tweet ID (e.g., `tweet-1234567890`) |
+| Wiki-links   | Full support                        |
+| Rating       | Not supported                       |
+| Tags         | Supported                           |
+| API          | None - manual scraping/parsing      |
 
 ---
 
@@ -30,11 +30,11 @@ A dedicated collection for capturing and organizing tweets. Tweets are linked to
 ---
 type: tweet
 title: "Brief description or first words of tweet"
-tweetId: "1234567890"           # Twitter/X tweet ID
-tweetUrl: "https://x.com/..."   # Original URL
+tweetId: "1234567890" # Twitter/X tweet ID
+tweetUrl: "https://x.com/..." # Original URL
 tweetText: "The full tweet content goes here..."
-author: naval                    # Author slug (wiki-link target)
-tweetedAt: 2024-01-15           # Date tweet was posted
+author: naval # Author slug (wiki-link target)
+tweetedAt: 2024-01-15 # Date tweet was posted
 tags:
   - productivity
   - startup
@@ -69,19 +69,19 @@ Related to [[building-wealth]] chapter on leverage.
 ```typescript
 // content.config.ts
 const tweets = defineCollection({
-  type: 'page',
-  source: 'tweets/*.md',  // or flat with type filter
+  type: "page",
+  source: "tweets/*.md", // or flat with type filter
   schema: z.object({
-    type: z.literal('tweet'),
+    type: z.literal("tweet"),
     title: z.string(),
     tweetId: z.string(),
     tweetUrl: z.string().url(),
     tweetText: z.string(),
-    author: z.string(),  // Author slug
+    author: z.string(), // Author slug
     tweetedAt: z.coerce.date(),
     tags: z.array(z.string()).optional(),
   }),
-})
+});
 ```
 
 ---
@@ -107,27 +107,30 @@ content/
 Card-style display for tweet content.
 
 **Elements:**
+
 - Author avatar (from author profile)
 - Tweet text content
 - Posted date
 - Link to original tweet (external)
 
 **Props:**
+
 ```typescript
 interface TweetCardProps {
-  tweetText: string
+  tweetText: string;
   author: {
-    name: string
-    slug: string
-    avatar?: string
-    twitterHandle?: string
-  }
-  tweetedAt: Date
-  tweetUrl: string
+    name: string;
+    slug: string;
+    avatar?: string;
+    twitterHandle?: string;
+  };
+  tweetedAt: Date;
+  tweetUrl: string;
 }
 ```
 
 **Visual:**
+
 ```text
 ┌─────────────────────────────────────────┐
 │ [Avatar]  Author Name                   │
@@ -145,6 +148,7 @@ interface TweetCardProps {
 Header for individual tweet page (similar to ContentHeader).
 
 **Elements:**
+
 - TweetCard (the tweet itself)
 - Tags
 - Personal annotations below
@@ -182,15 +186,13 @@ Author pages display two distinct sections:
 
 ```typescript
 // Fetch author's tweets
-const tweets = await queryCollection('tweets')
-  .where('author', '=', authorSlug)
-  .order('tweetedAt', 'desc')
-  .all()
+const tweets = await queryCollection("tweets")
+  .where("author", "=", authorSlug)
+  .order("tweetedAt", "desc")
+  .all();
 
 // Fetch author's notes (existing content)
-const notes = await queryCollection('content')
-  .where('author', '=', authorSlug)
-  .all()
+const notes = await queryCollection("content").where("author", "=", authorSlug).all();
 ```
 
 ---
@@ -221,7 +223,7 @@ When tweet author doesn't exist:
 # content/authors/{handle}.md
 ---
 type: author
-name: "Naval Ravikant"  # Parsed from profile
+name: "Naval Ravikant" # Parsed from profile
 slug: naval
 twitterHandle: naval
 ---
@@ -257,10 +259,10 @@ def get_tweet_data(url: str) -> TweetData:
 
 ## Routing
 
-| Route | Purpose |
-|-------|---------|
-| `/tweets/tweet-{id}` | Individual tweet page |
-| `/authors/{slug}` | Author page (includes tweets section) |
+| Route                | Purpose                               |
+| -------------------- | ------------------------------------- |
+| `/tweets/tweet-{id}` | Individual tweet page                 |
+| `/authors/{slug}`    | Author page (includes tweets section) |
 
 No `/tweets` index page - tweets are accessed via author pages.
 

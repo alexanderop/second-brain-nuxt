@@ -33,4 +33,4 @@ Wolfram breaks ChatGPT's operation into three stages:
 
 ## The Paradox of Understanding
 
-ChatGPT reveals a tension: we built something that works remarkably well, yet we lack a clear theory explaining *why* it works. The model captures patterns in human language without anyone programming those patterns explicitly. This raises questions about whether computation can truly model thought, or whether we've stumbled onto something deeper about the structure of language itself.
+ChatGPT reveals a tension: we built something that works remarkably well, yet we lack a clear theory explaining _why_ it works. The model captures patterns in human language without anyone programming those patterns explicitly. This raises questions about whether computation can truly model thought, or whether we've stumbled onto something deeper about the structure of language itself.

@@ -5,10 +5,7 @@
   "vitest": {
     "configFile": "vitest.stryker.config.ts"
   },
-  "mutate": [
-    "server/utils/**/*.ts",
-    "!server/utils/chat/**/*.ts"
-  ],
+  "mutate": ["server/utils/**/*.ts", "!server/utils/chat/**/*.ts"],
   "reporters": ["html", "clear-text", "progress"],
   "concurrency": 1,
   "coverageAnalysis": "perTest",

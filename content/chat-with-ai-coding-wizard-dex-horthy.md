@@ -20,7 +20,7 @@ Matt Pocock hosts Dex Horthy, founder of HumanLayer and self-described "AI codin
 
 Dex Horthy leads HumanLayer (YC F24), a company focused on helping developers build safe, impactful AI agents for complex codebases. His background includes engineering at NASA JPL and Replicated.
 
-*Note: Transcript unavailable for this video.*
+_Note: Transcript unavailable for this video._
 
 ## Key Topics
 

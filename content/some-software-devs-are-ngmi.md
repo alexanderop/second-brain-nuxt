@@ -22,6 +22,7 @@ The term "ngmi" (not gonna make it) applies to software developers who dismiss A
 Huntley illustrates this through seven developers named after fruits. Initial skeptics Orange and Strawberry embrace LLMs and achieve 16x productivity gains. Former top performers Apple and Grape dismiss the tools as hype—and gradually slip in the rankings. By the end, those who refused to adapt exit the job market entirely.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Initial["Initial State"]
@@ -44,6 +45,7 @@ flowchart LR
     A1 & G1 --> AG --> AG2
     O1 & S1 --> O2 --> O3
 </pre>
+
 ::
 
 ## Key Mechanism: Natural Selection Over Mass Layoffs

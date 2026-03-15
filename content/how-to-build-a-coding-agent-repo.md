@@ -31,6 +31,7 @@ This repository accompanies Geoffrey Huntley's workshop on building coding agent
 The workshop builds capability layer by layer:
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[chat.go<br/>Basic LLM] --> B[read.go<br/>+File Read]
@@ -39,6 +40,7 @@ flowchart LR
     D --> E[edit_tool.go<br/>+File Edit]
     E --> F[code_search.go<br/>+Ripgrep Search]
 </pre>
+
 ::
 
 ## Code Snippets

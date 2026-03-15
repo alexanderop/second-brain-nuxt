@@ -5,6 +5,7 @@ This spec defines newsletter support for Second Brain, following the established
 ## Overview
 
 Newsletters (Substack, beehiiv, Ghost, etc.) are a first-class content type with:
+
 - **Newsletter profiles** — Publication metadata in `content/newsletters/`
 - **Newsletter articles** — Content items linked to parent newsletters
 - **Author integration** — Writers linked via existing authors system
@@ -18,27 +19,37 @@ Newsletters (Substack, beehiiv, Ghost, etc.) are a first-class content type with
 **Location:** `content/newsletters/*.md`
 
 **Schema:**
+
 ```typescript
 newsletters: defineCollection({
-  type: 'data',
-  source: 'newsletters/**/*.md',
+  type: "data",
+  source: "newsletters/**/*.md",
   schema: z.object({
-    name: z.string(),                              // "Lenny's Newsletter"
-    slug: z.string(),                              // "lennys-newsletter"
-    description: z.string().optional(),            // Tagline/about
-    logo: z.string().url().optional(),             // Publication logo URL (external)
-    website: z.string().url().optional(),          // Homepage URL
-    authors: z.array(z.string()).min(1),           // Author slugs (primary writers)
-    platform: z.enum([
-      'substack', 'beehiiv', 'ghost', 'convertkit',
-      'buttondown', 'revue', 'mailchimp', 'other'
-    ]).optional(),                                 // Internal - not displayed in UI
-    topics: z.array(z.string()).optional(),        // Main topics covered
+    name: z.string(), // "Lenny's Newsletter"
+    slug: z.string(), // "lennys-newsletter"
+    description: z.string().optional(), // Tagline/about
+    logo: z.string().url().optional(), // Publication logo URL (external)
+    website: z.string().url().optional(), // Homepage URL
+    authors: z.array(z.string()).min(1), // Author slugs (primary writers)
+    platform: z
+      .enum([
+        "substack",
+        "beehiiv",
+        "ghost",
+        "convertkit",
+        "buttondown",
+        "revue",
+        "mailchimp",
+        "other",
+      ])
+      .optional(), // Internal - not displayed in UI
+    topics: z.array(z.string()).optional(), // Main topics covered
   }),
-})
+});
 ```
 
 **Example newsletter profile:**
+
 ```yaml
 # content/newsletters/lennys-newsletter.md
 ---
@@ -60,14 +71,16 @@ topics:
 ### 1.2 Content Schema Updates
 
 **Add to `externalContentTypes`:**
+
 ```typescript
 const externalContentTypes = [
   // ... existing types
-  'newsletter',
-] as const
+  "newsletter",
+] as const;
 ```
 
 **Add newsletter fields to content schema:**
+
 ```typescript
 // In content collection schema
 newsletter: z.string().optional(),           // Slug of parent newsletter
@@ -76,6 +89,7 @@ guest_author: z.string().optional(),         // For one-off guest contributors
 ```
 
 **Example newsletter article:**
+
 ```yaml
 # content/how-to-get-better-at-product-prioritization.md
 ---
@@ -95,6 +109,7 @@ date: 2024-03-20
 ```
 
 **Guest post example:**
+
 ```yaml
 # content/guest-post-on-metrics.md
 ---
@@ -119,19 +134,20 @@ date: 2024-04-10
 
 ### 2.1 Platform Patterns
 
-| Platform | URL Pattern | Example |
-|----------|-------------|---------|
-| Substack | `*.substack.com/p/*` or custom domain with `/p/` | `lennysnewsletter.substack.com/p/how-to...` |
-| beehiiv | `*.beehiiv.com/p/*` | `newsletter.beehiiv.com/p/article` |
-| Ghost | `*/subscribe` page + article paths | `blog.example.com/article-title/` |
-| ConvertKit | `convertkit.com/` + creator paths | `creator.ck.page/article` |
-| Buttondown | `buttondown.email/*` | `buttondown.email/newsletter/article` |
+| Platform   | URL Pattern                                      | Example                                     |
+| ---------- | ------------------------------------------------ | ------------------------------------------- |
+| Substack   | `*.substack.com/p/*` or custom domain with `/p/` | `lennysnewsletter.substack.com/p/how-to...` |
+| beehiiv    | `*.beehiiv.com/p/*`                              | `newsletter.beehiiv.com/p/article`          |
+| Ghost      | `*/subscribe` page + article paths               | `blog.example.com/article-title/`           |
+| ConvertKit | `convertkit.com/` + creator paths                | `creator.ck.page/article`                   |
+| Buttondown | `buttondown.email/*`                             | `buttondown.email/newsletter/article`       |
 
 ### 2.2 Detection Strategy
 
 **For known platform domains:** Auto-detect as newsletter.
 
 **For custom domains:**
+
 1. Check page source for platform signatures (Substack/beehiiv meta tags, structure)
 2. Look for newsletter signals: subscribe button, issue number, "view in browser" link
 3. If uncertain, ask user: "This looks like a newsletter article. Is it?"
@@ -139,6 +155,7 @@ date: 2024-04-10
 ### 2.3 Domain Mismatch Handling
 
 When article URL domain doesn't match newsletter profile's `website`:
+
 - Show warning during article creation
 - Do NOT auto-update the newsletter profile
 - User can manually update profile if needed
@@ -152,11 +169,11 @@ When article URL domain doesn't match newsletter profile's `website`:
 Add to SKILL.md URL routing table:
 
 ```markdown
-| URL Pattern | Type | Reference |
-|---|---|---|
-| `*.substack.com/p/*` | newsletter | `references/content-types/newsletter.md` |
-| `*.beehiiv.com/p/*` | newsletter | `references/content-types/newsletter.md` |
-| `buttondown.email/*/archive/*` | newsletter | `references/content-types/newsletter.md` |
+| URL Pattern                           | Type       | Reference                                |
+| ------------------------------------- | ---------- | ---------------------------------------- |
+| `*.substack.com/p/*`                  | newsletter | `references/content-types/newsletter.md` |
+| `*.beehiiv.com/p/*`                   | newsletter | `references/content-types/newsletter.md` |
+| `buttondown.email/*/archive/*`        | newsletter | `references/content-types/newsletter.md` |
 | `*.ghost.io/*` (with article signals) | newsletter | `references/content-types/newsletter.md` |
 ```
 
@@ -164,7 +181,7 @@ Add to SKILL.md URL routing table:
 
 **File:** `.claude/skills/adding-notes/references/content-types/newsletter.md`
 
-```markdown
+````markdown
 # Newsletter Articles
 
 Newsletter articles link to their parent publication via the `newsletter` field.
@@ -172,7 +189,8 @@ Newsletter articles link to their parent publication via the `newsletter` field.
 ## Detection
 
 Content is a newsletter article if:
-- URL: *.substack.com/p/*, *.beehiiv.com/p/*, buttondown.email/*/archive/*
+
+- URL: _.substack.com/p/_, _.beehiiv.com/p/_, buttondown.email/_/archive/_
 - Custom domain with newsletter signals (subscribe button, issue number)
 - Meta tags indicating newsletter platform
 
@@ -187,6 +205,7 @@ For custom domains: auto-detect platform signatures, then confirm with user if u
 ```bash
 ls content/newsletters/ | grep -i "newsletter-slug"
 ```
+````
 
 - If found → use existing profile
 - If NOT found → auto-create profile (see Phase 2)
@@ -196,20 +215,24 @@ ls content/newsletters/ | grep -i "newsletter-slug"
 Spawn 4 agents in parallel:
 
 **Agent A - Publication Info:**
+
 - WebFetch newsletter homepage
 - Extract: name, description/tagline, about page content
 
 **Agent B - Logo/Branding:**
+
 - WebFetch newsletter homepage
 - Extract: og:image, publication logo
 - Prefer: square logo image (not article thumbnail)
 
 **Agent C - Author Info:**
+
 - WebFetch newsletter homepage /about
 - Extract: author name(s), check if author exists
 - Create author if needed
 
 **Agent D - Platform Detection:**
+
 - Analyze URL structure and page source
 - Detect platform from signatures
 
@@ -218,15 +241,18 @@ Write profile with all detected fields to `content/newsletters/{slug}.md`.
 ### Phase 3: Extract Article Metadata
 
 **Agent A - Article Metadata:**
+
 - WebFetch article URL
 - Extract: title, author, date, issue number (if visible)
 
 **Agent B - Content Extraction:**
+
 - Parse article body
 - Extract headings, key sections
 - Identify links/resources mentioned
 
 **Agent C - Summary Generation:**
+
 - Auto-generate summary from article content
 - 1-2 sentences capturing the core message
 
@@ -239,14 +265,14 @@ Write profile with all detected fields to `content/newsletters/{slug}.md`.
 title: "Article Title"
 type: newsletter
 newsletter: newsletter-slug
-issueNumber: 234                    # Optional - only if clearly visible
+issueNumber: 234 # Optional - only if clearly visible
 url: "https://newsletter.substack.com/p/article-slug"
 tags:
   - topic-1
   - topic-2
 authors:
   - author-slug
-guest_author: guest-author-slug    # Optional - for one-off contributors
+guest_author: guest-author-slug # Optional - for one-off contributors
 summary: "Auto-generated core message"
 date: 2024-03-20
 ---
@@ -290,12 +316,12 @@ Builds on ideas from [[related-concept]] and [[referenced-book]].
 
 ## Validation
 
-| Check | Severity | Message |
-|-------|----------|---------|
-| `newsletter` field exists | Error | Newsletter articles must reference a newsletter profile |
-| Newsletter profile exists | Error | Newsletter `{slug}` not found in `content/newsletters/` |
-| Author in newsletter authors | Warning | Author `{author}` not listed in newsletter's authors |
-| URL domain mismatch | Warning | Article URL doesn't match newsletter website |
+| Check                        | Severity | Message                                                 |
+| ---------------------------- | -------- | ------------------------------------------------------- |
+| `newsletter` field exists    | Error    | Newsletter articles must reference a newsletter profile |
+| Newsletter profile exists    | Error    | Newsletter `{slug}` not found in `content/newsletters/` |
+| Author in newsletter authors | Warning  | Author `{author}` not listed in newsletter's authors    |
+| URL domain mismatch          | Warning  | Article URL doesn't match newsletter website            |
 
 ### 3.3 Newsletter Profile Creation Reference
 
@@ -319,6 +345,7 @@ Auto-created when adding an article to a new newsletter.
 ## Quality Checklist
 
 Before saving profile:
+
 - [ ] Name matches publication branding
 - [ ] Logo is square-ish, not article thumbnail
 - [ ] At least one author linked
@@ -336,15 +363,15 @@ Before saving profile:
 <script setup lang="ts">
 interface Props {
   newsletter: {
-    name: string
-    slug: string
-    description?: string
-    logo?: string
-    authors: string[]
-  }
-  articleCount?: number
+    name: string;
+    slug: string;
+    description?: string;
+    logo?: string;
+    authors: string[];
+  };
+  articleCount?: number;
 }
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>
@@ -358,13 +385,16 @@ defineProps<Props>()
       :alt="newsletter.name"
       class="size-10 rounded-lg object-cover"
     />
-    <div v-else class="size-10 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+    <div
+      v-else
+      class="size-10 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+    >
       <UIcon name="i-heroicons-newspaper" class="size-5 text-gray-500" />
     </div>
     <div class="flex-1 min-w-0">
       <p class="font-medium truncate">{{ newsletter.name }}</p>
       <p v-if="articleCount" class="text-sm text-gray-500">
-        {{ articleCount }} {{ articleCount === 1 ? 'article' : 'articles' }}
+        {{ articleCount }} {{ articleCount === 1 ? "article" : "articles" }}
       </p>
     </div>
   </NuxtLink>
@@ -376,19 +406,19 @@ defineProps<Props>()
 ```vue
 <script setup lang="ts">
 interface Newsletter {
-  name: string
-  slug: string
-  description?: string
-  logo?: string
-  website?: string
-  authors: string[]
+  name: string;
+  slug: string;
+  description?: string;
+  logo?: string;
+  website?: string;
+  authors: string[];
 }
 
 interface Props {
-  newsletter: Newsletter
-  authorNames?: Record<string, string>
+  newsletter: Newsletter;
+  authorNames?: Record<string, string>;
 }
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>
@@ -399,7 +429,10 @@ defineProps<Props>()
       :alt="newsletter.name"
       class="size-20 rounded-xl object-cover"
     />
-    <div v-else class="size-20 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+    <div
+      v-else
+      class="size-20 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+    >
       <UIcon name="i-heroicons-newspaper" class="size-10 text-gray-500" />
     </div>
 
@@ -413,10 +446,7 @@ defineProps<Props>()
       <div class="flex flex-wrap items-center gap-2 mt-3">
         <span class="text-sm text-gray-500">by</span>
         <template v-for="(authorSlug, index) in newsletter.authors" :key="authorSlug">
-          <NuxtLink
-            :to="`/authors/${authorSlug}`"
-            class="text-sm font-medium hover:underline"
-          >
+          <NuxtLink :to="`/authors/${authorSlug}`" class="text-sm font-medium hover:underline">
             {{ authorNames?.[authorSlug] || authorSlug }}
           </NuxtLink>
           <span v-if="index < newsletter.authors.length - 1" class="text-gray-400">,</span>
@@ -424,12 +454,7 @@ defineProps<Props>()
       </div>
 
       <div v-if="newsletter.website" class="mt-4">
-        <UButton
-          :to="newsletter.website"
-          external
-          variant="ghost"
-          size="sm"
-        >
+        <UButton :to="newsletter.website" external variant="ghost" size="sm">
           <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4 mr-1" />
           View Website
         </UButton>
@@ -442,35 +467,34 @@ defineProps<Props>()
 ### 4.3 Pages
 
 **`app/pages/newsletters/index.vue`:**
+
 ```vue
 <script setup lang="ts">
-usePageTitle('Newsletters')
+usePageTitle("Newsletters");
 
-const { data: newsletters } = await useAsyncData('newsletters', () =>
-  queryCollection('newsletters').all()
-)
+const { data: newsletters } = await useAsyncData("newsletters", () =>
+  queryCollection("newsletters").all(),
+);
 
-const { data: articleCounts } = await useAsyncData('newsletter-counts', async () => {
-  const content = await queryCollection('content')
-    .where('type', '=', 'newsletter')
-    .all()
+const { data: articleCounts } = await useAsyncData("newsletter-counts", async () => {
+  const content = await queryCollection("content").where("type", "=", "newsletter").all();
 
-  const counts: Record<string, number> = {}
+  const counts: Record<string, number> = {};
   for (const item of content) {
     if (item.newsletter) {
-      counts[item.newsletter] = (counts[item.newsletter] || 0) + 1
+      counts[item.newsletter] = (counts[item.newsletter] || 0) + 1;
     }
   }
-  return counts
-})
+  return counts;
+});
 
 // Only show newsletters with articles
 const activeNewsletters = computed(() => {
-  if (!newsletters.value || !articleCounts.value) return []
+  if (!newsletters.value || !articleCounts.value) return [];
   return newsletters.value
-    .filter(n => articleCounts.value![n.slug] > 0)
-    .sort((a, b) => (articleCounts.value![b.slug] || 0) - (articleCounts.value![a.slug] || 0))
-})
+    .filter((n) => articleCounts.value![n.slug] > 0)
+    .sort((a, b) => (articleCounts.value![b.slug] || 0) - (articleCounts.value![a.slug] || 0));
+});
 </script>
 
 <template>
@@ -490,55 +514,49 @@ const activeNewsletters = computed(() => {
 ```
 
 **`app/pages/newsletters/[slug].vue`:**
+
 ```vue
 <script setup lang="ts">
-const route = useRoute()
-const slug = route.params.slug as string
+const route = useRoute();
+const slug = route.params.slug as string;
 
 const { data: newsletter } = await useAsyncData(`newsletter-${slug}`, () =>
-  queryCollection('newsletters').where('slug', '=', slug).first()
-)
+  queryCollection("newsletters").where("slug", "=", slug).first(),
+);
 
 if (!newsletter.value) {
-  throw createError({ statusCode: 404, message: 'Newsletter not found' })
+  throw createError({ statusCode: 404, message: "Newsletter not found" });
 }
 
-usePageTitle(newsletter.value.name)
+usePageTitle(newsletter.value.name);
 
 const { data: articles } = await useAsyncData(`newsletter-articles-${slug}`, () =>
-  queryCollection('content')
-    .where('type', '=', 'newsletter')
-    .where('newsletter', '=', slug)
-    .order('date', 'DESC')
-    .all()
-)
+  queryCollection("content")
+    .where("type", "=", "newsletter")
+    .where("newsletter", "=", slug)
+    .order("date", "DESC")
+    .all(),
+);
 
 const { data: authors } = await useAsyncData(`newsletter-authors-${slug}`, async () => {
-  const authorSlugs = newsletter.value?.authors || []
-  const authorData = await queryCollection('authors')
-    .where('slug', 'IN', authorSlugs)
-    .all()
+  const authorSlugs = newsletter.value?.authors || [];
+  const authorData = await queryCollection("authors").where("slug", "IN", authorSlugs).all();
 
-  const map: Record<string, string> = {}
+  const map: Record<string, string> = {};
   for (const a of authorData) {
-    map[a.slug] = a.name
+    map[a.slug] = a.name;
   }
-  return map
-})
+  return map;
+});
 </script>
 
 <template>
   <UContainer>
-    <NewsletterHeader
-      :newsletter="newsletter!"
-      :author-names="authors"
-    />
+    <NewsletterHeader :newsletter="newsletter!" :author-names="authors" />
 
     <UDivider class="my-8" />
 
-    <h2 class="text-lg font-semibold mb-4">
-      Articles ({{ articles?.length || 0 }})
-    </h2>
+    <h2 class="text-lg font-semibold mb-4">Articles ({{ articles?.length || 0 }})</h2>
 
     <ContentList :items="articles || []" />
   </UContainer>
@@ -606,12 +624,10 @@ Update wiki-link resolver to check newsletters collection:
 
 ```typescript
 // When resolving [[slug]], also check:
-const newsletter = await queryCollection('newsletters')
-  .where('slug', '=', linkSlug)
-  .first()
+const newsletter = await queryCollection("newsletters").where("slug", "=", linkSlug).first();
 
 if (newsletter) {
-  return `/newsletters/${linkSlug}`
+  return `/newsletters/${linkSlug}`;
 }
 ```
 
@@ -623,21 +639,29 @@ if (newsletter) {
 
 ```typescript
 export interface NewsletterItem {
-  name: string
-  slug: string
-  description?: string
-  logo?: string
-  website?: string
-  authors: string[]
-  platform?: 'substack' | 'beehiiv' | 'ghost' | 'convertkit' | 'buttondown' | 'revue' | 'mailchimp' | 'other'
-  topics?: string[]
+  name: string;
+  slug: string;
+  description?: string;
+  logo?: string;
+  website?: string;
+  authors: string[];
+  platform?:
+    | "substack"
+    | "beehiiv"
+    | "ghost"
+    | "convertkit"
+    | "buttondown"
+    | "revue"
+    | "mailchimp"
+    | "other";
+  topics?: string[];
 }
 
 export interface NewsletterArticle extends ContentItem {
-  type: 'newsletter'
-  newsletter: string
-  issueNumber?: number
-  guest_author?: string
+  type: "newsletter";
+  newsletter: string;
+  issueNumber?: number;
+  guest_author?: string;
 }
 ```
 
@@ -647,20 +671,20 @@ export interface NewsletterArticle extends ContentItem {
 
 ### 7.1 Newsletter Article Validation
 
-| Check | Severity | Message |
-|-------|----------|---------|
-| `newsletter` field exists | Error | Newsletter articles must reference a newsletter profile |
-| Newsletter profile exists | Error | Newsletter `{slug}` not found in `content/newsletters/` |
-| Author in newsletter authors | Warning | Author `{author}` not listed in newsletter's authors |
-| URL domain mismatch | Warning | Article URL doesn't match newsletter website |
+| Check                        | Severity | Message                                                 |
+| ---------------------------- | -------- | ------------------------------------------------------- |
+| `newsletter` field exists    | Error    | Newsletter articles must reference a newsletter profile |
+| Newsletter profile exists    | Error    | Newsletter `{slug}` not found in `content/newsletters/` |
+| Author in newsletter authors | Warning  | Author `{author}` not listed in newsletter's authors    |
+| URL domain mismatch          | Warning  | Article URL doesn't match newsletter website            |
 
 ### 7.2 Newsletter Profile Validation
 
-| Check | Severity | Message |
-|-------|----------|---------|
-| At least one author | Error | Newsletter must have at least one author |
-| Author exists | Error | Author `{slug}` not found in `content/authors/` |
-| Website URL valid | Warning | Website URL appears invalid |
+| Check               | Severity | Message                                         |
+| ------------------- | -------- | ----------------------------------------------- |
+| At least one author | Error    | Newsletter must have at least one author        |
+| Author exists       | Error    | Author `{slug}` not found in `content/authors/` |
+| Website URL valid   | Warning  | Website URL appears invalid                     |
 
 ---
 
@@ -669,16 +693,19 @@ export interface NewsletterArticle extends ContentItem {
 ### 8.1 Unit Tests
 
 **Collection queries:**
+
 - Newsletter profiles query correctly
 - Newsletter articles query and filter by newsletter slug
 - Article counts aggregate properly
 
 **Validation:**
+
 - Invalid newsletter reference fails
 - Missing author fails
 - Guest author validation
 
 **UI components:**
+
 - NewsletterCard renders with/without logo
 - NewsletterCard renders with/without article count
 - NewsletterHeader renders author links
@@ -690,12 +717,14 @@ export interface NewsletterArticle extends ContentItem {
 ## 9. Implementation Checklist
 
 ### Phase 1: Data Model
+
 - [ ] Update `content.config.ts` with newsletters collection
 - [ ] Add `newsletter` to externalContentTypes
 - [ ] Add `newsletter`, `issueNumber`, `guest_author` to content schema
 - [ ] Add TypeScript types in `app/types/content.ts`
 
 ### Phase 2: UI
+
 - [ ] Create `NewsletterCard.vue`
 - [ ] Create `NewsletterHeader.vue`
 - [ ] Create `/newsletters/index.vue`
@@ -704,16 +733,19 @@ export interface NewsletterArticle extends ContentItem {
 - [ ] Update navigation in `site.config.ts`
 
 ### Phase 3: Search & Links
+
 - [ ] Add newsletters to command palette search
 - [ ] Update wiki-link resolver for newsletter profiles
 
 ### Phase 4: Skill Updates
+
 - [ ] Create `references/content-types/newsletter.md`
 - [ ] Create `references/newsletter-profile-creation.md`
 - [ ] Update SKILL.md with URL routing table
 - [ ] Implement auto-profile creation workflow
 
 ### Phase 5: Testing
+
 - [ ] Collection query tests
 - [ ] Validation tests
 - [ ] Component tests
@@ -723,6 +755,7 @@ export interface NewsletterArticle extends ContentItem {
 ## 10. Example Content
 
 ### Newsletter Profile
+
 ```yaml
 # content/newsletters/pragmatic-engineer.md
 ---
@@ -742,6 +775,7 @@ topics:
 ```
 
 ### Newsletter Article
+
 ```yaml
 # content/what-silicon-valley-gets-wrong-about-ai.md
 ---
@@ -760,7 +794,6 @@ summary: "A critical look at AI hype vs reality in the tech industry"
 date: 2024-02-22
 rating: 6
 ---
-
 ## Key Ideas
 
 ### The Hype Cycle Problem

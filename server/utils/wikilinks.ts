@@ -4,7 +4,7 @@
  */
 
 // Regex to match wiki links: [[slug]], [[slug#heading]], [[slug|text]], [[slug#heading|text]]
-export const wikiLinkRegex = /\[\[([^\]#|]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g
+export const wikiLinkRegex = /\[\[([^\]#|]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
 
 /**
  * Normalizes a slug for URL usage
@@ -13,7 +13,7 @@ export const wikiLinkRegex = /\[\[([^\]#|]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g
  * - Replaces spaces with hyphens
  */
 export function normalizeSlug(slug: string): string {
-  return slug.trim().toLowerCase().replace(/\s+/g, '-')
+  return slug.trim().toLowerCase().replace(/\s+/g, "-");
 }
 
 /**
@@ -21,7 +21,7 @@ export function normalizeSlug(slug: string): string {
  * Uses the same logic as Nuxt Content's heading ID generation
  */
 export function normalizeHeading(heading: string): string {
-  return heading.trim().toLowerCase().replace(/\s+/g, '-')
+  return heading.trim().toLowerCase().replace(/\s+/g, "-");
 }
 
 /**
@@ -32,17 +32,20 @@ export function normalizeHeading(heading: string): string {
  * [[slug#heading|Display Text]] → [Display Text](/slug#heading){.wiki-link}
  */
 export function transformWikiLink(slug: string, heading?: string, displayText?: string): string {
-  const normalizedSlug = normalizeSlug(slug)
-  const fragment = heading ? `#${normalizeHeading(heading)}` : ''
-  const text = displayText?.trim() || (heading ? `${slug.trim()}#${heading.trim()}` : slug.trim())
-  return `[${text}](/${normalizedSlug}${fragment}){.wiki-link}`
+  const normalizedSlug = normalizeSlug(slug);
+  const fragment = heading ? `#${normalizeHeading(heading)}` : "";
+  const text = displayText?.trim() || (heading ? `${slug.trim()}#${heading.trim()}` : slug.trim());
+  return `[${text}](/${normalizedSlug}${fragment}){.wiki-link}`;
 }
 
 /**
  * Transforms all wiki-links in a string to markdown links
  */
 export function transformWikiLinks(content: string): string {
-  return content.replace(wikiLinkRegex, (_, slug: string, heading?: string, displayText?: string) => {
-    return transformWikiLink(slug, heading, displayText)
-  })
+  return content.replace(
+    wikiLinkRegex,
+    (_, slug: string, heading?: string, displayText?: string) => {
+      return transformWikiLink(slug, heading, displayText);
+    },
+  );
 }

@@ -1,40 +1,42 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { clearError, useHead } from '#imports'
-import { UButton } from '#components'
-import type { NuxtError } from '#app'
+import { computed } from "vue";
+import { clearError, useHead } from "#imports";
+import { UButton } from "#components";
+import type { NuxtError } from "#app";
 
 const props = defineProps<{
-  error: NuxtError
-}>()
+  error: NuxtError;
+}>();
 
-const status = computed(() => props.error.statusCode || 500)
+const status = computed(() => props.error.statusCode || 500);
 
 const statusText = computed(() => {
-  if (props.error.statusMessage) return props.error.statusMessage
+  if (props.error.statusMessage) return props.error.statusMessage;
   const messages: Record<number, string> = {
-    400: 'Bad Request',
-    401: 'Unauthorized',
-    403: 'Forbidden',
-    404: 'Page Not Found',
-    500: 'Internal Server Error',
-    503: 'Service Unavailable',
-  }
-  return messages[status.value] || 'Something went wrong'
-})
+    400: "Bad Request",
+    401: "Unauthorized",
+    403: "Forbidden",
+    404: "Page Not Found",
+    500: "Internal Server Error",
+    503: "Service Unavailable",
+  };
+  return messages[status.value] || "Something went wrong";
+});
 
 function handleError() {
-  clearError({ redirect: '/' })
+  clearError({ redirect: "/" });
 }
 
 useHead({
   title: `${status.value} — ${statusText.value}`,
-})
+});
 </script>
 
 <template>
   <main class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-    <p class="font-mono text-8xl sm:text-9xl font-semibold text-neutral-300 dark:text-neutral-700 mb-4">
+    <p
+      class="font-mono text-8xl sm:text-9xl font-semibold text-neutral-300 dark:text-neutral-700 mb-4"
+    >
       {{ status }}
     </p>
 
@@ -49,12 +51,6 @@ useHead({
       {{ error.message }}
     </p>
 
-    <UButton
-      to="/"
-      size="lg"
-      @click="handleError"
-    >
-      Go home
-    </UButton>
+    <UButton to="/" size="lg" @click="handleError"> Go home </UButton>
   </main>
 </template>

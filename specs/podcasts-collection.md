@@ -7,6 +7,7 @@ Add a `podcasts` collection to enable notes to reference podcast shows, similar 
 ## Problem
 
 When capturing notes from podcast episodes, there's no way to:
+
 - Link multiple episodes to their parent show
 - See all notes from a specific podcast
 - Display podcast show metadata (artwork, hosts, description)
@@ -15,6 +16,7 @@ When capturing notes from podcast episodes, there's no way to:
 ## Solution
 
 Create a `podcasts` collection mirroring the `authors` pattern:
+
 - Podcast show profiles live in `content/podcasts/`
 - Episode notes reference shows via a `podcast` field in frontmatter
 - Podcast profile pages list all episodes from that show
@@ -32,11 +34,11 @@ Location: `content/podcasts/{slug}.md`
 name: "Huberman Lab"
 slug: "huberman-lab"
 description: "Science and science-based tools for everyday life"
-artwork: "https://..."  # Podcast cover art (any format, CSS handles sizing)
+artwork: "https://..." # Podcast cover art (any format, CSS handles sizing)
 website: "https://hubermanlab.com"
 hosts:
-  - andrew-huberman  # Required: at least one author slug, equal treatment for multiple
-feed: "https://..."  # RSS feed URL (reference only, not actively used)
+  - andrew-huberman # Required: at least one author slug, equal treatment for multiple
+feed: "https://..." # RSS feed URL (reference only, not actively used)
 platforms:
   spotify: "https://open.spotify.com/show/..."
   apple: "https://podcasts.apple.com/..."
@@ -46,6 +48,7 @@ platforms:
 ```
 
 **Notes:**
+
 - Collection `type: 'data'` - no markdown body content
 - `hosts` is required with at least one entry
 - Multiple hosts have equal treatment (no primary/secondary distinction)
@@ -56,6 +59,7 @@ platforms:
 ### Known Platforms Enum
 
 Platforms with predefined Iconify icon mappings:
+
 - `spotify` - Spotify
 - `apple` - Apple Podcasts
 - `youtube` - YouTube
@@ -102,9 +106,9 @@ urls: z.array(z.object({
 ---
 title: "How to Build Habits That Stick"
 type: podcast
-podcast: huberman-lab  # Links to podcast show
+podcast: huberman-lab # Links to podcast show
 guests:
-  - james-clear  # Guest on this episode (not a regular host)
+  - james-clear # Guest on this episode (not a regular host)
 urls:
   - platform: youtube
     url: "https://youtube.com/watch?v=..."
@@ -115,11 +119,11 @@ tags:
   - neuroscience
 date: 2025-01-15
 ---
-
 Episode notes with [[wiki-links]] to related content.
 ```
 
 **Notes:**
+
 - `podcast` field silently ignored if slug doesn't exist (no build error)
 - `guests` are author slugs for people appearing on this specific episode
 - `urls` array supports multiple platforms per episode with object format
@@ -132,6 +136,7 @@ Episode notes with [[wiki-links]] to related content.
 ### Guest vs Host Distinction
 
 When an episode has both podcast hosts and guests, display them distinctly:
+
 - Hosts come from `podcast.hosts` (via the linked podcast profile)
 - Guests come from the episode's `guests` field
 - Display format: "Guest: James Clear • Hosted by Andrew Huberman"
@@ -139,6 +144,7 @@ When an episode has both podcast hosts and guests, display them distinctly:
 ### Validation
 
 At skill-time (when adding notes), warn if:
+
 - Episode guest appears in podcast hosts list (unusual pattern)
 - Episode has no guests and no authors (attribution unclear)
 
@@ -148,9 +154,9 @@ No build-time validation - keep data flexible.
 
 ## Pages & Routes
 
-| Route | Description |
-|-------|-------------|
-| `/podcasts` | All podcast shows |
+| Route              | Description                    |
+| ------------------ | ------------------------------ |
+| `/podcasts`        | All podcast shows              |
 | `/podcasts/[slug]` | Podcast profile + all episodes |
 
 ### Podcast Index Page (`/podcasts`)
@@ -165,6 +171,7 @@ No build-time validation - keep data flexible.
 ### Podcast Profile Page (`/podcasts/[slug]`)
 
 **Header:**
+
 - Artwork (large, clickable → links back to this page for consistency)
 - Name
 - Description
@@ -173,11 +180,13 @@ No build-time validation - keep data flexible.
 - Website link
 
 **Episodes Section:**
+
 - List of all episodes from this podcast (using full ContentCard component)
 - Sorted by date (newest first)
 - Only counts/shows published episodes (not drafts)
 
 **Related Content Section:**
+
 - Notes that wiki-link to episodes from this podcast
 - Notes that wiki-link to the podcast profile itself (e.g., `[[huberman-lab]]`)
 - Combined in single "Related" section
@@ -198,6 +207,7 @@ No build-time validation - keep data flexible.
 ### PodcastCard
 
 Display podcast show in grid:
+
 ```text
 ┌─────────────────────────┐
 │  ┌─────┐                │
@@ -214,6 +224,7 @@ Display podcast show in grid:
 ### PodcastHeader
 
 Profile page header:
+
 ```text
 ┌─────────────────────────────────────────┐
 │  ┌─────────┐                            │
@@ -229,6 +240,7 @@ Profile page header:
 ### Episode Content Card Enhancement
 
 When `podcast` field is present on content, show podcast name as clickable link:
+
 ```text
 ┌─────────────────────────────────────────┐
 │ 🎙 How to Build Habits That Stick      │
@@ -241,6 +253,7 @@ When `podcast` field is present on content, show podcast name as clickable link:
 ### Episode Page Header Badge
 
 On the full episode page (not just cards), show podcast prominently:
+
 - Podcast artwork + name as badge near the title
 - Clickable, links to podcast profile
 - Display: "Guest: X" and "Hosted by: Y" distinctly if applicable
@@ -250,73 +263,81 @@ On the full episode page (not just cards), show podcast prominently:
 ## Queries
 
 ### Get podcast by slug
+
 ```typescript
-const podcast = await queryCollection('podcasts')
-  .where('slug', '=', slug)
-  .first()
+const podcast = await queryCollection("podcasts").where("slug", "=", slug).first();
 ```
 
 ### Get all episodes for a podcast
+
 ```typescript
-const episodes = await queryCollection('content')
-  .where('type', '=', 'podcast')
-  .where('podcast', '=', podcastSlug)
-  .where('draft', '!=', true)  // Published only
-  .order('date', 'desc')
-  .all()
+const episodes = await queryCollection("content")
+  .where("type", "=", "podcast")
+  .where("podcast", "=", podcastSlug)
+  .where("draft", "!=", true) // Published only
+  .order("date", "desc")
+  .all();
 ```
 
 ### Get podcasts with episode counts (for index page)
+
 ```typescript
 // Get all podcasts
-const podcasts = await queryCollection('podcasts').all()
+const podcasts = await queryCollection("podcasts").all();
 
 // Get published episodes
-const episodes = await queryCollection('content')
-  .where('type', '=', 'podcast')
-  .where('draft', '!=', true)
-  .select('podcast', 'date')
-  .all()
+const episodes = await queryCollection("content")
+  .where("type", "=", "podcast")
+  .where("draft", "!=", true)
+  .select("podcast", "date")
+  .all();
 
 // Count and get most recent date per podcast
 const podcastStats = episodes.reduce((acc, ep) => {
   if (ep.podcast) {
     if (!acc[ep.podcast]) {
-      acc[ep.podcast] = { count: 0, mostRecent: null }
+      acc[ep.podcast] = { count: 0, mostRecent: null };
     }
-    acc[ep.podcast].count++
+    acc[ep.podcast].count++;
     if (!acc[ep.podcast].mostRecent || ep.date > acc[ep.podcast].mostRecent) {
-      acc[ep.podcast].mostRecent = ep.date
+      acc[ep.podcast].mostRecent = ep.date;
     }
   }
-  return acc
-}, {})
+  return acc;
+}, {});
 
 // Filter to podcasts with episodes, sort by most recent
 const activePodcasts = podcasts
-  .filter(p => podcastStats[p.slug]?.count > 0)
+  .filter((p) => podcastStats[p.slug]?.count > 0)
   .sort((a, b) => {
-    const dateA = podcastStats[a.slug]?.mostRecent || ''
-    const dateB = podcastStats[b.slug]?.mostRecent || ''
-    return dateB.localeCompare(dateA)
-  })
+    const dateA = podcastStats[a.slug]?.mostRecent || "";
+    const dateB = podcastStats[b.slug]?.mostRecent || "";
+    return dateB.localeCompare(dateA);
+  });
 ```
 
 ### Get related content (backlinks)
+
 ```typescript
 // Notes linking to any episode of this podcast
-const episodeSlugs = episodes.map(e => e.slug)
-const relatedToEpisodes = await queryCollection('content')
-  .where('body', 'contains', episodeSlugs.map(s => `[[${s}]]`))
-  .all()
+const episodeSlugs = episodes.map((e) => e.slug);
+const relatedToEpisodes = await queryCollection("content")
+  .where(
+    "body",
+    "contains",
+    episodeSlugs.map((s) => `[[${s}]]`),
+  )
+  .all();
 
 // Notes linking to the podcast itself
-const relatedToPodcast = await queryCollection('content')
-  .where('body', 'contains', `[[${podcastSlug}]]`)
-  .all()
+const relatedToPodcast = await queryCollection("content")
+  .where("body", "contains", `[[${podcastSlug}]]`)
+  .all();
 
 // Combine and dedupe
-const related = [...new Map([...relatedToEpisodes, ...relatedToPodcast].map(n => [n.slug, n])).values()]
+const related = [
+  ...new Map([...relatedToEpisodes, ...relatedToPodcast].map((n) => [n.slug, n])).values(),
+];
 ```
 
 ---
@@ -326,6 +347,7 @@ const related = [...new Map([...relatedToEpisodes, ...relatedToPodcast].map(n =>
 ### Podcast Detection
 
 Use content analysis to detect if URL is a podcast episode:
+
 - Analyze page content for podcast indicators
 - Check metadata, structured data, page structure
 - Don't rely solely on domain patterns
@@ -333,6 +355,7 @@ Use content analysis to detect if URL is a podcast episode:
 ### Auto-Create Podcast Profile
 
 When adding a podcast episode note:
+
 1. Check if podcast profile exists in `content/podcasts/`
 2. If not, **always auto-create** the profile:
    - Fetch full metadata: name, description, artwork, website, all available platforms
@@ -351,6 +374,7 @@ When adding a podcast episode note:
 ### Validation
 
 At skill-time, warn if:
+
 - Guest author appears in podcast hosts (unusual pattern)
 - Referenced podcast slug doesn't match any profile
 
@@ -412,32 +436,32 @@ content/podcasts/
 
 Key decisions from specification review:
 
-| Topic | Decision |
-|-------|----------|
-| Host field | Required (at least one) |
-| Multiple hosts | Equal treatment (no primary) |
-| Sort order | Most recent episode first |
-| Empty podcasts | Hidden from index |
-| Orphan podcast refs | Silently ignored |
-| Multi-podcast episodes | Not supported (single podcast) |
-| Podcast name in cards | Clickable link to profile |
-| Artwork fallback | Generic podcast icon |
-| Platforms | Extensible object, 4 known (Spotify, Apple, YouTube, RSS) |
-| Episode list style | Full ContentCard component |
-| Auto-create profiles | Always, with full metadata |
-| Nav placement | Top-level item |
-| Backlinks section | Include notes linking to podcast + episodes |
-| Collection type | Data (no body content) |
-| Platform icons | Iconify |
-| Episode counts | Published only |
-| Guest attribution | Distinct from hosts, explicit `guests` field |
-| Episode URLs | Array of {platform, url} objects |
-| Name truncation | Show full name |
-| Validation | Skill-time only |
-| 404 handling | Standard 404 page |
-| Index filtering | None |
-| Slug format | ASCII only |
-| Missing metadata | Web search supplement |
+| Topic                  | Decision                                                  |
+| ---------------------- | --------------------------------------------------------- |
+| Host field             | Required (at least one)                                   |
+| Multiple hosts         | Equal treatment (no primary)                              |
+| Sort order             | Most recent episode first                                 |
+| Empty podcasts         | Hidden from index                                         |
+| Orphan podcast refs    | Silently ignored                                          |
+| Multi-podcast episodes | Not supported (single podcast)                            |
+| Podcast name in cards  | Clickable link to profile                                 |
+| Artwork fallback       | Generic podcast icon                                      |
+| Platforms              | Extensible object, 4 known (Spotify, Apple, YouTube, RSS) |
+| Episode list style     | Full ContentCard component                                |
+| Auto-create profiles   | Always, with full metadata                                |
+| Nav placement          | Top-level item                                            |
+| Backlinks section      | Include notes linking to podcast + episodes               |
+| Collection type        | Data (no body content)                                    |
+| Platform icons         | Iconify                                                   |
+| Episode counts         | Published only                                            |
+| Guest attribution      | Distinct from hosts, explicit `guests` field              |
+| Episode URLs           | Array of {platform, url} objects                          |
+| Name truncation        | Show full name                                            |
+| Validation             | Skill-time only                                           |
+| 404 handling           | Standard 404 page                                         |
+| Index filtering        | None                                                      |
+| Slug format            | ASCII only                                                |
+| Missing metadata       | Web search supplement                                     |
 
 ---
 

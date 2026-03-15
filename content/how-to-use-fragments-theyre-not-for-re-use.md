@@ -40,9 +40,9 @@ What seemed like DRY code created an **implicit dependency** between unrelated f
 fragment UserFields on User {
   id
   name
-  avatar      # Added for ProfileCard
-  email       # Added for SettingsPage
-  lastLogin   # Added for AdminDashboard
+  avatar # Added for ProfileCard
+  email # Added for SettingsPage
+  lastLogin # Added for AdminDashboard
 }
 
 # ProfileCard fetches email and lastLogin it never uses
@@ -94,6 +94,7 @@ function ProfileCard({ user }: { user: ProfileCard_user }) {
 ### 3. Write GraphQL That Mirrors Your Code
 
 Translate client code directly into GraphQL:
+
 - Each function/component → a fragment
 - Field accesses → fields in the fragment
 - Child component calls → fragment spreads
@@ -119,15 +120,18 @@ fragment UserProfile_user on User {
 ## Handling Objections
 
 **"Won't queries get larger?"**
+
 - Field collection deduplicates during execution—repeated fields resolve once
 - Use persisted documents to avoid sending large queries over the wire
 - Optimize duplicates during the persist step if parsing cost matters
 
 **"Fragment models increase binary size"**
+
 - Fragment models matter most at dev time for compile-time checks
 - Production builds can merge models into type models via compiler optimization
 
 **"What about generic interfaces?"**
+
 - Sorting functions that work on any list need fields like `createdAt`
 - This creates friction with strict collocation—an open problem Meta is solving with [[async-defer-even-more-matt-mahoney-meta|generic fragments]]
 

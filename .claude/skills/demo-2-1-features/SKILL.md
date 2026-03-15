@@ -67,18 +67,22 @@ Present findings in a summary:
 ## 📊 Knowledge Graph Quick Scan Results
 
 ### Content Breakdown
+
 [Agent 1 results as table]
 
 ### Orphan Notes (Need Links)
+
 [Agent 2 results as list]
 
 ### Recently Modified
+
 [Agent 3 results as list]
 ```
 
 ## Phase 3: Interactive Follow-up
 
 Use AskUserQuestion with these options:
+
 - Question: "What would you like to explore next?"
 - Options:
   1. "Deep dive into orphan notes" - Show more orphans with suggestions

@@ -26,6 +26,7 @@ Anthropic built the Claude Agent SDK by extracting patterns from Claude Code. En
 The bash tool made Claude Code exceptional. It functions as the first "code mode"—enabling programmatic tool composition before formal code mode existed.
 
 What bash enables:
+
 - **Dynamic scripts**: Generate and execute code on-demand rather than hardcoding tools
 - **Composability**: Pipe outputs, store results to files, chain operations
 - **Existing software**: Use ffmpeg, jq, grep, LibreOffice without building integrations
@@ -38,6 +39,7 @@ Without bash, an email agent searching for "how much did I spend on ridesharing?
 Claude Code succeeds at non-coding work because it generates code to solve problems.
 
 When asked about weather and outfit recommendations, Claude Code might:
+
 1. Write a script to fetch a weather API
 2. Get location dynamically from IP address
 3. Call a sub-agent for wardrobe recommendations
@@ -49,11 +51,11 @@ This pattern—composing APIs via generated code—applies to email processing, 
 
 Every agent operation falls into tools, bash, or codegen:
 
-| Method | Pros | Cons |
-|--------|------|------|
-| **Tools** | Structured, reliable, minimal retries | High context usage, not composable |
-| **Bash** | Composable, low context, uses existing software | Discovery latency, slightly lower call rates |
-| **Codegen** | Highly composable, dynamic, API composition | Longest execution, needs linking/compilation |
+| Method      | Pros                                            | Cons                                         |
+| ----------- | ----------------------------------------------- | -------------------------------------------- |
+| **Tools**   | Structured, reliable, minimal retries           | High context usage, not composable           |
+| **Bash**    | Composable, low context, uses existing software | Discovery latency, slightly lower call rates |
+| **Codegen** | Highly composable, dynamic, API composition     | Longest execution, needs linking/compilation |
 
 Use tools for atomic, irreversible actions (write file, send email). Use bash for composable workflows (search, lint, memory). Use codegen for dynamic logic and API composition.
 

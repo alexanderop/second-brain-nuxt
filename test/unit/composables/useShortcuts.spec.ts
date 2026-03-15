@@ -1,99 +1,109 @@
-import { describe, expect, it } from 'vitest'
-import { shortcutsList, useShortcutsModal, type Shortcut } from '../../../app/composables/useShortcuts'
+import { describe, expect, it } from "vite-plus/test";
+import {
+  shortcutsList,
+  useShortcutsModal,
+  type Shortcut,
+} from "../../../app/composables/useShortcuts";
 
-describe('shortcutsList', () => {
-  it('exports an array of shortcuts', () => {
-    expect(Array.isArray(shortcutsList)).toBe(true)
-    expect(shortcutsList.length).toBeGreaterThan(0)
-  })
+describe("shortcutsList", () => {
+  it("exports an array of shortcuts", () => {
+    expect(Array.isArray(shortcutsList)).toBe(true);
+    expect(shortcutsList.length).toBeGreaterThan(0);
+  });
 
-  it('has valid structure for each shortcut', () => {
-    const validCategories = ['navigation', 'actions', 'general']
+  it("has valid structure for each shortcut", () => {
+    const validCategories = ["navigation", "actions", "general"];
 
     shortcutsList.forEach((shortcut: Shortcut) => {
       // Each shortcut should have keys array
-      expect(Array.isArray(shortcut.keys)).toBe(true)
-      expect(shortcut.keys.length).toBeGreaterThan(0)
+      expect(Array.isArray(shortcut.keys)).toBe(true);
+      expect(shortcut.keys.length).toBeGreaterThan(0);
 
       // Each shortcut should have a description
-      expect(typeof shortcut.description).toBe('string')
-      expect(shortcut.description.length).toBeGreaterThan(0)
+      expect(typeof shortcut.description).toBe("string");
+      expect(shortcut.description.length).toBeGreaterThan(0);
 
       // Each shortcut should have a valid category
-      expect(validCategories).toContain(shortcut.category)
-    })
-  })
+      expect(validCategories).toContain(shortcut.category);
+    });
+  });
 
-  it('contains expected navigation shortcuts', () => {
-    const navShortcuts = shortcutsList.filter(s => s.category === 'navigation')
-    expect(navShortcuts.length).toBeGreaterThan(0)
+  it("contains expected navigation shortcuts", () => {
+    const navShortcuts = shortcutsList.filter((s) => s.category === "navigation");
+    expect(navShortcuts.length).toBeGreaterThan(0);
 
     // Should have go-to-home shortcut
-    const homeShortcut = navShortcuts.find(s => s.description.toLowerCase().includes('home'))
-    expect(homeShortcut).toBeDefined()
+    const homeShortcut = navShortcuts.find((s) => s.description.toLowerCase().includes("home"));
+    expect(homeShortcut).toBeDefined();
 
     // Should have go-to-books shortcut
-    const booksShortcut = navShortcuts.find(s => s.description.toLowerCase().includes('books'))
-    expect(booksShortcut).toBeDefined()
-    expect(booksShortcut?.keys).toEqual(['G', 'B'])
-  })
+    const booksShortcut = navShortcuts.find((s) => s.description.toLowerCase().includes("books"));
+    expect(booksShortcut).toBeDefined();
+    expect(booksShortcut?.keys).toEqual(["G", "B"]);
+  });
 
-  it('contains expected general shortcuts', () => {
-    const generalShortcuts = shortcutsList.filter(s => s.category === 'general')
-    expect(generalShortcuts.length).toBeGreaterThan(0)
+  it("contains expected general shortcuts", () => {
+    const generalShortcuts = shortcutsList.filter((s) => s.category === "general");
+    expect(generalShortcuts.length).toBeGreaterThan(0);
 
     // Should have search shortcut
-    const searchShortcut = generalShortcuts.find(s => s.description.toLowerCase().includes('search'))
-    expect(searchShortcut).toBeDefined()
+    const searchShortcut = generalShortcuts.find((s) =>
+      s.description.toLowerCase().includes("search"),
+    );
+    expect(searchShortcut).toBeDefined();
 
     // Should have keyboard shortcuts help
-    const helpShortcut = generalShortcuts.find(s => s.description.toLowerCase().includes('shortcut'))
-    expect(helpShortcut).toBeDefined()
-  })
+    const helpShortcut = generalShortcuts.find((s) =>
+      s.description.toLowerCase().includes("shortcut"),
+    );
+    expect(helpShortcut).toBeDefined();
+  });
 
-  it('contains expected action shortcuts', () => {
-    const actionShortcuts = shortcutsList.filter(s => s.category === 'actions')
-    expect(actionShortcuts.length).toBeGreaterThan(0)
+  it("contains expected action shortcuts", () => {
+    const actionShortcuts = shortcutsList.filter((s) => s.category === "actions");
+    expect(actionShortcuts.length).toBeGreaterThan(0);
 
     // Should have next/previous item shortcuts
-    const nextShortcut = actionShortcuts.find(s => s.description.toLowerCase().includes('next'))
-    expect(nextShortcut).toBeDefined()
+    const nextShortcut = actionShortcuts.find((s) => s.description.toLowerCase().includes("next"));
+    expect(nextShortcut).toBeDefined();
 
-    const prevShortcut = actionShortcuts.find(s => s.description.toLowerCase().includes('previous'))
-    expect(prevShortcut).toBeDefined()
+    const prevShortcut = actionShortcuts.find((s) =>
+      s.description.toLowerCase().includes("previous"),
+    );
+    expect(prevShortcut).toBeDefined();
 
     // Should have open resource link shortcut
-    const openLinkShortcut = actionShortcuts.find(s => s.keys.includes('O'))
-    expect(openLinkShortcut).toBeDefined()
-    expect(openLinkShortcut?.description.toLowerCase()).toContain('resource')
+    const openLinkShortcut = actionShortcuts.find((s) => s.keys.includes("O"));
+    expect(openLinkShortcut).toBeDefined();
+    expect(openLinkShortcut?.description.toLowerCase()).toContain("resource");
 
     // Should have open author page shortcut
-    const openAuthorShortcut = actionShortcuts.find(s => s.keys.includes('A'))
-    expect(openAuthorShortcut).toBeDefined()
-    expect(openAuthorShortcut?.description.toLowerCase()).toContain('author')
-  })
+    const openAuthorShortcut = actionShortcuts.find((s) => s.keys.includes("A"));
+    expect(openAuthorShortcut).toBeDefined();
+    expect(openAuthorShortcut?.description.toLowerCase()).toContain("author");
+  });
 
-  it('has unique key combinations', () => {
-    const keyCombos = shortcutsList.map(s => s.keys.join('+'))
-    const uniqueCombos = new Set(keyCombos)
-    expect(uniqueCombos.size).toBe(keyCombos.length)
-  })
-})
+  it("has unique key combinations", () => {
+    const keyCombos = shortcutsList.map((s) => s.keys.join("+"));
+    const uniqueCombos = new Set(keyCombos);
+    expect(uniqueCombos.size).toBe(keyCombos.length);
+  });
+});
 
-describe('useShortcutsModal', () => {
-  it('returns a ref with default value false', () => {
-    const isOpen = useShortcutsModal()
-    expect(isOpen.value).toBe(false)
-  })
+describe("useShortcutsModal", () => {
+  it("returns a ref with default value false", () => {
+    const isOpen = useShortcutsModal();
+    expect(isOpen.value).toBe(false);
+  });
 
-  it('returns a mutable ref that can be toggled', () => {
-    const isOpen = useShortcutsModal()
-    expect(isOpen.value).toBe(false)
+  it("returns a mutable ref that can be toggled", () => {
+    const isOpen = useShortcutsModal();
+    expect(isOpen.value).toBe(false);
 
-    isOpen.value = true
-    expect(isOpen.value).toBe(true)
+    isOpen.value = true;
+    expect(isOpen.value).toBe(true);
 
-    isOpen.value = false
-    expect(isOpen.value).toBe(false)
-  })
-})
+    isOpen.value = false;
+    expect(isOpen.value).toBe(false);
+  });
+});

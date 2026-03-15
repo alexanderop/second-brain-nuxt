@@ -29,6 +29,7 @@ Three steps:
 3. **Query and mutate** — Components use `useStore()` to access collections, run live queries, and create form objects
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Define["1. Define"]
@@ -63,6 +64,7 @@ flowchart TD
     Comp -->|optimistic mutations| NC
     NC -->|sync| Sources
 </pre>
+
 ::
 
 ## Code Snippets
@@ -74,22 +76,22 @@ Drop a file in `app/rstore/` and Nuxt auto-scans it.
 ```typescript
 // app/rstore/todo.ts
 export default RStoreSchema.withItemType<Todo>().defineCollection({
-  name: 'todos',
+  name: "todos",
   hooks: {
     fetchFirst: ({ key }) => $fetch(`/api/todos/${key}`),
-    fetchMany: ({ params }) => $fetch('/api/todos', { query: params }),
-    create: ({ item }) => $fetch('/api/todos', { method: 'POST', body: item }),
-    update: ({ key, item }) => $fetch(`/api/todos/${key}`, { method: 'PATCH', body: item }),
-    delete: ({ key }) => $fetch(`/api/todos/${key}`, { method: 'DELETE' }),
+    fetchMany: ({ params }) => $fetch("/api/todos", { query: params }),
+    create: ({ item }) => $fetch("/api/todos", { method: "POST", body: item }),
+    update: ({ key, item }) => $fetch(`/api/todos/${key}`, { method: "PATCH", body: item }),
+    delete: ({ key }) => $fetch(`/api/todos/${key}`, { method: "DELETE" }),
   },
-})
+});
 ```
 
 ### Querying Data
 
 ```typescript
-const store = useStore()
-const { data: todos } = store.todos.query(q => q.many())
+const store = useStore();
+const { data: todos } = store.todos.query((q) => q.many());
 ```
 
 Queries are reactive and co-located with the components that consume them. The normalized cache deduplicates — fetch a user in a list, and their detail page already has the data.
@@ -106,13 +108,13 @@ Queries are reactive and co-located with the components that consume them. The n
 
 The critical design difference: rstore computes reads client-side. Filtering, sorting, all of it runs against the local cache. Pinia Colada and TanStack Query are server-first — they cache query results from the server. rstore stores normalized entities locally and derives everything from them. That's the same local-first read pattern sync engines use, without requiring you to adopt a sync protocol.
 
-|  | rstore | Pinia | Pinia Colada | Apollo |
-|---|---|---|---|---|
-| **Cache type** | Normalized reactive | Manual | Query-based | Normalized reactive |
-| **Read model** | Local-first (client-side compute) | N/A | Server-first | Server-first |
-| **Data source** | Any (plugins) | Any (manual) | Any (in queries) | GraphQL only |
-| **Forms** | Built-in | Manual | No | No |
-| **Offline** | Yes | Manual | No | Limited |
+|                 | rstore                            | Pinia        | Pinia Colada     | Apollo              |
+| --------------- | --------------------------------- | ------------ | ---------------- | ------------------- |
+| **Cache type**  | Normalized reactive               | Manual       | Query-based      | Normalized reactive |
+| **Read model**  | Local-first (client-side compute) | N/A          | Server-first     | Server-first        |
+| **Data source** | Any (plugins)                     | Any (manual) | Any (in queries) | GraphQL only        |
+| **Forms**       | Built-in                          | Manual       | No               | No                  |
+| **Offline**     | Yes                               | Manual       | No               | Limited             |
 
 Multiple plugins can stack — read from IndexedDB first, fall back to REST, sync in the background. The mutation history enables replay for sync engines, bridging the gap between rstore's cache layer and a full sync protocol when you're ready for one.
 

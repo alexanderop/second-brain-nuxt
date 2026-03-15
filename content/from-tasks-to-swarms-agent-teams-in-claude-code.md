@@ -17,7 +17,7 @@ In my previous post on [Spec Driven Development: When Architecture Becomes Execu
 
 This week, Anthropic shipped something that makes that workflow look like a warmup.
 
-**Agent teams** landed with Opus 4.6 on February 5, 2026. The core idea: agents can now *talk to each other*. Not just report results back to a parent — they message peers, share discoveries mid-task, challenge each other's approaches, and coordinate through a shared task list. It's the swarm pattern, built into Claude Code as a first-class feature.
+**Agent teams** landed with Opus 4.6 on February 5, 2026. The core idea: agents can now _talk to each other_. Not just report results back to a parent — they message peers, share discoveries mid-task, challenge each other's approaches, and coordinate through a shared task list. It's the swarm pattern, built into Claude Code as a first-class feature.
 
 The [Claude Code's New Task System Explained](/claude-codes-new-task-system-explained) I covered last time solved **context rot** — each subagent gets a fresh context window. Agent teams solve the next problem: **coordination rot**. When parallel agents work on different assumptions with no way to sync, you get merge conflicts, duplicated work, and inconsistent implementations. The inbox fixes that.
 
@@ -34,11 +34,11 @@ The previous post covered the task system (`TaskCreate`, `TaskUpdate`, `TaskList
 
 **Primitive 2: The Mailbox.** `SendMessage` is the communication backbone. Three message types:
 
-| Type | Purpose |
-|------|---------|
-| `message` | Direct message to a specific teammate |
-| `broadcast` | Message all teammates (expensive — use sparingly) |
-| `shutdown_request` | Graceful teardown when work is complete |
+| Type               | Purpose                                           |
+| ------------------ | ------------------------------------------------- |
+| `message`          | Direct message to a specific teammate             |
+| `broadcast`        | Message all teammates (expensive — use sparingly) |
+| `shutdown_request` | Graceful teardown when work is complete           |
 
 Plus `plan_approval_response` for the team lead to approve or reject a teammate's implementation plan before they start coding.
 
@@ -55,13 +55,13 @@ Plus `plan_approval_response` for the team lead to approve or reject a teammate'
 
 ### Subagents vs. Agent Teams
 
-| Aspect | Subagents (Previous Post) | Agent Teams (New) |
-|--------|--------------------------|-------------------|
-| **Lifecycle** | Spawn, execute, return, die | Spawn, persist, work across multiple tasks |
-| **Communication** | Report results to parent only | Message any teammate directly |
-| **Coordination** | Main agent manages everything | Shared task list + peer-to-peer messaging |
-| **Topology** | Star (hub and spoke) | Mesh (any-to-any) |
-| **Best for** | Focused, independent work | Cross-cutting work requiring collaboration |
+| Aspect            | Subagents (Previous Post)     | Agent Teams (New)                          |
+| ----------------- | ----------------------------- | ------------------------------------------ |
+| **Lifecycle**     | Spawn, execute, return, die   | Spawn, persist, work across multiple tasks |
+| **Communication** | Report results to parent only | Message any teammate directly              |
+| **Coordination**  | Main agent manages everything | Shared task list + peer-to-peer messaging  |
+| **Topology**      | Star (hub and spoke)          | Mesh (any-to-any)                          |
+| **Best for**      | Focused, independent work     | Cross-cutting work requiring collaboration |
 
 <!-- Figure: "Agent Team Architecture" -->
 <!-- Midjourney prompt: clean technical architecture diagram on dark background, center shows a "Team Lead" node connected to a horizontal "Shared Task List" bar below it, three "Teammate" nodes arranged below the task list, each connected to the task list with arrows labeled "claims", bidirectional arrows between teammates labeled "inbox", dotted lines from team lead to each teammate labeled "spawns", flat minimal style, blue and cyan accent colors, monospace labels --ar 16:9 --v 6 -->
@@ -128,18 +128,18 @@ TeamDelete()
 
 ### The Results
 
-| Feature | Fixes | Highlights |
-|---------|------:|-----------|
-| **local-first** | 5 | Fixed broken version comparison, wrong status element ID |
-| **vue-demos** | 6 | Deleted non-functional TeleportDemo, added null checks |
-| **mdx-components** | 8 | Fixed ChatUI duplicate ID, deleted empty file, typed props |
-| **goals** | 6 | Fixed undefined CSS, replaced JSON.parse with structuredClone |
-| **agent-teams** | 4 | Deleted placeholder components, shared TaskStatus type |
-| **filetree** | 5 | Deduplicated 70 lines of icon rendering, shared TreeNode type |
-| **llm-education** | 5 | Extracted 8 inner components from a 1073-line file |
-| **og-images** | 7 | Fixed font loading bug, shared theme, consistent exports |
-| **presentation** | 8 | Deleted dead hook, deduplicated types/constants/utils |
-| **prompts** | 8 | Fixed PromptTool type, deduplicated utils, capped animation |
+| Feature            | Fixes | Highlights                                                    |
+| ------------------ | ----: | ------------------------------------------------------------- |
+| **local-first**    |     5 | Fixed broken version comparison, wrong status element ID      |
+| **vue-demos**      |     6 | Deleted non-functional TeleportDemo, added null checks        |
+| **mdx-components** |     8 | Fixed ChatUI duplicate ID, deleted empty file, typed props    |
+| **goals**          |     6 | Fixed undefined CSS, replaced JSON.parse with structuredClone |
+| **agent-teams**    |     4 | Deleted placeholder components, shared TaskStatus type        |
+| **filetree**       |     5 | Deduplicated 70 lines of icon rendering, shared TreeNode type |
+| **llm-education**  |     5 | Extracted 8 inner components from a 1073-line file            |
+| **og-images**      |     7 | Fixed font loading bug, shared theme, consistent exports      |
+| **presentation**   |     8 | Deleted dead hook, deduplicated types/constants/utils         |
+| **prompts**        |     8 | Fixed PromptTool type, deduplicated utils, capped animation   |
 
 **62 fixes across 10 features. Zero regressions.**
 
@@ -266,13 +266,13 @@ Always shut down teammates before calling `TeamDelete`. The team lead handles th
 
 Where do agent teams sit in the broader landscape?
 
-| | Subagents | Agent Teams | Ralph | Gas Town |
-|---|---|---|---|---|
-| **Scale** | 1-5 tasks | 3-15 agents | 1 loop, days | 20-30 agents |
-| **Communication** | None (return only) | Peer messaging | None (file only) | Structured mailboxes |
-| **Persistence** | Session-scoped | Team-scoped | File-scoped | Git-backed |
-| **Coordination** | Star topology | Mesh topology | Stateless loop | Hierarchical roles |
-| **Best for** | Independent tasks | Collaborative work | Grinding a backlog | Industrial-scale projects |
+|                   | Subagents          | Agent Teams        | Ralph              | Gas Town                  |
+| ----------------- | ------------------ | ------------------ | ------------------ | ------------------------- |
+| **Scale**         | 1-5 tasks          | 3-15 agents        | 1 loop, days       | 20-30 agents              |
+| **Communication** | None (return only) | Peer messaging     | None (file only)   | Structured mailboxes      |
+| **Persistence**   | Session-scoped     | Team-scoped        | File-scoped        | Git-backed                |
+| **Coordination**  | Star topology      | Mesh topology      | Stateless loop     | Hierarchical roles        |
+| **Best for**      | Independent tasks  | Collaborative work | Grinding a backlog | Industrial-scale projects |
 
 **Subagents** (previous post): spawn, execute, return. Perfect for focused work.
 
@@ -290,17 +290,20 @@ The C compiler proof-of-concept from Nicholas Carlini at Anthropic showed what's
 ## When to Use Agent Teams
 
 **Sweet spots:**
+
 - Parallel code reviews (one agent per module)
 - Cross-layer implementation (frontend + backend + tests)
 - Competing hypotheses ([Anthropic Just Dropped Agent Swarms](/anthropic-just-dropped-agent-swarms) calls this the "devil's advocate pattern")
 - Large refactors where tasks aren't fully independent
 
 **When to skip:**
+
 - Sequential dependencies (step 2 needs step 1 to finish)
 - Same-file edits (agents overwrite each other)
 - Simple tasks (coordination overhead > actual work)
 
 **Known limitations** (as of Feb 2026):
+
 - Session resumption can break in-process teammates
 - One team per session
 - Split-pane mode doesn't work in VS Code terminal or Ghostty
@@ -327,9 +330,9 @@ The spec-driven workflow from the previous post still applies. Research with par
 
 Two weeks ago, subagents gave us **parallel execution** with fresh context windows. Agent teams give us **parallel collaboration** — agents that share discoveries, challenge assumptions, and coordinate in real time.
 
-The trajectory is clear. Subagents were workers. Agent teams are colleagues. Gas Town is the factory. We're moving from "AI that writes code" to "AI that *organizes* work."
+The trajectory is clear. Subagents were workers. Agent teams are colleagues. Gas Town is the factory. We're moving from "AI that writes code" to "AI that _organizes_ work."
 
-*Try it yourself: Enable `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, open a project with multiple modules, and prompt "use a team of agents, one per module." Watch the inbox light up.*
+_Try it yourself: Enable `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, open a project with multiple modules, and prompt "use a team of agents, one per module." Watch the inbox light up._
 
 ## Connections
 

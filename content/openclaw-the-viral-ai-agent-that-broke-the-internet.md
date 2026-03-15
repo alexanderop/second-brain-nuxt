@@ -20,22 +20,22 @@ date: 2026-02-14
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 0:00 | Cold open montage — voice prompting, self-modifying software |
-| ~0:08 | The one-hour prototype: WhatsApp-to-Claude-Code relay built in Marrakesh |
-| ~0:20 | Going viral, Discord support, 6,600 commits in January |
-| ~0:28 | Why OpenClaw won: fun, weirdness, self-modifying software |
-| ~0:38 | The name-change saga — five names, Anthropic's email, crypto snipers |
-| ~0:55 | MoltBook: the AI-agent social network and "the finest slop" |
-| ~1:08 | Security: prompt injection, sandboxing, VirusTotal partnership |
-| ~1:20 | The "Agentic Trap" curve and voice-first prompting |
-| ~1:40 | Claude Opus 4.6 vs GPT-5.3 Codex |
-| ~1:55 | Soul.md: agent personality and the poignant "hello future session" passage |
-| ~2:10 | Workflow: no worktrees, no plan mode, always commit to main |
-| ~2:30 | Browser use via Playwright — "every app is now a slow API" |
+| Time  | Topic                                                                        |
+| ----- | ---------------------------------------------------------------------------- |
+| 0:00  | Cold open montage — voice prompting, self-modifying software                 |
+| ~0:08 | The one-hour prototype: WhatsApp-to-Claude-Code relay built in Marrakesh     |
+| ~0:20 | Going viral, Discord support, 6,600 commits in January                       |
+| ~0:28 | Why OpenClaw won: fun, weirdness, self-modifying software                    |
+| ~0:38 | The name-change saga — five names, Anthropic's email, crypto snipers         |
+| ~0:55 | MoltBook: the AI-agent social network and "the finest slop"                  |
+| ~1:08 | Security: prompt injection, sandboxing, VirusTotal partnership               |
+| ~1:20 | The "Agentic Trap" curve and voice-first prompting                           |
+| ~1:40 | Claude Opus 4.6 vs GPT-5.3 Codex                                             |
+| ~1:55 | Soul.md: agent personality and the poignant "hello future session" passage   |
+| ~2:10 | Workflow: no worktrees, no plan mode, always commit to main                  |
+| ~2:30 | Browser use via Playwright — "every app is now a slow API"                   |
 | ~2:55 | 80% of apps will disappear — personal agents replace single-purpose software |
-| ~3:10 | Programming becomes "knitting" — builders over coders |
+| ~3:10 | Programming becomes "knitting" — builders over coders                        |
 
 ## Key Arguments
 
@@ -52,6 +52,7 @@ OpenClaw is written in TypeScript and the agent has full awareness of its own so
 Developers go through three phases when working with coding agents: naive short prompts, over-engineered orchestration with complex multi-agent setups, and then a return to simple conversational prompts (often via voice). The expert level looks deceptively simple because the practitioner has internalized how agents perceive codebases.
 
 ::mermaid
+
 <pre>
 flowchart LR
     A["`Phase 1
@@ -64,6 +65,7 @@ Orchestration
 Short Prompts Again
 (Expert)`"]
 </pre>
+
 ::
 
 ### Empathy for the agent

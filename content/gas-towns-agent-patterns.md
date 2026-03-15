@@ -19,7 +19,7 @@ Maggie Appleton analyzes Steve Yegge's Gas Town—an agent orchestrator managing
 
 ## Key Arguments
 
-**Design becomes the bottleneck.** When agents churn through implementation plans at scale, thoughtful architecture and planning constrain progress. Agents cannot determine *what* should be built, only *how* to build it.
+**Design becomes the bottleneck.** When agents churn through implementation plans at scale, thoughtful architecture and planning constrain progress. Agents cannot determine _what_ should be built, only _how_ to build it.
 
 **Emerging orchestration patterns.** Beneath the chaos lie useful frameworks:
 
@@ -31,6 +31,7 @@ Maggie Appleton analyzes Steve Yegge's Gas Town—an agent orchestrator managing
 ## Orchestration Model
 
 ::mermaid
+
 <pre>
 graph TD
     Mayor[Mayor<br/>Planning & Prioritization] --> Polecats[Polecats<br/>Implementation Agents]
@@ -40,6 +41,7 @@ graph TD
     Witness --> Git
     Refinery --> Git
 </pre>
+
 ::
 
 **Economic viability despite high costs.** Gas Town costs $2,000–$5,000 monthly in API expenses—10–30% of a senior developer's annual salary. If such systems achieve 2–3x productivity gains, the cost-benefit analysis becomes defensible.

@@ -20,7 +20,7 @@ Traditional databases are built around a single assumption: what matters is the 
 
 AI agents break this assumption. When an agent recommends approving a $100K credit line increase, the interesting question isn't whether the answer is right — it's whether you can trace the reasoning. What past decisions informed it? What policies applied? If it goes wrong, what caused it?
 
-This requires the Event Clock: a graph structure that captures decision traces with full context, reasoning, causal chains, and policy applications. Not an audit log (which records actions), but a knowledge graph that captures the *why* behind every significant decision.
+This requires the Event Clock: a graph structure that captures decision traces with full context, reasoning, causal chains, and policy applications. Not an audit log (which records actions), but a knowledge graph that captures the _why_ behind every significant decision.
 
 ## The Context Graph Data Model
 
@@ -33,6 +33,7 @@ The data model separates entities (what exists) from decision traces (what happe
 The real power is in the relationships. Causal chains like `(:Decision)-[:CAUSED]->(:Decision)` or precedent links like `(:Decision)-[:PRECEDENT_FOR]->(:Decision)` map naturally to graph edges. In SQL, tracing a causal chain requires recursive CTEs with performance that degrades exponentially by depth. In Neo4j, it's a two-line Cypher query.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph SC[State Clock]
@@ -63,6 +64,7 @@ flowchart TD
     GDS --> HYBRID[Hybrid Search]
     HYBRID --> REC[Explainable Recommendations]
 </pre>
+
 ::
 
 ## Graph Data Science as the Secret Weapon
@@ -95,7 +97,7 @@ The concept comes from Jaya Gupta's thesis that enterprise value is shifting fro
 
 Dharmesh Shah offers a reality check — most companies are barely deploying semi-autonomous agents, let alone building context graphs. The vision is sound but the timeline may be optimistic.
 
-What lands for me: the distinction between the State Clock (what's true now) and the Event Clock (what happened, in what order, and with what reasoning) is clean. Every production AI system I've seen struggles with explainability — the model gives an answer but nobody can tell you *why*. Context graphs offer a structural solution: make the "why" a first-class data structure rather than an afterthought.
+What lands for me: the distinction between the State Clock (what's true now) and the Event Clock (what happened, in what order, and with what reasoning) is clean. Every production AI system I've seen struggles with explainability — the model gives an answer but nobody can tell you _why_. Context graphs offer a structural solution: make the "why" a first-class data structure rather than an afterthought.
 
 ## Code Snippets
 
@@ -130,4 +132,4 @@ CALL gds.louvain.mutate('decision-graph', {
 
 - [[12-factor-agents]] — Both grapple with making AI agent decisions traceable; 12-factor agents argue for owning your context window from the code side, while context graphs capture that context externally as a persistent, queryable structure
 - [[agentic-design-patterns]] — The memory and RAG patterns in this book are exactly what context graphs implement at the infrastructure level — persistent decision memory with precedent retrieval
-- [[advanced-context-engineering-for-coding-agents]] — Same core thesis from a different angle: AI output quality depends on context quality. Context engineering manages the *input* to agents; context graphs manage the *output* trail of agent decisions
+- [[advanced-context-engineering-for-coding-agents]] — Same core thesis from a different angle: AI output quality depends on context quality. Context engineering manages the _input_ to agents; context graphs manage the _output_ trail of agent decisions

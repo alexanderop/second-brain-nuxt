@@ -21,6 +21,7 @@ Spec-Driven Development (SDD) represents a fundamental inversion: specifications
 ## The Five-Layer Execution Model
 
 ::mermaid
+
 <pre>
 flowchart TD
     Spec["Specification Layer<br/>Declarative system intent"]
@@ -35,6 +36,7 @@ flowchart TD
     Val --> Run
     Val -.->|"drift detected"| Spec
 </pre>
+
 ::
 
 The model flows from declarative intent at the top to operationalized system at the bottom. Drift detection creates a feedback loop—violations surface at validation and propagate back to specification review.
@@ -73,11 +75,13 @@ policies:
 ## Engineering Trade-offs
 
 **Benefits:**
+
 - Architectural determinism replaces emergent behavior
 - Drift prevention before runtime rather than post-facto discovery
 - Multi-language parity through unified specifications
 
 **Costs:**
+
 - Specifications become primary complexity surfaces requiring schema engineering discipline
 - Code generators enter the trusted computing base
 - Runtime enforcement introduces measurable computational overhead

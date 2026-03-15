@@ -11,8 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '24'
-  PNPM_VERSION: '10'
+  NODE_VERSION: "24"
 
 jobs:
   lint:
@@ -23,25 +22,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Check formatting
-        run: pnpm format:check
+        run: vp fmt --check
 
       - name: Lint
-        run: pnpm lint
+        run: vp run lint
 
   types:
     name: Types
@@ -51,22 +45,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Run type check
-        run: pnpm typecheck
+        run: vp run typecheck
 
   unit:
     name: Unit Tests
@@ -76,25 +65,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Prepare Nuxt
-        run: pnpm nuxt prepare
+        run: vp exec nuxt prepare
 
       - name: Run unit tests with coverage
-        run: pnpm test:unit:cov
+        run: vp test --project unit --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -111,25 +95,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Prepare Nuxt
-        run: pnpm nuxt prepare
+        run: vp exec nuxt prepare
 
       - name: Run nuxt integration tests
-        run: vitest run --project nuxt
+        run: vp test --project nuxt
 
   browser:
     name: Browser Tests
@@ -139,28 +118,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Prepare Nuxt
-        run: pnpm nuxt prepare
+        run: vp exec nuxt prepare
 
       - name: Install Playwright Chromium
-        run: npx playwright install chromium --with-deps
+        run: vp exec playwright install chromium --with-deps
 
       - name: Run browser tests
-        run: vitest run --project nuxt-browser
+        run: vp test --project nuxt-browser
 
   test-e2e:
     name: E2E Tests
@@ -171,19 +145,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Download build artifact
         uses: actions/download-artifact@v7
@@ -192,10 +161,10 @@ jobs:
           path: .output
 
       - name: Install Playwright Chromium
-        run: npx playwright install chromium --with-deps
+        run: vp exec playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm test:browser
+        run: vp run test:browser
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v6
@@ -213,22 +182,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Build
-        run: pnpm build
+        run: vp run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
@@ -246,25 +210,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Prepare Nuxt
-        run: pnpm nuxt prepare
+        run: vp exec nuxt prepare
 
       - name: Check for unused code
-        run: pnpm knip
+        run: vp run knip
 
   lighthouse:
     name: Lighthouse (${{ matrix.theme }})
@@ -278,19 +237,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install
 
       - name: Download build artifact
         uses: actions/download-artifact@v7

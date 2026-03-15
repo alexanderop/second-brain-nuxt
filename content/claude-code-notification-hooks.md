@@ -15,6 +15,7 @@ date: 2026-01-03
 Hooks are commands that run at specific points in Claude Code's lifecycle. Instead of polling the terminal, you get notified when something needs your attention.
 
 Claude Code provides two notification hooks:
+
 - **permission_prompt** — Claude needs your permission to do something
 - **idle_prompt** — Claude is waiting for your input
 
@@ -44,6 +45,7 @@ Create a `.claude/hooks` directory in your project, then add the hook configurat
 The `$CLAUDE_PROJECT_DIR` environment variable expands to your project root automatically.
 
 **Placement options:**
+
 - `.claude/settings.json` — Project-specific (shared with team)
 - `~/.claude/settings.json` — Global user settings (personal only)
 
@@ -52,29 +54,35 @@ The `$CLAUDE_PROJECT_DIR` environment variable expands to your project root auto
 The script reads hook input from stdin and sends macOS notifications via AppleScript:
 
 ```typescript
-import type { NotificationHookInput } from '@anthropic-ai/claude-agent-sdk'
-import { execSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import type { NotificationHookInput } from "@anthropic-ai/claude-agent-sdk";
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 function sendMacNotification(title: string, message: string): void {
-  const escapedTitle = title.replace(/"/g, '\\"')
-  const escapedMessage = message.replace(/"/g, '\\"')
-  const script = `display notification "${escapedMessage}" with title "${escapedTitle}" sound name "Ping"`
-  execSync(`osascript -e '${script}'`, { stdio: 'ignore' })
+  const escapedTitle = title.replace(/"/g, '\\"');
+  const escapedMessage = message.replace(/"/g, '\\"');
+  const script = `display notification "${escapedMessage}" with title "${escapedTitle}" sound name "Ping"`;
+  execSync(`osascript -e '${script}'`, { stdio: "ignore" });
 }
 
 function main(): void {
-  const input = JSON.parse(readFileSync(0, 'utf-8')) as NotificationHookInput
-  const notificationType = (input as { notification_type?: string }).notification_type
+  const input = JSON.parse(readFileSync(0, "utf-8")) as NotificationHookInput;
+  const notificationType = (input as { notification_type?: string }).notification_type;
 
-  if (notificationType === 'permission_prompt') {
-    sendMacNotification('Claude Code - Permission Required', input.message || 'Claude needs your permission')
-  } else if (notificationType === 'idle_prompt') {
-    sendMacNotification('Claude Code - Waiting', input.message || 'Claude is waiting for your input')
+  if (notificationType === "permission_prompt") {
+    sendMacNotification(
+      "Claude Code - Permission Required",
+      input.message || "Claude needs your permission",
+    );
+  } else if (notificationType === "idle_prompt") {
+    sendMacNotification(
+      "Claude Code - Waiting",
+      input.message || "Claude is waiting for your input",
+    );
   }
 }
 
-main()
+main();
 ```
 
 ## Key Benefit

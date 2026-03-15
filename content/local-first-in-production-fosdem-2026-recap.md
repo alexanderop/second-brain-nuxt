@@ -29,6 +29,7 @@ Palanikannan recaps his first international conference talk at FOSDEM 2026 about
 ## Architecture
 
 ::mermaid
+
 <pre>
 flowchart LR
     Client[Client] -->|IndexedDB| Cache[y-indexeddb Cache]
@@ -41,6 +42,7 @@ flowchart LR
     ServerEdit -->|Delta merge| Server
     Cache -->|Instant load| Client
 </pre>
+
 ::
 
 ## Code Snippets

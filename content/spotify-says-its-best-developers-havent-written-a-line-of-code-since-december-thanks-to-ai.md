@@ -20,6 +20,7 @@ Spotify co-CEO Gustav Söderström dropped a bombshell during Q4 earnings: the c
 This isn't a lab experiment. Spotify shipped 50+ features in 2025 and just launched AI-powered Prompted Playlists, Page Match for audiobooks, and About This Song — all at a pace that would've been impossible with traditional dev workflows.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Spotify's AI
@@ -44,6 +45,7 @@ mindmap
             Labels indicate how songs were made
             Platform policing for spam
 </pre>
+
 ::
 
 ## What's Actually Interesting
@@ -54,7 +56,7 @@ The second angle worth tracking: Spotify is building a music taste dataset they 
 
 ## The Tension
 
-Söderström frames this as the beginning, not the end. But there's a question he doesn't answer: what happens to the developers who *aren't* the "best"? If the top engineers are directing AI from their phones, what's the workflow for everyone else? Anthropic's own research found that AI coding creates a supervision paradox — you need deep skills to oversee AI, but those skills erode if you stop writing code. Spotify's "best developers" might be fine. The rest of the org is the interesting test case.
+Söderström frames this as the beginning, not the end. But there's a question he doesn't answer: what happens to the developers who _aren't_ the "best"? If the top engineers are directing AI from their phones, what's the workflow for everyone else? Anthropic's own research found that AI coding creates a supervision paradox — you need deep skills to oversee AI, but those skills erode if you stop writing code. Spotify's "best developers" might be fine. The rest of the org is the interesting test case.
 
 Also worth noting: Spotify is specifically using Claude Code, not Copilot, not Cursor. For a company at this scale to bet on a specific agent tool and build internal infrastructure around it — that's a strong signal about where enterprise AI coding is heading.
 

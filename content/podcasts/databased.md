@@ -7,6 +7,7 @@ hosts:
   - tom-redman
   - jamie-turner
   - james-cowling
+artwork: "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/0f/fd/43/0ffd4398-8d6e-b92b-bc36-4d6337cddcf6/mza_15389221324180928958.png/600x600bb.jpg"
 feed: "https://feed.podbean.com/databased/feed.xml"
 platforms:
   spotify: "https://open.spotify.com/show/3UcRoUW5GKXEcA0hJc9hp6"

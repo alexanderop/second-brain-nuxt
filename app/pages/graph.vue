@@ -1,192 +1,184 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useMediaQuery, onKeyStroke, useLocalStorage } from '@vueuse/core'
-import { useAsyncData, definePageMeta } from '#imports'
-import { usePageTitle } from '~/composables/usePageTitle'
-import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from '#components'
-import KnowledgeGraph from '~/components/KnowledgeGraph.vue'
-import GraphFilters from '~/components/GraphFilters.vue'
-import GraphNodePanel from '~/components/GraphNodePanel.vue'
-import { useGraphFilters } from '~/composables/useGraphFilters'
-import type { ContentType } from '~/constants/contentTypes'
-import type { FullGraphData, FullGraphNode, UnifiedGraphNode } from '~/types/graph'
+import { ref, computed } from "vue";
+import { useMediaQuery, onKeyStroke, useLocalStorage } from "@vueuse/core";
+import { useAsyncData, definePageMeta } from "#imports";
+import { usePageTitle } from "~/composables/usePageTitle";
+import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from "#components";
+import KnowledgeGraph from "~/components/KnowledgeGraph.vue";
+import GraphFilters from "~/components/GraphFilters.vue";
+import GraphNodePanel from "~/components/GraphNodePanel.vue";
+import { useGraphFilters } from "~/composables/useGraphFilters";
+import type { ContentType } from "~/constants/contentTypes";
+import type { FullGraphData, FullGraphNode, UnifiedGraphNode } from "~/types/graph";
 
 // Use immersive graph layout (no header)
 definePageMeta({
-  layout: 'graph',
-})
+  layout: "graph",
+});
 
 // Helper to get ID from edge endpoint (handles both string and object)
 function getEdgeNodeId(endpoint: string | FullGraphNode): string {
-  return typeof endpoint === 'string' ? endpoint : endpoint.id
+  return typeof endpoint === "string" ? endpoint : endpoint.id;
 }
 
-usePageTitle('Graph')
+usePageTitle("Graph");
 
 // Collapsible filter panel state (persisted in localStorage)
-const filtersExpanded = useLocalStorage('graph-filters-expanded', false)
+const filtersExpanded = useLocalStorage("graph-filters-expanded", false);
 
-const { data: graphData } = await useAsyncData<FullGraphData>('graph-data', () => $fetch<FullGraphData>('/api/graph'))
+const { data: graphData } = await useAsyncData<FullGraphData>("graph-data", () =>
+  $fetch<FullGraphData>("/api/graph"),
+);
 
-const selectedNode = ref<FullGraphNode | null>(null)
+const selectedNode = ref<FullGraphNode | null>(null);
 
 // Template ref for KnowledgeGraph component (for zoom controls)
-const graphRef = ref<{ fitAll: () => void, zoomIn: () => void, zoomOut: () => void }>()
+const graphRef = ref<{ fitAll: () => void; zoomIn: () => void; zoomOut: () => void }>();
 
 // Zoom level for display
-const zoomLevel = ref(1)
+const zoomLevel = ref(1);
 
 // Mobile detection
-const isMobile = useMediaQuery('(max-width: 768px)')
+const isMobile = useMediaQuery("(max-width: 768px)");
 
 // Filters
-const { filterState } = useGraphFilters()
+const { filterState } = useGraphFilters();
 
 // Extract available types and tags from graph data
 const availableTypes = computed<Array<ContentType>>(() => {
-  if (!graphData.value)
-    return []
-  return [...new Set(graphData.value.nodes.map(n => n.type))]
-})
+  if (!graphData.value) return [];
+  return [...new Set(graphData.value.nodes.map((n) => n.type))];
+});
 
 const availableTags = computed<Array<string>>(() => {
-  if (!graphData.value)
-    return []
-  return [...new Set(graphData.value.nodes.flatMap(n => n.tags))].sort()
-})
+  if (!graphData.value) return [];
+  return [...new Set(graphData.value.nodes.flatMap((n) => n.tags))].sort();
+});
 
 const availableAuthors = computed<Array<string>>(() => {
-  if (!graphData.value)
-    return []
-  return [...new Set(graphData.value.nodes.flatMap(n => n.authors || []))].sort()
-})
+  if (!graphData.value) return [];
+  return [...new Set(graphData.value.nodes.flatMap((n) => n.authors || []))].sort();
+});
 
 // Extract available maps (nodes with isMap: true)
-const availableMaps = computed<Array<{ id: string, title: string }>>(() => {
-  if (!graphData.value)
-    return []
+const availableMaps = computed<Array<{ id: string; title: string }>>(() => {
+  if (!graphData.value) return [];
   return graphData.value.nodes
-    .filter(n => n.isMap)
-    .map(n => ({ id: n.id, title: n.title }))
-    .sort((a, b) => a.title.localeCompare(b.title))
-})
+    .filter((n) => n.isMap)
+    .map((n) => ({ id: n.id, title: n.title }))
+    .sort((a, b) => a.title.localeCompare(b.title));
+});
 
 // Build connectivity map for orphan detection
 const connectedNodeIds = computed(() => {
-  if (!graphData.value)
-    return new Set<string>()
-  const connected = new Set<string>()
+  if (!graphData.value) return new Set<string>();
+  const connected = new Set<string>();
   for (const edge of graphData.value.edges) {
-    connected.add(getEdgeNodeId(edge.source))
-    connected.add(getEdgeNodeId(edge.target))
+    connected.add(getEdgeNodeId(edge.source));
+    connected.add(getEdgeNodeId(edge.target));
   }
-  return connected
-})
+  return connected;
+});
 
 // Filter helpers
 function passesTagFilter(node: FullGraphNode, selectedTags: string[]): boolean {
-  if (selectedTags.length === 0) return true
-  return selectedTags.some(tag => node.tags.includes(tag))
+  if (selectedTags.length === 0) return true;
+  return selectedTags.some((tag) => node.tags.includes(tag));
 }
 
 function passesAuthorFilter(node: FullGraphNode, selectedAuthors: string[]): boolean {
-  if (selectedAuthors.length === 0) return true
-  return selectedAuthors.some(author => (node.authors || []).includes(author))
+  if (selectedAuthors.length === 0) return true;
+  return selectedAuthors.some((author) => (node.authors || []).includes(author));
 }
 
 function passesMapFilter(node: FullGraphNode, selectedMaps: string[]): boolean {
-  if (selectedMaps.length === 0) return true
-  const isSelectedMap = selectedMaps.includes(node.id)
-  const belongsToSelectedMap = selectedMaps.some(mapId => (node.maps || []).includes(mapId))
-  return isSelectedMap || belongsToSelectedMap
+  if (selectedMaps.length === 0) return true;
+  const isSelectedMap = selectedMaps.includes(node.id);
+  const belongsToSelectedMap = selectedMaps.some((mapId) => (node.maps || []).includes(mapId));
+  return isSelectedMap || belongsToSelectedMap;
 }
 
 // Apply filters to nodes
 const filteredNodes = computed(() => {
-  if (!graphData.value) return []
+  if (!graphData.value) return [];
 
-  const { types, tags, authors, maps, showOrphans } = filterState.value
+  const { types, tags, authors, maps, showOrphans } = filterState.value;
 
   return graphData.value.nodes.filter((node) => {
-    if (!types.includes(node.type)) return false
-    if (!passesTagFilter(node, tags)) return false
-    if (!passesAuthorFilter(node, authors)) return false
-    if (!passesMapFilter(node, maps)) return false
-    if (!showOrphans && !connectedNodeIds.value.has(node.id)) return false
-    return true
-  })
-})
+    if (!types.includes(node.type)) return false;
+    if (!passesTagFilter(node, tags)) return false;
+    if (!passesAuthorFilter(node, authors)) return false;
+    if (!passesMapFilter(node, maps)) return false;
+    if (!showOrphans && !connectedNodeIds.value.has(node.id)) return false;
+    return true;
+  });
+});
 
 // Filter edges to only include those between visible nodes
 const filteredEdges = computed(() => {
-  if (!graphData.value)
-    return []
+  if (!graphData.value) return [];
 
-  const visibleIds = new Set(filteredNodes.value.map(n => n.id))
+  const visibleIds = new Set(filteredNodes.value.map((n) => n.id));
 
   return graphData.value.edges.filter((edge) => {
-    const sourceId = getEdgeNodeId(edge.source)
-    const targetId = getEdgeNodeId(edge.target)
-    return visibleIds.has(sourceId) && visibleIds.has(targetId)
-  })
-})
+    const sourceId = getEdgeNodeId(edge.source);
+    const targetId = getEdgeNodeId(edge.target);
+    return visibleIds.has(sourceId) && visibleIds.has(targetId);
+  });
+});
 
 // Combined filtered graph data
 const filteredGraphData = computed<FullGraphData | null>(() => {
-  if (!graphData.value)
-    return null
+  if (!graphData.value) return null;
   return {
     nodes: filteredNodes.value,
     edges: filteredEdges.value,
-  }
-})
+  };
+});
 
 // Close panel with Escape key
-onKeyStroke('Escape', () => {
-  selectedNode.value = null
-})
+onKeyStroke("Escape", () => {
+  selectedNode.value = null;
+});
 
 // Drawer open state tied to selectedNode
 const drawerOpen = computed({
   get: () => !!selectedNode.value,
   set: (val) => {
-    if (!val)
-      selectedNode.value = null
+    if (!val) selectedNode.value = null;
   },
-})
+});
 
 const outgoingLinks = computed(() => {
-  if (!selectedNode.value || !graphData.value)
-    return []
+  if (!selectedNode.value || !graphData.value) return [];
   const targetIds = graphData.value.edges
-    .filter(e => getEdgeNodeId(e.source) === selectedNode.value?.id)
-    .map(e => getEdgeNodeId(e.target))
-  return graphData.value.nodes.filter(n => targetIds.includes(n.id))
-})
+    .filter((e) => getEdgeNodeId(e.source) === selectedNode.value?.id)
+    .map((e) => getEdgeNodeId(e.target));
+  return graphData.value.nodes.filter((n) => targetIds.includes(n.id));
+});
 
 const backlinks = computed(() => {
-  if (!selectedNode.value || !graphData.value)
-    return []
+  if (!selectedNode.value || !graphData.value) return [];
   const sourceIds = graphData.value.edges
-    .filter(e => getEdgeNodeId(e.target) === selectedNode.value?.id)
-    .map(e => getEdgeNodeId(e.source))
-  return graphData.value.nodes.filter(n => sourceIds.includes(n.id))
-})
+    .filter((e) => getEdgeNodeId(e.target) === selectedNode.value?.id)
+    .map((e) => getEdgeNodeId(e.source));
+  return graphData.value.nodes.filter((n) => sourceIds.includes(n.id));
+});
 
 function handleSelectNode(node: UnifiedGraphNode) {
   // Look up the full node from original data to get proper FullGraphNode type
-  const fullNode = graphData.value?.nodes.find(n => n.id === node.id)
+  const fullNode = graphData.value?.nodes.find((n) => n.id === node.id);
   if (fullNode) {
-    selectedNode.value = fullNode
+    selectedNode.value = fullNode;
   }
 }
 
 function handleClosePanel() {
-  selectedNode.value = null
+  selectedNode.value = null;
 }
 
 // Mobile filter drawer
-const showMobileFilters = ref(false)
+const showMobileFilters = ref(false);
 </script>
 
 <template>
@@ -212,8 +204,16 @@ const showMobileFilters = ref(false)
     <div class="absolute top-4 left-4 z-10">
       <div class="glass-panel px-4 py-3">
         <div class="flex items-center gap-3">
-          <NuxtLink to="/" aria-label="Back to home" class="p-2 -m-2 rounded-lg hover:bg-white/5 transition-colors">
-            <UIcon name="i-lucide-arrow-left" aria-hidden="true" class="size-4 text-[var(--ui-text-muted)]" />
+          <NuxtLink
+            to="/"
+            aria-label="Back to home"
+            class="p-2 -m-2 rounded-lg hover:bg-white/5 transition-colors"
+          >
+            <UIcon
+              name="i-lucide-arrow-left"
+              aria-hidden="true"
+              class="size-4 text-[var(--ui-text-muted)]"
+            />
           </NuxtLink>
           <div>
             <h1 class="text-sm font-semibold">Knowledge Graph</h1>
@@ -315,7 +315,11 @@ const showMobileFilters = ref(false)
 
     <!-- Mobile filter button (bottom-right) -->
     <div v-if="isMobile" class="absolute bottom-4 right-4 z-10">
-      <button aria-label="Open graph filters" class="glass-panel p-3" @click="showMobileFilters = true">
+      <button
+        aria-label="Open graph filters"
+        class="glass-panel p-3"
+        @click="showMobileFilters = true"
+      >
         <UIcon name="i-lucide-filter" class="size-5" />
       </button>
     </div>
@@ -366,7 +370,8 @@ const showMobileFilters = ref(false)
       :close="false"
       :ui="{
         overlay: 'bg-black/40 backdrop-blur-sm',
-        content: 'h-[70vh] w-[calc(100vw-2rem)] bg-black/60 backdrop-blur-xl rounded-2xl flex flex-col border border-white/10',
+        content:
+          'h-[70vh] w-[calc(100vw-2rem)] bg-black/60 backdrop-blur-xl rounded-2xl flex flex-col border border-white/10',
         body: 'flex-1 overflow-auto p-0',
       }"
     >

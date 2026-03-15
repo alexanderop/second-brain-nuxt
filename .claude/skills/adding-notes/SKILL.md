@@ -15,23 +15,23 @@ Add content to the knowledge base with proper frontmatter, tags, summaries, and 
 
 Detect type from URL, then load the appropriate reference file.
 
-| URL Pattern | Type | Reference |
-|-------------|------|-----------|
-| youtube.com | See [YouTube Classification](#youtube-classification) | `references/content-types/youtube.md` or `talk.md` or `podcast.md` |
-| reddit.com | reddit | `references/content-types/reddit.md` |
-| github.com | github | `references/content-types/github.md` |
-| imdb.com/title/, themoviedb.org/movie/ | movie | `references/content-types/movie.md` |
-| goodreads.com/series/ | manga | `references/content-types/manga.md` |
-| goodreads.com, amazon.com (books) | book | `references/content-types/book.md` |
-| spotify.com/episode, podcasts.apple.com | podcast | `references/content-types/podcast.md` |
-| udemy.com, coursera.org, skillshare.com | course | `references/content-types/course.md` |
-| *.substack.com/p/*, *.beehiiv.com/p/*, buttondown.email/* | newsletter | `references/content-types/newsletter.md` |
-| URL ending in `.pdf` | article (PDF) | `references/content-types/article.md` (use PDF extraction) |
-| Other URLs | article | `references/content-types/article.md` |
-| No URL | note | `references/content-types/note.md` |
-| Manual: `quote` | quote | `references/content-types/quote.md` |
-| Manual: `evergreen` | evergreen | `references/content-types/evergreen.md` |
-| Manual: `map` | map | `references/content-types/map.md` |
+| URL Pattern                                                | Type                                                  | Reference                                                          |
+| ---------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------ |
+| youtube.com                                                | See [YouTube Classification](#youtube-classification) | `references/content-types/youtube.md` or `talk.md` or `podcast.md` |
+| reddit.com                                                 | reddit                                                | `references/content-types/reddit.md`                               |
+| github.com                                                 | github                                                | `references/content-types/github.md`                               |
+| imdb.com/title/, themoviedb.org/movie/                     | movie                                                 | `references/content-types/movie.md`                                |
+| goodreads.com/series/                                      | manga                                                 | `references/content-types/manga.md`                                |
+| goodreads.com, amazon.com (books)                          | book                                                  | `references/content-types/book.md`                                 |
+| spotify.com/episode, podcasts.apple.com                    | podcast                                               | `references/content-types/podcast.md`                              |
+| udemy.com, coursera.org, skillshare.com                    | course                                                | `references/content-types/course.md`                               |
+| _.substack.com/p/_, _.beehiiv.com/p/_, buttondown.email/\* | newsletter                                            | `references/content-types/newsletter.md`                           |
+| URL ending in `.pdf`                                       | article (PDF)                                         | `references/content-types/article.md` (use PDF extraction)         |
+| Other URLs                                                 | article                                               | `references/content-types/article.md`                              |
+| No URL                                                     | note                                                  | `references/content-types/note.md`                                 |
+| Manual: `quote`                                            | quote                                                 | `references/content-types/quote.md`                                |
+| Manual: `evergreen`                                        | evergreen                                             | `references/content-types/evergreen.md`                            |
+| Manual: `map`                                              | map                                                   | `references/content-types/map.md`                                  |
 
 ### YouTube Classification
 
@@ -50,39 +50,40 @@ See `references/content-types/youtube.md` for full classification logic and chan
 
 ### Metadata Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `get-youtube-metadata.sh URL` | Video title, channel |
-| `get-youtube-transcript.py URL [--format FORMAT]` | Video transcript (see formats below) |
-| `get-podcast-transcript.py [opts]` | Podcast transcript |
-| `get-reddit-thread.py URL --comments N` | Thread + comments |
-| `get-goodreads-metadata.sh URL` | Book metadata |
-| `get-manga-metadata.sh URL` | Manga series data |
-| `get-github-metadata.sh URL` | Repo stats |
-| `get-pdf-text.sh URL [output-file]` | Download PDF and extract text (requires `pdftotext`) |
+| Script                                                                                        | Purpose                                              |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `.claude/skills/adding-notes/scripts/get-youtube-metadata.sh URL`                             | Video title, channel                                 |
+| `python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL [--format FORMAT]` | Video transcript (see formats below)                 |
+| `python3 .claude/skills/adding-notes/scripts/get-podcast-transcript.py [opts]`                | Podcast transcript                                   |
+| `python3 .claude/skills/adding-notes/scripts/get-reddit-thread.py URL --comments N`           | Thread + comments                                    |
+| `.claude/skills/adding-notes/scripts/get-goodreads-metadata.sh URL`                           | Book metadata                                        |
+| `.claude/skills/adding-notes/scripts/get-manga-metadata.sh URL`                               | Manga series data                                    |
+| `.claude/skills/adding-notes/scripts/get-github-metadata.sh URL`                              | Repo stats                                           |
+| `.claude/skills/adding-notes/scripts/get-pdf-text.sh URL [output-file]`                       | Download PDF and extract text (requires `pdftotext`) |
 
 ### Utility Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `check-author-exists.sh "Name"` | Fuzzy author lookup (aliases, initials, partial matches) |
-| `list-existing-authors.sh [term]` | Browse existing authors |
-| `list-existing-tags.sh "{keyword}"` | Find tags by frequency |
-| `validate-wikilinks.sh {file}` | Check all `[[links]]` resolve to existing content |
-| `detect-duplicates.sh "Title" [URL]` | Check for duplicate notes |
+| Script                                                                   | Purpose                                                  |
+| ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `.claude/skills/adding-notes/scripts/check-author-exists.sh "Name"`      | Fuzzy author lookup (aliases, initials, partial matches) |
+| `.claude/skills/adding-notes/scripts/list-existing-authors.sh [term]`    | Browse existing authors                                  |
+| `.claude/skills/adding-notes/scripts/list-existing-tags.sh "{keyword}"`  | Find tags by frequency                                   |
+| `.claude/skills/adding-notes/scripts/validate-wikilinks.sh {file}`       | Check all `[[links]]` resolve to existing content        |
+| `.claude/skills/adding-notes/scripts/detect-duplicates.sh "Title" [URL]` | Check for duplicate notes                                |
 
 ### Transcript Format Options
 
 ```bash
-get-youtube-transcript.py URL                      # plain (default) - single blob
-get-youtube-transcript.py URL --format sentences   # one sentence per line (grep-friendly)
-get-youtube-transcript.py URL --format timestamped # [MM:SS] per segment
-get-youtube-transcript.py URL --format json        # full metadata with timestamps
+python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL                      # plain (default) - single blob
+python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL --format sentences   # one sentence per line (grep-friendly)
+python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL --format timestamped # [MM:SS] per segment
+python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL --format json        # full metadata with timestamps
 ```
 
 **Recommended:** Use `--format sentences` for large transcripts—enables grep/search and chunked reading.
 
 **Do NOT use scripts for trivial operations** — do them inline:
+
 - Slug generation: lowercase title, replace spaces with hyphens, remove special characters
 - Frontmatter: Write YAML directly using the content-type template
 
@@ -102,7 +103,7 @@ Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any ex
 Phase 5: Quality Validation → Parallel validators
 Phase 6: Save Note → Write to content/{slug}.md with link density report
 Phase 7: MOC Placement → Suggest placements + check MOC threshold
-Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
+Phase 8: Quality Check → Run vp check && pnpm typecheck
 ```
 
 ### Phase 0: Load Soul
@@ -110,6 +111,7 @@ Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 Read `SOUL.md` from the project root. Without it, notes sound like generic AI summaries instead of Alexander's voice. SOUL.md defines what he values, anti-patterns to avoid, and how to add his perspective. Every note must reflect this identity — not just summarize a source.
 
 Key things SOUL.md controls:
+
 - **Voice:** Direct, opinionated, no filler — not polished AI prose
 - **Perspective:** Always contextualize why Alexander cares about this content
 - **Author preservation:** Don't flatten unique voices into generic summaries
@@ -124,11 +126,12 @@ Key things SOUL.md controls:
 ### Phase 2: Metadata Collection
 
 Spawn parallel agents as specified in the content-type file. Each file lists:
+
 - Required scripts to run
 - Agent configuration
 - Special handling notes
 
-**If URL ends in `.pdf`:** WebFetch cannot parse PDFs. Use `get-pdf-text.sh URL` to download and extract text, then read the output file. For large PDFs (>50KB extracted text), use a subagent per Phase 2.5 pattern.
+**If URL ends in `.pdf`:** WebFetch cannot parse PDFs. Use `.claude/skills/adding-notes/scripts/get-pdf-text.sh URL` to download and extract text, then read the output file. For large PDFs (>50KB extracted text), use a subagent per Phase 2.5 pattern.
 
 **If `isTechnical: true`:** Also spawn code extraction agent (see `references/code-extraction.md`).
 
@@ -173,7 +176,7 @@ Analyze this transcript and extract structured content for a knowledge base note
 
 If subagent unavailable, use `--format sentences` and manual chunking:
 
-1. Fetch with sentences format: `get-youtube-transcript.py URL --format sentences > transcript.txt`
+1. Fetch with sentences format: `python3 .claude/skills/adding-notes/scripts/get-youtube-transcript.py URL --format sentences > transcript.txt`
 2. Read first 100 lines (intro, episode overview)
 3. Read last 100 lines (conclusion, wrap-up)
 4. Grep for key terms mentioned in intro
@@ -192,10 +195,10 @@ If subagent unavailable, use `--format sentences` and manual chunking:
 For external content, check if author exists using the fuzzy-matching script (handles aliases, initials, and partial names):
 
 ```bash
-scripts/check-author-exists.sh "Author Name"
+.claude/skills/adding-notes/scripts/check-author-exists.sh "Author Name"
 ```
 
-You can also browse all authors with `scripts/list-existing-authors.sh [term]`.
+You can also browse all authors with `.claude/skills/adding-notes/scripts/list-existing-authors.sh [term]`.
 
 - **Match found:** Use existing slug
 - **Partial match:** Use AskUserQuestion to confirm identity
@@ -204,6 +207,7 @@ You can also browse all authors with `scripts/list-existing-authors.sh [term]`.
 ### Phase 4: Content Generation
 
 **Prerequisites** (these define the note's voice and connection quality):
+
 1. SOUL.md must have been read in Phase 0 — re-read now if skipped
 2. Load writing-style: `Read .claude/skills/writing-style/SKILL.md`
 3. Load linking philosophy: `Read .claude/skills/adding-notes/references/linking-philosophy.md`
@@ -211,7 +215,7 @@ You can also browse all authors with `scripts/list-existing-authors.sh [term]`.
 5. **Compile frontmatter** using template from content-type file
 6. **Generate body** applying SOUL.md voice — add Alexander's perspective, preserve author's unique voice, no generic summaries (see Phase 4.5 for connection discovery)
 
-**Tags:** 3-5 relevant tags. Use `scripts/list-existing-tags.sh "{keyword}"` to find tags by frequency, or `Grep` for similar content.
+**Tags:** 3-5 relevant tags. Use `.claude/skills/adding-notes/scripts/list-existing-tags.sh "{keyword}"` to find tags by frequency, or `Grep` for similar content.
 
 **Summary:** Frame as a core argument, not a description. What claim does this content make?
 
@@ -220,6 +224,7 @@ You can also browse all authors with `scripts/list-existing-authors.sh [term]`.
 Alexander is a visual learner — default to adding a diagram. Load `references/diagrams-guide.md` and evaluate the decision tree.
 
 **If adding a diagram:**
+
 1. Load mermaid skill: `Read .agents/skills/mermaid/skill.md`
 2. Write source to `{slug}.mmd`, validate with `.agents/skills/mermaid/tools/validate.sh {slug}.mmd`, fix if needed
 3. Copy validated block into note with MDC wrapper (`::mermaid` / `<pre>` / `::`)
@@ -242,13 +247,13 @@ Only add genuine connections with explanatory context. Orphans are acceptable.
 
 Spawn parallel validators:
 
-| Validator | Checks | Script |
-|-----------|--------|--------|
-| Wiki-link exists | Each `[[link]]` exists in `content/` (excluding Readwise) | `scripts/validate-wikilinks.sh {file}` |
-| Link context | Each link has adjacent explanation (not bare "See also") | Manual check |
-| Duplicate | Title/URL doesn't already exist | `scripts/detect-duplicates.sh "Title" [URL]` |
-| Tag | Tags match or similar to existing | Manual check |
-| Type-specific | E.g., podcast: profile exists, guest not in hosts | Manual check |
+| Validator        | Checks                                                    | Script                                                                   |
+| ---------------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Wiki-link exists | Each `[[link]]` exists in `content/` (excluding Readwise) | `.claude/skills/adding-notes/scripts/validate-wikilinks.sh {file}`       |
+| Link context     | Each link has adjacent explanation (not bare "See also")  | Manual check                                                             |
+| Duplicate        | Title/URL doesn't already exist                           | `.claude/skills/adding-notes/scripts/detect-duplicates.sh "Title" [URL]` |
+| Tag              | Tags match or similar to existing                         | Manual check                                                             |
+| Type-specific    | E.g., podcast: profile exists, guest not in hosts         | Manual check                                                             |
 
 **Wiki-link note:** Readwise highlights (`content/readwise/`) are excluded from Nuxt Content and won't resolve as valid wiki-links. Use plain text or italics for books/articles that only exist in Readwise.
 
@@ -276,6 +281,7 @@ Save to `content/{slug}.md`. Confirm with link density status:
 **Diagram status:** `Added: [type] - [description]` or `None: [reason]`
 
 **Link density status:**
+
 - `{link-count} >= 3`: "well-connected"
 - `{link-count} = 1-2`: "connected"
 - `{link-count} = 0`: "standalone" (fine when no genuine connections exist)
@@ -283,6 +289,7 @@ Save to `content/{slug}.md`. Confirm with link density status:
 ### Phase 7: MOC Placement (Non-blocking)
 
 See `references/moc-placement.md` for detailed workflow:
+
 1. Suggest existing MOC placement via cluster script
 2. Check if any tag exceeds 15-note threshold for new MOC creation
 
@@ -291,7 +298,7 @@ See `references/moc-placement.md` for detailed workflow:
 Run linter and type check to catch any issues:
 
 ```bash
-pnpm lint:fix && pnpm typecheck
+vp check && pnpm typecheck
 ```
 
 If errors are found, fix them before completing the task.
@@ -300,30 +307,30 @@ If errors are found, fix them before completing the task.
 
 ## Error Handling
 
-| Error | Recovery |
-|-------|----------|
-| Metadata agent fails | Prompt for manual entry or WebFetch fallback |
-| Transcript unavailable | Note "No transcript available" in body |
-| Transcript too large (>10K tokens) | Use Phase 2.5 subagent or chunked extraction |
+| Error                                 | Recovery                                        |
+| ------------------------------------- | ----------------------------------------------- |
+| Metadata agent fails                  | Prompt for manual entry or WebFetch fallback    |
+| Transcript unavailable                | Note "No transcript available" in body          |
+| Transcript too large (>10K tokens)    | Use Phase 2.5 subagent or chunked extraction    |
 | PDF extraction fails (no `pdftotext`) | Install with `brew install poppler`, then retry |
-| Author not found online | Create minimal profile (name only) |
-| Reddit 429 | Wait 60s and retry |
-| Semantic analysis timeout | Proceed without wiki-link suggestions |
-| Validation crash | Warn user, recommend manual check |
+| Author not found online               | Create minimal profile (name only)              |
+| Reddit 429                            | Wait 60s and retry                              |
+| Semantic analysis timeout             | Proceed without wiki-link suggestions           |
+| Validation crash                      | Warn user, recommend manual check               |
 
 ---
 
 ## Reference Files
 
-| File | Purpose |
-|------|---------|
-| `SOUL.md` (project root) | Alexander's voice, perspective, and anti-patterns — **load first** |
-| `references/author-creation.md` | Author profile workflow |
-| `references/diagrams-guide.md` | Decision tree for when to add diagrams |
-| `.agents/skills/mermaid/skill.md` | Full mermaid syntax reference + validation (loaded in Phase 4.25) |
-| `references/linking-philosophy.md` | Connection quality standards |
-| `references/moc-placement.md` | MOC suggestion and creation |
-| `references/code-extraction.md` | Technical content code snippets |
-| `references/podcast-profile-creation.md` | Podcast show profiles |
-| `references/newsletter-profile-creation.md` | Newsletter publication profiles |
-| `references/content-types/*.md` | Type-specific templates |
+| File                                        | Purpose                                                            |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `SOUL.md` (project root)                    | Alexander's voice, perspective, and anti-patterns — **load first** |
+| `references/author-creation.md`             | Author profile workflow                                            |
+| `references/diagrams-guide.md`              | Decision tree for when to add diagrams                             |
+| `.agents/skills/mermaid/skill.md`           | Full mermaid syntax reference + validation (loaded in Phase 4.25)  |
+| `references/linking-philosophy.md`          | Connection quality standards                                       |
+| `references/moc-placement.md`               | MOC suggestion and creation                                        |
+| `references/code-extraction.md`             | Technical content code snippets                                    |
+| `references/podcast-profile-creation.md`    | Podcast show profiles                                              |
+| `references/newsletter-profile-creation.md` | Newsletter publication profiles                                    |
+| `references/content-types/*.md`             | Type-specific templates                                            |

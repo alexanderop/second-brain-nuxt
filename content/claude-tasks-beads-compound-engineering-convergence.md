@@ -37,7 +37,7 @@ Trevan raises the deeper insight: we've been forcing context into markdown artif
 
 > "I think this contextual intelligence is the next frontier... instead of forcing everything to create an artifact that the machine reads, how do we create a system in which the machine can query for context?"
 
-He mentions *Unblocked* (getunblocked.com) as an example—a product that connects repos, Slack, and docs into a queryable knowledge layer. The agent asks questions; the system retrieves relevant context from wherever it lives.
+He mentions _Unblocked_ (getunblocked.com) as an example—a product that connects repos, Slack, and docs into a queryable knowledge layer. The agent asks questions; the system retrieves relevant context from wherever it lives.
 
 ## Compound Engineering Implications
 
@@ -54,6 +54,7 @@ The pattern they've found effective:
 3. **Tester session** — Runs browser tests and validates
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph Shared["Shared Task List"]
@@ -66,6 +67,7 @@ graph LR
 
     Tasks -->|blocks/blockedBy| Deps[Dependency Graph]
 </pre>
+
 ::
 
 With shared task lists, these can coordinate without manual handoffs. Each session maintains its own context window, avoiding the pollution problem of running everything in one session.

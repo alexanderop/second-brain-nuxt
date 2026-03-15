@@ -74,6 +74,7 @@ Conflict-free Replicated Data Types (CRDTs) enable automatic merging of concurre
 ## Prototypes
 
 The team built three working prototypes demonstrating feasibility:
+
 - **Trellis** - Kanban board
 - **Pixelpusher** - Collaborative drawing
 - **PushPin** - Digital corkboard

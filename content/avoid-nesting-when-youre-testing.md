@@ -30,18 +30,18 @@ Kent C. Dodds argues against using nested `describe` blocks with `beforeEach` ho
 Variables assigned in outer `beforeEach` blocks become difficult to trace.
 
 ```javascript
-describe('User Form', () => {
-  let handleSubmit
+describe("User Form", () => {
+  let handleSubmit;
   beforeEach(() => {
-    handleSubmit = jest.fn()
-  })
+    handleSubmit = jest.fn();
+  });
 
-  describe('when submitted', () => {
+  describe("when submitted", () => {
     beforeEach(() => {
       // Where did handleSubmit come from? What's its current value?
-    })
-  })
-})
+    });
+  });
+});
 ```
 
 ### The Solution: Setup Functions
@@ -50,21 +50,22 @@ Return objects containing test utilities through composition.
 
 ```javascript
 function setupSuccessCase() {
-  const handleSubmit = jest.fn()
-  const utils = render(<Form onSubmit={handleSubmit} />)
+  const handleSubmit = jest.fn();
+  const utils = render(<Form onSubmit={handleSubmit} />);
   // ... perform actions
-  return { ...utils, handleSubmit }
+  return { ...utils, handleSubmit };
 }
 
-test('submits form with valid data', () => {
-  const { handleSubmit } = setupSuccessCase()
-  expect(handleSubmit).toHaveBeenCalled()
-})
+test("submits form with valid data", () => {
+  const { handleSubmit } = setupSuccessCase();
+  expect(handleSubmit).toHaveBeenCalled();
+});
 ```
 
 ## When Hooks Are Appropriate
 
 `beforeAll`/`afterAll` have valid uses:
+
 - Server startup and shutdown
 - Mocking `console.error` across test suites
 

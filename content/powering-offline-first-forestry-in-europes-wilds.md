@@ -32,6 +32,7 @@ Germany is 30% forest — 11 million hectares. Foresters manage these areas dail
 OCELL's sync model chains objects in a queue. When a forester creates an object (say, a forest stand polygon), all subsequent edits attach as diffs to that initial object. The queue syncs left-to-right when connectivity returns. Each independent object gets its own sync element, and dependent changes chain to the original.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Forest["Offline in Forest"]
@@ -57,6 +58,7 @@ flowchart LR
     D --> E
     G --> H
 </pre>
+
 ::
 
 ### The Cascading Failure Problem
@@ -64,6 +66,7 @@ flowchart LR
 The nastiest edge case: MongoDB rejects an invalid GeoJSON polygon (self-intersecting or incomplete). Because everything downstream depends on that initial object, the entire queue blocks. The sync engine retries every minute, hitting the same wall. Meanwhile the forester sees "0 of 150 objects synchronized" and calls support.
 
 The fix options are all bad:
+
 - **Server-side:** Accept and auto-correct the polygon — but downstream diffs might break against the corrected shape
 - **Client-side:** Rewrite the queue — but modifying one element cascades through all dependent changes
 - **Drop it:** Lose the user's work

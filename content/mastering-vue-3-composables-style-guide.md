@@ -22,20 +22,24 @@ Composables remain functions at their core—leverage established software desig
 ## Key Rules
 
 ### Naming & Organization
+
 - **File naming:** Prefix with `use`, PascalCase (e.g., `useCounter.ts`)
 - **Composable naming:** Descriptive, intention-revealing (`useUserData()` not `useData()`)
 - **Folder structure:** Dedicated `src/composables/` directory
 
 ### Arguments & Structure
+
 - **Object arguments:** Use when passing 4+ parameters for clarity
 - **Consistent ordering:** Refs → Computed → Methods → Lifecycle hooks → Watchers
 
 ### Design Principles
+
 - **Single Responsibility:** Each composable has one reason to change
 - **Separation of Concerns:** Manage state/logic only; leave UI operations to components
 - **Error Handling:** Expose error state rather than swallowing errors internally
 
 ### Composable Anatomy
+
 1. **Primary State:** Core reactive data
 2. **Supportive State:** Loading, error, status indicators
 3. **Methods:** Functions updating state and calling external services

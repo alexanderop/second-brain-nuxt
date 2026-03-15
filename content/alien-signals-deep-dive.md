@@ -25,6 +25,7 @@ Alien-signals uses a Push-Pull-Push model rather than pure pull-based reactivity
 Push-Pull-Push avoids this "one-bad-apple" problem by propagating dirty states precisely along the dependency graph without global versions.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Pull["Pure Pull Model"]
@@ -40,6 +41,7 @@ flowchart LR
         D2 --> R2[Read Only Dirty]
     end
 </pre>
+
 ::
 
 ## Key Optimizations
@@ -49,6 +51,7 @@ flowchart LR
 The conventional choice for managing subscribers is `Set`—idiomatic and clean. But a doubly-linked list structure, pioneered by the Preact team, proves far more efficient. Each dependency-subscriber relationship becomes a single Link node living in two lists simultaneously: one for the signal's subscribers, one for the subscriber's dependencies.
 
 Benefits:
+
 - Adding a subscription: O(1)—append to tail
 - Removing a subscription: O(1)—unlink the node, no searching
 - No hashing, no internal bucket allocation, no GC pressure from discarded iterators
@@ -65,11 +68,11 @@ V8 stores the first several object properties directly "in-object" for fast acce
 
 ```typescript
 interface ReactiveNode {
-    deps?: Link;
-    depsTail?: Link;
-    subs?: Link;
-    subsTail?: Link;
-    flags: ReactiveFlags;
+  deps?: Link;
+  depsTail?: Link;
+  subs?: Link;
+  subsTail?: Link;
+  flags: ReactiveFlags;
 }
 ```
 
@@ -83,8 +86,8 @@ The payoff: explicit traversal state enables inspection during traversal. In lin
 
 ```typescript
 if ((link = next!) !== undefined) {
-    next = link.nextSub;
-    continue; // Fast path: no stack push needed
+  next = link.nextSub;
+  continue; // Fast path: no stack push needed
 }
 ```
 
@@ -97,9 +100,9 @@ On re-execution, `depsTail` resets to `undefined`. As the getter runs and access
 ```typescript
 const nextDep = prevDep !== undefined ? prevDep.nextDep : sub.deps;
 if (nextDep !== undefined && nextDep.dep === dep) {
-    nextDep.version = version;
-    sub.depsTail = nextDep;
-    return; // Fast path: reuse existing link
+  nextDep.version = version;
+  sub.depsTail = nextDep;
+  return; // Fast path: reuse existing link
 }
 ```
 

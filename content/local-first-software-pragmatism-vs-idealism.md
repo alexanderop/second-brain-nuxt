@@ -49,10 +49,7 @@ The [[local-first-software]] essay proposed seven ideals. Wiggins observes that 
 3. ✅ Multi-device sync
 4. ✅ Seamless collaboration
 
-The remaining three remain aspirational:
-5. ⏳ The Long Now (data accessible indefinitely)
-6. ⏳ Privacy by default
-7. ⏳ Full user control
+The remaining three remain aspirational: 5. ⏳ The Long Now (data accessible indefinitely) 6. ⏳ Privacy by default 7. ⏳ Full user control
 
 ### Where Data Lives Matters Less Than Permissions
 
@@ -65,15 +62,18 @@ LLM agents searching across email, chat, and messages need the same data access 
 ## The Movement's Road Ahead
 
 ::mermaid
+
 <pre>
 flowchart LR
     A[Convince Industry<br/>Data ownership matters] --> B[Build Infrastructure<br/>Sync engines, tools, OS support]
     B --> C[App Developers<br/>Navigate business incentives]
     C --> D[End Users Demand It<br/>Choose software for ownership]
 </pre>
+
 ::
 
 Four steps to cross the finish line:
+
 1. **Convince the industry** these ideals matter—even as aspirational goals
 2. **Build infrastructure** so the pragmatic choice also provides ownership benefits
 3. **Help app developers** navigate business incentives that favor lock-in

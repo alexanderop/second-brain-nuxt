@@ -25,7 +25,7 @@ date: 2026-01-02
 >
 > **@belindmo**: I used Claude code yesterday to review 2025, and I have all my goals from the last few years on there, asked it to find trends! To help plan 2026
 >
-> **@poetengineer__**: 1. batch editing that use more complicated bash commands i wouldn't have done otherwise: adding links, editing properties, .etc; 2. create specific folders for current projects that im working on and load all the notes/pdfs/there for claude to read. make claude put on a critique
+> **@poetengineer\_\_**: 1. batch editing that use more complicated bash commands i wouldn't have done otherwise: adding links, editing properties, .etc; 2. create specific folders for current projects that im working on and load all the notes/pdfs/there for claude to read. make claude put on a critique
 >
 > **@davidhoang**: Identify new backlinks to add, synthesize knowledge base and generate summaries, batch re-organization.
 >

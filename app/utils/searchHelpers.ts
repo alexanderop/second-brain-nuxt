@@ -1,20 +1,20 @@
-import type { CommandPaletteItem } from '@nuxt/ui'
+import type { CommandPaletteItem } from "@nuxt/ui";
 
 interface PodcastData {
-  name: string
-  slug: string
-  description?: string
-  artwork?: string
+  name: string;
+  slug: string;
+  description?: string;
+  artwork?: string;
 }
 
 export function transformPodcastToSearchItem(podcast: PodcastData): CommandPaletteItem {
   return {
     id: `podcast:${podcast.slug}`,
     label: podcast.name,
-    description: 'Podcast',
+    description: "Podcast",
     avatar: podcast.artwork ? { src: podcast.artwork, alt: podcast.name } : undefined,
-    icon: podcast.artwork ? undefined : 'i-lucide-podcast',
+    icon: podcast.artwork ? undefined : "i-lucide-podcast",
     to: `/podcasts/${podcast.slug}`,
-    slot: 'podcast',
-  }
+    slot: "podcast",
+  };
 }

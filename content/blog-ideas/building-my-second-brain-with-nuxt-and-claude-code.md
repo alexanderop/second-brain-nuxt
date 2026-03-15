@@ -23,12 +23,15 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ## Series Structure
 
 ### Part 1: Why I Built My Own Second Brain
+
 **Focus:** Motivation + Architecture Decisions
 
 ### Part 2: Nuxt Content's SQLite Superpowers
+
 **Focus:** Technical deep-dive with code snippets
 
 ### Part 3: Claude Code as Your Knowledge Assistant
+
 **Focus:** Skills, automation, daily workflow
 
 ---
@@ -36,6 +39,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ## Part 1: Why I Built My Own Second Brain
 
 ### 1.1 The Capture Problem
+
 - Read "Building a Second Brain" by Tiago Forte and "How to Take Smart Notes" 2 years ago
 - Love consuming content: podcasts, articles, YouTube, books
 - The struggle: always forgetting where I learned something
@@ -44,6 +48,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 - The CODE framework (Capture, Organize, Distill, Express) breaks down at step 1
 
 ### 1.2 Why Not Just Use Obsidian?
+
 - Obsidian + Claude Code is a valid option (link to workflows people use)
 - But I wanted:
   - A public-facing site I control and can deploy to Vercel
@@ -53,12 +58,14 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 - Trade-off: more work upfront, full control forever
 
 ### 1.3 The Architecture
+
 - Flat file structure—no folders, just `content/*.md`
 - Type is frontmatter metadata, not directory
 - Wiki-links (`[[slug]]`) as the connective tissue
 - Schema validation for consistent structure
 
 📸 **Screenshots to add:**
+
 - Knowledge graph visualization
 - Stats dashboard
 - Example note with wiki-links rendered
@@ -68,6 +75,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ## Part 2: Nuxt Content's SQLite Superpowers
 
 ### 2.1 How Nuxt Content v3 Uses SQLite
+
 - Under the hood: content compiled to SQLite database
 - Why this matters for a Second Brain:
   - Query content like a real database
@@ -76,6 +84,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 - The `queryCollection()` API
 
 ### 2.2 Building the Backlinks System
+
 - The challenge: find all notes that link TO this note
 - Server endpoint that indexes wiki-links at build time
 - Code walkthrough: `server/api/backlinks.get.ts`
@@ -85,6 +94,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ```
 
 ### 2.3 The Mentions API
+
 - Beyond explicit wiki-links: find title/text mentions
 - Catching references you forgot to link
 - Code walkthrough: `server/api/mentions.get.ts`
@@ -94,6 +104,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ```
 
 ### 2.4 Custom Wiki-Link Remark Plugin
+
 - How `[[slug]]` becomes clickable links
 - The remark plugin architecture
 - Code walkthrough: `modules/wikilinks/`
@@ -103,6 +114,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ```
 
 ### 2.5 Schema Validation with content.config.ts
+
 - Enforcing frontmatter consistency
 - Different fields for different content types
 - Validation that external content requires authors
@@ -112,6 +124,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ```
 
 ### 2.6 The Knowledge Graph API
+
 - D3.js force-directed graph visualization
 - Server endpoint returning nodes and edges
 - How connection counts are calculated
@@ -121,6 +134,7 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ```
 
 📸 **Screenshots to add:**
+
 - SQLite query in action (dev tools)
 - Backlinks rendered on a note page
 - Graph visualization with filters
@@ -130,16 +144,19 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 ## Part 3: Claude Code as Your Knowledge Assistant
 
 ### 3.1 The CLAUDE.md Foundation
+
 - Persistent context across sessions
 - Teaching Claude your schema, conventions, existing notes
 - Why this is the unlock for automation
 
 ### 3.2 The Skills System
+
 - 15+ custom skills that handle different workflows
 - Skill anatomy: SKILL.md + references
 - How skills compose together
 
 ### 3.3 Example: Adding a YouTube Video
+
 - Step-by-step what happens:
   1. User pastes link + brief context
   2. Claude fetches transcript
@@ -150,24 +167,28 @@ Two years after reading "Building a Second Brain" and "How to Take Smart Notes,"
 - Before/after: manual vs. automated capture
 
 ### 3.4 The Note Enhancement Skills
+
 - Blinkist-style summaries for books
 - Automatic wiki-link discovery
 - Tag management and consolidation
 - MOC curation
 
 ### 3.5 Daily Workflow in Practice
+
 - Paste a link, describe what resonated
 - "What do I know about X?" → synthesized answer
 - Review and connect: the weekly maintenance
 - Result: actually capturing things instead of intending to "add it later"
 
 ### 3.6 Trade-offs and Lessons Learned
+
 - Started too complex—simplify early
 - Flat structure took courage but paid off
 - Honest assessment vs. just using Obsidian
 - What I'd do differently
 
 📸 **Screenshots to add:**
+
 - Claude Code adding a note (terminal)
 - Before/after of a raw capture vs. enhanced note
 - Skills list in action

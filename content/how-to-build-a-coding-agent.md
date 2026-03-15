@@ -20,6 +20,7 @@ Building a functional coding agent requires nothing more than 300 lines of code 
 Every coding agent follows the same fundamental pattern: receive a query, perform LLM inference, check for tool calls, execute tools, allocate results back to context, and repeat.
 
 ::mermaid
+
 <pre>
 flowchart LR
     Q[User Query] --> I[LLM Inference]
@@ -29,6 +30,7 @@ flowchart LR
     R --> I
     T -->|No| A[Return Answer]
 </pre>
+
 ::
 
 ## Five Core Primitives

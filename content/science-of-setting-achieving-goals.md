@@ -37,19 +37,23 @@ When learning something new, set difficulty so you succeed ~85% of the time and 
 ## Key Principles
 
 ### Peripersonal vs Extrapersonal Space
+
 - **Peripersonal space** - Within arm's reach; activates one visual system
 - **Extrapersonal space** - Beyond arm's reach; activates goal-pursuit visual system
 
 Focusing your eyes on a specific point in extrapersonal space activates the neural circuits for goal pursuit and releases dopamine.
 
 ### Visual Focus Protocol
+
 Narrowing visual focus to a specific target:
+
 - Increases alertness and arousal
 - Activates the autonomic nervous system
 - Creates a "readiness state" for action
 - Can be used deliberately before tackling difficult tasks
 
 ### Dopamine and Motivation
+
 - Dopamine is released in anticipation of rewards, not just upon receiving them
 - The pursuit itself can be rewarding when properly framed
 - Avoid excessive reward after goal completion - it can diminish future motivation

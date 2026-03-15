@@ -43,16 +43,16 @@ The plugin exposes four tools to Claude:
 
 ```typescript
 // Begin a new call with opening message
-initiate_call({ message: "I've finished the refactoring. Want me to summarize the changes?" })
+initiate_call({ message: "I've finished the refactoring. Want me to summarize the changes?" });
 
 // Capture user response and continue conversation
-continue_call()
+continue_call();
 
 // Speak without waiting for response (useful before long operations)
-speak_to_user({ message: "Starting the build now, this might take a few minutes..." })
+speak_to_user({ message: "Starting the build now, this might take a few minutes..." });
 
 // End the call session
-end_call()
+end_call();
 ```
 
 ### Environment Configuration

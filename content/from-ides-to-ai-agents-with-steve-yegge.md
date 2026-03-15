@@ -20,28 +20,29 @@ date: 2026-03-14
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 0:00 | Intro — Steve's 40-year career, Amazon/Google, Gas Town, Vibe Coding book |
-| 2:00 | Blog posts & career reflections — "Execution in the Kingdom of Nouns," "Rich Programmer Food" |
-| 8:00 | Walking up the abstraction ladder — required knowledge shifts every few years |
-| 12:00 | AI skepticism to belief — from ChatGPT 3.5 to Claude Code |
-| 17:00 | The 8 levels of AI adoption — full walkthrough |
-| 22:00 | The IDE debate — death of the IDE, Claude Co-Work, token burn |
-| 28:00 | Gas Town architecture — orchestrators, mayor/crew/polecats, minimax context |
-| 38:00 | Monoliths vs. AI-friendly codebases — context window ceiling |
-| 40:00 | The vampiric effect — burnout, 3 productive hours, value capture |
-| 50:00 | Big companies are dying — innovation from the fringes, small teams |
-| 55:00 | Heresies in vibe-coded codebases — recurring architectural errors agents propagate |
-| 62:00 | Personal software & the fork economy |
-| 68:00 | Languages, debugging, developer workstations |
-| 72:00 | Grief and identity — five stages of grief for craft-oriented engineers |
+| Time  | Topic                                                                                         |
+| ----- | --------------------------------------------------------------------------------------------- |
+| 0:00  | Intro — Steve's 40-year career, Amazon/Google, Gas Town, Vibe Coding book                     |
+| 2:00  | Blog posts & career reflections — "Execution in the Kingdom of Nouns," "Rich Programmer Food" |
+| 8:00  | Walking up the abstraction ladder — required knowledge shifts every few years                 |
+| 12:00 | AI skepticism to belief — from ChatGPT 3.5 to Claude Code                                     |
+| 17:00 | The 8 levels of AI adoption — full walkthrough                                                |
+| 22:00 | The IDE debate — death of the IDE, Claude Co-Work, token burn                                 |
+| 28:00 | Gas Town architecture — orchestrators, mayor/crew/polecats, minimax context                   |
+| 38:00 | Monoliths vs. AI-friendly codebases — context window ceiling                                  |
+| 40:00 | The vampiric effect — burnout, 3 productive hours, value capture                              |
+| 50:00 | Big companies are dying — innovation from the fringes, small teams                            |
+| 55:00 | Heresies in vibe-coded codebases — recurring architectural errors agents propagate            |
+| 62:00 | Personal software & the fork economy                                                          |
+| 68:00 | Languages, debugging, developer workstations                                                  |
+| 72:00 | Grief and identity — five stages of grief for craft-oriented engineers                        |
 
 ## The 8 Levels of AI Adoption
 
 Steve's framework for where engineers sit with AI tools. His claim: 70% are stuck at levels 1-2.
 
 ::mermaid
+
 <pre>
 flowchart TD
     L1["Level 1: No AI"] --> L2["Level 2: Yes/No — basic Q&A"]
@@ -54,6 +55,7 @@ flowchart TD
 
     L2 -.- note1["70% of engineers stuck here"]
 </pre>
+
 ::
 
 The jump from level 6 to 7 is where things break — you accidentally text the wrong agent, changes conflict, coordination falls apart. That's exactly the problem Gas Town (Steve's open-source orchestrator) tries to solve. The pattern: completions → chat (completions in a loop) → agents (chat in a loop) → orchestrators (agents in a loop).

@@ -23,24 +23,24 @@ date: 2026-02-19
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 0:00 | Cold open |
-| 4:00 | Boris's brief move to Cursor and return to Anthropic |
-| 8:00 | Origin story of Claude Code — from two-like hack to platform |
-| 14:00 | Growth: 4% of all GitHub commits, exponential acceleration |
-| 17:00 | 100% AI-written code since November |
+| Time  | Topic                                                              |
+| ----- | ------------------------------------------------------------------ |
+| 0:00  | Cold open                                                          |
+| 4:00  | Boris's brief move to Cursor and return to Anthropic               |
+| 8:00  | Origin story of Claude Code — from two-like hack to platform       |
+| 14:00 | Growth: 4% of all GitHub commits, exponential acceleration         |
+| 17:00 | 100% AI-written code since November                                |
 | 20:00 | Next frontier: Claude generating ideas from feedback and telemetry |
-| 22:00 | Coding as "largely solved" — expansion into Co-Work |
-| 25:00 | Latent demand: the Facebook Marketplace analogy |
-| 30:00 | 200% productivity increase per engineer at Anthropic |
-| 33:00 | Product advice: the bitter lesson, build for model N+1 |
-| 38:00 | Printing press analogy — democratization of programming |
-| 42:00 | Role evolution: "builder" replaces "software engineer" |
-| 46:00 | Three layers of AI safety |
-| 50:00 | Tips for using Claude Code effectively |
-| 55:00 | Co-Work usage patterns |
-| 58:00 | Lightning round: books, life motto, post-AGI plans |
+| 22:00 | Coding as "largely solved" — expansion into Co-Work                |
+| 25:00 | Latent demand: the Facebook Marketplace analogy                    |
+| 30:00 | 200% productivity increase per engineer at Anthropic               |
+| 33:00 | Product advice: the bitter lesson, build for model N+1             |
+| 38:00 | Printing press analogy — democratization of programming            |
+| 42:00 | Role evolution: "builder" replaces "software engineer"             |
+| 46:00 | Three layers of AI safety                                          |
+| 50:00 | Tips for using Claude Code effectively                             |
+| 55:00 | Co-Work usage patterns                                             |
+| 58:00 | Lightning round: books, life motto, post-AGI plans                 |
 
 ## Key Arguments
 
@@ -73,6 +73,7 @@ Sub-1% literacy in 1450s Europe maps to sub-1% of the population knowing how to 
 The title "software engineer" is starting to disappear, replaced by "builder." On the Claude Code team, the PM codes, the designer codes, the finance person codes. The strongest contributors cross disciplines — product sense, design sense, business acumen all matter more than deep specialization. This extends what Boris described in [[boris-cherny-on-what-grew-his-career-and-building-at-anthropic]] about hiring generalists.
 
 ::mermaid
+
 <pre>
 mindmap
     root((After Coding
@@ -102,6 +103,7 @@ Is Solved))
             Lab Evals
             Real-World Observation
 </pre>
+
 ::
 
 ## Predictions
@@ -128,10 +130,10 @@ Is Solved))
 
 ## Resources Mentioned
 
-- *Functional Programming in Scala* by Chiusano & Bjarnason
-- *Accelerando* by Charles Stross
-- *The Wandering Earth* by Liu Cixin
-- *A Fire Upon the Deep* and *A Deepness in the Sky* by Vernor Vinge
+- _Functional Programming in Scala_ by Chiusano & Bjarnason
+- _Accelerando_ by Charles Stross
+- _The Wandering Earth_ by Liu Cixin
+- _A Fire Upon the Deep_ and _A Deepness in the Sky_ by Vernor Vinge
 - "The Bitter Lesson" by Rich Sutton — the foundational essay on betting on general methods
 - Acquired podcast — Nintendo episode recommended
 

@@ -28,6 +28,7 @@ The article traces three generations of client-server data management:
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Manual["Manual State"]
@@ -42,6 +43,7 @@ flowchart LR
     Manual -->|"less boilerplate"| Keyed
     Keyed -->|"no invalidation"| Sync
 </pre>
+
 ::
 
 ## Agentic Integration Patterns
@@ -59,9 +61,7 @@ The event-driven pattern makes agents durable: they persist work to the database
 The server-side agent watches for new messages with a reactive query:
 
 ```javascript
-for await (const userMessages of db.watch(
-  "SELECT * FROM messages WHERE author_type = 'user'"
-)) {
+for await (const userMessages of db.watch("SELECT * FROM messages WHERE author_type = 'user'")) {
   // detect mentions, generate response, insert into database
   // sync engine handles delivery to all connected clients
 }

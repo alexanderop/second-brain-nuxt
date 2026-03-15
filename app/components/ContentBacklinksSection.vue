@@ -1,30 +1,33 @@
 <script setup lang="ts">
-import { NuxtLink } from '#components'
-import BaseTypeIcon from '~/components/BaseTypeIcon.vue'
-import type { ContentType } from '~/constants/contentTypes'
+import { NuxtLink } from "#components";
+import BaseTypeIcon from "~/components/BaseTypeIcon.vue";
+import type { ContentType } from "~/constants/contentTypes";
 
 interface Backlink {
-  slug: string
-  title: string
-  type: ContentType
+  slug: string;
+  title: string;
+  type: ContentType;
 }
 
 interface Mention {
-  slug: string
-  title: string
-  type: ContentType
-  snippet: string
-  highlightedSnippet: string
+  slug: string;
+  title: string;
+  type: ContentType;
+  snippet: string;
+  highlightedSnippet: string;
 }
 
 defineProps<{
-  backlinks: Array<Backlink>
-  mentions?: Array<Mention>
-}>()
+  backlinks: Array<Backlink>;
+  mentions?: Array<Mention>;
+}>();
 </script>
 
 <template>
-  <section v-if="backlinks.length > 0 || (mentions && mentions.length > 0)" class="mt-12 pt-8 border-t border-[var(--ui-border)]">
+  <section
+    v-if="backlinks.length > 0 || (mentions && mentions.length > 0)"
+    class="mt-12 pt-8 border-t border-[var(--ui-border)]"
+  >
     <!-- Linked References -->
     <div v-if="backlinks.length > 0" class="mb-8">
       <h2 class="text-sm font-medium text-[var(--ui-text-muted)] mb-4">

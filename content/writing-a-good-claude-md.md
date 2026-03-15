@@ -22,17 +22,21 @@ LLMs are stateless—they have no memory between sessions. `CLAUDE.md` is the pr
 ## Core Principles
 
 ### Less is More
+
 Frontier LLMs can reliably follow 150-200 instructions. Claude Code's system prompt already contains ~50 instructions, leaving limited capacity for your custom file. Keep it under 300 lines (HumanLayer keeps theirs under 60).
 
 ### Universal Applicability
+
 Since `CLAUDE.md` appears in every session, content should be broadly useful. Avoid task-specific instructions that distract from unrelated work.
 
 ### Progressive Disclosure
+
 Store detailed instructions in separate markdown files and guide Claude to relevant documents as needed, rather than cramming everything into one file.
 
 ## What to Include
 
 Cover the **WHY**, **WHAT**, and **HOW**:
+
 - **Why**: Project purpose and context
 - **What**: Technical stack and structure
 - **How**: Development workflows and commands

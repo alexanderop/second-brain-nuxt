@@ -5,6 +5,7 @@ This document explains how to segment talk transcripts for effective analysis.
 ## Why Chunk?
 
 Talk transcripts are long (3,000-15,000 words for 15-60 minute talks). Chunking:
+
 - Makes analysis manageable for each agent
 - Preserves context within logical sections
 - Enables accurate timestamp attribution
@@ -30,16 +31,17 @@ Chunk 3: 10:00 - 15:00
 
 Identify natural break points in the transcript:
 
-| Signal | Indicates |
-|--------|-----------|
-| Long pause (>3s gap between segments) | Topic transition |
-| "So...", "Now...", "Moving on..." | Section start |
-| "In summary...", "To wrap up..." | Section end |
-| "The first/second/third thing..." | Enumeration |
-| "Let me show you...", "As you can see..." | Demo/visual |
-| Applause or laughter | Punchline/key moment |
+| Signal                                    | Indicates            |
+| ----------------------------------------- | -------------------- |
+| Long pause (>3s gap between segments)     | Topic transition     |
+| "So...", "Now...", "Moving on..."         | Section start        |
+| "In summary...", "To wrap up..."          | Section end          |
+| "The first/second/third thing..."         | Enumeration          |
+| "Let me show you...", "As you can see..." | Demo/visual          |
+| Applause or laughter                      | Punchline/key moment |
 
 **Implementation:**
+
 1. Parse JSON transcript
 2. Look for gaps > 3 seconds between segments
 3. Scan for transition phrases
@@ -58,16 +60,17 @@ Combine time and semantic signals:
 ## Chunk Size Guidelines
 
 | Talk Duration | Target Chunks | Words per Chunk |
-|---------------|---------------|-----------------|
-| 15-20 min | 3-4 | 500-800 |
-| 20-30 min | 4-5 | 600-900 |
-| 30-45 min | 5-6 | 700-1000 |
-| 45-60 min | 6-8 | 800-1200 |
-| 60+ min | 7-10 | 900-1500 |
+| ------------- | ------------- | --------------- |
+| 15-20 min     | 3-4           | 500-800         |
+| 20-30 min     | 4-5           | 600-900         |
+| 30-45 min     | 5-6           | 700-1000        |
+| 45-60 min     | 6-8           | 800-1200        |
+| 60+ min       | 7-10          | 900-1500        |
 
 ## Transition Phrase Patterns
 
 ### Section Starters
+
 ```text
 "So let's talk about..."
 "Now I want to..."
@@ -79,6 +82,7 @@ Combine time and semantic signals:
 ```
 
 ### Section Enders
+
 ```text
 "So that's..."
 "In summary..."
@@ -88,6 +92,7 @@ Combine time and semantic signals:
 ```
 
 ### Enumeration Markers
+
 ```text
 "First...", "Second...", "Third..."
 "The first thing...", "Another thing..."
@@ -96,6 +101,7 @@ Combine time and semantic signals:
 ```
 
 ### Visual/Demo Markers
+
 ```text
 "Let me show you..."
 "As you can see here..."
@@ -124,16 +130,20 @@ When chunking for agent analysis, format as:
 
 ```markdown
 ## Chunk 1 (0:00 - 5:00)
+
 [Transcript text...]
 
 ## Chunk 2 (5:00 - 10:00)
+
 [Transcript text...]
 
 ## Chunk 3 (10:00 - 15:00)
+
 [Transcript text...]
 ```
 
 Each chunk includes:
+
 - Chunk number
 - Time range
 - Full transcript text with embedded timestamps
@@ -141,16 +151,19 @@ Each chunk includes:
 ## Special Cases
 
 ### Panel Discussions
+
 - Chunk by speaker turns when possible
 - Note speaker changes within chunks
 - Longer chunks acceptable (speakers often make extended points)
 
 ### Live Coding/Demos
+
 - Keep demo segments together
 - Note when visual context is important
 - Mark as "Visual demo - transcript may be incomplete"
 
 ### Q&A Sections
+
 - Often at end of talk
 - May not need deep analysis
 - Can be summarized as single chunk

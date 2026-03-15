@@ -20,6 +20,7 @@ date: 2026-01-04
 Martin Kleppmann, co-author of the original [[local-first-software]] essay, reflects on five years of local-first development and proposes a sharper definition: local-first software must survive not just network outages, but the complete disappearance of its creators. The talk moves from personal history (discovering CRDTs in 2013, building Automerge, coining the term) to the real thesis: sync should become commoditized infrastructure, and local-first changes the economics of software development more than the technology.
 
 ::mermaid
+
 <pre>
 mindmap
     root((Local-First
@@ -55,6 +56,7 @@ mindmap
             Business model without data moat
             Subscription without lock-in
 </pre>
+
 ::
 
 ## Key Arguments

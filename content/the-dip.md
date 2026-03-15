@@ -28,7 +28,7 @@ The Dip is the long stretch of hard work between starting something and achievin
 
 ## Key Insight
 
-"Best in the world" doesn't mean globally supreme. It means best in *your* world—your niche, your market, your customer's options. The goal: be so good at something specific that you're the obvious choice.
+"Best in the world" doesn't mean globally supreme. It means best in _your_ world—your niche, your market, your customer's options. The goal: be so good at something specific that you're the obvious choice.
 
 ## When to Quit
 

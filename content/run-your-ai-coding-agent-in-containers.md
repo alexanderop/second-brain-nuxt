@@ -24,6 +24,7 @@ date: 2026-01-14
 ## Dev Container Workflow
 
 ::mermaid
+
 <pre>
 flowchart LR
     Config[devcontainer.json] --> Local{Run Where?}
@@ -34,6 +35,7 @@ flowchart LR
     VSCode --> Agent[AI Agent Executes<br/>in Container]
     Browser --> Agent
 </pre>
+
 ::
 
 ## Getting Started
@@ -51,6 +53,7 @@ flowchart LR
 ```
 
 Key configuration options:
+
 - `image` or `dockerfile`: Base container environment
 - `customizations.vscode.extensions`: Extensions installed in container
 - `forwardPorts`: Ports exposed to local machine

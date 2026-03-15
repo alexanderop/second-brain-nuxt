@@ -6,7 +6,7 @@
  *
  * Known harmless warnings can be added to the allowlist below.
  */
-import { afterEach, beforeEach, vi, type MockInstance } from 'vitest'
+import { afterEach, beforeEach, vi, type MockInstance } from "vite-plus/test";
 
 const ALLOWED_PATTERNS: RegExp[] = [
   // Vue intlify i18n warnings
@@ -17,41 +17,41 @@ const ALLOWED_PATTERNS: RegExp[] = [
   /<Suspense> is an experimental feature/,
   // Vue DevTools
   /__VUE_DEVTOOLS/,
-]
+];
 
 function isAllowed(message: string): boolean {
-  return ALLOWED_PATTERNS.some(pattern => pattern.test(message))
+  return ALLOWED_PATTERNS.some((pattern) => pattern.test(message));
 }
 
-let warnSpy: MockInstance
-let errorSpy: MockInstance
+let warnSpy: MockInstance;
+let errorSpy: MockInstance;
 
 beforeEach(() => {
-  warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-  errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-})
+  warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+});
 
 afterEach(() => {
   const unexpectedWarns = warnSpy.mock.calls
-    .map(args => args.map(String).join(' '))
-    .filter(msg => !isAllowed(msg))
+    .map((args) => args.map(String).join(" "))
+    .filter((msg) => !isAllowed(msg));
 
   const unexpectedErrors = errorSpy.mock.calls
-    .map(args => args.map(String).join(' '))
-    .filter(msg => !isAllowed(msg))
+    .map((args) => args.map(String).join(" "))
+    .filter((msg) => !isAllowed(msg));
 
-  warnSpy.mockRestore()
-  errorSpy.mockRestore()
+  warnSpy.mockRestore();
+  errorSpy.mockRestore();
 
   if (unexpectedWarns.length > 0) {
     throw new Error(
-      `Unexpected console.warn calls:\n${unexpectedWarns.map(w => `  - ${w}`).join('\n')}`,
-    )
+      `Unexpected console.warn calls:\n${unexpectedWarns.map((w) => `  - ${w}`).join("\n")}`,
+    );
   }
 
   if (unexpectedErrors.length > 0) {
     throw new Error(
-      `Unexpected console.error calls:\n${unexpectedErrors.map(e => `  - ${e}`).join('\n')}`,
-    )
+      `Unexpected console.error calls:\n${unexpectedErrors.map((e) => `  - ${e}`).join("\n")}`,
+    );
   }
-})
+});

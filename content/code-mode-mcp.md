@@ -21,6 +21,7 @@ The MCP scaling problem is real. Cloudflare's full API would consume 1.17 millio
 This is the most convincing answer I've seen to the MCP context problem that [[why-model-context-protocol-does-not-work]] diagnosed.
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Traditional MCP
@@ -37,6 +38,7 @@ flowchart LR
 
     H[Result] --- I[~1K tokens fixed footprint]
 </pre>
+
 ::
 
 ## How It Works

@@ -40,6 +40,7 @@ Tools are defined through function declarations—metadata that tells the LLM wh
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     Input[User Message] --> LLM[Gemini API]
@@ -49,6 +50,7 @@ flowchart LR
     Result --> LLM
     Check -->|No| Done[Final Response]
 </pre>
+
 ::
 
 ## Code Snippets

@@ -24,15 +24,15 @@ date: 2026-01-27
 
 ## Benchmark Performance
 
-| Model | Score | Cost |
-|-------|-------|------|
-| Gemini 3 Pro | 100% | - |
-| Claude Opus 4.5 Max | 74% | $114 |
-| GLM 4.7 | 65% | - |
-| GPT 5.2x High | 65% | $48 |
-| **Kimi K2.5** | **64%** | **$27** |
-| Claude Sonnet 4.5 | 62% | - |
-| DeepSeek V3.2 | - | - |
+| Model               | Score   | Cost    |
+| ------------------- | ------- | ------- |
+| Gemini 3 Pro        | 100%    | -       |
+| Claude Opus 4.5 Max | 74%     | $114    |
+| GLM 4.7             | 65%     | -       |
+| GPT 5.2x High       | 65%     | $48     |
+| **Kimi K2.5**       | **64%** | **$27** |
+| Claude Sonnet 4.5   | 62%     | -       |
+| DeepSeek V3.2       | -       | -       |
 
 Official benchmarks: 96.1 on AIM 2025, 87.6 on GPQA Diamond, 85 on Live Codebench v6, 76.8 on SWEBench verified.
 

@@ -31,7 +31,7 @@ name: Display name (used after / in chat)
 argument-hint: Guidance for user interaction
 agent: ask | edit | agent | custom-agent-name
 model: Language model selection
-tools: ['tool1', 'tool2']
+tools: ["tool1", "tool2"]
 ---
 ```
 
@@ -42,6 +42,7 @@ The prompt text sent to the LLM. Reference workspace files with relative Markdow
 ## How Prompt Files Work
 
 ::mermaid
+
 <pre>
 flowchart LR
     T[Type /prompt-name] --> L[Load .prompt.md]
@@ -49,14 +50,15 @@ flowchart LR
     V --> E[Execute with<br/>Specified Agent]
     E --> R[Result]
 </pre>
+
 ::
 
 ## Scope Types
 
-| Scope | Location | Availability |
-|-------|----------|--------------|
-| **Workspace** | `.github/prompts/` | Single project only |
-| **User** | VS Code profile | All workspaces (syncs via Settings Sync) |
+| Scope         | Location           | Availability                             |
+| ------------- | ------------------ | ---------------------------------------- |
+| **Workspace** | `.github/prompts/` | Single project only                      |
+| **User**      | VS Code profile    | All workspaces (syncs via Settings Sync) |
 
 ## Variable Support
 

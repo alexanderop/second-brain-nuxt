@@ -8,6 +8,7 @@ description: Debug issues in the Second Brain Nuxt 4 + @nuxt/content v3 project.
 ## Overview
 
 This skill adapts systematic debugging for the Second Brain stack:
+
 - **Nuxt 4** with Vue 3 Composition API
 - **@nuxt/content v3** with SQLite and minimark format
 - **@nuxt/ui v4** components
@@ -19,15 +20,15 @@ This skill adapts systematic debugging for the Second Brain stack:
 
 Before debugging, internalize these common pitfalls:
 
-| Issue | Symptom | Cause |
-|-------|---------|-------|
-| Empty graph edges | Nodes show, no connections | Missing `.select('body')` in query |
-| Links not extracted | Backlinks/graph empty | Minimark parsed as object, not array |
-| 404 on content page | Page not found | Slug mismatch (`/slug` vs `slug`) |
-| Stale backlinks | Old connections shown | useAsyncData cache not invalidated |
-| Silent API failure | Empty response, no error | try-catch returns `{}` or `[]` |
-| Wrong mentions | Unrelated content matched | Title regex too broad |
-| Graph crashes on filter | D3 error after filtering | Edge source/target type mismatch |
+| Issue                   | Symptom                    | Cause                                |
+| ----------------------- | -------------------------- | ------------------------------------ |
+| Empty graph edges       | Nodes show, no connections | Missing `.select('body')` in query   |
+| Links not extracted     | Backlinks/graph empty      | Minimark parsed as object, not array |
+| 404 on content page     | Page not found             | Slug mismatch (`/slug` vs `slug`)    |
+| Stale backlinks         | Old connections shown      | useAsyncData cache not invalidated   |
+| Silent API failure      | Empty response, no error   | try-catch returns `{}` or `[]`       |
+| Wrong mentions          | Unrelated content matched  | Title regex too broad                |
+| Graph crashes on filter | D3 error after filtering   | Edge source/target type mismatch     |
 
 ## The Four Phases
 
@@ -56,6 +57,7 @@ User Interface
 5. **Client layer** - Check composable logic, reactivity
 
 **Quick diagnostic:**
+
 ```bash
 # Check if content is queryable
 pnpm nuxi dev
@@ -75,19 +77,21 @@ pnpm nuxi dev
    - File in `/content/` directory?
 
 2. **Check minimark extraction:**
+
    ```typescript
    // In server/api/graph.get.ts, temporarily add:
-   console.log('Body structure:', JSON.stringify(item.body, null, 2))
+   console.log("Body structure:", JSON.stringify(item.body, null, 2));
    // Verify: { type: 'minimark', value: [[...arrays...]] }
    // NOT: { type: 'minimark', value: [{...objects...}] }
    ```
 
 3. **Check query selection:**
+
    ```typescript
    // Must explicitly select body:
-   queryCollection(event, 'content')
-     .select('path', 'stem', 'title', 'type', 'body') // ← body required!
-     .all()
+   queryCollection(event, "content")
+     .select("path", "stem", "title", "type", "body") // ← body required!
+     .all();
    ```
 
 4. **Check API response:**
@@ -105,45 +109,50 @@ pnpm nuxi dev
 ### Phase 3: Hypothesis Testing
 
 **Form ONE hypothesis:**
+
 - "The body isn't being selected because..."
 - "Links aren't extracted because minimark format is..."
 - "The cache is stale because..."
 
 **Test minimally:**
+
 ```bash
 # Run relevant tests first
-pnpm test:unit -- minimark  # For link extraction
-pnpm test:run -- graph      # For API issues
+vp test --project unit -- minimark  # For link extraction
+vp test -- graph                    # For API issues
 ```
 
 **Add targeted logging:**
+
 ```typescript
 // In extractLinksFromBody (server/utils/minimark.ts)
-console.log('Body type:', body?.type)
-console.log('Body value is array?', Array.isArray(body?.value))
-console.log('First node:', JSON.stringify(body?.value?.[0]))
+console.log("Body type:", body?.type);
+console.log("Body value is array?", Array.isArray(body?.value));
+console.log("First node:", JSON.stringify(body?.value?.[0]));
 ```
 
 ### Phase 4: Fix and Verify
 
 1. **Create failing test first:**
+
    ```typescript
    // tests/unit/utils/minimark.test.ts
-   it('extracts links from nested minimark', () => {
+   it("extracts links from nested minimark", () => {
      const body = {
-       type: 'minimark',
-       value: [['a', { href: '/target' }, 'Link text']]
-     }
-     expect(extractLinksFromBody(body)).toContain('target')
-   })
+       type: "minimark",
+       value: [["a", { href: "/target" }, "Link text"]],
+     };
+     expect(extractLinksFromBody(body)).toContain("target");
+   });
    ```
 
 2. **Implement fix in ONE place**
 
 3. **Verify with full test suite:**
+
    ```bash
-   pnpm test:run
-   pnpm lint:fix && pnpm typecheck
+   vp test
+   vp check && pnpm typecheck
    ```
 
 4. **If fix doesn't work after 3 attempts:**
@@ -155,11 +164,11 @@ console.log('First node:', JSON.stringify(body?.value?.[0]))
 
 ```bash
 # Run all tests
-pnpm test:run
+vp test
 
 # Run specific test file
-pnpm test:unit -- minimark
-pnpm test:run -- graph.nuxt
+vp test --project unit -- minimark
+vp test -- graph.nuxt
 
 # Type check
 pnpm typecheck
@@ -177,40 +186,47 @@ curl -s "http://localhost:3000/api/mentions?slug=test&title=Test" | jq
 ## Key Files by Subsystem
 
 ### Content Pipeline
+
 - `/content/*.md` - Raw content files
 - `/content.config.ts` - Collection schema (title, type required)
 - `/modules/wikilinks.ts` - [[link]] to anchor transformation
 
 ### Link Extraction
+
 - `/server/utils/minimark.ts` - Extract links from AST
 - Body format: `{ type: 'minimark', value: [...arrays...] }`
 - Link format: `['a', { href: '/slug' }, 'text']`
 
 ### API Endpoints
+
 - `/server/api/graph.get.ts` - Nodes and edges for D3
 - `/server/api/backlinks.get.ts` - Reverse link index
 - `/server/api/mentions.get.ts` - Unlinked mentions search
 
 ### Client Composables
+
 - `/app/composables/useBacklinks.ts` - Fetch backlinks
 - `/app/composables/useMentions.ts` - Fetch mentions
 - `/app/composables/useGraphFilters.ts` - Graph filter state
 
 ### Pages
+
 - `/app/pages/[...slug].vue` - Content page
 - `/app/pages/graph.vue` - Knowledge graph
 
 ## Common Fixes
 
 ### "Graph shows nodes but no edges"
+
 ```typescript
 // Fix: Add .select('body') to query
-queryCollection(event, 'content')
-  .select('path', 'stem', 'title', 'type', 'tags', 'body') // ← ADD body
-  .all()
+queryCollection(event, "content")
+  .select("path", "stem", "title", "type", "tags", "body") // ← ADD body
+  .all();
 ```
 
 ### "Links not being extracted"
+
 ```typescript
 // Check minimark format - must be ARRAY based
 // Wrong: { tag: 'a', props: { href: '/' }, children: [] }
@@ -218,22 +234,24 @@ queryCollection(event, 'content')
 
 // Fix extractLinksFromMinimark to handle arrays:
 function extractLinksFromMinimark(node: unknown): string[] {
-  if (!Array.isArray(node)) return []
-  const [tag, props, ...children] = node
+  if (!Array.isArray(node)) return [];
+  const [tag, props, ...children] = node;
   // ...
 }
 ```
 
 ### "Stale backlinks after content edit"
+
 ```typescript
 // Force refresh with key
 const { data: backlinks, refresh } = await useAsyncData(
   `backlinks-${Date.now()}`, // or add content hash
-  () => $fetch('/api/backlinks')
-)
+  () => $fetch("/api/backlinks"),
+);
 ```
 
 ### "Content page 404"
+
 ```typescript
 // Check slug normalization
 // Route uses: /atomic-habits (with slash)
@@ -241,12 +259,13 @@ const { data: backlinks, refresh } = await useAsyncData(
 // Backlinks use slug: 'atomic-habits' (no slash)
 
 // Ensure consistent normalization:
-const slug = route.path.startsWith('/') ? route.path : `/${route.path}`
+const slug = route.path.startsWith("/") ? route.path : `/${route.path}`;
 ```
 
 ## Red Flags - STOP
 
 If you catch yourself:
+
 - Guessing which layer the bug is in
 - Adding fixes to multiple files at once
 - Skipping the test before fixing

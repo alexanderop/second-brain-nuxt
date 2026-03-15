@@ -56,6 +56,7 @@ Three operations that must all work well:
 The hard part: you write mutations twice. Once on the client (optimistic, instant), once on the server (authoritative, validated). The server version wins. The client rebases pending mutations on top of new server state — the same Git-like rebase model Replicache introduced.
 
 ::mermaid
+
 <pre>
 flowchart TD
     subgraph Client["Client (Local Store)"]
@@ -83,6 +84,7 @@ flowchart TD
     DB --- Compute
     DB --- Subscriptions
 </pre>
+
 ::
 
 ## How Convex Compares to Others

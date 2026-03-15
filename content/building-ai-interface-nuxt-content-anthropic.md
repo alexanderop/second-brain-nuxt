@@ -15,9 +15,9 @@ summary: "Learn how to build a conversational AI that queries your personal know
 date: 2026-01-17
 ---
 
-You've built a Second Brain - a personal knowledge base filled with notes from podcasts, articles, books, and your own insights. There's just one problem: finding anything requires remembering exactly what you wrote or where you put it. What if you could just *ask* your notes a question?
+You've built a Second Brain - a personal knowledge base filled with notes from podcasts, articles, books, and your own insights. There's just one problem: finding anything requires remembering exactly what you wrote or where you put it. What if you could just _ask_ your notes a question?
 
-In this tutorial, we'll build a conversational AI interface that lets you chat with your Second Brain. You'll learn how to create an agentic system where Claude decides which notes to fetch, reads their content, and synthesizes answers - all grounded in *your* knowledge, not general information.
+In this tutorial, we'll build a conversational AI interface that lets you chat with your Second Brain. You'll learn how to create an agentic system where Claude decides which notes to fetch, reads their content, and synthesizes answers - all grounded in _your_ knowledge, not general information.
 
 ## What We're Building
 
@@ -79,16 +79,16 @@ The content schema in `content.config.ts` validates this structure:
 
 ```typescript
 // content.config.ts
-import { defineCollection, defineContentConfig, z } from '@nuxt/content'
+import { defineCollection, defineContentConfig, z } from "@nuxt/content";
 
 export default defineContentConfig({
   collections: {
     content: defineCollection({
-      type: 'page',
-      source: { include: '**/*.md' },
+      type: "page",
+      source: { include: "**/*.md" },
       schema: z.object({
         title: z.string(),
-        type: z.enum(['article', 'book', 'podcast', 'note', 'youtube']),
+        type: z.enum(["article", "book", "podcast", "note", "youtube"]),
         tags: z.array(z.string()).default([]),
         authors: z.array(z.string()).default([]),
         summary: z.string().optional(),
@@ -96,7 +96,7 @@ export default defineContentConfig({
       }),
     }),
   },
-})
+});
 ```
 
 ---
@@ -111,43 +111,43 @@ Create `server/api/chat.post.ts`:
 
 ```typescript
 // server/api/chat.post.ts
-import { defineEventHandler, readBody, createError } from 'h3'
-import Anthropic from '@anthropic-ai/sdk'
+import { defineEventHandler, readBody, createError } from "h3";
+import Anthropic from "@anthropic-ai/sdk";
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event)
+  const config = useRuntimeConfig(event);
 
   if (!config.anthropicApiKey) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'ANTHROPIC_API_KEY not configured',
-    })
+      statusMessage: "ANTHROPIC_API_KEY not configured",
+    });
   }
 
-  const { message } = await readBody(event)
+  const { message } = await readBody(event);
 
   if (!message?.trim()) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Message is required',
-    })
+      statusMessage: "Message is required",
+    });
   }
 
-  const anthropic = new Anthropic({ apiKey: config.anthropicApiKey })
+  const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-5-haiku-20241022',
+    model: "claude-3-5-haiku-20241022",
     max_tokens: 1024,
-    messages: [{ role: 'user', content: message }],
-  })
+    messages: [{ role: "user", content: message }],
+  });
 
   // Extract text from the response
-  const textBlock = response.content.find(block => block.type === 'text')
+  const textBlock = response.content.find((block) => block.type === "text");
 
   return {
-    content: textBlock?.text ?? '',
-  }
-})
+    content: textBlock?.text ?? "",
+  };
+});
 ```
 
 Add your API key to `.env`:
@@ -164,7 +164,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
   },
-})
+});
 ```
 
 This works, but has a problem: the response takes several seconds and the user sees nothing until it's complete.
@@ -181,39 +181,39 @@ import {
   createEventStream,
   setResponseHeader,
   createError,
-} from 'h3'
-import Anthropic from '@anthropic-ai/sdk'
+} from "h3";
+import Anthropic from "@anthropic-ai/sdk";
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event)
-  const { message } = await readBody(event)
+  const config = useRuntimeConfig(event);
+  const { message } = await readBody(event);
 
   // Set up SSE headers
-  setResponseHeader(event, 'Content-Type', 'text/event-stream')
-  setResponseHeader(event, 'Cache-Control', 'no-cache')
-  setResponseHeader(event, 'Connection', 'keep-alive')
+  setResponseHeader(event, "Content-Type", "text/event-stream");
+  setResponseHeader(event, "Cache-Control", "no-cache");
+  setResponseHeader(event, "Connection", "keep-alive");
 
-  const eventStream = createEventStream(event)
-  const anthropic = new Anthropic({ apiKey: config.anthropicApiKey })
+  const eventStream = createEventStream(event);
+  const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
   // Stream the response
   const stream = anthropic.messages.stream({
-    model: 'claude-3-5-haiku-20241022',
+    model: "claude-3-5-haiku-20241022",
     max_tokens: 1024,
-    messages: [{ role: 'user', content: message }],
-  })
+    messages: [{ role: "user", content: message }],
+  });
 
-  stream.on('text', async (text) => {
-    await eventStream.push(JSON.stringify({ type: 'text', content: text }))
-  })
+  stream.on("text", async (text) => {
+    await eventStream.push(JSON.stringify({ type: "text", content: text }));
+  });
 
-  stream.on('end', async () => {
-    await eventStream.push(JSON.stringify({ type: 'done' }))
-    await eventStream.close()
-  })
+  stream.on("end", async () => {
+    await eventStream.push(JSON.stringify({ type: "done" }));
+    await eventStream.close();
+  });
 
-  return eventStream.send()
-})
+  return eventStream.send();
+});
 ```
 
 ### A Simple Chat UI
@@ -223,41 +223,41 @@ Here's a minimal Vue component to consume our streaming API:
 ```vue
 <!-- app/components/ChatInterface.vue -->
 <script setup lang="ts">
-const message = ref('')
-const response = ref('')
-const isLoading = ref(false)
+const message = ref("");
+const response = ref("");
+const isLoading = ref(false);
 
 async function sendMessage() {
-  if (!message.value.trim() || isLoading.value) return
+  if (!message.value.trim() || isLoading.value) return;
 
-  isLoading.value = true
-  response.value = ''
+  isLoading.value = true;
+  response.value = "";
 
-  const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: message.value }),
-  })
+  });
 
-  const reader = res.body?.getReader()
-  const decoder = new TextDecoder()
+  const reader = res.body?.getReader();
+  const decoder = new TextDecoder();
 
   while (reader) {
-    const { done, value } = await reader.read()
-    if (done) break
+    const { done, value } = await reader.read();
+    if (done) break;
 
-    const chunk = decoder.decode(value)
-    const lines = chunk.split('\n').filter(Boolean)
+    const chunk = decoder.decode(value);
+    const lines = chunk.split("\n").filter(Boolean);
 
     for (const line of lines) {
-      const data = JSON.parse(line)
-      if (data.type === 'text') {
-        response.value += data.content
+      const data = JSON.parse(line);
+      if (data.type === "text") {
+        response.value += data.content;
       }
     }
   }
 
-  isLoading.value = false
+  isLoading.value = false;
 }
 </script>
 
@@ -302,43 +302,44 @@ Tools are defined with a name, description, and JSON Schema for inputs:
 
 ```typescript
 // server/utils/chat/tools.ts
-import type Anthropic from '@anthropic-ai/sdk'
+import type Anthropic from "@anthropic-ai/sdk";
 
-export const MODEL = 'claude-3-5-haiku-20241022'
-export const MAX_TOKENS = 1024
+export const MODEL = "claude-3-5-haiku-20241022";
+export const MAX_TOKENS = 1024;
 
 export const TOOLS: Anthropic.Tool[] = [
   {
-    name: 'search_notes',
-    description: 'Search the knowledge base for notes. Returns titles and summaries of matching notes.',
+    name: "search_notes",
+    description:
+      "Search the knowledge base for notes. Returns titles and summaries of matching notes.",
     input_schema: {
-      type: 'object',
+      type: "object",
       properties: {
         query: {
-          type: 'string',
-          description: 'Search query - can be keywords or natural language',
+          type: "string",
+          description: "Search query - can be keywords or natural language",
         },
         type: {
-          type: 'string',
-          enum: ['article', 'book', 'podcast', 'note', 'youtube'],
-          description: 'Optional: filter by content type',
+          type: "string",
+          enum: ["article", "book", "podcast", "note", "youtube"],
+          description: "Optional: filter by content type",
         },
         limit: {
-          type: 'number',
-          description: 'Max results (default 5, max 10)',
+          type: "number",
+          description: "Max results (default 5, max 10)",
         },
       },
-      required: ['query'],
+      required: ["query"],
     },
   },
-]
+];
 ```
 
 The description is crucial - it tells Claude when and how to use the tool.
 
 ### The System Prompt
 
-The system prompt constrains Claude to *only* use information from tools:
+The system prompt constrains Claude to _only_ use information from tools:
 
 ```typescript
 // server/utils/chat/tools.ts
@@ -359,7 +360,7 @@ When answering questions:
 - NEVER say "I know that..." or "Generally speaking..."
 - If asked about something not in their notes, suggest they add it
 
-Always end your response with a "Sources:" section listing the notes you referenced.`
+Always end your response with a "Sources:" section listing the notes you referenced.`;
 ```
 
 This is essential for a Second Brain assistant. Without it, Claude would happily answer questions using its training data, defeating the purpose.
@@ -375,8 +376,8 @@ async function streamChatResponse(
   initialMessages: Anthropic.MessageParam[],
   eventStream: ReturnType<typeof createEventStream>,
 ) {
-  let messages = [...initialMessages]
-  let continueLoop = true
+  let messages = [...initialMessages];
+  let continueLoop = true;
 
   while (continueLoop) {
     const stream = anthropic.messages.stream({
@@ -385,50 +386,50 @@ async function streamChatResponse(
       system: SYSTEM_PROMPT,
       tools: TOOLS,
       messages,
-    })
+    });
 
     // Stream text to the client as it arrives
-    stream.on('text', async (text) => {
-      await eventStream.push(JSON.stringify({ type: 'text', content: text }))
-    })
+    stream.on("text", async (text) => {
+      await eventStream.push(JSON.stringify({ type: "text", content: text }));
+    });
 
-    const response = await stream.finalMessage()
+    const response = await stream.finalMessage();
 
     // Check if Claude wants to use tools
-    if (response.stop_reason === 'tool_use') {
+    if (response.stop_reason === "tool_use") {
       const toolUseBlocks = response.content.filter(
-        (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
-      )
+        (block): block is Anthropic.ToolUseBlock => block.type === "tool_use",
+      );
 
       // Add Claude's response to the conversation
-      messages.push({ role: 'assistant', content: response.content })
+      messages.push({ role: "assistant", content: response.content });
 
       // Execute each tool and collect results
-      const toolResults: Anthropic.ToolResultBlockParam[] = []
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
 
       for (const toolUse of toolUseBlocks) {
-        const result = await executeTool(toolUse.name, toolUse.input)
+        const result = await executeTool(toolUse.name, toolUse.input);
 
         toolResults.push({
-          type: 'tool_result',
+          type: "tool_result",
           tool_use_id: toolUse.id,
           content: JSON.stringify(result),
-        })
+        });
       }
 
       // Add tool results to the conversation
-      messages.push({ role: 'user', content: toolResults })
+      messages.push({ role: "user", content: toolResults });
 
       // Loop continues - Claude will process the results
-      continue
+      continue;
     }
 
     // No more tool calls - we're done
-    continueLoop = false
+    continueLoop = false;
   }
 
-  await eventStream.push(JSON.stringify({ type: 'done' }))
-  await eventStream.close()
+  await eventStream.push(JSON.stringify({ type: "done" }));
+  await eventStream.close();
 }
 ```
 
@@ -440,42 +441,63 @@ Now let's implement the actual search. We use Nuxt Content's `queryCollection` t
 
 ```typescript
 // server/utils/chat/search.ts
-import { queryCollection } from '@nuxt/content/server'
+import { queryCollection } from "@nuxt/content/server";
 
 export interface NoteContext {
-  title: string
-  summary: string | null
-  path: string
+  title: string;
+  summary: string | null;
+  path: string;
 }
 
 // Common stop words to filter out
 const STOP_WORDS = new Set([
-  'a', 'an', 'the', 'is', 'are', 'was', 'were', 'be', 'been',
-  'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-  'what', 'which', 'who', 'this', 'that', 'how', 'about',
-])
+  "a",
+  "an",
+  "the",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "have",
+  "has",
+  "had",
+  "do",
+  "does",
+  "did",
+  "will",
+  "would",
+  "what",
+  "which",
+  "who",
+  "this",
+  "that",
+  "how",
+  "about",
+]);
 
 export function extractKeywords(message: string): string[] {
   return message
     .toLowerCase()
-    .replace(/[^\w\s-]/g, ' ')
+    .replace(/[^\w\s-]/g, " ")
     .split(/\s+/)
-    .filter(word => word.length > 2 && !STOP_WORDS.has(word))
-    .slice(0, 8)
+    .filter((word) => word.length > 2 && !STOP_WORDS.has(word))
+    .slice(0, 8);
 }
 
 export function scoreNote(note: RawNote, keywords: string[]): number {
-  const titleLower = (note.title ?? '').toLowerCase()
-  const summaryLower = (note.summary ?? '').toLowerCase()
-  const tagsLower = (note.tags ?? []).map(t => t.toLowerCase())
+  const titleLower = (note.title ?? "").toLowerCase();
+  const summaryLower = (note.summary ?? "").toLowerCase();
+  const tagsLower = (note.tags ?? []).map((t) => t.toLowerCase());
 
   return keywords.reduce((score, keyword) => {
-    let keywordScore = 0
-    if (titleLower.includes(keyword)) keywordScore += 2
-    if (summaryLower.includes(keyword)) keywordScore += 1
-    if (tagsLower.some(tag => tag.includes(keyword))) keywordScore += 3
-    return score + keywordScore
-  }, 0)
+    let keywordScore = 0;
+    if (titleLower.includes(keyword)) keywordScore += 2;
+    if (summaryLower.includes(keyword)) keywordScore += 1;
+    if (tagsLower.some((tag) => tag.includes(keyword))) keywordScore += 3;
+    return score + keywordScore;
+  }, 0);
 }
 
 export async function searchNotes(
@@ -483,31 +505,31 @@ export async function searchNotes(
   query: string,
   options: { type?: string; limit?: number } = {},
 ): Promise<NoteContext[]> {
-  const { type, limit = 5 } = options
-  const keywords = extractKeywords(query)
+  const { type, limit = 5 } = options;
+  const keywords = extractKeywords(query);
 
   // Fetch all notes (Nuxt Content caches this)
-  let queryBuilder = queryCollection(event, 'content')
-    .select('title', 'summary', 'path', 'stem', 'tags', 'type')
-    .limit(100)
+  let queryBuilder = queryCollection(event, "content")
+    .select("title", "summary", "path", "stem", "tags", "type")
+    .limit(100);
 
   if (type) {
-    queryBuilder = queryBuilder.where('type', '=', type)
+    queryBuilder = queryBuilder.where("type", "=", type);
   }
 
-  const allNotes = await queryBuilder.all()
+  const allNotes = await queryBuilder.all();
 
   // Score and filter
   return allNotes
-    .map(note => ({ note, score: scoreNote(note, keywords) }))
-    .filter(item => item.score > 0)
+    .map((note) => ({ note, score: scoreNote(note, keywords) }))
+    .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, Math.min(limit, 10))
-    .map(item => ({
-      title: item.note.title ?? 'Untitled',
+    .map((item) => ({
+      title: item.note.title ?? "Untitled",
       summary: item.note.summary ?? null,
       path: item.note.path ?? `/${item.note.stem}`,
-    }))
+    }));
 }
 ```
 
@@ -515,27 +537,23 @@ The tool executor ties it together:
 
 ```typescript
 // server/api/chat.post.ts
-async function executeTool(
-  event: H3Event,
-  toolName: string,
-  toolInput: unknown,
-): Promise<unknown> {
-  if (toolName === 'search_notes') {
-    const { query, type, limit } = toolInput as SearchNotesInput
-    const notes = await searchNotes(event, query, { type, limit })
+async function executeTool(event: H3Event, toolName: string, toolInput: unknown): Promise<unknown> {
+  if (toolName === "search_notes") {
+    const { query, type, limit } = toolInput as SearchNotesInput;
+    const notes = await searchNotes(event, query, { type, limit });
 
     if (notes.length === 0) {
       return {
         results: [],
         found: false,
         message: `No notes found about "${query}".`,
-      }
+      };
     }
 
-    return { results: notes, found: true }
+    return { results: notes, found: true };
   }
 
-  return { error: `Unknown tool: ${toolName}` }
+  return { error: `Unknown tool: ${toolName}` };
 }
 ```
 
@@ -573,27 +591,24 @@ Implementation:
 
 ```typescript
 // server/utils/chat/search.ts
-export async function getNoteContent(
-  event: H3Event,
-  slug: string,
-): Promise<NoteContent | null> {
-  const note = await queryCollection(event, 'content')
-    .select('title', 'summary', 'path', 'stem', 'tags', 'type', 'notes', 'rawbody')
-    .where('stem', '=', slug)
-    .first()
+export async function getNoteContent(event: H3Event, slug: string): Promise<NoteContent | null> {
+  const note = await queryCollection(event, "content")
+    .select("title", "summary", "path", "stem", "tags", "type", "notes", "rawbody")
+    .where("stem", "=", slug)
+    .first();
 
-  if (!note) return null
+  if (!note) return null;
 
   return {
-    title: note.title ?? 'Untitled',
+    title: note.title ?? "Untitled",
     summary: note.summary ?? null,
     notes: note.notes ?? null,
     tags: note.tags ?? [],
-    type: note.type ?? 'note',
+    type: note.type ?? "note",
     path: note.path ?? `/${slug}`,
     // Truncate body for token efficiency
     content: note.rawbody?.slice(0, 3000) ?? null,
-  }
+  };
 }
 ```
 
@@ -627,41 +642,41 @@ Implementation requires parsing wiki-links from note content:
 
 ```typescript
 // server/api/chat.post.ts
-const WIKI_LINK_PATTERN = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g
+const WIKI_LINK_PATTERN = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g;
 
 function parseWikiLinks(content: string | null): string[] {
-  if (!content) return []
-  const links: string[] = []
-  let match
+  if (!content) return [];
+  const links: string[] = [];
+  let match;
   while ((match = WIKI_LINK_PATTERN.exec(content)) !== null) {
-    if (match[1]) links.push(match[1])
+    if (match[1]) links.push(match[1]);
   }
-  return [...new Set(links)]
+  return [...new Set(links)];
 }
 
 async function findBacklinks(
   event: H3Event,
   slug: string,
 ): Promise<Array<{ title: string; path: string }>> {
-  const allNotes = await queryCollection(event, 'content')
-    .select('title', 'path', 'stem', 'notes')
+  const allNotes = await queryCollection(event, "content")
+    .select("title", "path", "stem", "notes")
     .limit(500)
-    .all()
+    .all();
 
-  const backlinks: Array<{ title: string; path: string }> = []
+  const backlinks: Array<{ title: string; path: string }> = [];
 
   for (const note of allNotes) {
-    if (note.stem === slug) continue
-    const links = parseWikiLinks(note.notes)
+    if (note.stem === slug) continue;
+    const links = parseWikiLinks(note.notes);
     if (links.includes(slug)) {
       backlinks.push({
-        title: note.title ?? 'Untitled',
+        title: note.title ?? "Untitled",
         path: note.path ?? `/${note.stem}`,
-      })
+      });
     }
   }
 
-  return backlinks
+  return backlinks;
 }
 ```
 
@@ -691,67 +706,68 @@ Create `scripts/generate-embeddings.ts`:
 
 ```typescript
 // scripts/generate-embeddings.ts
-import { pipeline } from '@huggingface/transformers'
-import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { pipeline } from "@huggingface/transformers";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
-const MODEL_NAME = 'Xenova/bge-small-en-v1.5'
-const VECTOR_SIZE = 384
+const MODEL_NAME = "Xenova/bge-small-en-v1.5";
+const VECTOR_SIZE = 384;
 
 interface EmbeddingEntry {
-  vector: number[]
-  title: string
-  type: string
+  vector: number[];
+  title: string;
+  type: string;
 }
 
 interface EmbeddingsOutput {
-  version: string
-  model: string
-  embeddings: Record<string, EmbeddingEntry>
+  version: string;
+  model: string;
+  embeddings: Record<string, EmbeddingEntry>;
 }
 
 async function main() {
-  console.log('Loading embedding model...')
-  const extractor = await pipeline('feature-extraction', MODEL_NAME, {
-    dtype: 'fp32',
-  })
+  console.log("Loading embedding model...");
+  const extractor = await pipeline("feature-extraction", MODEL_NAME, {
+    dtype: "fp32",
+  });
 
   // Find all markdown files
-  const files = await findMarkdownFiles('./content')
-  console.log(`Found ${files.length} files`)
+  const files = await findMarkdownFiles("./content");
+  console.log(`Found ${files.length} files`);
 
-  const embeddings: Record<string, EmbeddingEntry> = {}
+  const embeddings: Record<string, EmbeddingEntry> = {};
 
   for (const file of files) {
-    const content = await readFile(file, 'utf-8')
-    const { title, type } = parseFrontmatter(content)
-    const body = extractBody(content)
+    const content = await readFile(file, "utf-8");
+    const { title, type } = parseFrontmatter(content);
+    const body = extractBody(content);
 
     // Create embedding text from title + summary + body
-    const text = `${title} ${body.slice(0, 1500)}`
+    const text = `${title} ${body.slice(0, 1500)}`;
 
     // Generate embedding
-    const output = await extractor(text, { pooling: 'mean', normalize: true })
-    const vector = Array.from(output.data as Float32Array)
-      .map(v => Math.round(v * 100000) / 100000) // Reduce precision
+    const output = await extractor(text, { pooling: "mean", normalize: true });
+    const vector = Array.from(output.data as Float32Array).map(
+      (v) => Math.round(v * 100000) / 100000,
+    ); // Reduce precision
 
-    const slug = file.replace('./content/', '').replace('.md', '')
-    embeddings[slug] = { vector, title, type }
+    const slug = file.replace("./content/", "").replace(".md", "");
+    embeddings[slug] = { vector, title, type };
 
-    console.log(`[generated] ${slug}`)
+    console.log(`[generated] ${slug}`);
   }
 
   const output: EmbeddingsOutput = {
-    version: '1.0.0',
+    version: "1.0.0",
     model: MODEL_NAME,
     embeddings,
-  }
+  };
 
-  await writeFile('./public/embeddings.json', JSON.stringify(output))
-  console.log('Done!')
+  await writeFile("./public/embeddings.json", JSON.stringify(output));
+  console.log("Done!");
 }
 
-main()
+main();
 ```
 
 Run with `npx tsx scripts/generate-embeddings.ts`. This generates `public/embeddings.json` with vectors for all notes.
@@ -763,20 +779,20 @@ To find similar notes, we compare vectors using cosine similarity:
 ```typescript
 // app/utils/cosineSimilarity.ts
 export function cosineSimilarity(a: number[], b: number[]): number {
-  if (a.length !== b.length) return 0
+  if (a.length !== b.length) return 0;
 
-  let dotProduct = 0
-  let normA = 0
-  let normB = 0
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
 
   for (let i = 0; i < a.length; i++) {
-    dotProduct += a[i] * b[i]
-    normA += a[i] * a[i]
-    normB += b[i] * b[i]
+    dotProduct += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
   }
 
-  const magnitude = Math.sqrt(normA) * Math.sqrt(normB)
-  return magnitude === 0 ? 0 : dotProduct / magnitude
+  const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
+  return magnitude === 0 ? 0 : dotProduct / magnitude;
 }
 ```
 
@@ -786,60 +802,58 @@ Pure semantic search can miss exact matches. The solution: combine both approach
 
 ```typescript
 // server/utils/chat/search.ts
-const KEYWORD_WEIGHT = 0.4
-const SEMANTIC_WEIGHT = 0.6
+const KEYWORD_WEIGHT = 0.4;
+const SEMANTIC_WEIGHT = 0.6;
 
 export async function hybridSearch(
   query: string,
   notes: RawNote[],
   options: { limit?: number; type?: string } = {},
 ): Promise<NoteContext[]> {
-  const { limit = 5, type } = options
-  const keywords = extractKeywords(query)
+  const { limit = 5, type } = options;
+  const keywords = extractKeywords(query);
 
   // Run keyword and semantic search in parallel
   const [keywordResults, semanticResults] = await Promise.all([
     keywordSearch(query, notes, { limit: 50, type }),
     semanticSearch(query, 50),
-  ])
+  ]);
 
   // Normalize keyword scores to 0-1 range
-  const maxKeywordScore = Math.max(...keywordResults.map(r => r.score), 1)
+  const maxKeywordScore = Math.max(...keywordResults.map((r) => r.score), 1);
 
   // Merge results with hybrid scoring
-  const resultMap = new Map<string, HybridSearchResult>()
+  const resultMap = new Map<string, HybridSearchResult>();
 
   for (const kr of keywordResults) {
-    const normalizedScore = kr.score / maxKeywordScore
+    const normalizedScore = kr.score / maxKeywordScore;
     resultMap.set(kr.slug, {
       ...kr,
       keywordScore: normalizedScore,
       semanticScore: 0,
       hybridScore: normalizedScore * KEYWORD_WEIGHT,
-    })
+    });
   }
 
   for (const sr of semanticResults) {
-    const existing = resultMap.get(sr.slug)
+    const existing = resultMap.get(sr.slug);
     if (existing) {
-      existing.semanticScore = sr.score
-      existing.hybridScore =
-        existing.keywordScore * KEYWORD_WEIGHT +
-        sr.score * SEMANTIC_WEIGHT
+      existing.semanticScore = sr.score;
+      existing.hybridScore = existing.keywordScore * KEYWORD_WEIGHT + sr.score * SEMANTIC_WEIGHT;
     } else {
       resultMap.set(sr.slug, {
         ...sr,
         keywordScore: 0,
         semanticScore: sr.score,
         hybridScore: sr.score * SEMANTIC_WEIGHT,
-      })
+      });
     }
   }
 
   // Sort by hybrid score
   return Array.from(resultMap.values())
     .sort((a, b) => b.hybridScore - a.hybridScore)
-    .slice(0, limit)
+    .slice(0, limit);
 }
 ```
 
@@ -866,6 +880,7 @@ Here's the complete flow:
 8. Response streams to the client with source citations
 
 The system prompt ensures Claude:
+
 - Only uses information from the tools
 - Admits when it can't find something
 - Always cites sources
@@ -878,40 +893,42 @@ Robust error handling improves user experience:
 ```typescript
 // server/utils/chat/errors.ts
 export interface StreamingError {
-  message: string
-  retryAfter?: number
-  requestId?: string
+  message: string;
+  retryAfter?: number;
+  requestId?: string;
 }
 
 export function mapApiError(error: unknown): StreamingError {
   if (error instanceof Anthropic.RateLimitError) {
     return {
-      message: 'Too many requests. Please wait a moment.',
+      message: "Too many requests. Please wait a moment.",
       retryAfter: 60,
-    }
+    };
   }
 
   if (error instanceof Anthropic.APIError) {
     return {
-      message: 'Service temporarily unavailable.',
-      requestId: error.headers?.['x-request-id'],
-    }
+      message: "Service temporarily unavailable.",
+      requestId: error.headers?.["x-request-id"],
+    };
   }
 
   return {
-    message: 'Something went wrong. Please try again.',
-  }
+    message: "Something went wrong. Please try again.",
+  };
 }
 ```
 
 Send error events to the client so the UI can display appropriate messages:
 
 ```typescript
-await eventStream.push(JSON.stringify({
-  type: 'error',
-  message: streamingError.message,
-  retryAfter: streamingError.retryAfter,
-}))
+await eventStream.push(
+  JSON.stringify({
+    type: "error",
+    message: streamingError.message,
+    retryAfter: streamingError.retryAfter,
+  }),
+);
 ```
 
 ---

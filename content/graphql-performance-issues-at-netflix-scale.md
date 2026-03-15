@@ -24,6 +24,7 @@ Steven Chambers from Netflix's Member API Foundations team walks through two per
 ### Netflix operates GraphQL at staggering scale
 
 Netflix runs their GraphQL system at:
+
 - **1 million RPS** at the Domain Graph Service (DGS) layer
 - **160 million field executions per second** (resolver invocations)
 - **85% of Netflix pages** now served via GraphQL (up from 10-15% five years ago)
@@ -42,6 +43,7 @@ Netflix's Discovery Experience Paved Path (DEP) system uses server-driven UI whe
 **The fix:** Condensed flatten nodes in the query plan into a single fetch node with aliased queries. This reduced fan-out from 13x to 1x.
 
 **Results:**
+
 - 40% decrease in per-instance RPS
 - 4% decrease in per-instance CPU
 - 11% decrease in fleet cost
@@ -55,12 +57,14 @@ Netflix's Discovery Experience Paved Path (DEP) system uses server-driven UI whe
 **The fix:** Replaced the library call with a custom breadth-first search that stopped at the known depth without allocating unnecessary data structures.
 
 **Results:**
+
 - 40% improvement in JVM allocation rate
 - **100% improvement in fleet efficiency** - CPU utilization halved for the same workload
 
 ## Architecture Diagram
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Clients
@@ -80,6 +84,7 @@ graph TD
 
     DGS --> Services[Downstream Services<br/>gRPC / REST]
 </pre>
+
 ::
 
 ## Notable Quotes

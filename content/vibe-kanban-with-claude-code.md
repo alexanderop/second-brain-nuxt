@@ -27,6 +27,7 @@ date: 2026-01-04
 Run a simple `npx` command to spin up a local web interface. Instead of a chat box, you get a Kanban board (like Trello or Jira). Create cards for tasks, assign specific agents to each card, and watch them execute in parallel.
 
 Each task card shows:
+
 - Terminal output
 - Proposed changes and diffs
 - A contained environment for that unit of work

@@ -34,6 +34,7 @@ skills/
 ```
 
 The `skill.md` frontmatter defines:
+
 - **Name**: Human-readable identifier
 - **When to use**: Semantic description triggering automatic loading
 - **Workflow stages**: Step-by-step process the agent follows
@@ -41,6 +42,7 @@ The `skill.md` frontmatter defines:
 ## How Skills Load
 
 ::mermaid
+
 <pre>
 flowchart LR
     Request[User Request] --> Detect{Agent Detects<br/>Skill Match?}
@@ -49,15 +51,16 @@ flowchart LR
     Load --> Execute[Execute Workflow<br/>with Context]
     Execute --> Result[Domain-Specific<br/>Output]
 </pre>
+
 ::
 
 ## Practical Examples
 
-| Skill | Purpose | Resources Loaded |
-|-------|---------|------------------|
-| PRD Writing | Structured product requirement documents | Workflow stages, templates |
-| Image Manipulation | Batch processing, conversions | ImageMagick commands, paths |
-| Web Testing | Playwright interactions, test generation | Test helper scripts |
+| Skill              | Purpose                                  | Resources Loaded            |
+| ------------------ | ---------------------------------------- | --------------------------- |
+| PRD Writing        | Structured product requirement documents | Workflow stages, templates  |
+| Image Manipulation | Batch processing, conversions            | ImageMagick commands, paths |
+| Web Testing        | Playwright interactions, test generation | Test helper scripts         |
 
 ## Notable Quotes
 

@@ -89,11 +89,7 @@ claude --dangerously-skip-permissions
     {
       "id": "US-001",
       "title": "Add login form",
-      "acceptanceCriteria": [
-        "Email/password fields",
-        "Validates email format",
-        "typecheck passes"
-      ],
+      "acceptanceCriteria": ["Email/password fields", "Validates email format", "typecheck passes"],
       "priority": 1,
       "passes": false,
       "notes": ""
@@ -108,15 +104,19 @@ Start with codebase patterns at the top:
 
 ```markdown
 # Ralph Progress Log
+
 Started: 2026-01-06
 
 ## Codebase Patterns
+
 - Migrations: IF NOT EXISTS
 - Types: Export from actions.ts
 
 ## Key Files
+
 - db/schema.ts
 - app/auth/actions.ts
+
 ---
 ```
 
@@ -124,13 +124,13 @@ Ralph appends after each story. Patterns accumulate across iterations.
 
 ## Critical Success Factors
 
-| Factor | Why It Matters |
-|--------|----------------|
-| **Small stories** | Must fit in one context window. "Add login form" not "Build auth system" |
-| **Fast feedback** | `npm run typecheck` and `npm test` give Ralph signals about what's broken |
-| **Explicit criteria** | "Email/password fields, validates email format, typecheck passes" not "Users can log in" |
-| **Learnings compound** | By story 10, Ralph knows patterns from stories 1-9 via progress.txt |
-| **AGENTS.md updates** | Document gotchas for future sessions and human developers |
+| Factor                 | Why It Matters                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| **Small stories**      | Must fit in one context window. "Add login form" not "Build auth system"                 |
+| **Fast feedback**      | `npm run typecheck` and `npm test` give Ralph signals about what's broken                |
+| **Explicit criteria**  | "Email/password fields, validates email format, typecheck passes" not "Users can log in" |
+| **Learnings compound** | By story 10, Ralph knows patterns from stories 1-9 via progress.txt                      |
+| **AGENTS.md updates**  | Document gotchas for future sessions and human developers                                |
 
 ## When NOT to Use
 

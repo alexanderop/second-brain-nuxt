@@ -68,18 +68,23 @@ Before long, your CLAUDE.md looks like this:
 # CLAUDE.md
 
 ## Project Overview
+
 ...50 lines...
 
 ## Code Style
+
 ...200 lines of formatting rules...
 
 ## Architecture Decisions
+
 ...150 lines of historical context...
 
 ## Gotchas
+
 ...300 lines of edge cases...
 
 ## Testing Conventions
+
 ...100 lines...
 ```
 
@@ -94,8 +99,10 @@ The math doesn't work. You can't stuff everything in one file.
 Here's what I stopped putting in CLAUDE.md: anything a tool can enforce.
 
 ❌ **Don't write prose about style rules:**
+
 ```markdown
 ## Code Style
+
 - Use 2-space indentation
 - Prefer single quotes
 - Always add trailing commas
@@ -103,20 +110,21 @@ Here's what I stopped putting in CLAUDE.md: anything a tool can enforce.
 ```
 
 ✅ **Let ESLint handle it:**
+
 ```json
 {
   "extends": ["@nuxt/eslint-config"]
 }
 ```
 
-The AI can run `pnpm lint:fix && pnpm typecheck` and know immediately if it violated a rule. No interpretation needed. No ambiguity.
+The AI can run `vp check && pnpm typecheck` and know immediately if it violated a rule. No interpretation needed. No ambiguity.
 
 **If a tool can enforce it, don't write prose about it.** ESLint for style. TypeScript for types. Prettier for formatting. These rules are verifiable, not interpretable.
 
 My CLAUDE.md now just says:
 
 ```markdown
-Run `pnpm lint:fix && pnpm typecheck` after code changes.
+Run `vp check && pnpm typecheck` after code changes.
 ```
 
 One line instead of two hundred.
@@ -135,7 +143,7 @@ Or this:
 
 > "Wiki-links to data collections require path prefixes. Use `[[authors/john-doe]]`, not `[[john-doe]]`."
 
-These are *gotchas*—non-obvious behaviors that bite you once. The kind of thing you'd tell a new team member on their first day. They need documentation, but they don't belong in CLAUDE.md.
+These are _gotchas_—non-obvious behaviors that bite you once. The kind of thing you'd tell a new team member on their first day. They need documentation, but they don't belong in CLAUDE.md.
 
 **The key insight: CLAUDE.md is for universal context. Gotchas are situational.**
 
@@ -223,7 +231,7 @@ Here's where it gets powerful. This system creates a feedback loop:
 4. The learning gets saved to the right doc
 5. Next session, Claude reads the doc and avoids the mistake
 
-Over time, my `/docs` folder becomes a curated knowledge base of *exactly the things AI coding tools get wrong* in my codebase. It's like fine-tuning, but under my control.
+Over time, my `/docs` folder becomes a curated knowledge base of _exactly the things AI coding tools get wrong_ in my codebase. It's like fine-tuning, but under my control.
 
 Boris Cherny's team at Anthropic does this multiple times per week. Every team member contributes. They describe their codebase as a "self-correcting organism."[^5]
 
@@ -255,21 +263,25 @@ Second Brain is a personal knowledge base using
 Zettelkasten-style wiki-links.
 
 ## Commands
-pnpm dev          # Start dev server
-pnpm lint:fix     # Auto-fix linting issues
-pnpm typecheck    # Verify type safety
 
-Run `pnpm lint:fix && pnpm typecheck` after code changes.
+pnpm dev # Start dev server
+vp check --fix # Auto-fix linting issues
+pnpm typecheck # Verify type safety
+
+Run `vp check && pnpm typecheck` after code changes.
 
 ## Stack
+
 - Nuxt 4, @nuxt/content v3, @nuxt/ui v3
 
 ## Structure
+
 - `app/` - Vue application
 - `content/` - Markdown files
 - `content.config.ts` - Collection schemas
 
 ## Further Reading
+
 - `docs/nuxt-content-gotchas.md`
 - `docs/testing-strategy.md`
 - `docs/SYSTEM_KNOWLEDGE_MAP.md`
@@ -332,7 +344,7 @@ Every AI coding session starts from zero. Yesterday's hard-won lesson about your
 
 2. The natural reflex—stuff everything into CLAUDE.md—backfires. Half your context budget is gone before work begins. HumanLayer keeps theirs under 60 lines. LLMs reliably follow ~150 instructions max.
 
-3. If a tool can enforce it, don't write prose about it. ESLint for style, TypeScript for types, Prettier for formatting. My CLAUDE.md went from 200 lines of style rules to one line: "Run lint:fix && typecheck after changes."
+3. If a tool can enforce it, don't write prose about it. ESLint for style, TypeScript for types, Prettier for formatting. My CLAUDE.md went from 200 lines of style rules to one line: "Run vp check && typecheck after changes."
 
 4. But some things can't be linted: framework gotchas, caching behaviors, architectural patterns. These need docs—but loaded on demand, not in every conversation.
 

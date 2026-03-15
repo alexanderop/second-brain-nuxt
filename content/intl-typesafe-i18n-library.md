@@ -36,10 +36,10 @@ Define messages and create a type-safe translation function:
 const copy = messages({
   greeting: "Hello {$name}!",
   count: "You have {$num :number} items",
-})
-const t = createIntl(copy, "en")
-t("greeting", { name: "World" })
-t("count", { num: 42 })
+});
+const t = createIntl(copy, "en");
+t("greeting", { name: "World" });
+t("count", { num: 42 });
 ```
 
 ### Type-Safe Translations
@@ -50,13 +50,13 @@ The `translate()` function enforces consistent message signatures across locales
 let base = messages({
   greeting: "Hello {$name}!",
   count: "You have {$num :number} items",
-})
+});
 let german = translate(base, {
   greeting: "Hallo {$name}!",
   count: "Du hast {$num :number} Elemente",
-})
-let t = createIntl(german, "de")
-t("greeting", { name: "Carl" })
+});
+let t = createIntl(german, "de");
+t("greeting", { name: "Carl" });
 ```
 
 ### React Integration
@@ -66,23 +66,25 @@ Provider setup with `useIntl` hook and `T` component for markup rendering:
 ```tsx
 const copy = messages({
   signIn: "Hey {$name}! {#link}Sign in here{/link}",
-})
-const { IntlProvider, useIntl, T } = createIntlForReact(copy, "en")
+});
+const { IntlProvider, useIntl, T } = createIntlForReact(copy, "en");
 
 function Toolbar() {
-  const t = useIntl()
-  return <p>{t("signIn", { name: "Carl" })}</p>
+  const t = useIntl();
+  return <p>{t("signIn", { name: "Carl" })}</p>;
 }
 
 function Entry() {
   return (
     <IntlProvider>
       <Toolbar />
-      <T k="signIn" params={{ name: "Carl" }}
+      <T
+        k="signIn"
+        params={{ name: "Carl" }}
         components={{ link: ({ children }) => <a href="/login">{children}</a> }}
       />
     </IntlProvider>
-  )
+  );
 }
 ```
 

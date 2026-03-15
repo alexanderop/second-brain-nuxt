@@ -31,6 +31,7 @@ Ralph Loop forces Claude Code to operate in a continuous intelligent loop. Inste
 ```
 
 The five-step cycle:
+
 1. Claude attempts the task
 2. Tries to exit
 3. Stop hook blocks exit
@@ -52,6 +53,7 @@ The five-step cycle:
 A paint tool comparison: standard Claude Code (single pass) produced basic brush/size features. With Ralph Loop enabled, the same prompt generated spray effects, shapes, text, emoji support, image enhancement, and photo imports.
 
 Real-world examples cited:
+
 - $50K outsourcing contract completed for $297 in AI costs
 - Created an esoteric programming language ("Gen Z") in 30 hours of autonomous operation
 - 6 repositories shipped overnight during a Y Combinator hackathon

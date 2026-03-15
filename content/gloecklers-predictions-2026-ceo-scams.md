@@ -21,28 +21,28 @@ date: 2026-01-03
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Intro & New Year Discussion |
-| 05:37 | Brookfield Cloud Business |
-| 10:47 | OpenAI Advertising Plans |
-| 15:27 | Meta Ad Library Manipulation |
-| 22:35 | Neuralink Mass Production |
-| 27:57 | Drug Normalization in Valley Culture |
-| 29:50 | Nicotine Pouches & Productivity |
-| 31:25 | Musk GDP Growth Predictions |
-| 37:54 | Sam Altman OpenAI Exit |
-| 40:24 | Microsoft/Google AI Advantage |
-| 46:58 | Amazon Top 2 Magnificent Seven |
-| 57:13 | SaaS Market Downturn |
-| 58:47 | Meta Whatnot Acquisition |
-| 59:36 | LVMH On Running Purchase |
-| 01:02:52 | Apple Vision Pro 2026 |
-| 01:03:43 | BaFin Neo-Broker Regulation |
-| 01:08:06 | Racket Sports Trend Year |
-| 01:09:27 | Community Predictions |
-| 01:14:19 | Notebook LM Tool |
-| 01:16:48 | CEO Scam 2.0 Threats |
+| Time     | Topic                                |
+| -------- | ------------------------------------ |
+| 00:00    | Intro & New Year Discussion          |
+| 05:37    | Brookfield Cloud Business            |
+| 10:47    | OpenAI Advertising Plans             |
+| 15:27    | Meta Ad Library Manipulation         |
+| 22:35    | Neuralink Mass Production            |
+| 27:57    | Drug Normalization in Valley Culture |
+| 29:50    | Nicotine Pouches & Productivity      |
+| 31:25    | Musk GDP Growth Predictions          |
+| 37:54    | Sam Altman OpenAI Exit               |
+| 40:24    | Microsoft/Google AI Advantage        |
+| 46:58    | Amazon Top 2 Magnificent Seven       |
+| 57:13    | SaaS Market Downturn                 |
+| 58:47    | Meta Whatnot Acquisition             |
+| 59:36    | LVMH On Running Purchase             |
+| 01:02:52 | Apple Vision Pro 2026                |
+| 01:03:43 | BaFin Neo-Broker Regulation          |
+| 01:08:06 | Racket Sports Trend Year             |
+| 01:09:27 | Community Predictions                |
+| 01:14:19 | Notebook LM Tool                     |
+| 01:16:48 | CEO Scam 2.0 Threats                 |
 
 ## Predictions Made
 

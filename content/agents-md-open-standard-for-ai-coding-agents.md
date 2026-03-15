@@ -23,6 +23,7 @@ While README files serve human contributors with quick starts and project descri
 AGENTS.md uses standard markdown with no required fields. Place it at your repository root, and AI agents will discover and follow its instructions. Monorepos can include nested AGENTS.md files in subdirectories—the nearest file takes precedence.
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph Repository
@@ -36,6 +37,7 @@ graph TD
     AI -->|In api/| AGENTS_API
     Human[Developer] -->|Reads| README
 </pre>
+
 ::
 
 ## Supported Agents

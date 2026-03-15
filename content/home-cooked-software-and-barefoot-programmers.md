@@ -22,6 +22,7 @@ Maggie Appleton makes a two-part argument: language models are about to create a
 This is the talk that connects the dots between the local-first technical movement and the end-user programming dream that's been floating around for 20 years. What makes it compelling isn't just the vision — it's the timing argument. LLMs didn't exist when Clay Shirky proposed situated software in 2004. Now they do, and the defaults baked into AI coding agents will shape millions of decisions about where data lives.
 
 ::mermaid
+
 <pre>
 flowchart TD
     A["`**Industrial Software**
@@ -45,6 +46,7 @@ flowchart TD
     Baked into every agent's toolset
     Ownership by default`"]
 </pre>
+
 ::
 
 ## Key Arguments
@@ -53,7 +55,7 @@ flowchart TD
 
 Current software operates at industrial scale: massive teams funded by US venture capital building one-size-fits-all products for millions of users. The economics demand hockey-stick growth, which means every feature decision optimizes for the largest possible audience. This leaves the "long tail" of user needs — specific problems affecting dozens or hundreds of people — permanently out of scope. Google Maps will never show historical boundaries or tidal patterns, no matter how essential those features are to a few hundred specialists.
 
-Maggie pins this to a geographic empathy gap too. Engineers sitting in San Francisco struggle to understand the problems of a homemaker in Tokyo, a street seller in Turkey, or a doctor in Tunisia. So they build software that solves *their* problems instead — Uber, DoorDash.
+Maggie pins this to a geographic empathy gap too. Engineers sitting in San Francisco struggle to understand the problems of a homemaker in Tokyo, a street seller in Turkey, or a doctor in Tunisia. So they build software that solves _their_ problems instead — Uber, DoorDash.
 
 ### Home-cooked Software Is the Alternative
 
@@ -63,7 +65,7 @@ The concept stretches back further — Clay Shirky proposed "situated software" 
 
 ### The Skill Wall Blocks Everyone
 
-The Venn diagram of people who *can* build home-cooked software and professional developers is a concentric circle. That's the fundamental problem. There's a massive population of technically savvy people — teachers building elaborate Notion spreadsheets, students making over-the-top dashboards, financial planning wonks pushing Excel to its limits — who never cross what Maggie calls "the command line wall." They push low-code tools to their limits but never enter the terminal. Their work stays trapped in cloud subscriptions with monthly fees, far less agency than real developers have.
+The Venn diagram of people who _can_ build home-cooked software and professional developers is a concentric circle. That's the fundamental problem. There's a massive population of technically savvy people — teachers building elaborate Notion spreadsheets, students making over-the-top dashboards, financial planning wonks pushing Excel to its limits — who never cross what Maggie calls "the command line wall." They push low-code tools to their limits but never enter the terminal. Their work stays trapped in cloud subscriptions with monthly fees, far less agency than real developers have.
 
 ### Barefoot Developers: The Missing Middle
 
@@ -91,14 +93,14 @@ Here's the strategic pitch to the conference audience: whatever defaults get bak
 
 ## Practical Takeaways
 
-- Local-first tool builders should design interfaces accessible to barefoot developers *and their AI agents* — can someone prompt their way into a local-first setup in plain English?
+- Local-first tool builders should design interfaces accessible to barefoot developers _and their AI agents_ — can someone prompt their way into a local-first setup in plain English?
 - The local-first and home-cooked software movements share foundational values (user agency, data ownership) but aren't yet coordinated
 - Defaults matter more than features when your users don't know what to ask for
 - The long tail of user needs is where the real opportunity lives — problems too specific for industrial software but perfect for community-embedded builders
 
 ## Connections
 
-- [[local-first-the-secret-master-plan]] — Peter van Hardenberg's companion talk at the same conference. While Maggie argues *who* will build local software (barefoot developers), Peter argues *how* with Patchwork's malleable tools. His line about the Bank of America browser extension used by 200 people is exactly Maggie's long-tail argument in miniature
+- [[local-first-the-secret-master-plan]] — Peter van Hardenberg's companion talk at the same conference. While Maggie argues _who_ will build local software (barefoot developers), Peter argues _how_ with Patchwork's malleable tools. His line about the Bank of America browser extension used by 200 people is exactly Maggie's long-tail argument in miniature
 - [[malleable-software]] — Ink & Switch's research agenda for user-adaptable tools is the infrastructure layer that makes Maggie's barefoot developer vision practical. Malleable software is the substrate; barefoot developers are the builders
 - [[local-first-software]] — The foundational Ink & Switch essay that defines the technical ideals. Maggie extends "local" beyond data-sync into a broader philosophy: software built close to home, for local people
 - [[the-ux-of-local-first]] — Eileen Wagner's talk on the UX gaps that still block mainstream local-first adoption. If barefoot developers are going to use these tools, the UX problems Wagner identifies become even more critical — these users have far less tolerance for rough edges than professional developers

@@ -88,6 +88,7 @@ Martin Kleppmann, co-author of the original [[local-first-software]] essay, refl
 ## Key Arguments
 
 ### A Clearer Definition
+
 [Original content preserved...]
 
 ## References
@@ -98,12 +99,14 @@ Expands on the foundational [[local-first-software]] essay.
 ## Section Guidelines
 
 ### Core Message
+
 - 1-2 sentences maximum (under 50 words)
 - Captures the central thesis
 - Memorable and quotable
 - Avoids vague language
 
 ### Key Insights
+
 - 8-12 numbered insights
 - Each has: **Bold Title** (timestamp) - Explanation
 - Timestamps link to exact moment in video
@@ -112,12 +115,14 @@ Expands on the foundational [[local-first-software]] essay.
 - Avoids generic "the speaker says X is important"
 
 ### Talk Structure
+
 - 4-7 sections covering the full talk
 - Each has: **Section Title** (timestamp) - Brief description
 - Helps viewers navigate long talks
 - Identifies major transitions
 
 ### Notable Quotes
+
 - Exactly 3 quotes
 - Each with timestamp
 - Under 40 words each
@@ -125,6 +130,7 @@ Expands on the foundational [[local-first-software]] essay.
 - Memorable, shareable phrasing
 
 ### Who Should Watch
+
 - 1-2 paragraphs
 - Identifies target audience (role, experience level)
 - States what they'll gain
@@ -132,6 +138,7 @@ Expands on the foundational [[local-first-software]] essay.
 - Honest about who won't benefit
 
 ### Action Items
+
 - 3-5 concrete actions
 - Checkbox format for actionability
 - Based on explicit or implicit recommendations

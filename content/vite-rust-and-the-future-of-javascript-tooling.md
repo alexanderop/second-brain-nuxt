@@ -23,20 +23,20 @@ date: 2025-10-01
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Evan You's intro and VoidZero overview |
-| 02:00 | How Vite's dual-bundler architecture emerged |
-| 08:00 | Why Rolldown exists: replacing ESBuild + Rollup |
-| 12:00 | OXC: the Rust toolchain foundation |
-| 16:00 | The vertical stack vision |
-| 19:00 | Why bundlers still matter vs. import maps |
-| 25:00 | Vite+ and the fresh-start developer experience |
-| 30:00 | VoidZero's business model and licensing |
+| Time  | Topic                                             |
+| ----- | ------------------------------------------------- |
+| 00:00 | Evan You's intro and VoidZero overview            |
+| 02:00 | How Vite's dual-bundler architecture emerged      |
+| 08:00 | Why Rolldown exists: replacing ESBuild + Rollup   |
+| 12:00 | OXC: the Rust toolchain foundation                |
+| 16:00 | The vertical stack vision                         |
+| 19:00 | Why bundlers still matter vs. import maps         |
+| 25:00 | Vite+ and the fresh-start developer experience    |
+| 30:00 | VoidZero's business model and licensing           |
 | 33:00 | AI agents and code quality in fast-shipping teams |
-| 38:00 | Rust vs. Go for tooling |
-| 42:00 | React Server Components critique |
-| 48:00 | Vercel's acquisition of Nuxt Labs |
+| 38:00 | Rust vs. Go for tooling                           |
+| 42:00 | React Server Components critique                  |
+| 48:00 | Vercel's acquisition of Nuxt Labs                 |
 
 ## Key Arguments
 
@@ -63,6 +63,7 @@ Vite+ targets a complete beginner who has never installed Node. A single `curl` 
 ## Visual Model
 
 ::mermaid
+
 <pre>
 graph TD
     subgraph VoidZero["VoidZero Rust Stack"]
@@ -84,6 +85,7 @@ graph TD
     OXF --> VP
     VT --> VP
 </pre>
+
 ::
 
 ## Predictions Made

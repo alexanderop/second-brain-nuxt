@@ -47,7 +47,7 @@ Each layer declares its own Nuxt configuration.
 // layers/products/nuxt.config.ts
 export default defineNuxtConfig({
   // Layer-specific configuration
-})
+});
 ```
 
 ### Extending Layers
@@ -57,12 +57,8 @@ The root project composes all layers together.
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
-  extends: [
-    './layers/shared',
-    './layers/products',
-    './layers/cart'
-  ]
-})
+  extends: ["./layers/shared", "./layers/products", "./layers/cart"],
+});
 ```
 
 ## Gotchas

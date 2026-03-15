@@ -20,24 +20,24 @@ date: 2026-02-08
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introduction — Grady Booch's credentials and episode overview |
-| 01:28 | Origin of "software engineering" (Margaret Hamilton, NATO conference) |
-| 05:19 | The First Golden Age: algorithmic abstraction (late 1940s–late 1970s) |
-| 11:35 | Innovation on the fringes: defense, SAGE, distributed real-time systems |
-| 17:48 | The software crisis and the problem of Babel (14,000 languages) |
-| 23:03 | Rise of object-oriented thinking (Simula, Stroustrup, Parnas) |
-| 31:06 | The Second Golden Age: object abstraction (1980s–2000s) |
-| 35:28 | Open source roots and the economics of free software |
-| 44:34 | Parallel history of AI: golden ages and winters |
-| 46:59 | The Third Golden Age: platform-level abstraction (2000–present) |
-| 51:17 | Existential dread among developers over AI-generated code |
-| 57:34 | Dario Amodei's prediction that SE will be automated in 12 months |
-| 59:30 | Booch's rebuttal: "It's utter BS — he's profoundly wrong" |
-| 1:03:20 | English as a programming language and the limits of prompting |
-| 1:09:36 | Recommended foundations: systems theory, Santa Fe Institute |
-| 1:14:28 | Closing: "This is the time to soar" |
+| Time    | Topic                                                                   |
+| ------- | ----------------------------------------------------------------------- |
+| 00:00   | Introduction — Grady Booch's credentials and episode overview           |
+| 01:28   | Origin of "software engineering" (Margaret Hamilton, NATO conference)   |
+| 05:19   | The First Golden Age: algorithmic abstraction (late 1940s–late 1970s)   |
+| 11:35   | Innovation on the fringes: defense, SAGE, distributed real-time systems |
+| 17:48   | The software crisis and the problem of Babel (14,000 languages)         |
+| 23:03   | Rise of object-oriented thinking (Simula, Stroustrup, Parnas)           |
+| 31:06   | The Second Golden Age: object abstraction (1980s–2000s)                 |
+| 35:28   | Open source roots and the economics of free software                    |
+| 44:34   | Parallel history of AI: golden ages and winters                         |
+| 46:59   | The Third Golden Age: platform-level abstraction (2000–present)         |
+| 51:17   | Existential dread among developers over AI-generated code               |
+| 57:34   | Dario Amodei's prediction that SE will be automated in 12 months        |
+| 59:30   | Booch's rebuttal: "It's utter BS — he's profoundly wrong"               |
+| 1:03:20 | English as a programming language and the limits of prompting           |
+| 1:09:36 | Recommended foundations: systems theory, Santa Fe Institute             |
+| 1:14:28 | Closing: "This is the time to soar"                                     |
 
 ## Key Arguments
 
@@ -64,6 +64,7 @@ Non-professionals building software with AI tools mirrors hobbyists building on 
 ## The Three Golden Ages
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph First["First Golden Age (1940s–1970s)"]
@@ -84,6 +85,7 @@ graph LR
     First -->|Software Crisis| Second
     Second -->|Scale & Complexity| Third
 </pre>
+
 ::
 
 Each golden age introduced a new dominant abstraction. The fringe innovation of one age became the center of gravity of the next: defense systems pioneered distribution and real-time processing, which became mainstream in the second age. Platform-level thinking pioneered in the second age became the foundation of the third.

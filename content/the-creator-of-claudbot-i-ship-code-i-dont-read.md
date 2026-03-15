@@ -27,20 +27,20 @@ Peter Steinberger, creator of PSPDFKit (PDF framework on 1+ billion devices) and
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Introduction — 600 commits, not reading code |
-| 03:00 | Peter's origin story in rural Austria |
-| 08:00 | First iOS app — parsing a dating site's HTML |
-| 15:00 | PSPDFKit beginnings — selling PDF code from a WordPress template |
-| 25:00 | Building PSPDFKit into a company — culture and technical blog strategy |
-| 35:00 | Burnout and 3-year hiatus |
-| 45:00 | Return to coding — discovering Claude Code in April |
-| 55:00 | "Closing the loop" — the key principle |
-| 1:05:00 | Parallel agents and the Starcraft analogy |
-| 1:15:00 | Codex vs Claude Code — different strengths |
-| 1:25:00 | Why experienced devs struggle with AI coding |
-| 1:35:00 | Claudbot origins — a personal assistant that wakes him up |
+| Time    | Topic                                                                  |
+| ------- | ---------------------------------------------------------------------- |
+| 00:00   | Introduction — 600 commits, not reading code                           |
+| 03:00   | Peter's origin story in rural Austria                                  |
+| 08:00   | First iOS app — parsing a dating site's HTML                           |
+| 15:00   | PSPDFKit beginnings — selling PDF code from a WordPress template       |
+| 25:00   | Building PSPDFKit into a company — culture and technical blog strategy |
+| 35:00   | Burnout and 3-year hiatus                                              |
+| 45:00   | Return to coding — discovering Claude Code in April                    |
+| 55:00   | "Closing the loop" — the key principle                                 |
+| 1:05:00 | Parallel agents and the Starcraft analogy                              |
+| 1:15:00 | Codex vs Claude Code — different strengths                             |
+| 1:25:00 | Why experienced devs struggle with AI coding                           |
+| 1:35:00 | Claudbot origins — a personal assistant that wakes him up              |
 
 ## Key Arguments
 
@@ -79,6 +79,7 @@ Peter's current approach:
 The core principle distinguishing effective agentic coding from frustrating attempts:
 
 ::mermaid
+
 <pre>
 flowchart LR
     Prompt[Prompt Agent] --> Code[Agent Writes Code]
@@ -95,6 +96,7 @@ flowchart LR
         Pass
     end
 </pre>
+
 ::
 
 ## On Burnout and Recovery

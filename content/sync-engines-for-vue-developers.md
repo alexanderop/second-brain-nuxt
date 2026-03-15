@@ -20,7 +20,7 @@ date: 2026-02-21
 
 Every Vue developer uses a sync engine daily without thinking about it. When you write `const count = ref(0)` and render it in a template, Vue's reactivity system tracks the dependency. When `count.value` changes, Vue updates the DOM. Your ref is the source of truth. The DOM is the target. Vue is the sync engine between them.
 
-Vue 3's reactivity system makes this efficient at two levels. First, fine-grained dependency tracking via Proxies knows exactly *which* components use `count` — only those re-render. Then, the Virtual DOM diffs the component's output against the real DOM, applying only the minimal patches needed. It is reconciliation — figuring out what changed and surgically updating the target.
+Vue 3's reactivity system makes this efficient at two levels. First, fine-grained dependency tracking via Proxies knows exactly _which_ components use `count` — only those re-render. Then, the Virtual DOM diffs the component's output against the real DOM, applying only the minimal patches needed. It is reconciliation — figuring out what changed and surgically updating the target.
 
 This is the core idea behind every sync engine: **keep two data stores consistent with each other**.
 
@@ -110,7 +110,7 @@ Not all sync engines work the same way. They sit on a spectrum from **server-fir
 
 Before going further, a distinction worth making: **offline-first** and **local-first** are not the same thing. Offline-first means the app works without a network connection — it caches data locally and syncs when connectivity returns. But the server is still the authority. If the server rejects your offline write, the client rolls back. PowerSync and Replicache are offline-first: full offline capability, server-authoritative conflict resolution.
 
-Local-first goes further. The client *is* the authority. Your data lives on your device, you own it, and the server — if one exists — is just a convenience for syncing between devices. You could delete the server and your app keeps working. This requires decentralized conflict resolution (CRDTs or deterministic replay) because there is no central arbiter to settle disagreements. Jazz and LiveStore are local-first: the data belongs to the user, not the platform.
+Local-first goes further. The client _is_ the authority. Your data lives on your device, you own it, and the server — if one exists — is just a convenience for syncing between devices. You could delete the server and your app keeps working. This requires decentralized conflict resolution (CRDTs or deterministic replay) because there is no central arbiter to settle disagreements. Jazz and LiveStore are local-first: the data belongs to the user, not the platform.
 
 In practice, the line blurs. Many engines mix traits from both — but the philosophical difference matters: offline-first asks "how do I keep working without a server?", while local-first asks "why does the server own my data at all?"
 
@@ -398,17 +398,17 @@ The strength is progressive enhancement. If you are already using Dexie, adding 
 
 ## The Trade-Off Matrix
 
-| | **Replicache** | **Zero** | **Convex** | **PowerSync** | **LiveStore** | **Jazz** | **DexieCloud** |
-|---|---|---|---|---|---|---|---|
-| **Client store** | IndexedDB (KV) | Custom row store (IDB) | In-memory | SQLite (WASM) | SQLite (WASM) | IndexedDB | IndexedDB |
-| **Server store** | Your DB | Postgres | Convex DB | Postgres | Pluggable | Sync nodes | DexieCloud |
-| **What syncs** | Mutations + state | Normalized rows | Query results | Filtered rows (sync rules) | Events | CoValues (CRDTs) | Changes |
-| **Offline reads** | Yes | Yes | No | Yes | Yes | Yes | Yes |
-| **Offline writes** | Yes | No (out of scope) | No (alpha via Curvilinear) | Yes | Yes | Yes | Yes |
-| **Conflict strategy** | Server rebase | Server rebase | Server txns | Server-auth | Deterministic replay | CRDT merge | Last-write-wins |
-| **E2E encryption** | No | No | No | No | No | Yes (default) | No |
-| **Local-first?** | Yes (server-auth) | Online-first | Server-first | Hybrid | Full | Full | Full |
-| **Best for** | Custom backends | Speed-first apps | Collaborative SaaS | Postgres brownfield | Personal/small group | Privacy-first collab | Progressive sync |
+|                       | **Replicache**    | **Zero**               | **Convex**                 | **PowerSync**              | **LiveStore**        | **Jazz**             | **DexieCloud**   |
+| --------------------- | ----------------- | ---------------------- | -------------------------- | -------------------------- | -------------------- | -------------------- | ---------------- |
+| **Client store**      | IndexedDB (KV)    | Custom row store (IDB) | In-memory                  | SQLite (WASM)              | SQLite (WASM)        | IndexedDB            | IndexedDB        |
+| **Server store**      | Your DB           | Postgres               | Convex DB                  | Postgres                   | Pluggable            | Sync nodes           | DexieCloud       |
+| **What syncs**        | Mutations + state | Normalized rows        | Query results              | Filtered rows (sync rules) | Events               | CoValues (CRDTs)     | Changes          |
+| **Offline reads**     | Yes               | Yes                    | No                         | Yes                        | Yes                  | Yes                  | Yes              |
+| **Offline writes**    | Yes               | No (out of scope)      | No (alpha via Curvilinear) | Yes                        | Yes                  | Yes                  | Yes              |
+| **Conflict strategy** | Server rebase     | Server rebase          | Server txns                | Server-auth                | Deterministic replay | CRDT merge           | Last-write-wins  |
+| **E2E encryption**    | No                | No                     | No                         | No                         | No                   | Yes (default)        | No               |
+| **Local-first?**      | Yes (server-auth) | Online-first           | Server-first               | Hybrid                     | Full                 | Full                 | Full             |
+| **Best for**          | Custom backends   | Speed-first apps       | Collaborative SaaS         | Postgres brownfield        | Personal/small group | Privacy-first collab | Progressive sync |
 
 ## Mapping It Back to Vue
 
@@ -446,42 +446,42 @@ To make this concrete, here is how a traditional Vue composable for fetching tod
 ```ts
 // Traditional: fetch, cache, invalidate, handle errors
 function useTodos() {
-  const todos = ref([])
-  const loading = ref(true)
-  const error = ref(null)
+  const todos = ref([]);
+  const loading = ref(true);
+  const error = ref(null);
 
   async function load() {
-    loading.value = true
+    loading.value = true;
     try {
-      todos.value = await fetch('/api/todos').then(r => r.json())
+      todos.value = await fetch("/api/todos").then((r) => r.json());
     } catch (e) {
-      error.value = e
+      error.value = e;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
   async function addTodo(title) {
     // Optimistic update
-    const temp = { id: Date.now(), title, done: false }
-    todos.value.push(temp)
+    const temp = { id: Date.now(), title, done: false };
+    todos.value.push(temp);
     try {
-      const real = await fetch('/api/todos', {
-        method: 'POST',
+      const real = await fetch("/api/todos", {
+        method: "POST",
         body: JSON.stringify({ title }),
-      }).then(r => r.json())
+      }).then((r) => r.json());
       // Replace temp with real
-      const idx = todos.value.indexOf(temp)
-      todos.value[idx] = real
+      const idx = todos.value.indexOf(temp);
+      todos.value[idx] = real;
     } catch (e) {
       // Rollback on failure
-      todos.value = todos.value.filter(t => t !== temp)
-      error.value = e
+      todos.value = todos.value.filter((t) => t !== temp);
+      error.value = e;
     }
   }
 
-  load()
-  return { todos, loading, error, addTodo }
+  load();
+  return { todos, loading, error, addTodo };
 }
 ```
 
@@ -489,14 +489,14 @@ function useTodos() {
 // With a sync engine (Zero-style pseudocode):
 // No loading states. No error handling. No cache invalidation.
 function useTodos() {
-  const z = useZero()
-  const todos = useQuery(z.query.todo.orderBy('created', 'desc'))
+  const z = useZero();
+  const todos = useQuery(z.query.todo.orderBy("created", "desc"));
 
   function addTodo(title) {
-    z.mutate.todo.insert({ title, done: false })
+    z.mutate.todo.insert({ title, done: false });
   }
 
-  return { todos, addTodo }
+  return { todos, addTodo };
 }
 ```
 

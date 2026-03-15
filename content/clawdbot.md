@@ -30,6 +30,7 @@ Clawdbot brings Claude to your messaging apps. Instead of using a web interface,
 ## Architecture
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph Messaging["Messaging Platforms"]
@@ -57,6 +58,7 @@ graph LR
     Claude --> Skills
     Skills --> Services
 </pre>
+
 ::
 
 ## Installation

@@ -1,46 +1,46 @@
-import { globSync, existsSync } from 'node:fs'
-import { basename, resolve } from 'node:path'
-import type { SlugCache } from './types.ts'
+import { globSync, existsSync } from "node:fs";
+import { basename, resolve } from "node:path";
+import type { SlugCache } from "./types.ts";
 
-let cache: SlugCache | null = null
-let cachedContentPath: string | null = null
+let cache: SlugCache | null = null;
+let cachedContentPath: string | null = null;
 
 /**
  * Get cached slugs for authors and notes
  * Performs a one-time synchronous glob at lint start
  * Subsequent calls return cached results (O(1) lookups)
  */
-export function getSlugCache(contentPath: string = 'content'): SlugCache {
-  const resolvedPath = resolve(contentPath)
+export function getSlugCache(contentPath: string = "content"): SlugCache {
+  const resolvedPath = resolve(contentPath);
 
   // Return cached if path matches
   if (cache && cachedContentPath === resolvedPath) {
-    return cache
+    return cache;
   }
 
-  const authors = new Set<string>()
-  const notes = new Set<string>()
+  const authors = new Set<string>();
+  const notes = new Set<string>();
 
   // Glob author files (check if directory exists first)
-  const authorsDir = `${resolvedPath}/authors`
+  const authorsDir = `${resolvedPath}/authors`;
   if (existsSync(authorsDir)) {
-    const authorFiles = globSync(`${authorsDir}/*.md`)
+    const authorFiles = globSync(`${authorsDir}/*.md`);
     for (const file of authorFiles) {
-      authors.add(basename(file, '.md'))
+      authors.add(basename(file, ".md"));
     }
   }
 
   // Glob all content files and filter out excluded directories
-  const allFiles = globSync(`${resolvedPath}/**/*.md`)
+  const allFiles = globSync(`${resolvedPath}/**/*.md`);
   const excludedPrefixes = [
     `${resolvedPath}/authors/`,
     `${resolvedPath}/pages/`,
     `${resolvedPath}/podcasts/`,
-  ]
+  ];
   for (const file of allFiles) {
-    const isExcluded = excludedPrefixes.some(prefix => file.startsWith(prefix))
+    const isExcluded = excludedPrefixes.some((prefix) => file.startsWith(prefix));
     if (!isExcluded) {
-      notes.add(basename(file, '.md'))
+      notes.add(basename(file, ".md"));
     }
   }
 
@@ -48,10 +48,10 @@ export function getSlugCache(contentPath: string = 'content'): SlugCache {
     authors,
     notes,
     all: new Set([...authors, ...notes]),
-  }
-  cachedContentPath = resolvedPath
+  };
+  cachedContentPath = resolvedPath;
 
-  return cache
+  return cache;
 }
 
 /**
@@ -59,35 +59,35 @@ export function getSlugCache(contentPath: string = 'content'): SlugCache {
  * Call this when files are added/removed during watch mode
  */
 export function invalidateCache(): void {
-  cache = null
-  cachedContentPath = null
+  cache = null;
+  cachedContentPath = null;
 }
 
 /**
  * Simple Levenshtein distance for typo suggestions
  */
 function levenshtein(a: string, b: string): number {
-  const matrix: number[][] = []
+  const matrix: number[][] = [];
 
   for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i]
+    matrix[i] = [i];
   }
   for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j
+    matrix[0][j] = j;
   }
 
   for (let i = 1; i <= b.length; i++) {
     for (let j = 1; j <= a.length; j++) {
-      const cost = a[j - 1] === b[i - 1] ? 0 : 1
+      const cost = a[j - 1] === b[i - 1] ? 0 : 1;
       matrix[i][j] = Math.min(
         matrix[i - 1][j] + 1,
         matrix[i][j - 1] + 1,
         matrix[i - 1][j - 1] + cost,
-      )
+      );
     }
   }
 
-  return matrix[b.length][a.length]
+  return matrix[b.length][a.length];
 }
 
 /**
@@ -95,16 +95,16 @@ function levenshtein(a: string, b: string): number {
  * Returns the closest match within 3 edits, or null
  */
 export function findSimilarSlug(slug: string, slugs: Set<string>): string | null {
-  let best: string | null = null
-  let bestScore = Infinity
+  let best: string | null = null;
+  let bestScore = Infinity;
 
   for (const candidate of slugs) {
-    const score = levenshtein(slug.toLowerCase(), candidate.toLowerCase())
+    const score = levenshtein(slug.toLowerCase(), candidate.toLowerCase());
     if (score < bestScore && score <= 3) {
-      bestScore = score
-      best = candidate
+      bestScore = score;
+      best = candidate;
     }
   }
 
-  return best
+  return best;
 }

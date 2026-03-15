@@ -20,6 +20,7 @@ date: 2026-01-04
 Peter van Hardenberg opens by confessing the whole local-first movement has been "an elaborate ruse." The real agenda is a three-part master plan: local-first software enables universal version control (for everyone, not just developers), which in turn enables malleable software where users customize and extend their tools. He grounds this in a 75-year research lineage from Vannevar Bush to Licklider to Engelbart, positioning Ink & Switch not as a startup but as a continuation of the tools-for-thought tradition.
 
 ::mermaid
+
 <pre>
 flowchart LR
     A["`**Local-First Software**
@@ -31,6 +32,7 @@ flowchart LR
     Users customize tools
     without waiting for devs`"]
 </pre>
+
 ::
 
 ## Key Arguments
@@ -85,6 +87,7 @@ Peter specifically calls out Anthropic's Claude artifacts as an example of AI-ge
 Before introducing Patchwork's model, Peter maps five levels of malleability already present in software — each with specific tradeoffs:
 
 ::mermaid
+
 <pre>
 flowchart TD
     S["`**Settings**
@@ -104,6 +107,7 @@ flowchart TD
     Tools as components
     on shared substrate`"]
 </pre>
+
 ::
 
 The Bank of America example is telling: someone built a browser extension that adds checkboxes to transaction records. No PM would ever sign off on that feature. But for the 200 people who use it, their life is meaningfully improved.

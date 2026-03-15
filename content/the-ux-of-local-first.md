@@ -19,7 +19,7 @@ date: 2026-02-22
 
 Eileen Wagner — UX researcher at Superbloom, founder of the Decent Patterns library, and builder of local-first prototypes like Upwelling (collaborative editor at Ink & Switch) and Full Screen (collaborative whiteboard on Y.JS) — comes to Local-First Conf with a clear message: stop celebrating the promises and start fixing the UX gaps that will kill adoption before it starts.
 
-Her framing is sharp. The tech community has spent years on the *why* of local-first. Now we need the *how* — specifically, four UX challenges that require collective solutions because inconsistent patterns across apps will confuse users out of the ecosystem entirely.
+Her framing is sharp. The tech community has spent years on the _why_ of local-first. Now we need the _how_ — specifically, four UX challenges that require collective solutions because inconsistent patterns across apps will confuse users out of the ecosystem entirely.
 
 ## Key Arguments
 
@@ -27,7 +27,7 @@ Her framing is sharp. The tech community has spent years on the *why* of local-f
 
 Nothing screams "internet" louder than a browser window. Wagner's team learned this building Full Screen — wrapping the app in Tauri for native downloads was the transitional fix, but it introduced new problems (managed devices that block app installs). The ideal? A new container paradigm that signals "this is a safe offline space" without the baggage of browser chrome.
 
-File extensions turned out to be surprisingly powerful. A custom `.fullscreen` extension created instant mental associations: this file belongs to this app, it lives on *my* machine. Downloads and toast notifications ("keep your work — save an editable copy") tested extremely well for communicating ownership.
+File extensions turned out to be surprisingly powerful. A custom `.fullscreen` extension created instant mental associations: this file belongs to this app, it lives on _my_ machine. Downloads and toast notifications ("keep your work — save an editable copy") tested extremely well for communicating ownership.
 
 ### 2. Ownership Is a Responsibility, Not Just a Feature
 
@@ -58,6 +58,7 @@ Wagner's Upwelling prototype used a "stack and layers" metaphor — the document
 This is where Wagner gets genuinely excited. It's rare for UX designers to get greenfield conceptual work — most of the time you're polishing existing patterns. Version control for non-developers is wide open.
 
 ::mermaid
+
 <pre>
 mindmap
   root((UX of Local-First))
@@ -89,11 +90,12 @@ mindmap
       Patchwork branches model
       Git concepts adapted for non-devs
 </pre>
+
 ::
 
 ### Bonus: "Local-First" Is Developer Speak
 
-Wagner calls it out directly — "local-first" is not a user-facing term. Neither is "offline-first" or "cloud-optional." Her suggestion: "offline available" for capability description, "user-owned" for value signaling. Stop naming what you're *not* building (cloud) and start naming what you *are*.
+Wagner calls it out directly — "local-first" is not a user-facing term. Neither is "offline-first" or "cloud-optional." Her suggestion: "offline available" for capability description, "user-owned" for value signaling. Stop naming what you're _not_ building (cloud) and start naming what you _are_.
 
 ## Notable Quotes
 

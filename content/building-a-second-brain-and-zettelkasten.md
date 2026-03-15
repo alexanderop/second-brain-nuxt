@@ -23,11 +23,13 @@ The two methods are not competitors but complementary tools addressing different
 ## Where Each Excels
 
 **Building a Second Brain:**
+
 - Resource management and project organization
 - Progressive summarization to prepare materials for use
 - Action-oriented workflow with clear project outcomes
 
 **Zettelkasten Method:**
+
 - Deep knowledge processing and idea integration
 - Extracting individual thoughts from sources (not just summaries)
 - Long-term knowledge accumulation across projects

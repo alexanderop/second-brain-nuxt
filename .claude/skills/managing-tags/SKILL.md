@@ -22,20 +22,25 @@ Build a complete tag inventory with usage counts.
 ### 2. Identify Issues
 
 #### Similar Tags (Candidates for Merge)
+
 Look for tags that likely mean the same thing:
+
 - `ai` vs `artificial-intelligence`
 - `dev` vs `development`
 - `js` vs `javascript`
 - Plural vs singular: `habit` vs `habits`
 
 #### Inconsistent Naming
+
 Check for violations of kebab-case convention:
+
 - `camelCase` tags
 - `Capitalized` tags
 - `under_score` tags
 - Tags with spaces
 
 #### Rarely Used Tags
+
 - Tags appearing only once (may indicate typo)
 - Tags used 2-3 times (consider consolidation)
 
@@ -45,22 +50,27 @@ Check for violations of kebab-case convention:
 ## Tag Audit Report
 
 ### Tag Inventory (by frequency)
-| Tag | Count |
-|-----|-------|
-| vue | 5 |
-| testing | 4 |
-| ai | 3 |
+
+| Tag     | Count |
+| ------- | ----- |
+| vue     | 5     |
+| testing | 4     |
+| ai      | 3     |
+
 | ...
 
 ### Similar Tags (Merge Candidates)
+
 - `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`
 - `habit` (2) + `habits` (1) → suggest: `habits`
 
 ### Naming Issues
+
 - `JavaScript` → should be `javascript`
 - `local_first` → should be `local-first`
 
 ### Rarely Used (1 occurrence)
+
 - `obscure-tag` - only in `one-note.md`
 ```
 
@@ -85,6 +95,7 @@ Use the Edit tool to update each file's frontmatter.
 ## Tag Naming Convention
 
 All tags should be:
+
 - **Lowercase**: `vue` not `Vue`
 - **Kebab-case**: `local-first` not `local_first` or `localFirst`
 - **Singular or plural consistently**: Pick one and stick to it
@@ -92,17 +103,18 @@ All tags should be:
 
 ## Common Merge Patterns
 
-| Variations | Preferred |
-|------------|-----------|
-| `ai`, `artificial-intelligence`, `AI` | `ai` |
-| `js`, `javascript`, `JavaScript` | `javascript` |
-| `vue`, `vuejs`, `vue-js` | `vue` |
-| `dev`, `development`, `developer` | `development` |
-| `test`, `testing`, `tests` | `testing` |
+| Variations                            | Preferred     |
+| ------------------------------------- | ------------- |
+| `ai`, `artificial-intelligence`, `AI` | `ai`          |
+| `js`, `javascript`, `JavaScript`      | `javascript`  |
+| `vue`, `vuejs`, `vue-js`              | `vue`         |
+| `dev`, `development`, `developer`     | `development` |
+| `test`, `testing`, `tests`            | `testing`     |
 
 ## Quality Checklist
 
 Before suggesting changes:
+
 - [ ] Extracted all tags from all files
 - [ ] Counted usage per tag
 - [ ] Identified similar tags

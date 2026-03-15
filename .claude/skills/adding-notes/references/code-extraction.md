@@ -6,12 +6,12 @@ Guidelines for extracting code snippets from technical content.
 
 Content triggers code extraction if `isTechnical: true`. Set this flag when ANY:
 
-| Signal | Examples |
-|--------|----------|
-| Type | `github`, `course` |
-| URL domain | github.com, stackoverflow.com, dev.to, hashnode.dev, medium.com (tech), smashingmagazine.com, egghead.io |
-| Title contains | code, api, sdk, tutorial, implement, build, programming, developer, library, framework, typescript, javascript, python, vue, react |
-| Content discusses | implementation details, code examples, CLI commands, configuration |
+| Signal            | Examples                                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Type              | `github`, `course`                                                                                                                 |
+| URL domain        | github.com, stackoverflow.com, dev.to, hashnode.dev, medium.com (tech), smashingmagazine.com, egghead.io                           |
+| Title contains    | code, api, sdk, tutorial, implement, build, programming, developer, library, framework, typescript, javascript, python, vue, react |
+| Content discusses | implementation details, code examples, CLI commands, configuration                                                                 |
 
 ---
 
@@ -41,6 +41,7 @@ run_in_background: true
 ### YouTube Transcript Patterns
 
 Look for:
+
 - Variable declarations: `const`, `let`, `var`, `function`, `class`
 - Imports: `import`, `from`, `require`
 - CLI commands: lines starting with `$`, `>`, `npm`, `pnpm`, `yarn`, `git`
@@ -57,6 +58,7 @@ Look for:
 | "square brackets" | `[]` |
 
 **Note:** Add verification note if reconstructed from spoken code:
+
 ```markdown
 > Reconstructed from spoken code—verify against video
 ```
@@ -73,6 +75,7 @@ Look for:
 ### GitHub README Extraction
 
 Target sections:
+
 - "Quick Start"
 - "Getting Started"
 - "Installation"
@@ -80,11 +83,13 @@ Target sections:
 - "Example"
 
 Extract:
+
 - Installation commands
 - Basic usage patterns
 - Configuration examples
 
 Skip:
+
 - Badges
 - Contributing guidelines
 - License sections
@@ -101,12 +106,12 @@ Skip:
 
 From extracted snippets, choose **1-3** based on:
 
-| Priority | Criteria |
-|----------|----------|
-| 1 | Demonstrates the **core concept** of the resource |
-| 2 | **Self-contained** (works without extensive context) |
-| 3 | **Practical** (you'd actually copy-paste this) |
-| 4 | **Non-obvious** (teaches something, not boilerplate) |
+| Priority | Criteria                                             |
+| -------- | ---------------------------------------------------- |
+| 1        | Demonstrates the **core concept** of the resource    |
+| 2        | **Self-contained** (works without extensive context) |
+| 3        | **Practical** (you'd actually copy-paste this)       |
+| 4        | **Non-obvious** (teaches something, not boilerplate) |
 
 ### Good Snippets
 
@@ -128,7 +133,7 @@ From extracted snippets, choose **1-3** based on:
 
 ## Formatting
 
-```markdown
+````markdown
 ## Code Snippets
 
 ### [Pattern/Purpose Name]
@@ -138,6 +143,8 @@ Brief explanation of what this demonstrates (1 sentence).
 ```language
 // the actual code
 ```
+````
+
 ```text
 
 ### Rules
@@ -158,3 +165,4 @@ Brief explanation of what this demonstrates (1 sentence).
 | Transcript code unclear | Add note: "Reconstructed from spoken code—verify against video" |
 | Only 1 good snippet exists | Include just that one (don't pad with weak examples) |
 | All snippets are boilerplate | Skip section, note "No unique code patterns" |
+```

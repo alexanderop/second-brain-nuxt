@@ -443,36 +443,36 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 **Step 1: Define Your Database**
 
 ```ts
-  // db/todo.ts
-  import Dexie, { type Table } from 'dexie'
-  import dexieCloud from 'dexie-cloud-addon'
+// db/todo.ts
+import Dexie, { type Table } from "dexie";
+import dexieCloud from "dexie-cloud-addon";
 
-  export interface Todo {
-    id?: string
-    title: string
-    completed: boolean
-    createdAt: Date
+export interface Todo {
+  id?: string;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+}
+
+export class TodoDB extends Dexie {
+  todos!: Table<Todo>;
+
+  constructor() {
+    super("TodoDB", { addons: [dexieCloud] });
+    this.version(1).stores({
+      todos: "@id, title, completed, createdAt",
+      //      ^^^ Dexie Cloud generates IDs
+    });
   }
+}
 
-  export class TodoDB extends Dexie {
-    todos!: Table<Todo>
+export const db = new TodoDB();
 
-    constructor() {
-      super('TodoDB', { addons: [dexieCloud] })
-      this.version(1).stores({
-        todos: '@id, title, completed, createdAt'
-        //      ^^^ Dexie Cloud generates IDs
-      })
-    }
-  }
-
-  export const db = new TodoDB()
-
-  // Configure sync (one line!)
-  db.cloud.configure({
-    databaseUrl: import.meta.env.VITE_DEXIE_CLOUD_URL,
-    requireAuth: true,
-  })
+// Configure sync (one line!)
+db.cloud.configure({
+  databaseUrl: import.meta.env.VITE_DEXIE_CLOUD_URL,
+  requireAuth: true,
+});
 ```
 
 **Step 2: The Composable — Compare This to Traditional Fetching**
@@ -504,45 +504,41 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 ```
 
 ```ts
-  // composables/useTodos.ts — the actual code
-  import { db, type Todo } from '@/db/todo'
-  import { useObservable } from '@vueuse/rxjs'
-  import { liveQuery } from 'dexie'
-  import { from } from 'rxjs'
-  import { computed, ref } from 'vue'
+// composables/useTodos.ts — the actual code
+import { db, type Todo } from "@/db/todo";
+import { useObservable } from "@vueuse/rxjs";
+import { liveQuery } from "dexie";
+import { from } from "rxjs";
+import { computed, ref } from "vue";
 
-  export function useTodos() {
-    const newTodoTitle = ref('')
+export function useTodos() {
+  const newTodoTitle = ref("");
 
-    // Reactive query — like computed() but for IndexedDB
-    const todos = useObservable<Todo[]>(
-      from(liveQuery(() =>
-        db.todos.orderBy('createdAt').toArray()
-      ))
-    )
+  // Reactive query — like computed() but for IndexedDB
+  const todos = useObservable<Todo[]>(
+    from(liveQuery(() => db.todos.orderBy("createdAt").toArray())),
+  );
 
-    const pendingTodos = computed(
-      () => todos.value?.filter(t => !t.completed) ?? []
-    )
+  const pendingTodos = computed(() => todos.value?.filter((t) => !t.completed) ?? []);
 
-    const addTodo = async () => {
-      if (!newTodoTitle.value.trim()) return
-      await db.todos.add({
-        title: newTodoTitle.value,
-        completed: false,
-        createdAt: new Date(),
-      })
-      newTodoTitle.value = ''
-    }
+  const addTodo = async () => {
+    if (!newTodoTitle.value.trim()) return;
+    await db.todos.add({
+      title: newTodoTitle.value,
+      completed: false,
+      createdAt: new Date(),
+    });
+    newTodoTitle.value = "";
+  };
 
-    const toggleTodo = async (todo: Todo) => {
-      await db.todos.update(todo.id!, {
-        completed: !todo.completed,
-      })
-    }
+  const toggleTodo = async (todo: Todo) => {
+    await db.todos.update(todo.id!, {
+      completed: !todo.completed,
+    });
+  };
 
-    return { todos, newTodoTitle, pendingTodos, addTodo, toggleTodo }
-  }
+  return { todos, newTodoTitle, pendingTodos, addTodo, toggleTodo };
+}
 ```
 
 **Step 3: How Dexie Handles Conflicts**
@@ -944,12 +940,12 @@ From [[the-past-present-and-future-of-local-first]] — Kleppmann at Local-First
 
 ## Talk Flow / Timing Estimate
 
-| Section | Topic | Ideals Revealed | ~Minutes |
-|---------|-------|-----------------|----------|
-| Part 1 | The Journey (jQuery → Vue → remaining problem) | none yet | 5–6 |
-| Part 2 | Offline-First (PWA, storage, scorecard 2/7) | ✓1 ✓3 (2/7) | 4–5 |
-| Part 3 | Sync Engines + Dexie code + "but is it local-first?" | +✓2 +✓4 (4/7) | 8–10 |
-| Part 4 | CRDTs (G-Counter visual, brief) | (supports 4) | 2 |
-| Part 5 | Local-First = Values, Obsidian, what's missing, what to do | +✓5 +✓6 +✓7 (7/7) | 7–8 |
-| Closing | The rendering era is over | — | 2 |
-| **Total** | | | **~28–33 min** |
+| Section   | Topic                                                      | Ideals Revealed   | ~Minutes       |
+| --------- | ---------------------------------------------------------- | ----------------- | -------------- |
+| Part 1    | The Journey (jQuery → Vue → remaining problem)             | none yet          | 5–6            |
+| Part 2    | Offline-First (PWA, storage, scorecard 2/7)                | ✓1 ✓3 (2/7)       | 4–5            |
+| Part 3    | Sync Engines + Dexie code + "but is it local-first?"       | +✓2 +✓4 (4/7)     | 8–10           |
+| Part 4    | CRDTs (G-Counter visual, brief)                            | (supports 4)      | 2              |
+| Part 5    | Local-First = Values, Obsidian, what's missing, what to do | +✓5 +✓6 +✓7 (7/7) | 7–8            |
+| Closing   | The rendering era is over                                  | —                 | 2              |
+| **Total** |                                                            |                   | **~28–33 min** |

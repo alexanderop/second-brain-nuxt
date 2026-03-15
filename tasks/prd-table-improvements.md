@@ -15,9 +15,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 ## User Stories
 
 ### US-001: Add view toggle component
+
 **Description:** As a user, I want to switch between table and card views so I can choose the layout that works best for my current task.
 
 **Acceptance Criteria:**
+
 - [ ] Segmented control with "Table" and "Cards" options in filter bar
 - [ ] Active view stored in URL param (`?view=table` or `?view=cards`)
 - [ ] Default to table view when param is missing
@@ -26,9 +28,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 - [ ] Verify in browser
 
 ### US-002: Create ContentCards grid view
+
 **Description:** As a user, I want to see content in a card grid layout so I can scan items visually with more context.
 
 **Acceptance Criteria:**
+
 - [ ] Responsive grid: 1 column mobile, 2 columns tablet, 3 columns desktop
 - [ ] Each card shows: title, type badge, author avatars, tags (max 3), date, rating
 - [ ] Cards are clickable to navigate to content
@@ -37,9 +41,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 - [ ] Verify in browser
 
 ### US-003: Add grouping dropdown
+
 **Description:** As a user, I want to group content by a field so I can see related items together.
 
 **Acceptance Criteria:**
+
 - [ ] Dropdown in filter bar with options: None, Type, Year, Author
 - [ ] Group selection stored in URL param (`?group=type`)
 - [ ] Default to "None" (flat list) when param missing
@@ -48,9 +54,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 - [ ] Verify in browser
 
 ### US-004: Render grouped table view
+
 **Description:** As a user, I want the table to show section headers when grouping is active so I can see items organized by category.
 
 **Acceptance Criteria:**
+
 - [ ] Collapsible section headers showing group name and item count
 - [ ] Items within each group maintain current sort order
 - [ ] Empty groups are hidden
@@ -59,9 +67,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 - [ ] Verify in browser
 
 ### US-005: Render grouped card view
+
 **Description:** As a user, I want cards to be organized under group headers so I can visually scan by category.
 
 **Acceptance Criteria:**
+
 - [ ] Section headers above each card grid group
 - [ ] Cards within group flow in responsive grid
 - [ ] Groups sorted: Type (alphabetically), Year (newest first), Author (alphabetically)
@@ -70,9 +80,11 @@ Enhance the content table with multiple view modes and grouping capabilities, in
 - [ ] Verify in browser
 
 ### US-006: Update URL schema and composable
+
 **Description:** As a developer, I need the URL params and composable to support new view/group options.
 
 **Acceptance Criteria:**
+
 - [ ] Add `view` param to `tableParamsSchema` (enum: 'table' | 'cards')
 - [ ] Add `group` param to `tableParamsSchema` (enum: 'none' | 'type' | 'year' | 'author')
 - [ ] `useContentTable` exposes `view` and `groupBy` refs

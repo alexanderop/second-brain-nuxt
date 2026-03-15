@@ -16,7 +16,7 @@ date: 2026-01-26
 
 ## Core Argument
 
-"The assistant is dead, long live the factory." Agents writing code is now table stakes. The differentiator is whether your codebase is built *for* agents—with feedback loops, testability, and verification baked in.
+"The assistant is dead, long live the factory." Agents writing code is now table stakes. The differentiator is whether your codebase is built _for_ agents—with feedback loops, testability, and verification baked in.
 
 ## Key Takeaways
 
@@ -35,6 +35,7 @@ date: 2026-01-26
 ## The Factory Mental Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Old["Assistant Era"]
@@ -49,6 +50,7 @@ flowchart LR
     end
     Old -.->|"evolution"| New
 </pre>
+
 ::
 
 ## Making Codebases Agent-Native
@@ -56,6 +58,7 @@ flowchart LR
 The Joel Spolski checklist for 2026: Can an agent ship something in the first 10 minutes?
 
 Requirements for agent-ready codebases:
+
 1. **Feedback loops** - Agents must verify their own changes
 2. **CLI accessibility** - Expose data through commands, not just UIs
 3. **Automated testing** - CI that agents can run and interpret

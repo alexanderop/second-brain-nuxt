@@ -72,11 +72,11 @@ skills/
 
 ## Featured Collections
 
-| Collection | Items | Purpose |
-|------------|-------|---------|
-| Awesome Copilot | 5 | Discovery and customization generation |
-| Copilot SDK | 4 | Multi-language SDK implementation |
-| Partners | 20+ | Custom agents from GitHub partners |
+| Collection      | Items | Purpose                                |
+| --------------- | ----- | -------------------------------------- |
+| Awesome Copilot | 5     | Discovery and customization generation |
+| Copilot SDK     | 4     | Multi-language SDK implementation      |
+| Partners        | 20+   | Custom agents from GitHub partners     |
 
 ## Connections
 

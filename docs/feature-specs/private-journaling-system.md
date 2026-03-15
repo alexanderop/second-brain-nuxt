@@ -57,12 +57,14 @@ content/
 Creates or opens today's journal entry with guided interactive prompts.
 
 **Modes:**
+
 - **Quick capture** - Log a thought, win, or learning in seconds
 - **Morning check-in** - Start day with mood, habits, and intentions
 - **Evening reflection** - Review day with metrics, wins, and gratitude
 - **Full journal** - Complete all sections
 
 **Features:**
+
 1. **Mood tracking** - How are you feeling? (Great/Good/Okay/Low)
 2. **Habit tracking** - Checkbox lists for morning and evening habits
 3. **Metrics logging** - Weight, sleep, steps, water, energy
@@ -72,12 +74,14 @@ Creates or opens today's journal entry with guided interactive prompts.
 7. **Wiki-links** - Auto-suggest links to today's public notes
 
 **Behavior:**
+
 1. Check if `/content/private/YYYY-MM-DD.md` exists
 2. Ask user which mode they want (AskUserQuestion)
 3. Guide through interactive questions based on mode
 4. Create/update the daily note with responses
 
 **Template Structure:**
+
 ```markdown
 ---
 title: "2024-01-13"
@@ -91,20 +95,22 @@ private: true
 ## Metrics
 
 | Metric | Value |
-|--------|-------|
-| Weight | 75kg |
-| Sleep  | 7.5h |
-| Steps  | 8500 |
+| ------ | ----- |
+| Weight | 75kg  |
+| Sleep  | 7.5h  |
+| Steps  | 8500  |
 
 ## Habits
 
 ### Morning
+
 - [x] Exercise
 - [x] Meditation
 - [ ] Journaling
 - [ ] Reading
 
 ### Evening
+
 - [ ] Exercise
 - [x] Reading
 - [x] No screens
@@ -144,6 +150,7 @@ private: true
 Summarizes the past week's daily entries.
 
 **Behavior:**
+
 1. Find all notes with `type: daily` from the past 7 days in `/content/private/`
 2. Read and aggregate content
 3. Prompt user: "What were the themes this week?"
@@ -155,6 +162,7 @@ Summarizes the past week's daily entries.
 5. Save to `/content/private/YYYY-Www.md`
 
 **Template Structure:**
+
 ```markdown
 ---
 title: "Week 2, 2024"
@@ -191,6 +199,7 @@ private: true
 Aggregates weekly summaries into a monthly overview.
 
 **Behavior:**
+
 1. Find all notes with `type: weekly` from the past month in `/content/private/`
 2. Read and aggregate content
 3. Prompt user: "What were the big themes this month?"
@@ -202,6 +211,7 @@ Aggregates weekly summaries into a monthly overview.
 5. Save to `/content/private/YYYY-MM.md`
 
 **Template Structure:**
+
 ```markdown
 ---
 title: "January 2024"
@@ -273,6 +283,7 @@ content: {
 ### Date Utilities
 
 Skills should use consistent date formatting:
+
 - Daily: `YYYY-MM-DD` (ISO 8601)
 - Weekly: `YYYY-Www` (ISO week number)
 - Monthly: `YYYY-MM`

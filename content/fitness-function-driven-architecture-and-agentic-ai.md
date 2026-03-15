@@ -19,7 +19,7 @@ Enterprise architects have wanted holistic governance for years—fitness functi
 
 ## The Meta Bounded Context Problem
 
-Projects have a *meta bounded context*—the specific implementation details of how they've built their systems. Database types, communication protocols, service boundaries. Enterprise architects sit far away from these details, and any governance code they write must pierce this boundary.
+Projects have a _meta bounded context_—the specific implementation details of how they've built their systems. Database types, communication protocols, service boundaries. Enterprise architects sit far away from these details, and any governance code they write must pierce this boundary.
 
 This piercing creates brittleness. When the project team changes their database schema or adds a new service, the enterprise-level fitness function breaks—not because the architecture is wrong, but because implementation details shifted. After enough false failures, architects abandon the tooling entirely.
 
@@ -37,6 +37,7 @@ The enterprise architect never writes `assert TC ⊆ C`. They say "validate refe
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Enterprise["Enterprise Level"]
@@ -60,6 +61,7 @@ flowchart LR
     Server --> FF
     FF --> DB
 </pre>
+
 ::
 
 ## Architecture as Code

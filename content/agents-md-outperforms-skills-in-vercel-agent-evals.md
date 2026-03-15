@@ -17,12 +17,12 @@ date: 2026-01-27
 
 Vercel tested how to best teach AI coding agents Next.js 16 APIs. The results were decisive:
 
-| Approach | Pass Rate |
-|----------|-----------|
-| No docs (baseline) | 53% |
-| Skills (default) | 53% |
-| Skills with explicit instructions | 79% |
-| AGENTS.md docs index | **100%** |
+| Approach                          | Pass Rate |
+| --------------------------------- | --------- |
+| No docs (baseline)                | 53%       |
+| Skills (default)                  | 53%       |
+| Skills with explicit instructions | 79%       |
+| AGENTS.md docs index              | **100%**  |
 
 Skills failed to be invoked in 56% of eval cases, even when available. Different instruction wordings produced dramatically different results—a fragility problem.
 
@@ -35,6 +35,7 @@ Three factors explain why embedded documentation outperforms skills:
 3. **No sequencing complications** — avoids the "explore first vs invoke first" dilemma
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Skills["Skills Approach"]
@@ -47,6 +48,7 @@ flowchart LR
         F --> G[Uses current knowledge]
     end
 </pre>
+
 ::
 
 ## Implementation

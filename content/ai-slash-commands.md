@@ -18,6 +18,7 @@ Slash commands let you define custom commands for repeatable processes. Instead 
 ## How They Work
 
 Command files require frontmatter metadata:
+
 - **Description** of what the command does
 - **Argument hints** for expected parameters
 - **Allowed tools** the agent can execute
@@ -33,13 +34,13 @@ The filename maps directly to the command name. `fix-pr-comments.md` becomes `/f
 
 ## Directory Locations by Tool
 
-| Tool | Global Commands | Project Commands |
-|------|-----------------|------------------|
-| Claude Code | `~/.claude/commands` | `project/.claude/commands` |
-| Cursor | `~/.cursor/commands` | `project/.cursor/commands` |
-| Gemini | `~/.gemini/commands` | `project/.gemini/commands` |
-| Codex | `~/.codex/prompts` | `project/.codex/prompts` |
-| OpenCode | `~/.config/opencode/commands/` | `.opencode/commands/` |
+| Tool        | Global Commands                | Project Commands           |
+| ----------- | ------------------------------ | -------------------------- |
+| Claude Code | `~/.claude/commands`           | `project/.claude/commands` |
+| Cursor      | `~/.cursor/commands`           | `project/.cursor/commands` |
+| Gemini      | `~/.gemini/commands`           | `project/.gemini/commands` |
+| Codex       | `~/.codex/prompts`             | `project/.codex/prompts`   |
+| OpenCode    | `~/.config/opencode/commands/` | `.opencode/commands/`      |
 
 Note: Some platforms like Codex have deprecated this feature.
 

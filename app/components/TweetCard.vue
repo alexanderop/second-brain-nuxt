@@ -1,26 +1,28 @@
 <script setup lang="ts">
-import { NuxtLink, UIcon } from '#components'
-import type { TweetItem } from '~/types/content'
-import { formatDate } from '~/utils/formatDate'
-import { handleImageError } from '~/utils/imageErrorHandler'
+import { NuxtLink, UIcon } from "#components";
+import type { TweetItem } from "~/types/content";
+import { formatDate } from "~/utils/formatDate";
+import { handleImageError } from "~/utils/imageErrorHandler";
 
 const props = defineProps<{
-  tweet: TweetItem
+  tweet: TweetItem;
   author: {
-    name: string
-    slug: string
-    avatar?: string
-    twitterHandle?: string
-  }
-}>()
+    name: string;
+    slug: string;
+    avatar?: string;
+    twitterHandle?: string;
+  };
+}>();
 
 function openExternalUrl() {
-  window.open(props.tweet.tweetUrl, '_blank', 'noopener,noreferrer')
+  window.open(props.tweet.tweetUrl, "_blank", "noopener,noreferrer");
 }
 </script>
 
 <template>
-  <article class="p-4 rounded-lg border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors">
+  <article
+    class="p-4 rounded-lg border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors"
+  >
     <NuxtLink :to="`/tweets/${tweet.slug}`" class="block">
       <!-- Author header -->
       <div class="flex items-start gap-3">
@@ -31,7 +33,7 @@ function openExternalUrl() {
             :alt="author.name"
             class="size-full object-cover"
             @error="handleImageError"
-          >
+          />
           <div
             v-if="!author.avatar"
             class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"

@@ -48,18 +48,19 @@ Alexander is a visual learner, so every note evaluates this tree. The default is
 
 ### Type Priority Matrix
 
-| Priority | Content Types | Action |
-|----------|---------------|--------|
-| **ALWAYS** | book, talk, course | Add at least one diagram — find the visual angle |
-| **HIGH** | article, youtube, podcast, evergreen, github | Add diagram unless content is genuinely just a list |
-| **MEDIUM** | newsletter, reddit, note | Evaluate — add if any structure, comparison, or argument exists |
-| **LOW** | quote, map, manga, movie | Skip unless obvious visual structure |
+| Priority   | Content Types                                | Action                                                          |
+| ---------- | -------------------------------------------- | --------------------------------------------------------------- |
+| **ALWAYS** | book, talk, course                           | Add at least one diagram — find the visual angle                |
+| **HIGH**   | article, youtube, podcast, evergreen, github | Add diagram unless content is genuinely just a list             |
+| **MEDIUM** | newsletter, reddit, note                     | Evaluate — add if any structure, comparison, or argument exists |
+| **LOW**    | quote, map, manga, movie                     | Skip unless obvious visual structure                            |
 
 ---
 
 ## When to Add Diagrams
 
 ✅ **Use diagrams for (broad — look for these):**
+
 - **Frameworks** - Any named model, matrix, pyramid, or mental model
 - **Process flows** - Step-by-step sequences, cause-effect chains, decision trees, workflows
 - **System relationships** - Component interactions, feedback loops, hierarchies, architectures
@@ -70,6 +71,7 @@ Alexander is a visual learner, so every note evaluates this tree. The default is
 - **Key takeaways** - Even a summary of 3-5 key insights can be a mindmap
 
 ❌ **Skip diagrams ONLY when:**
+
 - Content is a very short quote or single-sentence opinion
 - The note is a link list (MOC/map type) — these are already visual by nature
 - After genuinely considering all 7 diagram triggers above, nothing fits
@@ -80,18 +82,18 @@ Alexander is a visual learner, so every note evaluates this tree. The default is
 
 Match content patterns to the best diagram type:
 
-| Content Pattern | Best Diagram Type | Example |
-|----------------|-------------------|---------|
-| Steps, workflow, pipeline | `flowchart LR` or `flowchart TD` | Build process, user journey |
-| Core idea → sub-ideas | `mindmap` | Book key takeaways, concept breakdown |
-| Timeline, phases | `timeline` | Project evolution, historical events |
-| Components with relationships | `graph TD` | Architecture, system design |
-| Circular/feedback loops | `graph` with cycle edges | Habit loops, reinforcement cycles |
-| Comparisons, tradeoffs | `quadrantChart` or `graph` | Framework vs framework |
-| States and transitions | `stateDiagram-v2` | User states, process stages |
-| Argument/thesis structure | `mindmap` or `graph TD` | Author's argument mapped out |
-| Category/taxonomy | `mindmap` | Classification, types of X |
-| Sequence of interactions | `sequenceDiagram` | API calls, conversation flow |
+| Content Pattern               | Best Diagram Type                | Example                               |
+| ----------------------------- | -------------------------------- | ------------------------------------- |
+| Steps, workflow, pipeline     | `flowchart LR` or `flowchart TD` | Build process, user journey           |
+| Core idea → sub-ideas         | `mindmap`                        | Book key takeaways, concept breakdown |
+| Timeline, phases              | `timeline`                       | Project evolution, historical events  |
+| Components with relationships | `graph TD`                       | Architecture, system design           |
+| Circular/feedback loops       | `graph` with cycle edges         | Habit loops, reinforcement cycles     |
+| Comparisons, tradeoffs        | `quadrantChart` or `graph`       | Framework vs framework                |
+| States and transitions        | `stateDiagram-v2`                | User states, process stages           |
+| Argument/thesis structure     | `mindmap` or `graph TD`          | Author's argument mapped out          |
+| Category/taxonomy             | `mindmap`                        | Classification, types of X            |
+| Sequence of interactions      | `sequenceDiagram`                | API calls, conversation flow          |
 
 **Prefer `mindmap` for non-technical content** — it's the most versatile for capturing key ideas and their relationships without imposing artificial flow.
 
@@ -105,11 +107,13 @@ When placing a validated diagram into a note, use the MDC component with `<pre>`
 
 ```markdown
 ::mermaid
+
 <pre>
 graph TD
     A[Start] --> B[Process]
     B --> C[End]
 </pre>
+
 ::
 ```
 
@@ -120,7 +124,9 @@ graph TD
 ## Diagram Triggers by Content Type
 
 ### Books
+
 Almost always have diagram-worthy content:
+
 - "The [X] Model" or "The [X] Framework"
 - "Four laws of...", "Three pillars of...", "Five stages of..."
 - Circular relationships ("A leads to B leads to C leads to A")
@@ -130,6 +136,7 @@ Almost always have diagram-worthy content:
 - **Book structure** → the key chapters/sections as a concept map
 
 ### Talks/YouTube
+
 - Speaker draws on whiteboard or shows diagram slide
 - Describes a cycle or loop
 - Compares two approaches side-by-side
@@ -137,18 +144,21 @@ Almost always have diagram-worthy content:
 - Any "here's how this works" explanation → flowchart
 
 ### Podcasts
+
 - Guest describes their framework or approach
 - Discussion follows a structure (problem → diagnosis → solution)
 - Multiple topics covered → mindmap of the key discussion points
 - Guest's background/journey → timeline
 
 ### Articles
+
 - Technical articles: architecture diagrams, data flows, pipeline stages
 - Opinion pieces: argument structure as mindmap
 - How-to articles: step-by-step as flowchart
 - Comparison articles: approaches mapped visually
 
 ### GitHub Repos
+
 - Architecture overview of the project
 - How the tool works (pipeline/flow)
 - Feature comparison with alternatives
@@ -158,6 +168,7 @@ Almost always have diagram-worthy content:
 ## Multiple Diagrams
 
 For rich content (books, long talks, in-depth articles), consider adding **2 diagrams** when appropriate:
+
 1. **Concept overview** — mindmap of the key ideas
 2. **Key process/framework** — flowchart or graph of the most important model
 

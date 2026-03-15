@@ -23,6 +23,7 @@ When his commanding officer arrived demanding answers and someone to blame, Will
 ## The Debrief
 
 When asked "Who's fault was this?", multiple SEALs raised their hands to take blame:
+
 - One didn't control the Iraqi soldiers properly
 - Another didn't pass location info fast enough
 - A third shot the friendly Iraqi soldier

@@ -23,24 +23,24 @@ date: 2026-01-16
 
 ## Timestamps
 
-| Time | Topic |
-|------|-------|
-| 00:00 | Intro |
-| 00:03:52 | Aktientipps für 15-Jährige: Blutige Nase holen |
+| Time     | Topic                                           |
+| -------- | ----------------------------------------------- |
+| 00:00    | Intro                                           |
+| 00:03:52 | Aktientipps für 15-Jährige: Blutige Nase holen  |
 | 00:12:00 | Trump & Microsoft: Data Center Stromkosten-Deal |
-| 00:19:30 | Aleph Alpha: Gründer Jonas Andrulis geht |
-| 00:24:30 | TSMC: 35% Gewinnwachstum, globale Expansion |
-| 00:26:00 | Cerebras: 10 Mrd. Dollar Deal mit OpenAI |
-| 00:30:00 | Replit & Parloa |
-| 00:34:30 | DeepSeek Hedge Fund: 57% Rendite |
-| 00:37:00 | Tesla FSD |
-| 00:42:00 | ChatGPT Translate & Google Translate |
-| 00:43:15 | Copilot erfindet Fußballspiel |
-| 00:45:00 | Thinking Machines Lab |
-| 00:47:00 | Frank Thelen Scam-Anzeigen |
-| 00:58:30 | Hoss und Hopf |
-| 01:03:00 | CNBC startet deutschen Kanal 2027 |
-| 01:05:30 | Verbraucherschutzecke |
+| 00:19:30 | Aleph Alpha: Gründer Jonas Andrulis geht        |
+| 00:24:30 | TSMC: 35% Gewinnwachstum, globale Expansion     |
+| 00:26:00 | Cerebras: 10 Mrd. Dollar Deal mit OpenAI        |
+| 00:30:00 | Replit & Parloa                                 |
+| 00:34:30 | DeepSeek Hedge Fund: 57% Rendite                |
+| 00:37:00 | Tesla FSD                                       |
+| 00:42:00 | ChatGPT Translate & Google Translate            |
+| 00:43:15 | Copilot erfindet Fußballspiel                   |
+| 00:45:00 | Thinking Machines Lab                           |
+| 00:47:00 | Frank Thelen Scam-Anzeigen                      |
+| 00:58:30 | Hoss und Hopf                                   |
+| 01:03:00 | CNBC startet deutschen Kanal 2027               |
+| 01:05:30 | Verbraucherschutzecke                           |
 
 ## Key Arguments
 

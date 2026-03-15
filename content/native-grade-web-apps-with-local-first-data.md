@@ -40,6 +40,7 @@ The mental shift: instead of querying a remote database through layers of API, b
 ## Architecture Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     subgraph Traditional["Traditional Three-Tier"]
@@ -52,6 +53,7 @@ flowchart LR
         Client2[App] --> LocalDB
     end
 </pre>
+
 ::
 
 ## LiveStore Design

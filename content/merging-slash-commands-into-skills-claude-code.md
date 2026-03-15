@@ -3,7 +3,8 @@ title: "Merging Slash Commands into Skills in Claude Code"
 description: "Claude Code has unified Slash Commands and Skills into a single abstraction, simplifying context management and enabling powerful subagent integrations."
 authors: [thariq-shihipar]
 type: article
-topics: [claude-code, ai-tools, developer-experience]
+tags: [claude-code, ai-tools, developer-experience]
+date: "2026-03-08"
 source: https://x.com/trq212/status/2014836841846132761
 ---
 
@@ -22,6 +23,7 @@ As model capabilities advanced, Skills proved to be the more powerful approach:
 ## Invocation Control
 
 For each skill, you can choose whether it should be:
+
 - **User-invocable** - Can be invoked with slash command syntax (`/skillname`)
 - **Model-invocable** - Can be called automatically by Claude
 - **Both** (the default)

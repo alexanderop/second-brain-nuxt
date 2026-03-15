@@ -33,6 +33,7 @@ The conclusion flips the singularity narrative. Machines improve at a constant r
 The core finding: machine capability advances linearly while human institutional response accelerates hyperbolically.
 
 ::mermaid
+
 <pre>
 graph LR
     subgraph Technical["AI Capability (Linear)"]
@@ -47,6 +48,7 @@ graph LR
     end
     Technical -->|perceived as| Social
 </pre>
+
 ::
 
 ## Connections

@@ -45,60 +45,73 @@ Both this book and [[start-with-why-simon-sinek]] argue that successful companie
 ## Highlights
 
 ### On Contrarian Thinking
+
 > "What important truth do very few people agree with you on?" This question sounds easy because it's straightforward. Actually, it's very hard to answer.
 
 ### On Globalization vs Technology
+
 > In a world of scarce resources, globalization without new technology is unsustainable.
 
 ### On Organizational Dysfunction
+
 > In the most dysfunctional organizations, signaling that work is being done becomes a better strategy for career advancement than actually doing work.
 
 ### On Competition and Monopoly
+
 > All happy companies are different: each one earns a monopoly by solving a unique problem. All failed companies are the same: they failed to escape competition.
 
 > Non-monopolists exaggerate their distinction by defining their market as the intersection of various smaller markets. Monopolists, by contrast, disguise their monopoly by framing their market as the union of several large markets.
 
 ### On Competitive Advantage
+
 > Proprietary technology must be at least 10x better than its closest substitute in some important dimension to lead to a real monopolistic advantage.
 
 > Every monopoly is unique, but they usually share some combination of the following characteristics: proprietary technology, network effects, economies of scale, and branding.
 
 ### On Starting Small
+
 > Every startup should start with a very small market. Always err on the side of starting too small. The reason is simple: it's easier to dominate a small market than a large one.
 
 > The perfect target market for a startup is a small group of particular people concentrated together and served by few or no competitors.
 
 ### On World Views
+
 > Europeans just react to events as they happen and hope things don't get worse. The indefinite pessimist can't know whether the inevitable decline will be fast or slow, catastrophic or gradual.
 
 > From China's viewpoint, economic growth cannot come fast enough. Every other country is afraid that China is going to take over the world; China is the only country afraid that it won't.
 
 ### On the Power Law
+
 > The biggest secret in venture capital is that the best investment in a successful fund equals or outperforms the entire rest of the fund combined.
 
 > The power law is not just important to investors; rather, it's important to everybody because everybody is an investor. An entrepreneur makes a major investment just by spending her time working on a startup.
 
 ### On Secrets
+
 > There are two kinds of secrets: secrets of nature and secrets about people. Natural secrets exist all around us; to find them, one must study some undiscovered aspect of the physical world. Secrets about people are different: they are things that people don't know about themselves or things they hide because they don't want others to know.
 
 > Every great business is built around a secret that's hidden from the outside. A great company is a conspiracy to change the world; when you share your secret, the recipient becomes a fellow conspirator.
 
 ### On Founding Teams
+
 > Choosing a co-founder is like getting married, and founder conflict is just as ugly as divorce.
 
 > A company does better the less it pays the CEO—that's one of the single clearest patterns I've noticed from investing in hundreds of startups.
 
 ### On Team Building
+
 > Startups have limited resources and small teams. They must work quickly and efficiently in order to survive, and that's easier to do when everyone shares an understanding of the world.
 
 > The best thing I did as a manager at PayPal was to make every person in the company responsible for doing just one thing. Every employee's one thing was unique, and everyone knew I would evaluate him only on that one thing.
 
 ### On Sales
+
 > Like acting, sales works best when hidden. People who sell advertising are called "account executives." People who sell customers work in "business development." People who sell companies are "investment bankers." And people who sell themselves are called "politicians."
 
 > Customer Lifetime Value (CLV) must exceed Customer Acquisition Cost (CAC).
 
 ### The Seven Questions Every Business Must Answer
+
 1. The Engineering Question: Can you create breakthrough technology instead of incremental improvements?
 2. The Timing Question: Is now the right time to start your particular business?
 3. The Monopoly Question: Are you starting with a big share of a small market?

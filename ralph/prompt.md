@@ -29,14 +29,17 @@ You are an autonomous coding agent working on a software project.
 ## Progress Report Format
 
 APPEND to ralph/progress.txt (never replace, always append):
+
 ```markdown
 ## [Date/Time] - [Story ID]
+
 - What was implemented
 - Files changed
 - **Learnings for future iterations:**
   - Patterns discovered
   - Gotchas encountered
   - Useful context
+
 ---
 ```
 
@@ -46,6 +49,7 @@ If you discover a **reusable pattern** that future iterations should know, add i
 
 ```markdown
 ## Codebase Patterns
+
 - Example: How to query data in this project
 - Example: Component naming conventions
 - Example: File structure patterns
@@ -54,6 +58,7 @@ If you discover a **reusable pattern** that future iterations should know, add i
 ## Quality Requirements
 
 Before committing:
+
 1. Read CLAUDE.md for the project's lint/typecheck commands
 2. Run those commands
 3. Fix any errors before committing

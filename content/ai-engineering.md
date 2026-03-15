@@ -56,6 +56,7 @@ Hallucinations are a form of self-delusion: the model treats its own generated t
 ### RAG (Retrieval-Augmented Generation)
 
 The retrieve-then-generate pattern: retrieve relevant documents, then generate answers using that context. Even with long context windows, RAG remains valuable because:
+
 - Some applications need context longer than any limit
 - The amount of available data only grows
 
@@ -98,4 +99,3 @@ Microsoft's Crawl-Walk-Run framework for AI automation: Crawl (human involvement
 LinkedIn chose YAML over JSON for structured output because it's less verbose, requiring fewer tokens.
 
 Evaluation-driven development: define evaluation criteria before building. The purpose of a metric is to tell you when something's wrong and identify improvement opportunities.
-

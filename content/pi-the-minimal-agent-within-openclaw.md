@@ -45,6 +45,7 @@ Each extension emerged from real friction, built by the agent itself.
 ## Visual Model
 
 ::mermaid
+
 <pre>
 flowchart LR
     User[User Request] --> Pi[Pi Agent]
@@ -57,6 +58,7 @@ flowchart LR
     Ext --> |"writes"| NewTool[New Extension]
     NewTool --> |"reloads"| Pi
 </pre>
+
 ::
 
 ## Why It Works
