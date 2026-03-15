@@ -1,4 +1,4 @@
-import type Anthropic from '@anthropic-ai/sdk'
+import type { Anthropic } from '@anthropic-ai/sdk'
 
 type MessageParam = Anthropic.MessageParam
 type ContentBlock = Anthropic.ContentBlock

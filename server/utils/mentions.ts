@@ -4,7 +4,7 @@
  */
 
 import { extractLinksFromBody } from './minimark'
-import { escapeRegex, getSnippet, highlightMatch } from './text'
+import { escapeRegex, getSnippet, highlightMatch } from '#shared/utils/text'
 import { getSlug, type ContentItem } from './graph'
 
 export interface MentionItem {

@@ -262,6 +262,7 @@ defineShortcuts({
           color="neutral"
           highlight-color="neutral"
           title="On this page"
+          aria-label="Table of contents"
         />
       </div>
     </aside>

@@ -6,7 +6,7 @@ import { usePageTitle } from '~/composables/usePageTitle'
 import { NuxtLink, UInput, UKbd, UAvatar } from '#components'
 import Fuse from 'fuse.js'
 import type { FuseResult } from 'fuse.js'
-import { getSnippet, highlightMatch } from '~/utils/searchResultTransformers'
+import { getSnippet, highlightMatch } from '#shared/utils/text'
 
 interface SearchSection {
   id: string

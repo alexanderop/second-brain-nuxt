@@ -1,6 +1,9 @@
 ---
 name: adding-notes
-description: Add new notes to the Second Brain knowledge base. Use when the user provides a resource (URL, book, podcast, article, GitHub repo, Reddit thread) and asks to "add a note", "create a note", "save this", "add to my notes", "take notes on", or "capture this".
+description: >
+  Create a note from any resource: URL, book, podcast, article, video, GitHub repo,
+  Reddit thread, PDF, quote, or raw idea. Trigger on "add", "save", "capture",
+  "note this", "take notes on", or any request to record content in the knowledge base.
 allowed-tools: Read, Write, Bash, WebFetch, Glob, Grep, Task, TaskOutput, WebSearch, AskUserQuestion
 ---
 
@@ -45,7 +48,7 @@ See `references/content-types/youtube.md` for full classification logic and chan
 
 ## Scripts Reference
 
-Only use scripts that fetch external data or perform complex processing:
+### Metadata Scripts
 
 | Script | Purpose |
 |--------|---------|
@@ -57,6 +60,16 @@ Only use scripts that fetch external data or perform complex processing:
 | `get-manga-metadata.sh URL` | Manga series data |
 | `get-github-metadata.sh URL` | Repo stats |
 | `get-pdf-text.sh URL [output-file]` | Download PDF and extract text (requires `pdftotext`) |
+
+### Utility Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `check-author-exists.sh "Name"` | Fuzzy author lookup (aliases, initials, partial matches) |
+| `list-existing-authors.sh [term]` | Browse existing authors |
+| `list-existing-tags.sh "{keyword}"` | Find tags by frequency |
+| `validate-wikilinks.sh {file}` | Check all `[[links]]` resolve to existing content |
+| `detect-duplicates.sh "Title" [URL]` | Check for duplicate notes |
 
 ### Transcript Format Options
 
@@ -70,9 +83,8 @@ get-youtube-transcript.py URL --format json        # full metadata with timestam
 **Recommended:** Use `--format sentences` for large transcripts—enables grep/search and chunked reading.
 
 **Do NOT use scripts for trivial operations** — do them inline:
-- Author check: `Glob` with `content/authors/*{lastname}*.md`
-- Frontmatter: Write YAML directly
-- Tag lookup: `Grep` or knowledge from prior notes
+- Slug generation: lowercase title, replace spaces with hyphens, remove special characters
+- Frontmatter: Write YAML directly using the content-type template
 
 ---
 
@@ -85,7 +97,7 @@ Phase 2: Parallel Metadata Collection → Per-type agents
 Phase 2.5: Large Transcript Handling → Subagent for >10K token transcripts
 Phase 3: Author Creation → See references/author-creation.md
 Phase 4: Content Generation → Apply writing-style + SOUL.md voice, generate body
-Phase 4.25: Diagram Evaluation → REQUIRED visual assessment with logged outcome
+Phase 4.25: Diagram Evaluation → Visual assessment with logged outcome
 Phase 4.5: Connection Discovery → Find genuine wiki-link candidates (if any exist)
 Phase 5: Quality Validation → Parallel validators
 Phase 6: Save Note → Write to content/{slug}.md with link density report
@@ -93,9 +105,9 @@ Phase 7: MOC Placement → Suggest placements + check MOC threshold
 Phase 8: Quality Check → Run pnpm lint:fix && pnpm typecheck
 ```
 
-### Phase 0: Load Soul (REQUIRED)
+### Phase 0: Load Soul
 
-Read `SOUL.md` from the project root. This defines Alexander's voice, what he values in notes, anti-patterns to avoid, and how to add his perspective. Every note must reflect this identity — not just summarize a source.
+Read `SOUL.md` from the project root. Without it, notes sound like generic AI summaries instead of Alexander's voice. SOUL.md defines what he values, anti-patterns to avoid, and how to add his perspective. Every note must reflect this identity — not just summarize a source.
 
 Key things SOUL.md controls:
 - **Voice:** Direct, opinionated, no filler — not polished AI prose
@@ -177,11 +189,13 @@ If subagent unavailable, use `--format sentences` and manual chunking:
 
 ### Phase 3: Author Creation
 
-For external content, check if author exists:
+For external content, check if author exists using the fuzzy-matching script (handles aliases, initials, and partial names):
 
-```text
-Glob: content/authors/*{lastname}*.md
+```bash
+scripts/check-author-exists.sh "Author Name"
 ```
+
+You can also browse all authors with `scripts/list-existing-authors.sh [term]`.
 
 - **Match found:** Use existing slug
 - **Partial match:** Use AskUserQuestion to confirm identity
@@ -189,42 +203,30 @@ Glob: content/authors/*{lastname}*.md
 
 ### Phase 4: Content Generation
 
-1. **Verify SOUL.md loaded** (REQUIRED): Must have been read in Phase 0. If not, `Read SOUL.md` now
-2. **Load writing-style skill** (REQUIRED): `Read .claude/skills/writing-style/SKILL.md`
-3. **Load linking philosophy** (REQUIRED): `Read .claude/skills/adding-notes/references/linking-philosophy.md`
+**Prerequisites** (these define the note's voice and connection quality):
+1. SOUL.md must have been read in Phase 0 — re-read now if skipped
+2. Load writing-style: `Read .claude/skills/writing-style/SKILL.md`
+3. Load linking philosophy: `Read .claude/skills/adding-notes/references/linking-philosophy.md`
 4. If `isTechnical`: collect code snippets from Phase 2
 5. **Compile frontmatter** using template from content-type file
 6. **Generate body** applying SOUL.md voice — add Alexander's perspective, preserve author's unique voice, no generic summaries (see Phase 4.5 for connection discovery)
 
-**Tags:** 3-5 relevant tags. Use tags you've seen in prior notes or `Grep` for similar content to find existing tags.
+**Tags:** 3-5 relevant tags. Use `scripts/list-existing-tags.sh "{keyword}"` to find tags by frequency, or `Grep` for similar content.
 
 **Summary:** Frame as a core argument, not a description. What claim does this content make?
 
-### Phase 4.25: Diagram Evaluation (REQUIRED — Visual-First)
+### Phase 4.25: Diagram Evaluation
 
-Alexander is a visual learner. **Default to adding a diagram.** Only skip when the content is genuinely too brief or structureless (short quotes, link lists).
+Alexander is a visual learner — default to adding a diagram. Load `references/diagrams-guide.md` and evaluate the decision tree.
 
-1. Load `references/diagrams-guide.md` — apply the decision tree (all 7 triggers) with visual-first bias
-2. **If diagram needed** (expected for most notes), delegate to the mermaid skill:
-   a. Load mermaid skill: `Read .agents/skills/mermaid/skill.md`
-   b. Choose the best diagram type — prefer `mindmap` for concept overviews, `flowchart` for processes
-   c. Write diagram source to `{slug}.mmd` in project root
-   d. Validate: `.agents/skills/mermaid/tools/validate.sh {slug}.mmd`
-   e. If validation fails, fix syntax errors and re-validate
-   f. Show ASCII preview output to user
-   g. Copy validated mermaid block into note wrapped with MDC syntax:
-      ```markdown
-      ::mermaid
-      <pre>
-      {validated mermaid source}
-      </pre>
-      ::
-      ```
-   h. Delete the `.mmd` file: `command rm {slug}.mmd` (use `command` to bypass shell aliases)
-   i. For rich content (books, talks, long articles): consider a second diagram if there's both a concept overview AND a distinct process/framework
-3. Log outcome (REQUIRED):
-   - Adding: `✓ Diagram added: [mermaid-type] - [description]`
-   - Skipping: `✓ No diagram needed: [specific reason]` (should be rare)
+**If adding a diagram:**
+1. Load mermaid skill: `Read .agents/skills/mermaid/skill.md`
+2. Write source to `{slug}.mmd`, validate with `.agents/skills/mermaid/tools/validate.sh {slug}.mmd`, fix if needed
+3. Copy validated block into note with MDC wrapper (`::mermaid` / `<pre>` / `::`)
+4. Delete the `.mmd` file: `command rm {slug}.mmd`
+5. For rich content (books, talks): consider a second diagram if both concept overview AND process exist
+
+Log outcome: `✓ Diagram added: [type] - [description]` or `✓ No diagram: [reason]`
 
 ### Phase 4.5: Connection Discovery
 
@@ -240,13 +242,13 @@ Only add genuine connections with explanatory context. Orphans are acceptable.
 
 Spawn parallel validators:
 
-| Validator | Checks |
-|-----------|--------|
-| Wiki-link exists | Each `[[link]]` exists in `content/` (excluding Readwise) |
-| Link context | Each link has adjacent explanation (not bare "See also") |
-| Duplicate | Title/URL doesn't already exist |
-| Tag | Tags match or similar to existing |
-| Type-specific | E.g., podcast: profile exists, guest not in hosts |
+| Validator | Checks | Script |
+|-----------|--------|--------|
+| Wiki-link exists | Each `[[link]]` exists in `content/` (excluding Readwise) | `scripts/validate-wikilinks.sh {file}` |
+| Link context | Each link has adjacent explanation (not bare "See also") | Manual check |
+| Duplicate | Title/URL doesn't already exist | `scripts/detect-duplicates.sh "Title" [URL]` |
+| Tag | Tags match or similar to existing | Manual check |
+| Type-specific | E.g., podcast: profile exists, guest not in hosts | Manual check |
 
 **Wiki-link note:** Readwise highlights (`content/readwise/`) are excluded from Nuxt Content and won't resolve as valid wiki-links. Use plain text or italics for books/articles that only exist in Readwise.
 

@@ -1,5 +1,5 @@
 import { useSeoMeta } from '#imports'
-import { siteConfig } from '~~/site.config'
+import { siteConfig } from '~~/config/site'
 
 /**
  * Sets a consistent page title with the site name suffix

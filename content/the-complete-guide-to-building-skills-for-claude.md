@@ -42,7 +42,7 @@ MCP provides the professional kitchen (tools, ingredients, equipment). Skills pr
 
 ### Required Folder Layout
 
-```
+```text
 your-skill-name/
 ├── SKILL.md              # Required — exact name, case-sensitive
 ├── scripts/              # Optional executables

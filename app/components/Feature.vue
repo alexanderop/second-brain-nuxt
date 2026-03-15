@@ -14,7 +14,7 @@
  */
 
 import { computed } from 'vue'
-import type { FeatureName } from '~~/features.config'
+import type { FeatureName } from '~~/config/features'
 import { useFeature } from '~/composables/useFeature'
 
 const props = defineProps<{

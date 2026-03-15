@@ -1,4 +1,4 @@
-import type Anthropic from '@anthropic-ai/sdk'
+import type { Anthropic } from '@anthropic-ai/sdk'
 
 // Configuration constants
 export const MODEL = 'claude-3-5-haiku-20241022'

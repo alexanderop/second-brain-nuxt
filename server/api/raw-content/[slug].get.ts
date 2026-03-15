@@ -19,7 +19,7 @@ export default defineEventHandler((event) => {
   const filePath = resolve(contentDir, `${slug}.md`)
 
   // Verify the resolved path stays within the content directory
-  if (!filePath.startsWith(contentDir + '/')) {
+  if (!filePath.startsWith(`${contentDir}/`)) {
     throw createError({ statusCode: 400, message: 'Invalid slug' })
   }
 
@@ -30,7 +30,7 @@ export default defineEventHandler((event) => {
   // Also verify the real path (after resolving symlinks) stays within content directory
   const realPath = realpathSync(filePath)
   const realContentDir = realpathSync(contentDir)
-  if (!realPath.startsWith(realContentDir + '/')) {
+  if (!realPath.startsWith(`${realContentDir}/`)) {
     throw createError({ statusCode: 400, message: 'Invalid slug' })
   }
 

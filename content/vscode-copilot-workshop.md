@@ -51,7 +51,7 @@ date: 2026-01-24
 
 Reference: [github.com/alexanderop/nanocode](https://github.com/alexanderop/nanocode)
 
-```
+```text
 User Input
     ↓
 ┌─────────────────────────────┐
@@ -95,7 +95,7 @@ From nanocode and real agents:
 
 ## Slide 7: Context as Budget
 
-```
+```text
 ┌─────────────────────────────────┐
 │  Context Window (Finite)        │
 │  ┌───────────────────────────┐  │
@@ -199,7 +199,7 @@ All share unified session management.
 
 ## Slide 14: Skill Structure
 
-```
+```text
 skills/
 └── prd-writing/
     ├── skill.md          # Required
@@ -220,7 +220,7 @@ workflow:
 
 ## Slide 15: How Skills Load
 
-```
+```text
 User Request
     ↓
 Agent Detects Match? → No → Standard Response
@@ -238,7 +238,7 @@ Skills are portable across VS Code, GitHub Copilot Cloud, and CLI.
 
 ## Slide 16: The Full Picture
 
-```
+```text
                     ┌──────────────┐
                     │  AGENTS.md   │  ← Project context
                     └──────┬───────┘

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { useState } from '#imports'
-import { siteConfig } from '~~/site.config'
+import { siteConfig } from '~~/config/site'
 
 export interface Shortcut {
   keys: readonly string[]

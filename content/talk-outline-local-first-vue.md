@@ -20,7 +20,7 @@ date: 2026-02-28
 
 The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront. Instead, they emerge naturally across the talk — the audience discovers that the principles they've been learning about ARE the local-first ideals. Only in Part 5 do we name them and show the full picture.
 
-```
+```text
   THE 7 IDEALS — PROGRESSIVE REVEAL
   ══════════════════════════════════════════════════════════════════
 
@@ -49,7 +49,7 @@ The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront.
 - Every click handler manually updated the DOM
 - The problem was fundamentally about **sync** — keeping two things (state and DOM) consistent
 
-```
+```text
   THE JQUERY ERA
   ═══════════════════════════════════════════════════
 
@@ -72,7 +72,7 @@ The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront.
 - Vue solved DOM sync — declare state with `ref()`, the framework handles the rest
 - Vue's reactivity system IS a sync engine: source → reconciler → target
 
-```
+```text
   VUE'S SYNC ENGINE
   ═══════════════════════════════════════════════════
 
@@ -95,7 +95,7 @@ The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront.
 - State management became its own discipline: Vuex, Pinia, TanStack Query, SWR...
 - As Kyle Mathews put it: we're in the **"jQuery era of data"**
 
-```
+```text
   THE REMAINING PROBLEM
   ═══════════════════════════════════════════════════
 
@@ -141,7 +141,7 @@ The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront.
 - The server is still the authority, but the client doesn't wait for it
 - When connectivity returns, changes sync up
 
-```
+```text
   OFFLINE-FIRST ARCHITECTURE
   ═══════════════════════════════════════════════════
 
@@ -170,7 +170,7 @@ The 7 ideals from the Ink & Switch local-first essay are NOT introduced upfront.
 
 Don't name these as "the 7 ideals" — just show what offline-first gives us naturally:
 
-```
+```text
   WHAT OFFLINE-FIRST GIVES US
   ═══════════════════════════════════════════════════
 
@@ -201,7 +201,7 @@ Don't name these as "the 7 ideals" — just show what offline-first gives us nat
 - Before we can store data offline, we need the **app itself** to load offline
 - Progressive Web Apps (PWAs) give us this via Service Workers
 
-```
+```text
   WHY YOU NEED A PWA FOR OFFLINE-FIRST
   ═══════════════════════════════════════════════════
 
@@ -237,7 +237,7 @@ Don't name these as "the 7 ideals" — just show what offline-first gives us nat
 - The PWA is the **delivery mechanism**, IndexedDB/SQLite is the **data layer**
 - Without a PWA, your offline database is useless — the app itself won't load
 
-```
+```text
   THE OFFLINE-FIRST STACK
   ═══════════════════════════════════════════════════
 
@@ -264,7 +264,7 @@ Don't name these as "the 7 ideals" — just show what offline-first gives us nat
 
 **2.4 Client-Side Storage: IndexedDB and SQLite**
 
-```
+```text
   CLIENT-SIDE STORAGE OPTIONS
   ═══════════════════════════════════════════════════
 
@@ -308,7 +308,7 @@ Don't name these as "the 7 ideals" — just show what offline-first gives us nat
 
 - Same pattern as Vue's reactivity, but bidirectional and across the network
 
-```
+```text
   TWO LAYERS OF SYNC
   ═══════════════════════════════════════════════════════════
 
@@ -336,7 +336,7 @@ Don't name these as "the 7 ideals" — just show what offline-first gives us nat
 
 Three components that Linear, Figma, and Asana all converged on independently:
 
-```
+```text
   THE OBJECT SYNC ENGINE (Linear, Figma, Asana)
   ═══════════════════════════════════════════════════
 
@@ -362,7 +362,7 @@ Three components that Linear, Figma, and Asana all converged on independently:
 
 Now we can update our score — still without naming the ideals:
 
-```
+```text
   WHAT SYNC ENGINES ADD
   ═══════════════════════════════════════════════════
 
@@ -387,7 +387,7 @@ Now we can update our score — still without naming the ideals:
 
 **3.4 The Spectrum: Server-First → Local-First**
 
-```
+```text
   THE SPECTRUM
   ═══════════════════════════════════════════════════════════════════
 
@@ -416,7 +416,7 @@ Now we can update our score — still without naming the ideals:
 
 Focus on Dexie — the most accessible entry point for Vue developers. Progressive enhancement: start local, add sync later.
 
-```
+```text
   WHY DEXIE FOR VUE DEVELOPERS
   ═══════════════════════════════════════════════════
 
@@ -477,7 +477,7 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 
 **Step 2: The Composable — Compare This to Traditional Fetching**
 
-```
+```text
   TRADITIONAL VUE                   WITH DEXIE
   ═══════════════                   ═════════
   const todos = ref([])             const todos = useObservable(
@@ -547,7 +547,7 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 
 **Step 3: How Dexie Handles Conflicts**
 
-```
+```text
   DEXIE'S CONFLICT RESOLUTION
   ═══════════════════════════════════════════════════
 
@@ -582,7 +582,7 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 
 **What It Looks Like in IndexedDB (DevTools)**
 
-```
+```text
   // Application tab → IndexedDB → TodoDB
 
   {
@@ -603,7 +603,7 @@ Focus on Dexie — the most accessible entry point for Vue developers. Progressi
 
 This is the honest part. Dexie Cloud is **offline-first**, not local-first. Here's why:
 
-```
+```text
   THE INCREDIBLE JOURNEY TEST (Kleppmann)
   ═══════════════════════════════════════════════════
 
@@ -637,7 +637,7 @@ This applies to most sync engines today — Zero, PowerSync, Convex — they all
 
 The ecosystem is growing — mention these as further reading:
 
-```
+```text
   THE LANDSCAPE (for reference)
   ═══════════════════════════════════════════════════
 
@@ -661,7 +661,7 @@ Dexie uses field-level last-write-wins. But what if there's no server to decide?
 
 **4.2 The G-Counter: Simplest CRDT**
 
-```
+```text
   G-COUNTER
   ═══════════════════════════════════════════════════
 
@@ -697,7 +697,7 @@ Dexie uses field-level last-write-wins. But what if there's no server to decide?
 
 Now name what we've been building toward all along. Show the full picture from [[local-first-software]]:
 
-```
+```text
   THE 7 IDEALS OF LOCAL-FIRST SOFTWARE (Ink & Switch, 2019)
   ═══════════════════════════════════════════════════════════════════
 
@@ -726,7 +726,7 @@ Now name what we've been building toward all along. Show the full picture from [
 
 **5.2 The Full Scorecard — Where Each Step Lands**
 
-```
+```text
   THE PROGRESSIVE SCORECARD
   ═══════════════════════════════════════════════════════════════════
 
@@ -759,7 +759,7 @@ Now name what we've been building toward all along. Show the full picture from [
 
 **5.3 Offline-First vs. Local-First: The Philosophical Difference**
 
-```
+```text
   TWO DIFFERENT QUESTIONS
   ═══════════════════════════════════════════════════
 
@@ -784,7 +784,7 @@ Now name what we've been building toward all along. Show the full picture from [
 
 **5.4 The Honest Truth: Real Local-First Is Still Hard**
 
-```
+```text
   WHY 7/7 IS HARD TODAY
   ═══════════════════════════════════════════════════
 
@@ -822,7 +822,7 @@ Now name what we've been building toward all along. Show the full picture from [
 
 From [[the-past-present-and-future-of-local-first]] — Kleppmann at Local-First Conf 2024:
 
-```
+```text
   WHAT WE HAVE vs. WHAT WE NEED
   ═══════════════════════════════════════════════════
 
@@ -872,7 +872,7 @@ From [[the-past-present-and-future-of-local-first]] — Kleppmann at Local-First
 - Historical parallels: Cypherpunks → SSL → Let's Encrypt, Free Software → Open Web
 - We're in the **pragmatist phase** — the tools aren't perfect, but you can start today
 
-```
+```text
   WHAT YOU CAN DO TODAY
   ═══════════════════════════════════════════════════
 
@@ -901,7 +901,7 @@ From [[the-past-present-and-future-of-local-first]] — Kleppmann at Local-First
 
 ### Closing: The Rendering Era Is Over
 
-```
+```text
   THE ARC OF FRONTEND DEVELOPMENT
   ═══════════════════════════════════════════════════════════════════
 

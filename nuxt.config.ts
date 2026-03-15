@@ -1,39 +1,4 @@
-import { siteConfig } from "./site.config";
-
-// Regex patterns for content transformation
-const WIKI_LINK_REGEX = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
-const EXCALIDRAW_EMBED_REGEX = /!\[\[([^\]]+\.excalidraw(?:\.md)?)\]\]/g;
-
-/**
- * Generate a URL-friendly slug from Excalidraw filename
- */
-function slugifyExcalidraw(filename: string): string {
-  return filename
-    .replace(/\.excalidraw(?:\.md)?$/, "")
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]/g, "");
-}
-
-/**
- * Transform wiki-links and Excalidraw embeds
- */
-function transformWikiLinks(content: string): string {
-  // Transform Excalidraw embeds first
-  let result = content.replace(EXCALIDRAW_EMBED_REGEX, (_, filename: string) => {
-    const slug = slugifyExcalidraw(filename);
-    return `![${filename}](/excalidraw/${slug}.svg){.excalidraw-diagram}`;
-  });
-
-  // Transform regular wiki-links
-  result = result.replace(WIKI_LINK_REGEX, (_, slug: string, displayText?: string) => {
-    const normalizedSlug = slug.trim().toLowerCase().replace(/\s+/g, "-");
-    const text = displayText?.trim() ?? slug.trim();
-    return `[${text}](/${normalizedSlug}){.wiki-link}`;
-  });
-
-  return result;
-}
+import { siteConfig } from "./config/site";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -46,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/a11y",
     "@nuxt/content",
     "@nuxtjs/html-validator",
+    "./modules/wiki-links",
   ],
 
   devtools: { enabled: true },
@@ -60,20 +26,15 @@ export default defineNuxtConfig({
   htmlValidator: {
     enabled: process.env.NODE_ENV !== "test",
     options: {
-      rules: { "meta-refresh": "off" },
+      rules: {
+        "meta-refresh": "off",
+        "prefer-native-element": "off",
+        "element-permitted-content": "off",
+      },
     },
     failOnError: true,
   },
 
-  // Content transformation hooks - must be at config level per Nuxt Content v3 docs
-  hooks: {
-    "content:file:beforeParse"(ctx: { file: { id?: string; body: string } }) {
-      if (ctx.file?.id?.endsWith(".md") && typeof ctx.file.body === "string") {
-        // Transform wiki-links and Excalidraw embeds
-        ctx.file.body = transformWikiLinks(ctx.file.body);
-      }
-    },
-  },
   compatibilityDate: "2025-11-01",
 
   // Prefetch route components on hover/focus for faster navigation
@@ -119,6 +80,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ["@vueuse/core", "d3", "fuse.js", "mermaid", "zod"],
+      exclude: ["@nuxtjs/mdc"],
     },
     server: {
       watch: {

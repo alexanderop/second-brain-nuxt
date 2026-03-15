@@ -18,6 +18,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -36,12 +37,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check formatting
+        run: pnpm format:check
+
       - name: Lint
         run: pnpm lint
 
-  typecheck:
-    name: Type Check
+  types:
+    name: Types
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -63,9 +68,10 @@ jobs:
       - name: Run type check
         run: pnpm typecheck
 
-  test-unit:
+  unit:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -87,12 +93,48 @@ jobs:
       - name: Prepare Nuxt
         run: pnpm nuxt prepare
 
-      - name: Run unit tests
-        run: pnpm test:unit
+      - name: Run unit tests with coverage
+        run: pnpm test:unit:cov
 
-  test-nuxt:
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/junit.xml
+          flags: unit
+          fail_ci_if_error: false
+
+  nuxt:
     name: Nuxt Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare Nuxt
+        run: pnpm nuxt prepare
+
+      - name: Run nuxt integration tests
+        run: vitest run --project nuxt
+
+  browser:
+    name: Browser Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -117,8 +159,8 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
 
-      - name: Run nuxt tests
-        run: pnpm test:nuxt
+      - name: Run browser tests
+        run: vitest run --project nuxt-browser
 
   test-e2e:
     name: E2E Tests
@@ -153,7 +195,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm test:e2e
+        run: pnpm test:browser
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v6
@@ -166,6 +208,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -198,6 +241,7 @@ jobs:
   knip:
     name: Dead Code Check
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -223,9 +267,13 @@ jobs:
         run: pnpm knip
 
   lighthouse:
-    name: Lighthouse A11y
+    name: Lighthouse (${{ matrix.theme }})
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        theme: [light, dark]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -252,5 +300,7 @@ jobs:
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
+        env:
+          COLOR_SCHEME: ${{ matrix.theme }}
         with:
-          configPath: ./lighthouserc.json
+          configPath: ./.lighthouserc.cjs

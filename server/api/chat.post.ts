@@ -2,7 +2,7 @@ import { defineEventHandler, readBody, createEventStream, setResponseHeader, cre
 import { queryCollection } from '@nuxt/content/server'
 import { useRuntimeConfig } from '#imports'
 import { consola } from 'consola'
-import Anthropic from '@anthropic-ai/sdk'
+import { Anthropic } from '@anthropic-ai/sdk'
 import { z } from 'zod'
 import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch'
 import {

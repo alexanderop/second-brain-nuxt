@@ -1,12 +1,17 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './test/e2e',
+  globalSetup: './test/e2e/global-setup.ts',
+  snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? [['html'], ['github']] : 'html',
+  reporter: process.env.CI
+    ? [['html', { outputFolder: 'playwright-report' }], ['github'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+    : [['html', { open: 'never' }]],
+  outputDir: './test-results/e2e',
   maxFailures: 1, // Stop on first failure
 
   use: {

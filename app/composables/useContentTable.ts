@@ -59,7 +59,7 @@ export function useContentTable() {
   })
 
   const page = computed({
-    get: () => Number.parseInt(pageParam.value || '1') || 1,
+    get: () => Number.parseInt(pageParam.value || '1', 10) || 1,
     set: (v) => { pageParam.value = String(v) },
   })
 

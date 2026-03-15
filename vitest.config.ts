@@ -8,13 +8,16 @@ import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig({
   test: {
+    reporters: process.env.CI
+      ? ['default', ['junit', { outputFile: './test-results/junit.xml' }]]
+      : ['default'],
     coverage: {
       provider: 'v8',
       // Only track unit-testable code: server utilities, pure composables, and app utilities
-      include: ['server/utils/**/*.ts', 'app/composables/**/*.ts', 'app/utils/**/*.ts'],
+      include: ['server/utils/**/*.ts', 'app/composables/**/*.ts', 'app/utils/**/*.ts', 'shared/utils/**/*.ts'],
       exclude: [
-        '**/*.test.ts',
-        '**/*.nuxt.test.ts',
+        '**/*.spec.ts',
+        '**/*.nuxt.spec.ts',
         // Vue composables - require Nuxt environment to test (covered by E2E)
         'app/composables/useBacklinks.ts',
         'app/composables/useMentions.ts',
@@ -39,7 +42,7 @@ export default defineConfig({
         // Nitro plugin - logic extracted to server/utils/wikilinks.ts
         'server/plugins/**/*.ts',
       ],
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'junit'],
       reportsDirectory: './coverage',
       thresholds: {
         // Enforced 100% coverage for tracked files
@@ -55,15 +58,16 @@ export default defineConfig({
       {
         test: {
           name: 'unit',
-          include: ['tests/unit/**/*.test.ts'],
+          include: ['test/unit/**/*.spec.ts'],
           environment: 'node',
-          setupFiles: ['./tests/setup/console-spy.ts'],
+          setupFiles: ['./test/test-utils/console-spy.ts'],
         },
         resolve: {
           alias: {
             '~': fileURLToPath(new URL('./app', import.meta.url)),
             '~~': fileURLToPath(new URL('./', import.meta.url)),
-            '#imports': fileURLToPath(new URL('./tests/mocks/imports.ts', import.meta.url)),
+            '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+            '#imports': fileURLToPath(new URL('./test/test-utils/imports-mock.ts', import.meta.url)),
           },
         },
       },
@@ -74,9 +78,9 @@ export default defineConfig({
         test: {
           name: 'nuxt',
           include: [
-            'tests/nuxt/pages/**/*.test.ts',
-            'tests/nuxt/composables/**/*.test.ts',
-            'tests/nuxt/a11y.test.ts',
+            'test/nuxt/pages/**/*.spec.ts',
+            'test/nuxt/composables/**/*.spec.ts',
+            'test/nuxt/a11y.spec.ts',
           ],
           environment: 'nuxt',
           environmentOptions: {
@@ -87,7 +91,7 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ['./tests/nuxt/setup.ts', './tests/setup/console-spy.ts'],
+          setupFiles: ['./test/nuxt/setup.ts', './test/test-utils/console-spy.ts'],
         },
       }),
 
@@ -104,8 +108,8 @@ export default defineConfig({
         ],
         test: {
           name: 'nuxt-browser',
-          include: ['tests/nuxt/components/**/*.test.ts'],
-          setupFiles: ['./tests/nuxt/browser-setup.ts'],
+          include: ['test/nuxt/components/**/*.spec.ts'],
+          setupFiles: ['./test/nuxt/browser-setup.ts'],
           browser: {
             enabled: true,
             provider: playwright(),

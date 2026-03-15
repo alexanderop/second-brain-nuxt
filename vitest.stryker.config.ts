@@ -11,14 +11,14 @@ export default defineConfig({
       {
         test: {
           name: 'unit',
-          include: ['tests/unit/**/*.test.ts'],
+          include: ['test/unit/**/*.spec.ts'],
           environment: 'node',
         },
         resolve: {
           alias: {
             '~': fileURLToPath(new URL('./app', import.meta.url)),
             '~~': fileURLToPath(new URL('./', import.meta.url)),
-            '#imports': fileURLToPath(new URL('./tests/mocks/imports.ts', import.meta.url)),
+            '#imports': fileURLToPath(new URL('./test/test-utils/imports-mock.ts', import.meta.url)),
           },
         },
       },
@@ -27,7 +27,7 @@ export default defineConfig({
       await defineVitestProject({
         test: {
           name: 'nuxt',
-          include: ['tests/nuxt/**/*.test.ts'],
+          include: ['test/nuxt/**/*.spec.ts'],
           environment: 'nuxt',
           environmentOptions: {
             nuxt: {
@@ -37,7 +37,7 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ['./tests/nuxt/setup.ts'],
+          setupFiles: ['./test/nuxt/setup.ts'],
         },
       }),
     ],

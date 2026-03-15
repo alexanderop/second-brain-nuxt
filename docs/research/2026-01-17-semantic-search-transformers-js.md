@@ -62,7 +62,7 @@ schema: z.object({
 
 Store embeddings in a separate JSON file shipped with the build:
 
-```
+```text
 .output/public/embeddings.json
 ```
 
@@ -159,7 +159,7 @@ hooks: {
 
 ### Architecture Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      BUILD TIME                              │
 ├─────────────────────────────────────────────────────────────┤

@@ -1,8 +1,8 @@
-import { useNuxtApp, useAsyncData, queryCollection, preloadRouteComponents } from '#imports'
+import { useNuxtApp, queryCollection, preloadRouteComponents } from '#imports'
 
 /**
  * Composable to prefetch content data on hover for faster navigation.
- * Uses the same cache keys as [...slug].vue so data is ready when navigating.
+ * Populates the same cache keys as [...slug].vue so data is ready when navigating.
  */
 export function usePrefetchContent() {
   const nuxtApp = useNuxtApp()
@@ -24,13 +24,14 @@ export function usePrefetchContent() {
     // Prefetch route components (non-blocking)
     void preloadRouteComponents(normalizedPath)
 
-    // Prefetch page data with same cache key as [...slug].vue
-    // Using server: false since we only need client-side prefetch
-    useAsyncData(
-      cacheKey,
-      () => queryCollection('content').path(normalizedPath).first(),
-      { server: false, immediate: true },
-    )
+    // Fetch data directly and populate the payload cache.
+    // Avoids useAsyncData to prevent "component already mounted" and
+    // "incompatible options" warnings when [...slug].vue reads the same key.
+    void queryCollection('content').path(normalizedPath).first().then((data) => {
+      if (data) {
+        nuxtApp.payload.data[cacheKey] = data
+      }
+    })
   }
 
   return { prefetch }

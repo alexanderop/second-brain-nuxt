@@ -1,4 +1,4 @@
-import { siteConfig } from '~~/site.config'
+import { siteConfig } from '~~/config/site'
 
 /**
  * Provides reactive access to site configuration

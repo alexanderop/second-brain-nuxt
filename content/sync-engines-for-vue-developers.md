@@ -24,7 +24,7 @@ Vue 3's reactivity system makes this efficient at two levels. First, fine-graine
 
 This is the core idea behind every sync engine: **keep two data stores consistent with each other**.
 
-```
+```text
   ┌─────────────────────────────────────────────────┐
   │              Vue's Sync Engine                   │
   │                                                  │
@@ -43,7 +43,7 @@ Now stretch that mental model. Instead of syncing a ref to a DOM node, imagine s
 
 Two sync layers, stacked:
 
-```
+```text
   ┌─────────────────────────────────────────────────────────────┐
   │                                                              │
   │              Layer 2: Data Sync (bidirectional)              │
@@ -73,7 +73,7 @@ Here is the key insight: in a server-first architecture, the server decides what
 
 This means you need a conflict resolution strategy that works **without a central arbiter**. Two main approaches exist:
 
-```
+```text
   Approach 1: CRDTs                     Approach 2: Deterministic Replay
   ─────────────────                     ────────────────────────────────
 
@@ -122,7 +122,7 @@ Where an engine sits on this spectrum determines its trade-offs:
 
 Most real-world sync engines land somewhere in between.
 
-```
+```text
   Server-First                                                       Local-First
   ◀──────────────────────────────────────────────────────────────────────────────▶
 
@@ -146,7 +146,7 @@ Let me walk through each engine, starting with the one that kicked off the moder
 
 The developer writes **mutators** — named functions that modify data. Here is the critical design choice: you write each mutator **twice**. Once in JavaScript for the client (for instant optimistic updates), once in your backend language for the server (for authoritative execution). The client runs the mutator locally, records it as pending, then sends it to the server. The server runs its own version against the real database. On the next pull, the client rebases its pending mutations on top of the server's state.
 
-```
+```text
   ┌─────────────────┐                    ┌─────────────────┐
   │     Client      │                    │     Server      │
   │                 │                    │                 │
@@ -180,7 +180,7 @@ Zero maintains a **normalized client-side cache** backed by a custom row store o
 
 The rebase mechanism is the same as Replicache — server-authoritative, Git-style. Your pending mutations replay on top of the latest server state. The server always wins, but the UI never waits.
 
-```
+```text
   Client                              Server (Postgres)
   ──────                              ─────────────────
 
@@ -211,7 +211,7 @@ Convex is not a sync engine in the local-first sense. It is a **reactive backend
 
 By default there is no persistent client-side database — the client holds query results in memory. Mutations are server-side functions — optimistic updates are possible, but the server runs real ACID transactions. No last-write-wins, no CRDTs needed. Conflicts cannot happen because all writes are serialized on the server. (Convex is experimenting with offline support via [Curvilinear](https://github.com/get-convex/curvilinear), an alpha offline sync engine that adds IndexedDB persistence and Automerge-based CRDT sync — but this is not yet part of the core product.)
 
-```
+```text
   Client A             Convex Server              Client B
   ────────             ────────────               ────────
 
@@ -242,7 +242,7 @@ PowerSync reads Postgres's logical replication stream (the WAL). Changes flow th
 
 Writes work differently. The client writes optimistically to local SQLite, then sends the change to your backend API (not directly to Postgres). Your backend validates and applies it. The result flows back through Postgres replication. If the server rejects the write, the local state corrects on the next sync.
 
-```
+```text
                     ┌───────────────────────┐
                     │   PowerSync Service   │
                     │                       │
@@ -273,7 +273,7 @@ Sync happens at the event level. Clients exchange events, not state. Each client
 
 The API is synchronous. Queries return data immediately, no loading states. Events commit locally and sync in the background. Schickling calls it "git for application data" — branch, replay, recompute.
 
-```
+```text
   Client A                                          Client B
   ────────                                          ────────
 
@@ -311,7 +311,7 @@ The API is synchronous. Queries return data immediately, no loading states. Even
 
 The core primitive is the **CoValue** (Collaborative Value) — a typed CRDT that automatically tracks edit history, resolves conflicts, and syncs across devices. CoValues are small and granular: a CoMap for key-value objects, a CoList for ordered arrays, a CoFeed for append-only per-user logs, CoText for collaborative text editing, FileStream for binary data, and CoRecord for typed key-value pairs. You compose them into larger structures by reference.
 
-```
+```text
   ┌──────────────────────────────────────────────────────┐
   │                    CoValue Graph                      │
   │                                                      │
@@ -335,7 +335,7 @@ The architecture is a **distributed mesh** rather than client-server. Clients co
 
 Conflict resolution varies by CoValue type: last-write-wins per key for CoMaps, positional merge for CoLists, append-only for CoFeeds. Because they are CRDTs, changes merge automatically without coordination — no central authority needed.
 
-```
+```text
   Client A                 Sync Node                Client B
   ────────              (peer, not server)           ────────
 
@@ -366,7 +366,7 @@ Each client has an IndexedDB database managed by Dexie. DexieCloud's hosted serv
 
 The strength is progressive enhancement. If you are already using Dexie, adding sync is a configuration change, not an architecture rewrite. You keep your existing queries, indexes, and data model — just add the cloud plugin and authentication. The downside is IndexedDB itself — it has storage limits and performance constraints compared to SQLite-based solutions, and lacks the relational query power of SQL.
 
-```
+```text
   ┌─────────────────────────────────────────────┐
   │           Dexie → DexieCloud upgrade         │
   │                                              │
@@ -414,7 +414,7 @@ The strength is progressive enhancement. If you are already using Dexie, adding 
 
 If you think in Vue concepts, the mapping is straightforward:
 
-```
+```text
   Vue Concept                         Sync Engine Equivalent
   ───────────                         ──────────────────────
 
@@ -520,7 +520,7 @@ The engines above are the primary players, but several others are worth knowing 
 
 The right engine depends on your constraints, not which one is "best." Walk through these questions:
 
-```
+```text
   Do you need offline writes?
   ├── No ──▶ Is speed your primary goal?
   │          ├── Yes ──▶ Zero (with Postgres)

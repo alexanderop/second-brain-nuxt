@@ -6,6 +6,10 @@ Second Brain is a personal knowledge base for capturing and connecting content (
 
 This Second Brain belongs to **Alexander Opalic**. When creating personal notes, TILs, or blog posts, use `authors: [alexander-opalic]` in frontmatter.
 
+## General Rules
+
+- Always use `pnpm` as the package manager, never `npm` or `yarn`.
+
 ## Commands
 
 ```bash
@@ -22,7 +26,7 @@ Run `pnpm lint:fix && pnpm typecheck` after code changes.
 
 ```bash
 pnpm test:unit    # Fast tests for local dev (~500ms)
-pnpm test:e2e     # E2E tests - CI only (~30s)
+pnpm test:browser # Browser tests - CI only (~30s)
 ```
 
 Always use `pnpm test:unit` for local development.
@@ -37,12 +41,13 @@ Always use `pnpm test:unit` for local development.
 
 - `app/` - Vue application (pages, components, composables)
 - `content/` - Markdown files (flat structure, type via frontmatter)
-- `site.config.ts` - Site customization (name, nav, shortcuts)
+- `config/` - Site and feature configuration (`site.ts`, `features.ts`)
+- `modules/` - Local Nuxt modules (`wiki-links/`)
 - `content.config.ts` - Collection schema definitions
 
 ## Configuration
 
-All customizable values are in `site.config.ts`. Key composables:
+All customizable values are in `config/site.ts`. Key composables:
 - `useSiteConfig()` - Access site config in components
 - `usePageTitle('Page')` - Sets title as "Page - Site Name"
 

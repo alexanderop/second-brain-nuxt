@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { Anthropic } from '@anthropic-ai/sdk'
 import type { StreamingError } from './tools'
 
 // HTTP status code to user-friendly message mapping

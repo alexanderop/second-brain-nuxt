@@ -70,17 +70,17 @@ https://avatars.githubusercontent.com/ccssmnn
 - Avatar can be company logo
 - Socials are company accounts
 
-## Author Lookup (No Scripts)
+## Author Lookup
 
-Use Glob tool instead of scripts:
+Use the fuzzy-matching script — it handles aliases, initials, and partial name matches (87 lines of matching logic):
 
-```text
-# Check if author exists
-Glob: content/authors/*{lastname}*.md
-
-# Example: checking for "Christina Marfice"
-Glob: content/authors/*marfice*.md
+```bash
+scripts/check-author-exists.sh "Author Name"
 ```
+
+To browse existing authors: `scripts/list-existing-authors.sh [term]`
+
+**Fallback** if scripts are unavailable: `Glob: content/authors/*{lastname}*.md`
 
 If partial matches found, read the files to verify identity before reusing or creating new.
 

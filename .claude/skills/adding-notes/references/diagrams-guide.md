@@ -6,9 +6,9 @@
 
 ---
 
-## REQUIRED: Decision Tree
+## Decision Tree
 
-**Every note must evaluate this tree. This is not optional. Default is ADD.**
+Alexander is a visual learner, so every note evaluates this tree. The default is ADD — only skip for genuinely structureless content.
 
 ```text
 1. NAMED FRAMEWORK or MODEL?

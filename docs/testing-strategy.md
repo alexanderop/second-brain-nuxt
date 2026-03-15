@@ -23,38 +23,41 @@ This project uses a **3-layer Testing Trophy** approach optimized for fast AI ag
 | `pnpm test` | Unit + Nuxt + Browser | **Default for AI agents** (~10s) |
 | `pnpm test:unit` | Unit tests only | Pure function changes |
 | `pnpm test:nuxt` | Nuxt + Browser tests | Component/composable changes |
-| `pnpm test:e2e` | Full Playwright E2E | **CI only** (requires build) |
+| `pnpm test:browser` | Full Playwright E2E | **CI only** (requires build) |
 
 ## Test Locations
 
 ```text
-tests/
+test/
 ├── unit/                # Pure functions, no framework deps
-│   ├── utils/           # graph.test.ts, backlinks.test.ts, mentions.test.ts
-│   │                    # + property-based tests (*.prop.test.ts)
-│   ├── composables/     # useShortcuts.test.ts, useContentTable.test.ts
-│   ├── types/           # table.test.ts
-│   └── a11y-coverage.test.ts  # Meta-test enforcing a11y coverage
+│   ├── utils/           # graph.spec.ts, backlinks.spec.ts, mentions.spec.ts
+│   │                    # + property-based tests (*.prop.spec.ts)
+│   ├── composables/     # useShortcuts.spec.ts, useContentTable.spec.ts
+│   ├── types/           # table.spec.ts
+│   └── a11y-coverage.spec.ts  # Meta-test enforcing a11y coverage
 ├── nuxt/                # Nuxt context + real browser
 │   ├── pages/           # Page-level tests with mocked APIs
 │   ├── composables/     # Composables needing Nuxt context
 │   ├── components/      # D3 graphs, charts (browser mode)
-│   ├── fixtures/        # Shared test data + query builder mocks
-│   ├── factories/       # Test data factories
-│   ├── utils/           # a11y helpers (vitest-axe)
-│   └── a11y.test.ts     # Component-level a11y with axe-core
+│   └── a11y.spec.ts     # Component-level a11y with axe-core
 ├── e2e/                 # Playwright blackbox (CI only)
 │   ├── *.spec.ts        # User flow tests
 │   ├── hydration.spec.ts # Hydration matrix tests
 │   ├── pages/           # Page object models
 │   └── test-utils.ts    # Extended fixtures (hydration errors)
-└── setup/
-    └── console-spy.ts   # Catches unexpected console.warn/error
+├── fixtures/            # Shared test data, factories, query builder mocks
+│   ├── content.ts, graph.ts, stats.ts, ...
+│   ├── contentFactory.ts, chartFactory.ts, graphFactory.ts
+│   └── index.ts
+└── test-utils/          # Shared test utilities
+    ├── imports-mock.ts   # Mock #imports for unit tests
+    ├── a11y.ts           # a11y helpers (vitest-axe)
+    └── console-spy.ts    # Catches unexpected console.warn/error
 ```
 
 ## When to Use Each Layer
 
-### Unit Tests (`tests/unit/`)
+### Unit Tests (`test/unit/`)
 - Pure utility functions
 - Server logic (graph algorithms, backlink parsing, mention detection)
 - Type utilities and validators
@@ -63,7 +66,7 @@ tests/
 - **Target: <500ms total**
 
 ```typescript
-// tests/unit/utils/graph.test.ts
+// test/unit/utils/graph.spec.ts
 import { buildGraphFromContent } from '../../../server/utils/graph'
 
 describe('buildGraphFromContent', () => {
@@ -74,7 +77,7 @@ describe('buildGraphFromContent', () => {
 })
 ```
 
-### Nuxt Tests (`tests/nuxt/`)
+### Nuxt Tests (`test/nuxt/`)
 
 The nuxt layer runs two Vitest sub-projects from the same directory:
 
@@ -82,7 +85,7 @@ The nuxt layer runs two Vitest sub-projects from the same directory:
 - **`nuxt-browser` project**: D3/chart components using real Chromium via Playwright
 
 ```typescript
-// tests/nuxt/pages/stats.test.ts — uses Nuxt environment
+// test/nuxt/pages/stats.spec.ts — uses Nuxt environment
 import { registerEndpoint, mountSuspended } from '@nuxt/test-utils/runtime'
 
 describe('Stats Page', () => {
@@ -95,7 +98,7 @@ describe('Stats Page', () => {
 ```
 
 ```typescript
-// tests/nuxt/components/BaseGraph.test.ts — uses real browser
+// test/nuxt/components/BaseGraph.spec.ts — uses real browser
 import { render } from 'vitest-browser-vue'
 
 describe('BaseGraph', () => {
@@ -123,7 +126,7 @@ mockNuxtImport('queryCollection', () => {
 })
 ```
 
-### E2E Tests (`tests/e2e/`)
+### E2E Tests (`test/e2e/`)
 - Full blackbox user journeys
 - Hydration matrix testing (pages × preferences)
 - Run against built preview server with real content
@@ -134,10 +137,10 @@ mockNuxtImport('queryCollection', () => {
 
 ### Property-Based Testing (fast-check)
 
-Property tests verify invariants across random inputs. Files use `.prop.test.ts` suffix:
+Property tests verify invariants across random inputs. Files use `.prop.spec.ts` suffix:
 
 ```typescript
-// tests/unit/utils/wikilinks.prop.test.ts
+// test/unit/utils/wikilinks.prop.spec.ts
 import fc from 'fast-check'
 
 it('property: normalizeSlug is idempotent', () => {
@@ -151,20 +154,20 @@ it('property: normalizeSlug is idempotent', () => {
 
 ### Console Warning Catching
 
-The `tests/setup/console-spy.ts` setup file intercepts `console.warn` and `console.error` in all unit and nuxt tests. Tests fail if unexpected warnings are logged. Known harmless warnings (e.g., `[intlify]`, `<Suspense>`) are allowlisted.
+The `test/test-utils/console-spy.ts` setup file intercepts `console.warn` and `console.error` in all unit and nuxt tests. Tests fail if unexpected warnings are logged. Known harmless warnings (e.g., `[intlify]`, `<Suspense>`) are allowlisted.
 
 ### Component A11y Testing (axe-core)
 
-`tests/nuxt/a11y.test.ts` mounts each component with minimal props and runs axe-core analysis. Page-level rules (landmark, region, heading) are disabled since components are tested in isolation.
+`test/nuxt/a11y.spec.ts` mounts each component with minimal props and runs axe-core analysis. Page-level rules (landmark, region, heading) are disabled since components are tested in isolation.
 
-The `tests/unit/a11y-coverage.test.ts` meta-test scans `app/components/` and enforces that every component either has an a11y test or is in the documented skip list. It catches:
+The `test/unit/a11y-coverage.spec.ts` meta-test scans `app/components/` and enforces that every component either has an a11y test or is in the documented skip list. It catches:
 - Components missing a11y tests
 - Obsolete skip list entries (deleted components)
 - Unnecessary skips (components that actually have tests)
 
 ### E2E Hydration Matrix Testing
 
-`tests/e2e/hydration.spec.ts` tests key pages under different preference settings for hydration errors. Uses an extended Playwright fixture that captures console messages matching hydration mismatch patterns.
+`test/e2e/hydration.spec.ts` tests key pages under different preference settings for hydration errors. Uses an extended Playwright fixture that captures console messages matching hydration mismatch patterns.
 
 Matrix: 6 pages × 3 preferences = 18 test combinations.
 
@@ -228,5 +231,5 @@ Run: `pnpm test:unit:cov`
 2. pnpm typecheck     # ~20s
 3. pnpm test:unit     # ~500ms
 4. pnpm test:nuxt     # ~10s (includes Playwright Chromium)
-5. pnpm build + pnpm test:e2e  # ~30s
+5. pnpm build + pnpm test:browser  # ~30s
 ```

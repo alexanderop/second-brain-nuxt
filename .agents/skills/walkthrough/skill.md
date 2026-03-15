@@ -48,7 +48,7 @@ Use `Task` with `subagent_type: "Explore"` to launch multiple agents **in a sing
 
 **Tell each subagent to format its report as a list of nodes like this:**
 
-```
+```text
 NODE: drawingInteraction
   label: Drawing Interaction
   file: app/features/tools/useDrawingInteraction.ts
@@ -63,7 +63,7 @@ Note: Most nodes should NOT include a snippet. Only include one when it's the si
 
 **Example: splitting a "drawing tool" walkthrough into subagents:**
 
-```
+```text
 Subagent 1: "Explore user input handling"
 → Read tool selection, pointer event handling
 → Report: purpose of each piece, how they connect
@@ -131,7 +131,7 @@ Pick the Mermaid diagram type based on the topic:
 Use for database-related walkthroughs: schema design, table relationships, migrations, data models.
 
 **Syntax**:
-```
+```mermaid
 erDiagram
     USERS {
         string id PK
@@ -212,7 +212,7 @@ open walkthrough-{topic}.html    # macOS
 
 ### Click binding
 Use Mermaid's callback syntax to make nodes interactive:
-```
+```text
 click nodeId nodeClickHandler "View details"
 ```
 
@@ -220,7 +220,7 @@ Where `nodeClickHandler` is a global JS function defined in the HTML.
 
 ### Subgraph naming
 Use approachable mental-model labels:
-```
+```text
 subgraph user_input["User Input"]
 subgraph core_logic["Core Logic"]
 subgraph visual_output["Visual Output"]
@@ -228,7 +228,7 @@ subgraph visual_output["Visual Output"]
 
 ### Edge labels
 Use plain verbs:
-```
+```text
 A -->|"triggers"| B
 A -.->|"watches"| C
 A ==>|"produces"| D

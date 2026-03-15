@@ -474,7 +474,7 @@ async function findMarkdownFiles(dir: string, files: string[] = []): Promise<str
 
 function getSlugFromPath(filePath: string): string {
   // Get relative path from content dir
-  const relativePath = filePath.replace(CONTENT_DIR + '/', '')
+  const relativePath = filePath.replace(`${CONTENT_DIR}/`, '')
   // Remove .md extension and convert to slug
   return basename(relativePath, '.md')
 }

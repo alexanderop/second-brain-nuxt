@@ -2,12 +2,10 @@
 import { ref, computed, watch, shallowRef, onMounted, onUnmounted } from "vue";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { select } from "d3-selection";
-import { zoom, zoomIdentity, zoomTransform } from "d3-zoom";
+import { zoom } from "d3-zoom";
 import { drag } from "d3-drag";
-import { scalePow, scaleLinear } from "d3-scale";
-import { extent } from "d3-array";
 import type { Simulation } from "d3-force";
-import type { ZoomBehavior, ZoomTransform } from "d3-zoom";
+import type { ZoomBehavior } from "d3-zoom";
 import type { Selection } from "d3-selection";
 import type {
   NoteGraphData,
@@ -18,11 +16,21 @@ import type {
 import { normalizeGraphData } from "~/utils/graphNormalize";
 import { createRadialSimulation, createFreeformSimulation } from "~/utils/graphForces";
 import { typeColors, getNodeColor, getGlowFilter, graphColors } from "~/utils/graphColors";
-import { tryCatch } from "#shared/utils/tryCatch";
+import {
+  getHexagonPath,
+  getNodeRadius,
+  shouldShowLabel,
+  getConnectedIds,
+  getEdgeX,
+  getEdgeY,
+  fontScale,
+  saveZoomTransform,
+  loadZoomTransform,
+  createClusteringForce,
+  useGraphInteractions,
+} from "~/composables/useGraphHelpers";
 
 // Constants
-const RADIAL_SIZES = { center: 18, level1: 10, level2: 7 };
-const FREEFORM_SIZE_RANGE: [number, number] = [8, 40];
 const LEVEL2_OPACITY = 0.5;
 const LEVEL2_EDGE_OPACITY = 0.25;
 const LEVEL2_EDGE_WIDTH = 1;
@@ -89,9 +97,6 @@ const hoveredId = ref<string | null>(null);
 const isDragging = ref(false);
 const currentZoom = ref(1);
 const simulationSettled = ref(false);
-const isMiddleMousePanning = ref(false);
-const panStartPos = ref({ x: 0, y: 0 });
-const breathingIntervalRef = ref<ReturnType<typeof setInterval> | null>(null);
 const simulationRef = shallowRef<Simulation<UnifiedGraphNode, UnifiedGraphEdge> | null>(null);
 const svgRef = shallowRef<Selection<SVGSVGElement, unknown, null, undefined>>();
 const zoomRef = shallowRef<ZoomBehavior<SVGSVGElement, unknown>>();
@@ -99,258 +104,28 @@ const currentNodes = shallowRef<UnifiedGraphNode[]>([]);
 const widthRef = ref(0);
 const heightRef = ref(0);
 
-// Zoom persistence
-function saveZoomTransform(transform: ZoomTransform) {
-  if (!effectivePersistZoom.value) return;
-  sessionStorage.setItem(
-    effectiveZoomStorageKey.value,
-    JSON.stringify({
-      k: transform.k,
-      x: transform.x,
-      y: transform.y,
-    }),
-  );
-}
-
-interface ZoomData {
-  k: number;
-  x: number;
-  y: number;
-}
-
-function isZoomData(data: unknown): data is ZoomData {
-  if (typeof data !== "object" || data === null) return false;
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing from unknown
-  const obj = data as Record<string, unknown>;
-  return (
-    "k" in data &&
-    typeof obj.k === "number" &&
-    "x" in data &&
-    typeof obj.x === "number" &&
-    "y" in data &&
-    typeof obj.y === "number"
-  );
-}
-
-function loadZoomTransform(): ZoomTransform | null {
-  if (!effectivePersistZoom.value) return null;
-  const stored = sessionStorage.getItem(effectiveZoomStorageKey.value);
-  if (!stored) return null;
-  const [parseError, parsed] = tryCatch(() => JSON.parse(stored));
-  if (parseError) return null;
-  if (!isZoomData(parsed)) return null;
-  return zoomIdentity.translate(parsed.x, parsed.y).scale(parsed.k);
-}
-
-// Hexagon path for map nodes
-function getHexagonPath(radius: number): string {
-  const points: string[] = [];
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i - Math.PI / 2;
-    const x = radius * Math.cos(angle);
-    const y = radius * Math.sin(angle);
-    points.push(`${x},${y}`);
-  }
-  return `M${points.join("L")}Z`;
-}
-
-// Node radius calculation - simplified
-function getNodeRadius(node: UnifiedGraphNode, maxConnections: number): number {
-  if (effectiveNodeSizing.value === "fixed") return effectiveNodeRadius.value;
-  if (effectiveNodeSizing.value === "level") {
-    if (node.isCenter) return RADIAL_SIZES.center;
-    return node.level === 2 ? RADIAL_SIZES.level2 : RADIAL_SIZES.level1;
-  }
-  // connections sizing
-  const scale = scalePow()
-    .exponent(0.7)
-    .domain([0, Math.max(1, maxConnections)])
-    .range(FREEFORM_SIZE_RANGE);
-  return scale(node.connections ?? 0);
-}
-
-// Label visibility - simplified with early returns
-function shouldShowLabel(node: UnifiedGraphNode, zoom: number, isActive: boolean): boolean {
-  if (isActive) return true;
-  if (effectiveLabelVisibility.value === "always") return true;
-  if (effectiveLabelVisibility.value === "hover") return false;
-  if (effectiveLabelVisibility.value === "center-only") return !!node.isCenter;
-  // progressive
-  const connections = node.connections ?? 0;
-  if (zoom < 0.5) return connections >= 5;
-  if (zoom < 1.0) return connections >= 2;
-  return true;
-}
-
-// Get connected node IDs
-function getConnectedIds(nodeId: string | null, edges: UnifiedGraphEdge[]): Set<string> {
-  const connected = new Set<string>();
-  if (!nodeId) return connected;
-  for (const edge of edges) {
-    const sourceId = typeof edge.source === "string" ? edge.source : edge.source.id;
-    const targetId = typeof edge.target === "string" ? edge.target : edge.target.id;
-    if (sourceId === nodeId) connected.add(targetId);
-    if (targetId === nodeId) connected.add(sourceId);
-  }
-  return connected;
-}
-
-// Edge helpers
-function getEdgeX(endpoint: string | UnifiedGraphNode): number {
-  return typeof endpoint === "string" ? 0 : (endpoint.x ?? 0);
-}
-
-function getEdgeY(endpoint: string | UnifiedGraphNode): number {
-  return typeof endpoint === "string" ? 0 : (endpoint.y ?? 0);
-}
-
-// Zoom controls
-function calculateFitTransform(
-  nodes: UnifiedGraphNode[],
-  width: number,
-  height: number,
-  padding: number,
-) {
-  const xExtent = extent(nodes, (d) => d.x);
-  const yExtent = extent(nodes, (d) => d.y);
-  const [xMin, xMax] = [xExtent[0] ?? 0, xExtent[1] ?? 0];
-  const [yMin, yMax] = [yExtent[0] ?? 0, yExtent[1] ?? 0];
-  const boundsWidth = xMax - xMin || 1;
-  const boundsHeight = yMax - yMin || 1;
-  const scale = Math.min(
-    (width - padding * 2) / boundsWidth,
-    (height - padding * 2) / boundsHeight,
-    1.5,
-  );
-  const centerX = (xMin + xMax) / 2;
-  const centerY = (yMin + yMax) / 2;
-  return {
-    scale,
-    translateX: width / 2 - centerX * scale,
-    translateY: height / 2 - centerY * scale,
-  };
-}
-
-function zoomToFit(padding = 60) {
-  if (!currentNodes.value.length || !svgRef.value || !zoomRef.value) return;
-  const { scale, translateX, translateY } = calculateFitTransform(
-    currentNodes.value,
-    widthRef.value,
-    heightRef.value,
-    padding,
-  );
-  svgRef.value
-    .transition()
-    .duration(500)
-    .call(zoomRef.value.transform, zoomIdentity.translate(translateX, translateY).scale(scale));
-}
-
-function zoomIn() {
-  if (!svgRef.value || !zoomRef.value) return;
-  svgRef.value.transition().duration(300).call(zoomRef.value.scaleBy, 1.3);
-}
-
-function zoomOut() {
-  if (!svgRef.value || !zoomRef.value) return;
-  svgRef.value.transition().duration(300).call(zoomRef.value.scaleBy, 0.7);
-}
-
-// Middle mouse button panning
-function handleMiddleMouseDown(event: MouseEvent) {
-  if (event.button === 1) {
-    event.preventDefault();
-    isMiddleMousePanning.value = true;
-    panStartPos.value = { x: event.clientX, y: event.clientY };
-    container.value?.style.setProperty("cursor", "grabbing");
-  }
-}
-
-function handleMiddleMouseMove(event: MouseEvent) {
-  if (!isMiddleMousePanning.value || !svgRef.value || !zoomRef.value) return;
-
-  const dx = event.clientX - panStartPos.value.x;
-  const dy = event.clientY - panStartPos.value.y;
-  panStartPos.value = { x: event.clientX, y: event.clientY };
-
-  const svgNode = svgRef.value.node();
-  if (!svgNode) return;
-
-  const currentTransform = zoomTransform(svgNode);
-  const newTransform = currentTransform.translate(dx / currentTransform.k, dy / currentTransform.k);
-  svgRef.value.call(zoomRef.value.transform, newTransform);
-}
-
-function handleMiddleMouseUp(event: MouseEvent) {
-  if (event.button === 1 && isMiddleMousePanning.value) {
-    isMiddleMousePanning.value = false;
-    container.value?.style.setProperty("cursor", "");
-  }
-}
-
-function handleAuxClick(event: MouseEvent) {
-  if (event.button === 1) event.preventDefault();
-}
-
-// Breathing animation
-function startBreathing() {
-  stopBreathing();
-  if (!effectiveBreathing.value) return;
-  breathingIntervalRef.value = setInterval(() => {
-    if (!isDragging.value && !hoveredId.value && simulationRef.value) {
-      simulationRef.value.alpha(0.02).restart();
-    }
-  }, effectiveBreathingInterval.value);
-}
-
-function stopBreathing() {
-  if (!breathingIntervalRef.value) return;
-  clearInterval(breathingIntervalRef.value);
-  breathingIntervalRef.value = null;
-}
-
-// Clustering force helpers
-function buildMapPositions(nodes: UnifiedGraphNode[]) {
-  const positions = new Map<string, { x: number; y: number }>();
-  for (const node of nodes) {
-    if (node.isMap) positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
-  }
-  return positions;
-}
-
-function calculateMapCentroid(maps: string[], mapPositions: Map<string, { x: number; y: number }>) {
-  let x = 0,
-    y = 0,
-    count = 0;
-  for (const mapId of maps) {
-    const pos = mapPositions.get(mapId);
-    if (pos) {
-      x += pos.x;
-      y += pos.y;
-      count++;
-    }
-  }
-  return count > 0 ? { x: x / count, y: y / count } : null;
-}
-
-function applyClusterForce(
-  node: UnifiedGraphNode,
-  mapPositions: Map<string, { x: number; y: number }>,
-  alpha: number,
-) {
-  if (!node.maps || node.maps.length === 0 || node.isMap) return;
-  const centroid = calculateMapCentroid(node.maps, mapPositions);
-  if (!centroid) return;
-  const strength = 0.15 * alpha;
-  node.vx = (node.vx ?? 0) + (centroid.x - (node.x ?? 0)) * strength;
-  node.vy = (node.vy ?? 0) + (centroid.y - (node.y ?? 0)) * strength;
-}
-
-function createClusteringForce(nodes: UnifiedGraphNode[]) {
-  return (alpha: number) => {
-    const mapPositions = buildMapPositions(nodes);
-    for (const node of nodes) applyClusterForce(node, mapPositions, alpha);
-  };
-}
+// Graph interactions composable
+const {
+  zoomToFit,
+  zoomIn,
+  zoomOut,
+  startBreathing,
+  stopBreathing,
+  attachPanListeners,
+  detachPanListeners,
+} = useGraphInteractions(
+  container,
+  svgRef,
+  zoomRef,
+  currentNodes,
+  simulationRef,
+  widthRef,
+  heightRef,
+  isDragging,
+  hoveredId,
+  effectiveBreathing,
+  effectiveBreathingInterval,
+);
 
 // Main initialization
 function initGraph() {
@@ -369,7 +144,8 @@ function initGraph() {
   currentNodes.value = nodes;
 
   const maxConnections = Math.max(1, ...nodes.map((n) => n.connections ?? 0));
-  const radiusScale = (node: UnifiedGraphNode) => getNodeRadius(node, maxConnections);
+  const radiusScale = (node: UnifiedGraphNode) =>
+    getNodeRadius(node, maxConnections, effectiveNodeSizing.value, effectiveNodeRadius.value);
 
   const svg = select(container.value)
     .append("svg")
@@ -412,7 +188,7 @@ function initGraph() {
       g.attr("transform", event.transform);
       currentZoom.value = event.transform.k;
       emit("zoomChange", event.transform.k);
-      saveZoomTransform(event.transform);
+      saveZoomTransform(event.transform, effectivePersistZoom.value, effectiveZoomStorageKey.value);
     });
   zoomRef.value = zoomBehavior;
   svg.call(zoomBehavior);
@@ -546,7 +322,6 @@ function initGraph() {
   });
 
   // Labels
-  const fontScale = scaleLinear().domain(FREEFORM_SIZE_RANGE).range([10, 16]);
   node
     .append("text")
     .text((d) => d.title)
@@ -564,7 +339,9 @@ function initGraph() {
     .attr("paint-order", "stroke")
     .attr("stroke-linejoin", "round")
     .attr("class", "node-label")
-    .attr("opacity", (d) => (shouldShowLabel(d, currentZoom.value, false) ? 1 : 0));
+    .attr("opacity", (d) =>
+      shouldShowLabel(d, currentZoom.value, false, effectiveLabelVisibility.value) ? 1 : 0,
+    );
 
   // Highlight function
   function applyHighlight(activeId: string | null) {
@@ -599,6 +376,7 @@ function initGraph() {
           d,
           currentZoom.value,
           d.id === hoveredId.value || d.id === props.selectedId,
+          effectiveLabelVisibility.value,
         )
           ? 1
           : 0;
@@ -645,7 +423,7 @@ function initGraph() {
   // End
   simulation.on("end", () => {
     simulationSettled.value = true;
-    const saved = loadZoomTransform();
+    const saved = loadZoomTransform(effectivePersistZoom.value, effectiveZoomStorageKey.value);
     if (saved && svgRef.value && zoomRef.value) {
       svgRef.value.call(zoomRef.value.transform, saved);
       emit("zoomChange", saved.k);
@@ -663,22 +441,12 @@ function initGraph() {
 // Lifecycle
 onMounted(() => {
   initGraph();
-
-  // Middle mouse button pan listeners
-  container.value?.addEventListener("mousedown", handleMiddleMouseDown);
-  window.addEventListener("mousemove", handleMiddleMouseMove);
-  window.addEventListener("mouseup", handleMiddleMouseUp);
-  container.value?.addEventListener("auxclick", handleAuxClick);
+  attachPanListeners();
 });
 
 onUnmounted(() => {
   stopBreathing();
-
-  // Cleanup MMB pan listeners
-  container.value?.removeEventListener("mousedown", handleMiddleMouseDown);
-  window.removeEventListener("mousemove", handleMiddleMouseMove);
-  window.removeEventListener("mouseup", handleMiddleMouseUp);
-  container.value?.removeEventListener("auxclick", handleAuxClick);
+  detachPanListeners();
 });
 
 // Watchers

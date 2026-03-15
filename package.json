@@ -13,7 +13,7 @@
     }
   },
   "engines": {
-    "node": "24.x"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "cleanup": "rm -rf .nuxt .output node_modules/.cache && git worktree list --porcelain | grep '^worktree' | grep -v \"$(pwd)$\" | cut -d' ' -f2 | xargs -I {} git worktree remove --force {} 2>/dev/null; rm -rf .worktrees",
@@ -33,8 +33,9 @@
     "test:unit:cov": "vitest run --project unit --coverage",
     "test:nuxt": "vitest run --project nuxt --project nuxt-browser",
     "test": "vitest run --project unit --project nuxt --project nuxt-browser",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
+    "test:browser": "playwright test",
+    "test:browser:ui": "playwright test --ui",
+    "test:a11y": "lhci autorun --config .lighthouserc.cjs",
     "test:mutation": "stryker run",
     "prepare": "simple-git-hooks",
     "ralph": "./ralph/ralph.sh",
@@ -130,9 +131,12 @@
     "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*.{ts,vue}": [
+    "*.{ts,vue,js,mjs}": [
       "pnpm exec oxfmt",
       "pnpm exec oxlint --fix"
+    ],
+    "*.ts": [
+      "pnpm exec eslint --fix"
     ],
     "*.vue": [
       "pnpm exec eslint --fix"

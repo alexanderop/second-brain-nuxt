@@ -93,7 +93,7 @@ describe('my test', () => {
 
 After updating, `pnpm typecheck` failed with deep DOM type errors in a Mermaid component:
 
-```
+```text
 Type '{ align: string; addEventListener: ... }' is not assignable to type 'HTMLElement'.
 ```
 

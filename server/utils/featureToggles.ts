@@ -5,7 +5,7 @@
 import {
   featuresConfig,
   type FeatureName,
-} from '~~/features.config'
+} from '~~/config/features'
 import {
   createRuleContext,
   isFeatureEnabled,

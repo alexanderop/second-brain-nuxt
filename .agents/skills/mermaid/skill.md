@@ -11,7 +11,7 @@ Use this skill to quickly validate Mermaid diagrams by parsing + rendering them 
 
 When this skill is invoked, the user may provide a **file path and name** as an argument:
 
-```
+```text
 @skills/mermaid/skill.md <filename.mmd>
 ```
 
@@ -196,7 +196,7 @@ erDiagram
 **Line style:** `--` identifying (solid), `..` non-identifying (dashed)
 
 **Attributes:**
-```
+```text
 ENTITY {
     string name PK
     int age

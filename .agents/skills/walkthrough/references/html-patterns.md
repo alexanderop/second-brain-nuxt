@@ -273,7 +273,7 @@ mermaid.initialize({
 
 ## React Component Architecture
 
-```
+```text
 App
 ├── Header (fixed, gradient fade)
 ├── Summary (TL;DR card below header, above diagram)
@@ -616,7 +616,7 @@ const SUMMARY = "The drawing tool converts pointer events into visual elements o
 
 ## Mermaid classDef (Purple Shades)
 
-```
+```text
 classDef component fill:#a855f7,stroke:#c084fc,color:#fff
 classDef composable fill:#7c3aed,stroke:#a78bfa,color:#fff
 classDef utility fill:#6d28d9,stroke:#8b5cf6,color:#fff

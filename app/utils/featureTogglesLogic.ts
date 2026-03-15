@@ -7,7 +7,7 @@ import type {
   FeatureRuleContext,
   FeatureRule,
   FeatureDefinition,
-} from '~~/features.config'
+} from '~~/config/features'
 
 /**
  * Create a feature rule context for evaluation.

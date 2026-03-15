@@ -65,9 +65,9 @@ platforms:
 
 ## Slug Generation
 
-```bash
-.claude/skills/adding-notes/scripts/generate-slug.sh "Show Name"
-```
+Generate slug inline: lowercase name, replace spaces with hyphens, remove special characters, ASCII only.
+
+Example: `"The Pragmatic Engineer"` → `the-pragmatic-engineer`
 
 Rules:
 - ASCII only
