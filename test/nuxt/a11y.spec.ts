@@ -13,7 +13,7 @@
  * - ContentTable, ContentTableFiltersBar: complex table state
  * - ProseA: content component, minimal
  */
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { axe } from "../test-utils/a11y";
 

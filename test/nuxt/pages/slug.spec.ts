@@ -14,7 +14,7 @@
  *
  * For now, use E2E tests (Playwright) for full slug page testing.
  */
-import { describe, it, expect, vi } from "vite-plus/test";
+import { describe, it, expect, vi } from "vitest";
 import { mockNuxtImport, registerEndpoint } from "@nuxt/test-utils/runtime";
 import { linkedNotes, emptyBacklinks, emptyMentions, simpleNoteGraph } from "../../fixtures";
 import { createMultiCollectionMock } from "../../fixtures/query-builder";

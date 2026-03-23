@@ -5,7 +5,7 @@
  * Uses mockNuxtImport to mock the queryCollection auto-import and
  * mountSuspended to render the page with full Nuxt context.
  */
-import { describe, it, expect, vi } from "vite-plus/test";
+import { describe, it, expect, vi } from "vitest";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { multipleLinks, emptyContent } from "../../fixtures";
 import { createMultiCollectionMock } from "../../fixtures/query-builder";

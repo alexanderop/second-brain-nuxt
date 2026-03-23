@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import { mapApiError } from "../../../../server/utils/chat/errors";
 
 describe("mapApiError", () => {

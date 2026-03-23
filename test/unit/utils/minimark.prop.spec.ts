@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import { extractLinksFromMinimark, extractLinksFromBody } from "../../../server/utils/minimark";
 

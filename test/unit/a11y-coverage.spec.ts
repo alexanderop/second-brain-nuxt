@@ -4,7 +4,7 @@
  * Scans app/components/ for all .vue files and cross-references against
  * the a11y test file. Fails if any component is missing and not in the skip list.
  */
-import { describe, it } from "vite-plus/test";
+import { describe, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 

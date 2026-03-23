@@ -4,7 +4,7 @@
  * Uses vitest-axe to check for WCAG violations.
  * Note: These tests complement manual accessibility review.
  */
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import { registerEndpoint, mountSuspended } from "@nuxt/test-utils/runtime";
 import { simpleStats } from "../../fixtures";
 import { axe } from "../../test-utils/a11y";

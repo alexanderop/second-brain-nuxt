@@ -4,7 +4,7 @@
  * Tests that the composable properly caches stems via useAsyncData
  * to avoid repeated queries on each "r" keypress.
  */
-import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { defineComponent, h, nextTick } from "vue";
 import { createQueryCollectionMock } from "../../fixtures/query-builder";

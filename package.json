@@ -9,25 +9,23 @@
     "build": "pnpm run build:excalidraw && pnpm run build:og && nuxt build",
     "dev": "rm -rf .nuxt .data && nuxt dev",
     "generate": "nuxt generate",
-    "check": "vp check",
-    "lint": "vp lint && vp run lint:es && vp run lint:md",
-    "lint:fix": "vp lint --fix && eslint . --fix && markdownlint-cli2 --fix 'content/**/*.md'",
-    "lint:ox": "vp lint",
+    "check": "oxlint -c .oxlintrc.json && eslint . && nuxt typecheck",
+    "lint": "oxlint -c .oxlintrc.json && eslint . && markdownlint-cli2 'content/**/*.md'",
+    "lint:fix": "oxlint -c .oxlintrc.json --fix && eslint . --fix && markdownlint-cli2 --fix 'content/**/*.md'",
+    "lint:ox": "oxlint -c .oxlintrc.json",
     "preview": "nuxt preview",
-    "test:unit": "vp test --project unit",
-    "test:unit:cov": "vp test --project unit --coverage",
-    "test:nuxt": "vp test --project nuxt --project nuxt-browser",
-    "test": "vp test --project unit --project nuxt --project nuxt-browser",
+    "typecheck": "nuxt typecheck",
+    "test:unit": "vitest run --project unit",
+    "test:unit:cov": "vitest run --project unit --coverage",
+    "test:nuxt": "vitest run --project nuxt --project nuxt-browser",
+    "test": "vitest run --project unit --project nuxt --project nuxt-browser",
     "test:browser": "playwright test",
     "test:browser:ui": "playwright test --ui",
     "test:a11y": "lhci autorun --config .lighthouserc.cjs",
     "test:mutation": "stryker run",
-    "prepare": "vp config",
     "ralph": "./ralph/ralph.sh",
     "fix-e2e": "./ralph/fix-e2e.sh",
-    "knip:fix": "knip --fix",
-    "format": "vp fmt",
-    "format:check": "vp fmt --check"
+    "knip:fix": "knip --fix"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
@@ -94,8 +92,8 @@
     "playwright": "^1.57.0",
     "typescript-eslint": "^8.32.1",
     "unplugin-auto-import": "^20.3.0",
-    "vite-plus": "latest",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@latest",
+    "oxlint": "latest",
+    "vitest": "latest",
     "vitest-axe": "^0.1.0",
     "vitest-browser-vue": "^1.1.0",
     "vue": "^3.5.27",
@@ -117,9 +115,7 @@
     "overrides": {
       "devalue": ">=5.6.2",
       "tar": ">=7.5.3",
-      "diff": ">=8.0.3",
-      "vite": "npm:@voidzero-dev/vite-plus-core@0.1.12",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+      "diff": ">=8.0.3"
     }
   }
 }

@@ -1,6 +1,6 @@
 // @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
-import { describe, it, expect } from "vite-plus/test";
-import { page } from "vite-plus/test/browser";
+import { describe, it, expect } from "vitest";
+import { page } from "@vitest/browser/context";
 import { render } from "vitest-browser-vue";
 import StatsLineChart from "~/components/StatsLineChart.client.vue";
 import { createLineChartData } from "../../fixtures/chartFactory";

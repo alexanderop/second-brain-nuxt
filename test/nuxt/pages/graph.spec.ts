@@ -10,7 +10,7 @@
  * The stats page tests demonstrate the pattern; graph page is more complex
  * due to its immersive UI components (tooltips, drawers, modals).
  */
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import { registerEndpoint, mountSuspended } from "@nuxt/test-utils/runtime";
 import { emptyGraph, multiLinkGraph } from "../../fixtures";
 import GraphPage from "~/pages/graph.vue";

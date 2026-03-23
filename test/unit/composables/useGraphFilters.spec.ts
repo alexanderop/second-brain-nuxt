@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 
 // Test the parseArrayParam logic directly (same logic as in useGraphFilters)
 function parseArrayParam(value: string | string[] | null | undefined): string[] {

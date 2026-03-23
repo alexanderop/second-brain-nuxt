@@ -1,6 +1,6 @@
 // @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
-import { describe, it, expect, beforeEach, assert } from "vite-plus/test";
-import { page } from "vite-plus/test/browser";
+import { describe, it, expect, beforeEach, assert } from "vitest";
+import { page } from "@vitest/browser/context";
 import { render } from "vitest-browser-vue";
 import BaseGraph from "~/components/BaseGraph.client.vue";
 import { createNoteGraphData, createFullGraphData } from "../../fixtures/graphFactory";

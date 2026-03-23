@@ -9,16 +9,16 @@ This Second Brain belongs to **Alexander Opalic**. When creating personal notes,
 ## Commands
 
 ```bash
-pnpm dev               # Start dev server
-vp test --project unit  # Run unit tests
+pnpm dev                # Start dev server
+pnpm test:unit          # Run unit tests
 pnpm generate:embeddings # Regenerate search embeddings
 ```
 
-Run `vp check && pnpm typecheck` after code changes.
+Run `pnpm check` after code changes.
 
 ## Stack
 
-Nuxt 4, @nuxt/content v3, @nuxt/ui v4, Vite+
+Nuxt 4, @nuxt/content v3, @nuxt/ui v4
 
 ## Structure
 
@@ -36,20 +36,3 @@ Nuxt 4, @nuxt/content v3, @nuxt/ui v4, Vite+
 - `docs/testing-strategy.md` - Test layers and when to use each
 - `docs/nuxt-ui.md` - Nuxt UI conventions and theming
 
-<!--VITE PLUS START-->
-
-# Vite+
-
-This project uses Vite+ (`vp`) — a unified CLI wrapping Vite, Vitest, Oxlint, and Oxfmt. Use `vp` commands instead of running tools directly.
-
-- `vp dev` / `vp build` / `vp preview` — dev server, production build, preview
-- `vp check` — format + lint + type-check in one pass
-- `vp test` — run tests (Vitest)
-- `vp lint` / `vp fmt` — lint or format individually
-- `vp add` / `vp remove` — manage dependencies (wraps pnpm)
-- `vp dlx` — run one-off binaries (instead of npx)
-- `vp install` — install dependencies
-
-Import from `vite-plus`, not `vite` or `vitest`: `import { defineConfig } from 'vite-plus'`, `import { expect, test, vi } from 'vite-plus/test'`.
-
-<!--VITE PLUS END-->

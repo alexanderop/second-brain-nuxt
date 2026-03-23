@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import fc from "fast-check";
 import { extractSlugFromSectionId, findUnlinkedMentions } from "../../../server/utils/mentions";
 import type { ContentItem } from "../../../server/utils/graph";

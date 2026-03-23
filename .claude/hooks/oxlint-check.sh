@@ -13,8 +13,8 @@ if ! [[ "$file_path" =~ \.(js|ts|jsx|tsx|vue)$ ]]; then
   exit 0
 fi
 
-# Run vp lint - exit 2 blocks Claude until fixed
-if ! vp lint "$file_path" 2>&1; then
+# Run oxlint - exit 2 blocks Claude until fixed
+if ! oxlint -c .oxlintrc.json "$file_path" 2>&1; then
   exit 2
 fi
 

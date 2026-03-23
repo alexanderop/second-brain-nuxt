@@ -9,7 +9,7 @@
  * within the test environment. To test different scenarios, use separate
  * describe blocks or E2E tests.
  */
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect } from "vitest";
 import { registerEndpoint, mountSuspended } from "@nuxt/test-utils/runtime";
 import { simpleStats } from "../../fixtures";
 import StatsPage from "~/pages/stats.vue";

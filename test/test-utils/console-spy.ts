@@ -6,7 +6,7 @@
  *
  * Known harmless warnings can be added to the allowlist below.
  */
-import { afterEach, beforeEach, vi, type MockInstance } from "vite-plus/test";
+import { afterEach, beforeEach, vi, type MockInstance } from "vitest";
 
 const ALLOWED_PATTERNS: RegExp[] = [
   // Vue intlify i18n warnings

@@ -17,10 +17,10 @@
  */
 import { axe } from "vitest-axe";
 import * as matchers from "vitest-axe/matchers";
-import { expect } from "vite-plus/test";
+import { expect } from "vitest";
 
 // Augment Vitest's Assertion interface for vitest-axe matchers
-declare module "vite-plus/test" {
+declare module "vitest" {
   interface Assertion<T> extends CustomMatchers<T> {}
 }
 
