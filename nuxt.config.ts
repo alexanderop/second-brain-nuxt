@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
 
   htmlValidator: {
-    enabled: process.env.NODE_ENV !== "test",
+    enabled: process.env.NODE_ENV === "development",
     options: {
       rules: {
         "meta-refresh": "off",
@@ -138,9 +138,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // Pre-render content pages to avoid cold start delays
   routeRules: {
-    "/**": { prerender: true },
     "/api/graph": { swr: 300 },
     "/api/backlinks": { swr: 300 },
     "/api/mentions": { swr: 300 },
@@ -153,11 +151,9 @@ export default defineNuxtConfig({
       autoImport: false,
     },
     prerender: {
-      crawlLinks: true,
-      routes: ["/", "/api/graph", "/api/backlinks"],
-      failOnError: false, // Continue on prerender errors to see what fails
-      concurrency: 1,
-      ignore: ["/tweets/tweets/"], // Exclude malformed tweet paths
+      crawlLinks: false,
+      routes: ["/"],
+      failOnError: false,
     },
     esbuild: {
       options: {
