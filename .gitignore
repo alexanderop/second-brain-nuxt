@@ -59,3 +59,6 @@ scripts/ralph/progress.txt
 scripts/ralph/.last-branch
 scripts/ralph/archive/
 ralph/e2e-progress.txt
+
+# Storybook
+storybook-static/

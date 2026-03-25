@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "~/*": ["../app/*"],
+      "~~/*": ["../*"],
+      "#components": ["./mocks/components"],
+      "#imports": ["./mocks/imports"]
+    }
+  },
+  "include": [
+    "../app/**/*.ts",
+    "../app/**/*.vue",
+    "./**/*.ts"
+  ]
+}
