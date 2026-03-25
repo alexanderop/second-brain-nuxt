@@ -5,7 +5,7 @@ import {
   isFeatureEnabled,
   isVariantEnabled,
   getEnabledVariants,
-} from "../../../app/utils/featureTogglesLogic";
+} from "#shared/utils/featureTogglesLogic";
 import type { FeatureDefinition, FeatureRuleContext } from "../../../config/features";
 
 describe("createRuleContext", () => {
