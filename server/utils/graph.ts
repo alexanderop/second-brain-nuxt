@@ -4,39 +4,11 @@
  */
 
 import { extractLinksFromBody } from "./minimark";
+import type { GraphNode, GraphEdge, GraphData } from "#shared/types/graph";
+import type { ServerContentItem } from "#shared/types/serverContent";
 
-export interface GraphNode {
-  id: string;
-  title: string;
-  type: string;
-  tags: string[];
-  authors: string[];
-  summary?: string;
-  connections: number;
-  maps: string[];
-  isMap: boolean;
-}
-
-export interface GraphEdge {
-  source: string;
-  target: string;
-}
-
-export interface GraphData {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-}
-
-export interface ContentItem {
-  path?: string;
-  stem?: string;
-  title?: string;
-  type?: string;
-  tags?: string[];
-  authors?: string[];
-  summary?: string;
-  body?: unknown;
-}
+/** Alias for backward compatibility with server files importing from ./graph */
+export type ContentItem = ServerContentItem;
 
 /**
  * Extract slug from content item path or stem

@@ -7,9 +7,8 @@ import {
   computeMapMembership,
   buildGraphFromContent,
   type ContentItem,
-  type GraphNode,
-  type GraphEdge,
 } from "../../../server/utils/graph";
+import type { GraphNode, GraphEdge } from "#shared/types/graph";
 
 // Test fixtures with proper typing
 const fixtures: Record<string, ContentItem[]> = {

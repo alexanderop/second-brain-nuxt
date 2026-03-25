@@ -1,4 +1,6 @@
 import type { ContentType } from "~/constants/contentTypes";
+import type { GraphNode as SharedGraphNode } from "#shared/types/graph";
+import type { NoteGraphData as SharedNoteGraphData } from "#shared/types/noteGraph";
 
 /**
  * Unified node representation used internally by BaseGraph.
@@ -47,37 +49,14 @@ export interface UnifiedGraphData {
 /**
  * Input format A: NoteGraph data (center-focused, level-based)
  */
-export interface NoteGraphData {
-  center: {
-    id: string;
-    title: string;
-    type: string;
-    isCenter?: boolean;
-    level?: 0 | 1 | 2;
-  };
-  connected: Array<{
-    id: string;
-    title: string;
-    type: string;
-    level?: 0 | 1 | 2;
-  }>;
-  edges: Array<{
-    source: string;
-    target: string;
-    level?: 1 | 2;
-  }>;
-}
+export type NoteGraphData = SharedNoteGraphData;
 
 /**
- * Node in FullGraphData format
+ * Node in FullGraphData format.
+ * Narrows the shared GraphNode type field to ContentType for app-side usage.
  */
-export interface FullGraphNode {
-  id: string;
-  title: string;
+export interface FullGraphNode extends Omit<SharedGraphNode, "type" | "connections" | "maps" | "isMap"> {
   type: ContentType;
-  tags: string[];
-  authors: string[];
-  summary?: string;
   connections?: number;
   maps?: string[];
   isMap?: boolean;
