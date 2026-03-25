@@ -1,11 +1,11 @@
-import type { Rule } from "eslint";
+import type { Rule } from 'eslint';
 
 // ESLint rule context with proper typing
 export type RuleContext = Rule.RuleContext;
 
 // AST node for YAML frontmatter (from @eslint/markdown)
 export interface YamlNode {
-  type: "yaml";
+  type: 'yaml';
   value: string;
   position: {
     start: { line: number; column: number; offset: number };
@@ -15,7 +15,7 @@ export interface YamlNode {
 
 // AST node for text content in markdown
 export interface TextNode {
-  type: "text";
+  type: 'text';
   value: string;
   position: {
     start: { line: number; column: number; offset: number };

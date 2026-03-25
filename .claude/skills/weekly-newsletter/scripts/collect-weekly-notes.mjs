@@ -10,16 +10,16 @@
  *   --week YYYY-Www   Specify week (default: previous week for Monday publishing)
  */
 
-import { execSync } from "child_process";
-import { readFileSync, existsSync } from "fs";
-import { basename } from "path";
+import { execSync } from 'child_process';
+import { readFileSync, existsSync } from 'fs';
+import { basename } from 'path';
 
 // Parse arguments
 const args = process.argv.slice(2);
 let specifiedWeek = null;
 
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === "--week" && args[i + 1]) {
+  if (args[i] === '--week' && args[i + 1]) {
     specifiedWeek = args[i + 1];
     i++;
   }
@@ -61,7 +61,7 @@ function getWeekBoundaries(weekStr) {
 }
 
 function formatDate(date) {
-  return date.toISOString().split("T")[0];
+  return date.toISOString().split('T')[0];
 }
 
 function getISOWeek(date) {
@@ -70,7 +70,7 @@ function getISOWeek(date) {
   d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
   const week1 = new Date(d.getFullYear(), 0, 4);
   const weekNum = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-  return `${d.getFullYear()}-W${weekNum.toString().padStart(2, "0")}`;
+  return `${d.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
 }
 
 const weekStart = getWeekBoundaries(specifiedWeek);
@@ -86,23 +86,23 @@ const isoWeek = getISOWeek(weekStart);
 
 // Directories to exclude
 const excludeDirs = [
-  "content/authors/",
-  "content/private/",
-  "content/podcasts/",
-  "content/newsletters/",
-  "content/blog/",
-  "content/blog-ideas/",
-  "content/newsletter-drafts/",
-  "content/tweets/",
+  'content/authors/',
+  'content/private/',
+  'content/podcasts/',
+  'content/newsletters/',
+  'content/blog/',
+  'content/blog-ideas/',
+  'content/newsletter-drafts/',
+  'content/tweets/',
 ];
 
 // Find files added this week using git
 function getFilesAddedThisWeek(path, since, until) {
   try {
     const cmd = `git log --since="${since}" --until="${until}" --diff-filter=A --name-only --pretty=format: -- '${path}'`;
-    const output = execSync(cmd, { encoding: "utf8" });
+    const output = execSync(cmd, { encoding: 'utf8' });
     return output
-      .split("\n")
+      .split('\n')
       .filter((f) => f.trim())
       .filter((f, i, arr) => arr.indexOf(f) === i); // unique
   } catch {
@@ -114,12 +114,12 @@ function getFilesAddedThisWeek(path, since, until) {
 function parseFrontmatter(filePath) {
   if (!existsSync(filePath)) return null;
 
-  const content = readFileSync(filePath, "utf8");
+  const content = readFileSync(filePath, 'utf8');
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
 
   const frontmatter = {};
-  const lines = match[1].split("\n");
+  const lines = match[1].split('\n');
   let currentKey = null;
   let arrayValues = [];
   let inArray = false;
@@ -128,15 +128,15 @@ function parseFrontmatter(filePath) {
     // Check for array item
     if (inArray && line.match(/^\s+-\s/)) {
       const value = line
-        .replace(/^\s+-\s/, "")
-        .replace(/^["']|["']$/g, "")
+        .replace(/^\s+-\s/, '')
+        .replace(/^["']|["']$/g, '')
         .trim();
       arrayValues.push(value);
       continue;
     }
 
     // End of array
-    if (inArray && !line.match(/^\s+-\s/) && line.includes(":")) {
+    if (inArray && !line.match(/^\s+-\s/) && line.includes(':')) {
       frontmatter[currentKey] = arrayValues;
       arrayValues = [];
       inArray = false;
@@ -148,16 +148,16 @@ function parseFrontmatter(filePath) {
       const [, key, value] = kvMatch;
 
       // Check for inline array [a, b, c]
-      if (value.startsWith("[") && value.endsWith("]")) {
+      if (value.startsWith('[') && value.endsWith(']')) {
         frontmatter[key] = value
           .slice(1, -1)
-          .split(",")
-          .map((v) => v.trim().replace(/^["']|["']$/g, ""));
+          .split(',')
+          .map((v) => v.trim().replace(/^["']|["']$/g, ''));
         continue;
       }
 
       // Check for start of multiline array
-      if (value === "" || value === "[]") {
+      if (value === '' || value === '[]') {
         currentKey = key;
         inArray = true;
         arrayValues = [];
@@ -165,7 +165,7 @@ function parseFrontmatter(filePath) {
       }
 
       // Simple value
-      frontmatter[key] = value.replace(/^["']|["']$/g, "");
+      frontmatter[key] = value.replace(/^["']|["']$/g, '');
     }
   }
 
@@ -178,9 +178,9 @@ function parseFrontmatter(filePath) {
 }
 
 // Get files
-const allFiles = getFilesAddedThisWeek("content/*.md", weekStartStr, weekEndPlusOneStr);
+const allFiles = getFilesAddedThisWeek('content/*.md', weekStartStr, weekEndPlusOneStr);
 const noteFiles = allFiles.filter((f) => !excludeDirs.some((dir) => f.startsWith(dir)));
-const tweetFiles = getFilesAddedThisWeek("content/tweets/*.md", weekStartStr, weekEndPlusOneStr);
+const tweetFiles = getFilesAddedThisWeek('content/tweets/*.md', weekStartStr, weekEndPlusOneStr);
 
 // Process notes
 const notes = noteFiles
@@ -189,12 +189,12 @@ const notes = noteFiles
     if (!fm) return null;
 
     return {
-      slug: basename(file, ".md"),
-      title: fm.title || "",
-      type: fm.type || "note",
-      summary: fm.summary || "",
-      url: fm.url || "",
-      tags: Array.isArray(fm.tags) ? fm.tags.join(", ") : fm.tags || "",
+      slug: basename(file, '.md'),
+      title: fm.title || '',
+      type: fm.type || 'note',
+      summary: fm.summary || '',
+      url: fm.url || '',
+      tags: Array.isArray(fm.tags) ? fm.tags.join(', ') : fm.tags || '',
     };
   })
   .filter(Boolean);
@@ -206,9 +206,9 @@ const tweets = tweetFiles
     if (!fm) return null;
 
     return {
-      slug: basename(file, ".md"),
-      title: fm.title || "",
-      url: fm.url || "",
+      slug: basename(file, '.md'),
+      title: fm.title || '',
+      url: fm.url || '',
     };
   })
   .filter(Boolean);

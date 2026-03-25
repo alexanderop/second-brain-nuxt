@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { defineShortcuts, navigateTo, useColorMode } from "#imports";
-import AppHeader from "~/components/AppHeader.vue";
-import AppFooter from "~/components/AppFooter.vue";
-import AppSearchModal from "~/components/AppSearchModal.vue";
-import AppShortcutsModal from "~/components/AppShortcutsModal.vue";
-import ChatPanel from "~/components/ChatPanel.vue";
-import { useShortcutsModal } from "~/composables/useShortcuts";
-import { useFocusMode } from "~/composables/useFocusMode";
-import { useRandomNote } from "~/composables/useRandomNote";
-import { useFeature } from "~/composables/useFeature";
+import { ref } from 'vue';
+
+import { defineShortcuts, navigateTo, useColorMode } from '#imports';
+import AppFooter from '~/components/AppFooter.vue';
+import AppHeader from '~/components/AppHeader.vue';
+import AppSearchModal from '~/components/AppSearchModal.vue';
+import AppShortcutsModal from '~/components/AppShortcutsModal.vue';
+import ChatPanel from '~/components/ChatPanel.vue';
+import { useFeature } from '~/composables/useFeature';
+import { useFocusMode } from '~/composables/useFocusMode';
+import { useRandomNote } from '~/composables/useRandomNote';
+import { useShortcutsModal } from '~/composables/useShortcuts';
 
 // Chat feature toggle
-const { isEnabled: chatEnabled } = useFeature("chat");
+const { isEnabled: chatEnabled } = useFeature('chat');
 
 const searchOpen = ref(false);
 const chatOpen = ref(false);
@@ -22,35 +23,35 @@ const { isFocusMode, toggle: toggleFocusMode } = useFocusMode();
 const { navigateToRandomNote } = useRandomNote();
 
 defineShortcuts({
-  "shift_/": () => {
+  'shift_/': () => {
     shortcutsOpen.value = true;
   },
   meta_k: () => {
     searchOpen.value = true;
   },
-  "/": () => {
+  '/': () => {
     searchOpen.value = true;
   },
   meta_alt_t: () => {
-    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
   },
-  "meta_shift_\\": () => {
+  'meta_shift_\\': () => {
     toggleFocusMode();
   },
-  "g-h": () => {
-    void navigateTo("/");
+  'g-h': () => {
+    void navigateTo('/');
   },
-  "g-b": () => {
-    void navigateTo("/books");
+  'g-b': () => {
+    void navigateTo('/books');
   },
-  "g-g": () => {
-    void navigateTo("/graph");
+  'g-g': () => {
+    void navigateTo('/graph');
   },
-  "g-t": () => {
-    void navigateTo("/tags");
+  'g-t': () => {
+    void navigateTo('/tags');
   },
-  "g-a": () => {
-    void navigateTo("/authors");
+  'g-a': () => {
+    void navigateTo('/authors');
   },
   r: () => {
     void navigateToRandomNote();
@@ -72,7 +73,10 @@ defineShortcuts({
           v-model:search-open="searchOpen"
           v-model:shortcuts-open="shortcutsOpen"
         />
-        <main id="main-content" class="py-8">
+        <main
+          id="main-content"
+          class="py-8"
+        >
           <slot />
         </main>
         <AppFooter v-if="!isFocusMode" />
@@ -80,6 +84,9 @@ defineShortcuts({
     </UContainer>
     <AppSearchModal v-model:open="searchOpen" />
     <AppShortcutsModal v-model:open="shortcutsOpen" />
-    <ChatPanel v-if="chatEnabled" v-model:open="chatOpen" />
+    <ChatPanel
+      v-if="chatEnabled"
+      v-model:open="chatOpen"
+    />
   </UApp>
 </template>

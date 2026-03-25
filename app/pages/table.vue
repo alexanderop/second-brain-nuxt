@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch, computed } from "vue";
-import { useScroll, watchThrottled } from "@vueuse/core";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { useContentTable } from "~/composables/useContentTable";
-import ContentTable from "~/components/content/ContentTable.vue";
-import type { ContentTableState } from "~/components/content/ContentTable.vue";
+import { useScroll, watchThrottled } from '@vueuse/core';
+import { nextTick, onMounted, ref, watch, computed } from 'vue';
 
-usePageTitle("Table");
+import ContentTable from '~/components/content/ContentTable.vue';
+import type { ContentTableState } from '~/components/content/ContentTable.vue';
+import { useContentTable } from '~/composables/useContentTable';
+import { usePageTitle } from '~/composables/usePageTitle';
+
+usePageTitle('Table');
 
 const {
   items,
@@ -72,12 +73,18 @@ watch(filters, () => {
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <UIcon name="i-lucide-table-2" class="size-6" />
+      <UIcon
+        name="i-lucide-table-2"
+        class="size-6"
+      />
       <h1 class="text-2xl font-semibold">Table</h1>
       <span class="text-[var(--ui-text-muted)]"> ({{ totalItems }}) </span>
     </div>
 
-    <div ref="tableContainerRef" class="overflow-x-auto">
+    <div
+      ref="tableContainerRef"
+      class="overflow-x-auto"
+    >
       <ContentTable
         :items="items"
         :pending="pending"

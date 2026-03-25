@@ -1,12 +1,13 @@
-import { describe, it, expect } from "vitest";
-import fc from "fast-check";
-import { addTermToHistory } from "../../../app/utils/preferencesLogic";
+import fc from 'fast-check';
+import { describe, it, expect } from 'vitest';
 
-describe("addTermToHistory (property-based)", () => {
+import { addTermToHistory } from '../../../app/utils/preferencesLogic';
+
+describe('addTermToHistory (property-based)', () => {
   const historyArb = fc.array(fc.string(), { maxLength: 20 });
   const maxSizeArb = fc.integer({ min: 1, max: 50 });
 
-  it("property: non-empty trimmed term appears at most once in result", () => {
+  it('property: non-empty trimmed term appears at most once in result', () => {
     const nonEmptyArb = fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0);
 
     fc.assert(
@@ -19,7 +20,7 @@ describe("addTermToHistory (property-based)", () => {
     );
   });
 
-  it("property: length bounded by maxSize when term is non-empty", () => {
+  it('property: length bounded by maxSize when term is non-empty', () => {
     const nonEmptyArb = fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0);
 
     fc.assert(
@@ -30,7 +31,7 @@ describe("addTermToHistory (property-based)", () => {
     );
   });
 
-  it("property: idempotent — adding the same term twice equals adding it once", () => {
+  it('property: idempotent — adding the same term twice equals adding it once', () => {
     fc.assert(
       fc.property(historyArb, fc.string(), maxSizeArb, (history, term, maxSize) => {
         const once = addTermToHistory(history, term, maxSize);
@@ -40,7 +41,7 @@ describe("addTermToHistory (property-based)", () => {
     );
   });
 
-  it("property: non-empty trimmed term is always at index 0", () => {
+  it('property: non-empty trimmed term is always at index 0', () => {
     const nonEmptyTrimmedArb = fc.string({ minLength: 1 }).filter((s) => s.trim().length > 0);
 
     fc.assert(
@@ -51,7 +52,7 @@ describe("addTermToHistory (property-based)", () => {
     );
   });
 
-  it("property: all items come from original history or the new term", () => {
+  it('property: all items come from original history or the new term', () => {
     fc.assert(
       fc.property(historyArb, fc.string(), maxSizeArb, (history, term, maxSize) => {
         const result = addTermToHistory(history, term, maxSize);

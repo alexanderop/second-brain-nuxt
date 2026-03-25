@@ -1,8 +1,9 @@
-import { expect, test } from "@playwright/test";
-import { StatsPage } from "./pages/StatsPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Stats", () => {
-  test("stats page loads with overview cards visible", async ({ page }) => {
+import { StatsPage } from './pages/StatsPage';
+
+test.describe('Stats', () => {
+  test('stats page loads with overview cards visible', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -12,7 +13,7 @@ test.describe("Stats", () => {
     await expect(statsPage.connectionsCard).toBeVisible();
   });
 
-  test("charts are rendered", async ({ page }) => {
+  test('charts are rendered', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -24,7 +25,7 @@ test.describe("Stats", () => {
     await expect(statsPage.topTagsChart).toBeVisible();
   });
 
-  test("hub notes section shows top connected notes", async ({ page }) => {
+  test('hub notes section shows top connected notes', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -32,7 +33,7 @@ test.describe("Stats", () => {
     await expect(statsPage.hubNotesSection).toBeVisible();
 
     // Hub notes section should have content (links or empty message)
-    const hubLinks = statsPage.hubNotesSection.locator("a");
+    const hubLinks = statsPage.hubNotesSection.locator('a');
     const hubLinksCount = await hubLinks.count();
 
     // If there are hub links, they should be visible
@@ -41,7 +42,7 @@ test.describe("Stats", () => {
     }
   });
 
-  test("orphan notes modal opens when clicking more orphans", async ({ page }) => {
+  test('orphan notes modal opens when clicking more orphans', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -58,7 +59,7 @@ test.describe("Stats", () => {
     await expect(statsPage.orphanModalTable).toBeVisible();
   });
 
-  test("orphan modal search filters results", async ({ page }) => {
+  test('orphan modal search filters results', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -74,7 +75,7 @@ test.describe("Stats", () => {
     const initialRowCount = await statsPage.getOrphanTableRows().count();
 
     // Search for something specific
-    await statsPage.searchOrphans("xyz_unlikely_match_123");
+    await statsPage.searchOrphans('xyz_unlikely_match_123');
 
     const filteredRowCount = await statsPage.getOrphanTableRows().count();
 
@@ -83,7 +84,7 @@ test.describe("Stats", () => {
     expect(filteredRowCount).toBeLessThanOrEqual(initialRowCount);
   });
 
-  test("orphan modal pagination works", async ({ page }) => {
+  test('orphan modal pagination works', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -108,7 +109,7 @@ test.describe("Stats", () => {
     const firstRowText = await statsPage.getOrphanTableRows().first().textContent();
 
     // Click next page
-    const nextButton = statsPage.orphanModalPagination.getByRole("button").last();
+    const nextButton = statsPage.orphanModalPagination.getByRole('button').last();
     await nextButton.click();
     await page.waitForTimeout(300);
 
@@ -117,7 +118,7 @@ test.describe("Stats", () => {
     expect(newFirstRowText).not.toBe(firstRowText);
   });
 
-  test("can navigate from orphan to note page", async ({ page }) => {
+  test('can navigate from orphan to note page', async ({ page }) => {
     const statsPage = new StatsPage(page);
     await statsPage.goto();
     await statsPage.waitForStatsLoad();
@@ -130,12 +131,12 @@ test.describe("Stats", () => {
 
     await statsPage.openOrphanModal();
 
-    const orphanLink = statsPage.orphanModalTable.locator("tbody a").first();
-    const href = await orphanLink.getAttribute("href");
+    const orphanLink = statsPage.orphanModalTable.locator('tbody a').first();
+    const href = await orphanLink.getAttribute('href');
 
-    await Promise.all([page.waitForURL(href || "**"), orphanLink.click()]);
+    await Promise.all([page.waitForURL(href || '**'), orphanLink.click()]);
 
     // Should have navigated away from stats
-    expect(page.url()).not.toContain("/stats");
+    expect(page.url()).not.toContain('/stats');
   });
 });

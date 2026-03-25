@@ -3,7 +3,7 @@
  * Extracted from server/api/graph.get.ts for testability.
  */
 
-import { extractLinksFromBody } from "./minimark";
+import { extractLinksFromBody } from './minimark';
 
 export interface GraphNode {
   id: string;
@@ -42,7 +42,7 @@ export interface ContentItem {
  * Extract slug from content item path or stem
  */
 export function getSlug(item: ContentItem): string {
-  return item.path?.slice(1) || item.stem || "";
+  return item.path?.slice(1) || item.stem || '';
 }
 
 /**
@@ -53,13 +53,13 @@ export function createNode(item: ContentItem): GraphNode {
   return {
     id: slug,
     title: item.title || slug,
-    type: item.type || "note",
+    type: item.type || 'note',
     tags: Array.isArray(item.tags) ? item.tags : [],
     authors: Array.isArray(item.authors) ? item.authors : [],
     summary: item.summary,
     connections: 0,
     maps: [],
-    isMap: item.type === "map",
+    isMap: item.type === 'map',
   };
 }
 
@@ -101,7 +101,7 @@ export function computeMapMembership(
   nodeMap: Map<string, GraphNode>,
 ): void {
   for (const item of allContent) {
-    if (item.type !== "map") continue;
+    if (item.type !== 'map') continue;
 
     const mapSlug = getSlug(item);
     const links = extractLinksFromBody(item.body);

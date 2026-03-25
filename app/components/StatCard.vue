@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UIcon } from "#components";
+import { UIcon } from '#components';
 
 defineProps<{
   label: string;
@@ -38,7 +38,7 @@ defineProps<{
         class="mt-1 text-xs font-mono"
         :class="trend.value >= 0 ? 'text-emerald-500' : 'text-red-500'"
       >
-        {{ trend.value >= 0 ? "+" : "" }}{{ trend.value }} {{ trend.label }}
+        {{ trend.value >= 0 ? '+' : '' }}{{ trend.value }} {{ trend.label }}
       </div>
     </div>
   </div>

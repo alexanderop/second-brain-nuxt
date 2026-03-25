@@ -7,10 +7,10 @@ const EXCALIDRAW_EMBED_REGEX = /!\[\[([^\]]+\.excalidraw(?:\.md)?)\]\]/g;
  */
 export function slugifyExcalidraw(filename: string): string {
   return filename
-    .replace(/\.excalidraw(?:\.md)?$/, "")
+    .replace(/\.excalidraw(?:\.md)?$/, '')
     .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]/g, "");
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]/g, '');
 }
 
 /**
@@ -25,7 +25,7 @@ export function transformWikiLinks(content: string): string {
 
   // Transform regular wiki-links
   result = result.replace(WIKI_LINK_REGEX, (_, slug: string, displayText?: string) => {
-    const normalizedSlug = slug.trim().toLowerCase().replace(/\s+/g, "-");
+    const normalizedSlug = slug.trim().toLowerCase().replace(/\s+/g, '-');
     const text = displayText?.trim() ?? slug.trim();
     return `[${text}](/${normalizedSlug}){.wiki-link}`;
   });

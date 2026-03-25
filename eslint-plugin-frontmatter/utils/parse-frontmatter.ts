@@ -1,5 +1,6 @@
-import { parse as parseYaml } from "yaml";
-import type { FrontmatterData, YamlNode } from "./types.ts";
+import { parse as parseYaml } from 'yaml';
+
+import type { FrontmatterData, YamlNode } from './types.ts';
 
 /**
  * Parse YAML frontmatter from an ESLint markdown AST node
@@ -8,7 +9,7 @@ import type { FrontmatterData, YamlNode } from "./types.ts";
 export function parseFrontmatter(node: YamlNode): FrontmatterData | null {
   try {
     const data = parseYaml(node.value);
-    if (!data || typeof data !== "object") {
+    if (!data || typeof data !== 'object') {
       return null;
     }
     return data;
@@ -23,7 +24,7 @@ function extractTopLevelUrls(data: FrontmatterData, urlFields: string[]): UrlRes
   const results: UrlResult[] = [];
   for (const field of urlFields) {
     const value = data[field];
-    if (typeof value === "string" && value.trim()) {
+    if (typeof value === 'string' && value.trim()) {
       results.push({ field, value });
     }
   }
@@ -31,11 +32,11 @@ function extractTopLevelUrls(data: FrontmatterData, urlFields: string[]): UrlRes
 }
 
 function extractPlatformUrls(platforms: Record<string, string> | undefined): UrlResult[] {
-  if (!platforms || typeof platforms !== "object") return [];
+  if (!platforms || typeof platforms !== 'object') return [];
 
   const results: UrlResult[] = [];
   for (const [key, value] of Object.entries(platforms)) {
-    if (typeof value === "string" && value.trim()) {
+    if (typeof value === 'string' && value.trim()) {
       results.push({ field: `platforms.${key}`, value });
     }
   }
@@ -48,7 +49,7 @@ function extractUrlsArray(urls: Array<{ platform: string; url: string }> | undef
   const results: UrlResult[] = [];
   for (let i = 0; i < urls.length; i++) {
     const item = urls[i];
-    if (item && typeof item.url === "string") {
+    if (item && typeof item.url === 'string') {
       results.push({ field: `urls[${i}].url`, value: item.url });
     }
   }
@@ -61,7 +62,7 @@ function extractUrlsArray(urls: Array<{ platform: string; url: string }> | undef
  */
 export function extractUrlFields(
   data: FrontmatterData,
-  urlFields: string[] = ["url", "cover", "website", "tweetUrl", "feed", "artwork"],
+  urlFields: string[] = ['url', 'cover', 'website', 'tweetUrl', 'feed', 'artwork'],
 ): UrlResult[] {
   return [
     ...extractTopLevelUrls(data, urlFields),

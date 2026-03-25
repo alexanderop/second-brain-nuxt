@@ -1,5 +1,5 @@
-import { computed, type Ref } from "vue";
-import Fuse, { type IFuseOptions } from "fuse.js";
+import Fuse, { type IFuseOptions } from 'fuse.js';
+import { computed, type Ref } from 'vue';
 
 /**
  * Default Fuse.js options for content search.
@@ -8,14 +8,14 @@ import Fuse, { type IFuseOptions } from "fuse.js";
 export function getDefaultFuseOptions<T>(): IFuseOptions<T> {
   return {
     keys: [
-      { name: "title", weight: 1 },
-      { name: "label", weight: 1 },
-      { name: "content", weight: 0.7 },
-      { name: "description", weight: 0.7 },
-      { name: "titles", weight: 0.8 },
-      { name: "keywords", weight: 0.9 },
-      { name: "tags", weight: 0.9 },
-      { name: "name", weight: 1 },
+      { name: 'title', weight: 1 },
+      { name: 'label', weight: 1 },
+      { name: 'content', weight: 0.7 },
+      { name: 'description', weight: 0.7 },
+      { name: 'titles', weight: 0.8 },
+      { name: 'keywords', weight: 0.9 },
+      { name: 'tags', weight: 0.9 },
+      { name: 'name', weight: 1 },
     ],
     includeMatches: true,
     includeScore: true,

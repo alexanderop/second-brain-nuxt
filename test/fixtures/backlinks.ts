@@ -17,19 +17,19 @@ export interface BacklinksIndexFixture {
 export const emptyBacklinks: BacklinksIndexFixture = {};
 
 export const simpleBacklinks: BacklinksIndexFixture = {
-  "note-b": [{ slug: "note-a", title: "Note A", type: "note" }],
+  'note-b': [{ slug: 'note-a', title: 'Note A', type: 'note' }],
 };
 
 export const bidirectionalBacklinks: BacklinksIndexFixture = {
-  "deep-work": [{ slug: "atomic-habits", title: "Atomic Habits", type: "book" }],
-  "atomic-habits": [{ slug: "deep-work", title: "Deep Work", type: "book" }],
+  'deep-work': [{ slug: 'atomic-habits', title: 'Atomic Habits', type: 'book' }],
+  'atomic-habits': [{ slug: 'deep-work', title: 'Deep Work', type: 'book' }],
 };
 
 export const hubBacklinks: BacklinksIndexFixture = {
-  "productivity-hub": [
-    { slug: "atomic-habits", title: "Atomic Habits", type: "book" },
-    { slug: "deep-work", title: "Deep Work", type: "book" },
-    { slug: "getting-things-done", title: "Getting Things Done", type: "book" },
+  'productivity-hub': [
+    { slug: 'atomic-habits', title: 'Atomic Habits', type: 'book' },
+    { slug: 'deep-work', title: 'Deep Work', type: 'book' },
+    { slug: 'getting-things-done', title: 'Getting Things Done', type: 'book' },
   ],
 };
 

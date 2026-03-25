@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { NuxtLink, UButton, UIcon } from "#components";
-import type { PodcastItem } from "~/types/content";
-import { handleImageError } from "~/utils/imageErrorHandler";
+import { computed } from 'vue';
+
+import { NuxtLink, UButton, UIcon } from '#components';
+import type { PodcastItem } from '~/types/content';
+import { handleImageError } from '~/utils/imageErrorHandler';
 
 const props = defineProps<{
   podcast: PodcastItem;
@@ -10,17 +11,17 @@ const props = defineProps<{
 }>();
 
 const platformIcons: Record<string, string> = {
-  spotify: "i-simple-icons-spotify",
-  apple: "i-simple-icons-applepodcasts",
-  youtube: "i-simple-icons-youtube",
-  rss: "i-lucide-rss",
+  spotify: 'i-simple-icons-spotify',
+  apple: 'i-simple-icons-applepodcasts',
+  youtube: 'i-simple-icons-youtube',
+  rss: 'i-lucide-rss',
 };
 
 const platformLabels: Record<string, string> = {
-  spotify: "Spotify",
-  apple: "Apple Podcasts",
-  youtube: "YouTube",
-  rss: "RSS",
+  spotify: 'Spotify',
+  apple: 'Apple Podcasts',
+  youtube: 'YouTube',
+  rss: 'RSS',
 };
 
 const platformLinks = computed(() => {
@@ -28,7 +29,7 @@ const platformLinks = computed(() => {
   return Object.entries(props.podcast.platforms).map(([platform, url]) => ({
     platform,
     url,
-    icon: platformIcons[platform] || "i-lucide-link",
+    icon: platformIcons[platform] || 'i-lucide-link',
     label: platformLabels[platform] || platform,
   }));
 });
@@ -42,9 +43,16 @@ const platformLinks = computed(() => {
         class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
         aria-label="Back to podcasts"
       >
-        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
+        <UIcon
+          name="i-lucide-arrow-left"
+          class="size-5"
+          aria-hidden="true"
+        />
       </NuxtLink>
-      <UIcon name="i-lucide-podcast" class="size-6" />
+      <UIcon
+        name="i-lucide-podcast"
+        class="size-6"
+      />
       <span class="text-[var(--ui-text-muted)]">Podcast</span>
     </div>
 
@@ -61,13 +69,19 @@ const platformLinks = computed(() => {
           v-if="!podcast.artwork"
           class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
         >
-          <UIcon name="i-lucide-podcast" class="size-16" />
+          <UIcon
+            name="i-lucide-podcast"
+            class="size-16"
+          />
         </div>
         <div
           v-else
           class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
         >
-          <UIcon name="i-lucide-podcast" class="size-16" />
+          <UIcon
+            name="i-lucide-podcast"
+            class="size-16"
+          />
         </div>
       </div>
 
@@ -76,13 +90,22 @@ const platformLinks = computed(() => {
           {{ podcast.name }}
         </h1>
 
-        <p v-if="podcast.description" class="text-[var(--ui-text-muted)] mb-4">
+        <p
+          v-if="podcast.description"
+          class="text-[var(--ui-text-muted)] mb-4"
+        >
           {{ podcast.description }}
         </p>
 
-        <div v-if="hosts.length" class="mb-4 text-[var(--ui-text-muted)]">
+        <div
+          v-if="hosts.length"
+          class="mb-4 text-[var(--ui-text-muted)]"
+        >
           <span>Hosted by </span>
-          <template v-for="(host, index) in hosts" :key="host.slug">
+          <template
+            v-for="(host, index) in hosts"
+            :key="host.slug"
+          >
             <NuxtLink
               :to="`/authors/${encodeURIComponent(host.slug)}`"
               class="underline text-[var(--ui-text)]"

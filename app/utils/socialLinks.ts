@@ -17,33 +17,33 @@ export function buildSocialLinks(socials: Socials | undefined | null): SocialLin
   const links: SocialLink[] = [];
   if (socials.twitter)
     links.push({
-      icon: "i-lucide-twitter",
+      icon: 'i-lucide-twitter',
       url: `https://twitter.com/${socials.twitter}`,
-      label: "Twitter",
+      label: 'Twitter',
     });
   if (socials.github)
     links.push({
-      icon: "i-lucide-github",
+      icon: 'i-lucide-github',
       url: `https://github.com/${socials.github}`,
-      label: "GitHub",
+      label: 'GitHub',
     });
   if (socials.linkedin)
     links.push({
-      icon: "i-lucide-linkedin",
+      icon: 'i-lucide-linkedin',
       url: `https://linkedin.com/in/${socials.linkedin}`,
-      label: "LinkedIn",
+      label: 'LinkedIn',
     });
   if (socials.youtube)
     links.push({
-      icon: "i-lucide-youtube",
+      icon: 'i-lucide-youtube',
       url: `https://youtube.com/@${socials.youtube}`,
-      label: "YouTube",
+      label: 'YouTube',
     });
   if (socials.bluesky)
     links.push({
-      icon: "i-lucide-cloud",
+      icon: 'i-lucide-cloud',
       url: `https://bsky.app/profile/${socials.bluesky}`,
-      label: "Bluesky",
+      label: 'Bluesky',
     });
   return links;
 }

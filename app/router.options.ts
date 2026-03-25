@@ -1,4 +1,4 @@
-import type { RouterConfig } from "@nuxt/schema";
+import type { RouterConfig } from '@nuxt/schema';
 
 const routerConfig: RouterConfig = {
   scrollBehavior(to, _from, savedPosition) {
@@ -11,12 +11,12 @@ const routerConfig: RouterConfig = {
     if (to.hash) {
       return {
         el: to.hash,
-        behavior: "smooth",
+        behavior: 'smooth',
       };
     }
 
     // Default: scroll to top instantly (override CSS smooth scroll)
-    return { top: 0, left: 0, behavior: "instant" };
+    return { top: 0, left: 0, behavior: 'instant' };
   },
 };
 

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref } from 'vue';
+
+import { ContentRenderer, UContentToc } from '#components';
 import {
   useRoute,
   useRouter,
@@ -9,23 +11,22 @@ import {
   queryCollection,
   defineShortcuts,
   useRuntimeConfig,
-} from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { ContentRenderer, UContentToc } from "#components";
-import ContentHeader from "~/components/ContentHeader.vue";
-import ContentBacklinksSection from "~/components/ContentBacklinksSection.vue";
-import YouTubePlayer from "~/components/YouTubePlayer.vue";
-import BookCover from "~/components/BookCover.vue";
-import GitHubRepoCard from "~/components/GitHubRepoCard.vue";
-import NoteGraph from "~/components/NoteGraph.vue";
-import AuthorPickerModal from "~/components/AuthorPickerModal.vue";
-import { useBacklinks } from "~/composables/useBacklinks";
-import { useMentions } from "~/composables/useMentions";
-import { useFocusMode } from "~/composables/useFocusMode";
-import { useTocVisibility } from "~/composables/useTocVisibility";
-import { useAuthorShortcut } from "~/composables/useAuthorShortcut";
-import { isPodcastItem, isNewsletterItem } from "~/types/content";
-import type { NoteGraphData } from "~/types/graph";
+} from '#imports';
+import AuthorPickerModal from '~/components/AuthorPickerModal.vue';
+import BookCover from '~/components/BookCover.vue';
+import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue';
+import ContentHeader from '~/components/ContentHeader.vue';
+import GitHubRepoCard from '~/components/GitHubRepoCard.vue';
+import NoteGraph from '~/components/NoteGraph.vue';
+import YouTubePlayer from '~/components/YouTubePlayer.vue';
+import { useAuthorShortcut } from '~/composables/useAuthorShortcut';
+import { useBacklinks } from '~/composables/useBacklinks';
+import { useFocusMode } from '~/composables/useFocusMode';
+import { useMentions } from '~/composables/useMentions';
+import { usePageTitle } from '~/composables/usePageTitle';
+import { useTocVisibility } from '~/composables/useTocVisibility';
+import { isPodcastItem, isNewsletterItem } from '~/types/content';
+import type { NoteGraphData } from '~/types/graph';
 
 interface PageWithPodcast {
   podcast?: string;
@@ -37,11 +38,11 @@ interface PageWithNewsletter {
 }
 
 function hasPagePodcastFields(p: unknown): p is PageWithPodcast {
-  return typeof p === "object" && p !== null && "podcast" in p;
+  return typeof p === 'object' && p !== null && 'podcast' in p;
 }
 
 function hasPageNewsletterFields(p: unknown): p is PageWithNewsletter {
-  return typeof p === "object" && p !== null && "newsletter" in p;
+  return typeof p === 'object' && p !== null && 'newsletter' in p;
 }
 
 const route = useRoute();
@@ -53,12 +54,12 @@ const authorPickerOpen = ref(false);
 const authorPickerAuthors = ref<string[]>([]);
 
 function isYouTubeUrl(url: string): boolean {
-  return url.includes("youtube.com") || url.includes("youtu.be");
+  return url.includes('youtube.com') || url.includes('youtu.be');
 }
 
 const { data: page } = await useAsyncData(
   `page-${route.path}`,
-  () => queryCollection("content").path(route.path).first(),
+  () => queryCollection('content').path(route.path).first(),
   {
     // Use prefetched data from cache if available (from hover prefetch)
     getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
@@ -68,13 +69,13 @@ const { data: page } = await useAsyncData(
 const tocLinks = computed(() => page.value?.body?.toc?.links ?? []);
 
 if (!page.value) {
-  throw createError({ status: 404, statusText: "Page not found" });
+  throw createError({ status: 404, statusText: 'Page not found' });
 }
 
 // Get slug from path (remove leading slash)
-const slug = computed(() => route.path.replace(/^\//, ""));
+const slug = computed(() => route.path.replace(/^\//, ''));
 const { backlinks } = useBacklinks(slug.value);
-const { mentions } = useMentions(slug.value, page.value?.title ?? "");
+const { mentions } = useMentions(slug.value, page.value?.title ?? '');
 
 // Fetch podcast data if this is a podcast episode
 const podcastSlug = computed(() => {
@@ -83,10 +84,10 @@ const podcastSlug = computed(() => {
 });
 
 const { data: podcast } = await useAsyncData(
-  `page-podcast-${podcastSlug.value ?? "none"}`,
+  `page-podcast-${podcastSlug.value ?? 'none'}`,
   async () => {
     if (!podcastSlug.value) return null;
-    return queryCollection("podcasts").where("slug", "=", podcastSlug.value).first();
+    return queryCollection('podcasts').where('slug', '=', podcastSlug.value).first();
   },
 );
 
@@ -96,12 +97,12 @@ const typedPodcast = computed(() => {
 });
 
 async function fetchHostAuthor(hostSlug: string) {
-  const author = await queryCollection("authors").where("slug", "=", hostSlug).first();
+  const author = await queryCollection('authors').where('slug', '=', hostSlug).first();
   return author ? { slug: hostSlug, name: author.name } : { slug: hostSlug, name: hostSlug };
 }
 
 const { data: podcastHosts } = await useAsyncData(
-  `page-podcast-hosts-${podcastSlug.value ?? "none"}`,
+  `page-podcast-hosts-${podcastSlug.value ?? 'none'}`,
   async () => {
     const hosts = typedPodcast.value?.hosts;
     if (!hosts?.length) return [];
@@ -120,10 +121,10 @@ const newsletterSlug = computed(() => {
 });
 
 const { data: newsletter } = await useAsyncData(
-  `page-newsletter-${newsletterSlug.value ?? "none"}`,
+  `page-newsletter-${newsletterSlug.value ?? 'none'}`,
   async () => {
     if (!newsletterSlug.value) return null;
-    return queryCollection("newsletters").where("slug", "=", newsletterSlug.value).first();
+    return queryCollection('newsletters').where('slug', '=', newsletterSlug.value).first();
   },
 );
 
@@ -135,8 +136,8 @@ const typedNewsletter = computed(() => {
 // Content header data (extracted to avoid inline object creation on each render)
 const headerContent = computed(() => ({
   slug: slug.value,
-  title: page.value?.title ?? "",
-  type: page.value?.type ?? "note",
+  title: page.value?.title ?? '',
+  type: page.value?.type ?? 'note',
   url: page.value?.url,
   tags: page.value?.tags,
   authors: page.value?.authors,
@@ -160,32 +161,32 @@ function navigateToNote(targetSlug: string) {
   router.push(`/${targetSlug}`);
 }
 
-usePageTitle(() => page.value?.title ?? "");
+usePageTitle(() => page.value?.title ?? '');
 
 useSeoMeta({
-  description: () => page.value?.summary ?? "",
-  ogTitle: () => page.value?.title ?? "Second Brain",
-  ogDescription: () => page.value?.summary ?? "",
+  description: () => page.value?.summary ?? '',
+  ogTitle: () => page.value?.title ?? 'Second Brain',
+  ogDescription: () => page.value?.summary ?? '',
   ogImage: () => `${config.public.siteUrl}/og/${slug.value}.png`,
-  ogType: "article",
-  twitterCard: "summary_large_image",
-  twitterTitle: () => page.value?.title ?? "Second Brain",
-  twitterDescription: () => page.value?.summary ?? "",
+  ogType: 'article',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => page.value?.title ?? 'Second Brain',
+  twitterDescription: () => page.value?.summary ?? '',
   twitterImage: () => `${config.public.siteUrl}/og/${slug.value}.png`,
 });
 
 defineShortcuts({
   o: () => {
     if (page.value?.url) {
-      window.open(page.value.url, "_blank");
+      window.open(page.value.url, '_blank');
     }
   },
-  "]": () => {
+  ']': () => {
     toggleToc();
   },
   a: () => {
     const action = handleAuthorShortcut();
-    if (action.type === "multiple") {
+    if (action.type === 'multiple') {
       authorPickerAuthors.value = action.authors;
       authorPickerOpen.value = true;
     }
@@ -202,7 +203,10 @@ defineShortcuts({
 </script>
 
 <template>
-  <div v-if="page" class="lg:grid lg:grid-cols-12 lg:gap-8">
+  <div
+    v-if="page"
+    class="lg:grid lg:grid-cols-12 lg:gap-8"
+  >
     <!-- Main content -->
     <article class="lg:col-span-8 xl:col-span-9">
       <ContentHeader
@@ -212,7 +216,10 @@ defineShortcuts({
         :hosts="podcastHosts ?? undefined"
       />
 
-      <YouTubePlayer v-if="page.url && isYouTubeUrl(page.url)" :url="page.url" />
+      <YouTubePlayer
+        v-if="page.url && isYouTubeUrl(page.url)"
+        :url="page.url"
+      />
 
       <BookCover
         v-if="(page.type === 'book' || page.type === 'manga') && page.cover"
@@ -252,9 +259,16 @@ defineShortcuts({
         <ContentRenderer :value="page" />
       </div>
 
-      <ContentBacklinksSection :backlinks="backlinks" :mentions="mentions" />
+      <ContentBacklinksSection
+        :backlinks="backlinks"
+        :mentions="mentions"
+      />
 
-      <NoteGraph :slug="slug" :graph-data="noteGraph" @navigate="navigateToNote" />
+      <NoteGraph
+        :slug="slug"
+        :graph-data="noteGraph"
+        @navigate="navigateToNote"
+      />
     </article>
 
     <!-- TOC Sidebar (hidden on mobile, in focus mode, or when toggled off) -->
@@ -275,6 +289,9 @@ defineShortcuts({
     </aside>
 
     <!-- Author Picker Modal -->
-    <AuthorPickerModal v-model:open="authorPickerOpen" :authors="authorPickerAuthors" />
+    <AuthorPickerModal
+      v-model:open="authorPickerOpen"
+      :authors="authorPickerAuthors"
+    />
   </div>
 </template>

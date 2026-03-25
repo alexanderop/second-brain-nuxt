@@ -13,12 +13,5 @@
   "htmlWhitespaceSensitivity": "css",
   "singleAttributePerLine": true,
   "sortImports": {},
-  "ignorePatterns": [
-    ".nuxt",
-    ".output",
-    "node_modules",
-    "dist",
-    "*.md",
-    "pnpm-lock.yaml"
-  ]
+  "ignorePatterns": [".nuxt", ".output", "node_modules", "dist", "*.md", "pnpm-lock.yaml"]
 }

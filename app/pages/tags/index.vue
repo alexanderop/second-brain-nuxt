@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { NuxtLink } from "#components";
+import { computed } from 'vue';
 
-const { data: allContent } = await useAsyncData("all-content-tags", () => {
-  return queryCollection("content").select("tags", "stem").all();
+import { NuxtLink } from '#components';
+import { useAsyncData, queryCollection } from '#imports';
+import { usePageTitle } from '~/composables/usePageTitle';
+
+const { data: allContent } = await useAsyncData('all-content-tags', () => {
+  return queryCollection('content').select('tags', 'stem').all();
 });
 
 const tagCounts = computed(() => {
@@ -20,14 +21,17 @@ const tagCounts = computed(() => {
     .map(([tag, count]) => ({ tag, count }));
 });
 
-usePageTitle("Tags");
+usePageTitle('Tags');
 </script>
 
 <template>
   <div>
     <h1 class="text-2xl font-semibold mb-6">Tags</h1>
 
-    <div v-if="tagCounts.length" class="flex flex-wrap gap-3">
+    <div
+      v-if="tagCounts.length"
+      class="flex flex-wrap gap-3"
+    >
       <NuxtLink
         v-for="{ tag, count } in tagCounts"
         :key="tag"
@@ -43,6 +47,11 @@ usePageTitle("Tags");
       </NuxtLink>
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">No tags found.</div>
+    <div
+      v-else
+      class="text-center py-8 text-[var(--ui-text-muted)]"
+    >
+      No tags found.
+    </div>
   </div>
 </template>

@@ -1,33 +1,34 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useMediaQuery, onKeyStroke, useLocalStorage } from "@vueuse/core";
-import { useAsyncData, definePageMeta } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from "#components";
-import KnowledgeGraph from "~/components/KnowledgeGraph.vue";
-import GraphFilters from "~/components/GraphFilters.vue";
-import GraphNodePanel from "~/components/GraphNodePanel.vue";
-import { useGraphFilters } from "~/composables/useGraphFilters";
-import type { ContentType } from "~/constants/contentTypes";
-import type { FullGraphData, FullGraphNode, UnifiedGraphNode } from "~/types/graph";
+import { useMediaQuery, onKeyStroke, useLocalStorage } from '@vueuse/core';
+import { ref, computed } from 'vue';
+
+import { NuxtLink, ClientOnly, UIcon, UButton, UTooltip, UDrawer, UModal } from '#components';
+import { useAsyncData, definePageMeta } from '#imports';
+import GraphFilters from '~/components/GraphFilters.vue';
+import GraphNodePanel from '~/components/GraphNodePanel.vue';
+import KnowledgeGraph from '~/components/KnowledgeGraph.vue';
+import { useGraphFilters } from '~/composables/useGraphFilters';
+import { usePageTitle } from '~/composables/usePageTitle';
+import type { ContentType } from '~/constants/contentTypes';
+import type { FullGraphData, FullGraphNode, UnifiedGraphNode } from '~/types/graph';
 
 // Use immersive graph layout (no header)
 definePageMeta({
-  layout: "graph",
+  layout: 'graph',
 });
 
 // Helper to get ID from edge endpoint (handles both string and object)
 function getEdgeNodeId(endpoint: string | FullGraphNode): string {
-  return typeof endpoint === "string" ? endpoint : endpoint.id;
+  return typeof endpoint === 'string' ? endpoint : endpoint.id;
 }
 
-usePageTitle("Graph");
+usePageTitle('Graph');
 
 // Collapsible filter panel state (persisted in localStorage)
-const filtersExpanded = useLocalStorage("graph-filters-expanded", false);
+const filtersExpanded = useLocalStorage('graph-filters-expanded', false);
 
-const { data: graphData } = await useAsyncData<FullGraphData>("graph-data", () =>
-  $fetch<FullGraphData>("/api/graph"),
+const { data: graphData } = await useAsyncData<FullGraphData>('graph-data', () =>
+  $fetch<FullGraphData>('/api/graph'),
 );
 
 const selectedNode = ref<FullGraphNode | null>(null);
@@ -39,7 +40,7 @@ const graphRef = ref<{ fitAll: () => void; zoomIn: () => void; zoomOut: () => vo
 const zoomLevel = ref(1);
 
 // Mobile detection
-const isMobile = useMediaQuery("(max-width: 768px)");
+const isMobile = useMediaQuery('(max-width: 768px)');
 
 // Filters
 const { filterState } = useGraphFilters();
@@ -137,7 +138,7 @@ const filteredGraphData = computed<FullGraphData | null>(() => {
 });
 
 // Close panel with Escape key
-onKeyStroke("Escape", () => {
+onKeyStroke('Escape', () => {
   selectedNode.value = null;
 });
 
@@ -195,7 +196,10 @@ const showMobileFilters = ref(false);
       />
       <template #fallback>
         <div class="w-full h-screen flex items-center justify-center">
-          <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-[var(--ui-text-muted)]" />
+          <UIcon
+            name="i-lucide-loader-2"
+            class="size-8 animate-spin text-[var(--ui-text-muted)]"
+          />
         </div>
       </template>
     </ClientOnly>
@@ -226,7 +230,10 @@ const showMobileFilters = ref(false);
     </div>
 
     <!-- Collapsible filter panel (top-right) - Desktop -->
-    <div v-if="!isMobile" class="absolute top-4 right-4 z-10">
+    <div
+      v-if="!isMobile"
+      class="absolute top-4 right-4 z-10"
+    >
       <div class="glass-panel">
         <!-- Collapse toggle header -->
         <button
@@ -235,7 +242,10 @@ const showMobileFilters = ref(false);
           @click="filtersExpanded = !filtersExpanded"
         >
           <span class="flex items-center gap-2">
-            <UIcon name="i-lucide-filter" class="size-3.5" />
+            <UIcon
+              name="i-lucide-filter"
+              class="size-3.5"
+            />
             Filters
           </span>
           <UIcon
@@ -252,7 +262,10 @@ const showMobileFilters = ref(false);
           leave-from-class="opacity-100 max-h-96"
           leave-to-class="opacity-0 max-h-0"
         >
-          <div v-show="filtersExpanded" class="overflow-hidden">
+          <div
+            v-show="filtersExpanded"
+            class="overflow-hidden"
+          >
             <div class="px-4 pb-3 pt-1">
               <GraphFilters
                 :available-tags="availableTags"
@@ -314,13 +327,19 @@ const showMobileFilters = ref(false);
     </div>
 
     <!-- Mobile filter button (bottom-right) -->
-    <div v-if="isMobile" class="absolute bottom-4 right-4 z-10">
+    <div
+      v-if="isMobile"
+      class="absolute bottom-4 right-4 z-10"
+    >
       <button
         aria-label="Open graph filters"
         class="glass-panel p-3"
         @click="showMobileFilters = true"
       >
-        <UIcon name="i-lucide-filter" class="size-5" />
+        <UIcon
+          name="i-lucide-filter"
+          class="size-5"
+        />
       </button>
     </div>
 

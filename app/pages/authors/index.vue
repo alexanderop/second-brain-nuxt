@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { NuxtLink, UIcon } from "#components";
+import { computed } from 'vue';
 
-const { data: allContent } = await useAsyncData("all-content-authors", () => {
-  return queryCollection("content").select("authors", "stem").all();
+import { NuxtLink, UIcon } from '#components';
+import { useAsyncData, queryCollection } from '#imports';
+import { usePageTitle } from '~/composables/usePageTitle';
+
+const { data: allContent } = await useAsyncData('all-content-authors', () => {
+  return queryCollection('content').select('authors', 'stem').all();
 });
 
 const authorCounts = computed(() => {
@@ -20,24 +21,33 @@ const authorCounts = computed(() => {
     .map(([author, count]) => ({ author, count }));
 });
 
-usePageTitle("Authors");
+usePageTitle('Authors');
 </script>
 
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <UIcon name="i-lucide-users" class="size-6" />
+      <UIcon
+        name="i-lucide-users"
+        class="size-6"
+      />
       <h1 class="text-2xl font-semibold">Authors</h1>
     </div>
 
-    <div v-if="authorCounts.length" class="flex flex-wrap gap-3">
+    <div
+      v-if="authorCounts.length"
+      class="flex flex-wrap gap-3"
+    >
       <NuxtLink
         v-for="{ author, count } in authorCounts"
         :key="author"
         :to="`/authors/${encodeURIComponent(author)}`"
         class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors"
       >
-        <UIcon name="i-lucide-user" class="size-4 text-[var(--ui-text-muted)]" />
+        <UIcon
+          name="i-lucide-user"
+          class="size-4 text-[var(--ui-text-muted)]"
+        />
         <span>{{ author }}</span>
         <span
           class="text-xs text-[var(--ui-text-muted)] bg-[var(--ui-bg-muted)] px-1.5 py-0.5 rounded"
@@ -47,6 +57,11 @@ usePageTitle("Authors");
       </NuxtLink>
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">No authors found.</div>
+    <div
+      v-else
+      class="text-center py-8 text-[var(--ui-text-muted)]"
+    >
+      No authors found.
+    </div>
   </div>
 </template>

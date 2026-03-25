@@ -1,4 +1,4 @@
-import type { ContentType, NewsletterPlatform, ReadingStatus } from "~/constants/contentTypes";
+import type { ContentType, NewsletterPlatform, ReadingStatus } from '~/constants/contentTypes';
 
 export interface ContentItem {
   slug: string;
@@ -48,7 +48,7 @@ export interface NewsletterItem {
 
 export interface TweetItem {
   slug: string;
-  type: "tweet";
+  type: 'tweet';
   title: string;
   tweetId: string;
   tweetUrl: string;
@@ -60,9 +60,9 @@ export interface TweetItem {
 
 // Type guards for content collections
 export function isPodcastItem(p: unknown): p is PodcastItem {
-  return typeof p === "object" && p !== null && "slug" in p && "name" in p && "hosts" in p;
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p;
 }
 
 export function isNewsletterItem(p: unknown): p is NewsletterItem {
-  return typeof p === "object" && p !== null && "slug" in p && "name" in p && "authors" in p;
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'authors' in p;
 }

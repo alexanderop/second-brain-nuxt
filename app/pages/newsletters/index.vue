@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { UIcon } from "#components";
-import NewsletterCard from "~/components/NewsletterCard.vue";
-import { isNewsletterItem } from "~/types/content";
+import { computed } from 'vue';
+
+import { UIcon } from '#components';
+import { useAsyncData, queryCollection } from '#imports';
+import NewsletterCard from '~/components/NewsletterCard.vue';
+import { usePageTitle } from '~/composables/usePageTitle';
+import { isNewsletterItem } from '~/types/content';
 
 interface ArticleData {
   newsletter?: string;
   date?: string;
 }
 
-const { data: allNewsletters } = await useAsyncData("all-newsletters", () => {
-  return queryCollection("newsletters").all();
+const { data: allNewsletters } = await useAsyncData('all-newsletters', () => {
+  return queryCollection('newsletters').all();
 });
 
-const { data: allArticles } = await useAsyncData("all-newsletter-articles", () => {
-  return queryCollection("content")
-    .where("type", "=", "newsletter")
-    .select("newsletter", "date")
+const { data: allArticles } = await useAsyncData('all-newsletter-articles', () => {
+  return queryCollection('content')
+    .where('type', '=', 'newsletter')
+    .select('newsletter', 'date')
     .all();
 });
 
@@ -48,7 +49,7 @@ const newsletterStats = computed(() => {
 });
 
 function isNewsletterArticle(article: unknown): article is ArticleData {
-  return typeof article === "object" && article !== null;
+  return typeof article === 'object' && article !== null;
 }
 
 const activeNewsletters = computed(() => {
@@ -57,19 +58,22 @@ const activeNewsletters = computed(() => {
   return newsletters
     .filter((n) => (stats[n.slug]?.count ?? 0) > 0)
     .sort((a, b) => {
-      const dateA = stats[a.slug]?.mostRecent ?? "";
-      const dateB = stats[b.slug]?.mostRecent ?? "";
+      const dateA = stats[a.slug]?.mostRecent ?? '';
+      const dateB = stats[b.slug]?.mostRecent ?? '';
       return dateB.localeCompare(dateA);
     });
 });
 
-usePageTitle("Newsletters");
+usePageTitle('Newsletters');
 </script>
 
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <UIcon name="i-lucide-newspaper" class="size-6" />
+      <UIcon
+        name="i-lucide-newspaper"
+        class="size-6"
+      />
       <h1 class="text-2xl font-semibold">Newsletters</h1>
     </div>
 
@@ -85,7 +89,10 @@ usePageTitle("Newsletters");
       />
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
+    <div
+      v-else
+      class="text-center py-8 text-[var(--ui-text-muted)]"
+    >
       No newsletters with articles found.
     </div>
   </div>

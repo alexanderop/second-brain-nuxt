@@ -1,12 +1,13 @@
-import type { Rule } from "eslint";
-import { extractUrlFields, parseFrontmatter } from "../utils/parse-frontmatter.ts";
-import type { YamlNode } from "../utils/types.ts";
+import type { Rule } from 'eslint';
+
+import { extractUrlFields, parseFrontmatter } from '../utils/parse-frontmatter.ts';
+import type { YamlNode } from '../utils/types.ts';
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Validate URL fields in frontmatter",
+      description: 'Validate URL fields in frontmatter',
       recommended: true,
     },
     messages: {
@@ -16,15 +17,15 @@ const rule: Rule.RuleModule = {
     },
     schema: [
       {
-        type: "object",
+        type: 'object',
         properties: {
           fields: {
-            type: "array",
-            items: { type: "string" },
-            default: ["url", "cover", "website", "tweetUrl", "feed", "artwork"],
+            type: 'array',
+            items: { type: 'string' },
+            default: ['url', 'cover', 'website', 'tweetUrl', 'feed', 'artwork'],
           },
           requireProtocol: {
-            type: "boolean",
+            type: 'boolean',
             default: true,
           },
         },
@@ -35,7 +36,7 @@ const rule: Rule.RuleModule = {
 
   create(context) {
     const options = {
-      fields: ["url", "cover", "website", "tweetUrl", "feed", "artwork"],
+      fields: ['url', 'cover', 'website', 'tweetUrl', 'feed', 'artwork'],
       requireProtocol: true,
       ...context.options[0],
     };
@@ -54,7 +55,7 @@ const rule: Rule.RuleModule = {
           if (options.requireProtocol && !value.match(/^https?:\/\//)) {
             context.report({
               loc: node.position,
-              messageId: "missingProtocol",
+              messageId: 'missingProtocol',
               data: { url: value, field },
             });
             continue;
@@ -64,7 +65,7 @@ const rule: Rule.RuleModule = {
           if (!URL.canParse(value)) {
             context.report({
               loc: node.position,
-              messageId: "invalidUrl",
+              messageId: 'invalidUrl',
               data: { url: value, field },
             });
           }

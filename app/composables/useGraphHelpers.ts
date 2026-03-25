@@ -1,12 +1,13 @@
-import { ref, type Ref, type ShallowRef } from "vue";
-import { zoomIdentity, zoomTransform } from "d3-zoom";
-import { scalePow, scaleLinear } from "d3-scale";
-import { extent } from "d3-array";
-import type { ZoomBehavior, ZoomTransform } from "d3-zoom";
-import type { Selection } from "d3-selection";
-import type { Simulation } from "d3-force";
-import type { UnifiedGraphNode, UnifiedGraphEdge } from "~/types/graph";
-import { tryCatch } from "#shared/utils/tryCatch";
+import { extent } from 'd3-array';
+import type { Simulation } from 'd3-force';
+import { scalePow, scaleLinear } from 'd3-scale';
+import type { Selection } from 'd3-selection';
+import { zoomIdentity, zoomTransform } from 'd3-zoom';
+import type { ZoomBehavior, ZoomTransform } from 'd3-zoom';
+import { ref, type Ref, type ShallowRef } from 'vue';
+
+import { tryCatch } from '#shared/utils/tryCatch';
+import type { UnifiedGraphNode, UnifiedGraphEdge } from '~/types/graph';
 
 // Constants
 const RADIAL_SIZES = { center: 18, level1: 10, level2: 7 };
@@ -21,18 +22,18 @@ export function getHexagonPath(radius: number): string {
     const y = radius * Math.sin(angle);
     points.push(`${x},${y}`);
   }
-  return `M${points.join("L")}Z`;
+  return `M${points.join('L')}Z`;
 }
 
 // Node radius calculation
 export function getNodeRadius(
   node: UnifiedGraphNode,
   maxConnections: number,
-  sizing: "level" | "connections" | "fixed",
+  sizing: 'level' | 'connections' | 'fixed',
   fixedRadius: number,
 ): number {
-  if (sizing === "fixed") return fixedRadius;
-  if (sizing === "level") {
+  if (sizing === 'fixed') return fixedRadius;
+  if (sizing === 'level') {
     if (node.isCenter) return RADIAL_SIZES.center;
     return node.level === 2 ? RADIAL_SIZES.level2 : RADIAL_SIZES.level1;
   }
@@ -49,12 +50,12 @@ export function shouldShowLabel(
   node: UnifiedGraphNode,
   zoom: number,
   isActive: boolean,
-  labelVisibility: "always" | "hover" | "progressive" | "center-only",
+  labelVisibility: 'always' | 'hover' | 'progressive' | 'center-only',
 ): boolean {
   if (isActive) return true;
-  if (labelVisibility === "always") return true;
-  if (labelVisibility === "hover") return false;
-  if (labelVisibility === "center-only") return !!node.isCenter;
+  if (labelVisibility === 'always') return true;
+  if (labelVisibility === 'hover') return false;
+  if (labelVisibility === 'center-only') return !!node.isCenter;
   // progressive
   const connections = node.connections ?? 0;
   if (zoom < 0.5) return connections >= 5;
@@ -67,8 +68,8 @@ export function getConnectedIds(nodeId: string | null, edges: UnifiedGraphEdge[]
   const connected = new Set<string>();
   if (!nodeId) return connected;
   for (const edge of edges) {
-    const sourceId = typeof edge.source === "string" ? edge.source : edge.source.id;
-    const targetId = typeof edge.target === "string" ? edge.target : edge.target.id;
+    const sourceId = typeof edge.source === 'string' ? edge.source : edge.source.id;
+    const targetId = typeof edge.target === 'string' ? edge.target : edge.target.id;
     if (sourceId === nodeId) connected.add(targetId);
     if (targetId === nodeId) connected.add(sourceId);
   }
@@ -77,11 +78,11 @@ export function getConnectedIds(nodeId: string | null, edges: UnifiedGraphEdge[]
 
 // Edge helpers
 export function getEdgeX(endpoint: string | UnifiedGraphNode): number {
-  return typeof endpoint === "string" ? 0 : (endpoint.x ?? 0);
+  return typeof endpoint === 'string' ? 0 : (endpoint.x ?? 0);
 }
 
 export function getEdgeY(endpoint: string | UnifiedGraphNode): number {
-  return typeof endpoint === "string" ? 0 : (endpoint.y ?? 0);
+  return typeof endpoint === 'string' ? 0 : (endpoint.y ?? 0);
 }
 
 // Font scale for labels (stateless, created once)
@@ -122,16 +123,16 @@ interface ZoomData {
 }
 
 function isZoomData(data: unknown): data is ZoomData {
-  if (typeof data !== "object" || data === null) return false;
+  if (typeof data !== 'object' || data === null) return false;
   // oxlint-disable-next-line @typescript-eslint/consistent-type-assertions -- type guard requires narrowing from unknown
   const obj = data as Record<string, unknown>;
   return (
-    "k" in data &&
-    typeof obj.k === "number" &&
-    "x" in data &&
-    typeof obj.x === "number" &&
-    "y" in data &&
-    typeof obj.y === "number"
+    'k' in data &&
+    typeof obj.k === 'number' &&
+    'x' in data &&
+    typeof obj.x === 'number' &&
+    'y' in data &&
+    typeof obj.y === 'number'
   );
 }
 
@@ -251,7 +252,7 @@ export function useGraphInteractions(
       event.preventDefault();
       isMiddleMousePanning.value = true;
       panStartPos.value = { x: event.clientX, y: event.clientY };
-      container.value?.style.setProperty("cursor", "grabbing");
+      container.value?.style.setProperty('cursor', 'grabbing');
     }
   }
 
@@ -276,7 +277,7 @@ export function useGraphInteractions(
   function handleMiddleMouseUp(event: MouseEvent) {
     if (event.button === 1 && isMiddleMousePanning.value) {
       isMiddleMousePanning.value = false;
-      container.value?.style.setProperty("cursor", "");
+      container.value?.style.setProperty('cursor', '');
     }
   }
 
@@ -302,17 +303,17 @@ export function useGraphInteractions(
   }
 
   function attachPanListeners() {
-    container.value?.addEventListener("mousedown", handleMiddleMouseDown);
-    window.addEventListener("mousemove", handleMiddleMouseMove);
-    window.addEventListener("mouseup", handleMiddleMouseUp);
-    container.value?.addEventListener("auxclick", handleAuxClick);
+    container.value?.addEventListener('mousedown', handleMiddleMouseDown);
+    window.addEventListener('mousemove', handleMiddleMouseMove);
+    window.addEventListener('mouseup', handleMiddleMouseUp);
+    container.value?.addEventListener('auxclick', handleAuxClick);
   }
 
   function detachPanListeners() {
-    container.value?.removeEventListener("mousedown", handleMiddleMouseDown);
-    window.removeEventListener("mousemove", handleMiddleMouseMove);
-    window.removeEventListener("mouseup", handleMiddleMouseUp);
-    container.value?.removeEventListener("auxclick", handleAuxClick);
+    container.value?.removeEventListener('mousedown', handleMiddleMouseDown);
+    window.removeEventListener('mousemove', handleMiddleMouseMove);
+    window.removeEventListener('mouseup', handleMiddleMouseUp);
+    container.value?.removeEventListener('auxclick', handleAuxClick);
   }
 
   return {

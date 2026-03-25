@@ -1,53 +1,54 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import type { CommandPaletteItem, CommandPaletteGroup } from '@nuxt/ui';
+import { computed, ref, watch } from 'vue';
+
+import { UModal, UCommandPalette, UAvatar } from '#components';
 import {
   useRoute,
   useAsyncData,
   navigateTo,
   queryCollectionSearchSections,
   queryCollection,
-} from "#imports";
-import { UModal, UCommandPalette, UAvatar } from "#components";
-import type { CommandPaletteItem, CommandPaletteGroup } from "@nuxt/ui";
-import { transformPodcastToSearchItem } from "~/utils/searchHelpers";
+} from '#imports';
+import { transformPodcastToSearchItem } from '~/utils/searchHelpers';
 
-const open = defineModel<boolean>("open", { default: false });
-const searchTerm = ref("");
+const open = defineModel<boolean>('open', { default: false });
+const searchTerm = ref('');
 
 const route = useRoute();
 
 // Fetch search sections with full body content
 const { data: searchSections } = await useAsyncData(
-  "search-modal-sections",
-  () => queryCollectionSearchSections("content"),
+  'search-modal-sections',
+  () => queryCollectionSearchSections('content'),
   { lazy: true },
 );
 
 // Fetch authors for search
 const { data: authors } = await useAsyncData(
-  "search-modal-authors",
-  () => queryCollection("authors").select("name", "slug", "avatar").all(),
+  'search-modal-authors',
+  () => queryCollection('authors').select('name', 'slug', 'avatar').all(),
   { lazy: true },
 );
 
 // Fetch newsletters for search
 const { data: newsletters } = await useAsyncData(
-  "search-modal-newsletters",
-  () => queryCollection("newsletters").select("name", "slug", "logo").all(),
+  'search-modal-newsletters',
+  () => queryCollection('newsletters').select('name', 'slug', 'logo').all(),
   { lazy: true },
 );
 
 // Fetch podcasts for search
 const { data: podcasts } = await useAsyncData(
-  "search-modal-podcasts",
-  () => queryCollection("podcasts").select("name", "slug", "artwork").all(),
+  'search-modal-podcasts',
+  () => queryCollection('podcasts').select('name', 'slug', 'artwork').all(),
   { lazy: true },
 );
 
 // Fetch content metadata for enriching search (tags, type, authors)
 const { data: contentMetadata } = await useAsyncData(
-  "search-modal-metadata",
-  () => queryCollection("content").select("stem", "tags", "type", "authors").all(),
+  'search-modal-metadata',
+  () => queryCollection('content').select('stem', 'tags', 'type', 'authors').all(),
   { lazy: true },
 );
 
@@ -74,7 +75,7 @@ watch(
 // Reset search state when modal closes
 watch(open, (isOpen) => {
   if (!isOpen) {
-    searchTerm.value = "";
+    searchTerm.value = '';
   }
 });
 
@@ -87,25 +88,25 @@ const contentItemsMap = computed<Map<string, CommandPaletteItem>>(() => {
 
   for (const section of searchSections.value) {
     if (!section.id) continue;
-    const path = section.id.split("#")[0] || "";
+    const path = section.id.split('#')[0] || '';
     if (seen.has(path)) continue;
     seen.add(path);
 
-    const breadcrumb = [...(section.titles || []), section.title].filter(Boolean).join(" › ");
-    const snippet = section.content?.slice(0, 100) || "";
+    const breadcrumb = [...(section.titles || []), section.title].filter(Boolean).join(' › ');
+    const snippet = section.content?.slice(0, 100) || '';
 
     // Get metadata for searchable keywords
     const meta = metadataMap.value.get(path);
     const keywords = meta
-      ? [...meta.tags, meta.type, ...meta.authors].filter(Boolean).join(" ")
-      : "";
+      ? [...meta.tags, meta.type, ...meta.authors].filter(Boolean).join(' ')
+      : '';
 
     itemsMap.set(path, {
       id: section.id,
       label: breadcrumb,
       description: snippet,
       keywords,
-      icon: "i-lucide-file-text",
+      icon: 'i-lucide-file-text',
       to: path,
     });
   }
@@ -125,11 +126,11 @@ const authorItems = computed<CommandPaletteItem[]>(() => {
   return authors.value.map((author) => ({
     id: `author:${author.slug}`,
     label: author.name,
-    description: "Author",
+    description: 'Author',
     avatar: author.avatar ? { src: author.avatar, alt: author.name } : undefined,
-    icon: author.avatar ? undefined : "i-lucide-user",
+    icon: author.avatar ? undefined : 'i-lucide-user',
     to: `/authors/${encodeURIComponent(author.slug)}`,
-    slot: "author",
+    slot: 'author',
   }));
 });
 
@@ -140,11 +141,11 @@ const newsletterItems = computed<CommandPaletteItem[]>(() => {
   return newsletters.value.map((newsletter) => ({
     id: `newsletter:${newsletter.slug}`,
     label: newsletter.name,
-    description: "Newsletter",
+    description: 'Newsletter',
     avatar: newsletter.logo ? { src: newsletter.logo, alt: newsletter.name } : undefined,
-    icon: newsletter.logo ? undefined : "i-lucide-newspaper",
+    icon: newsletter.logo ? undefined : 'i-lucide-newspaper',
     to: `/newsletters/${newsletter.slug}`,
-    slot: "newsletter",
+    slot: 'newsletter',
   }));
 });
 
@@ -158,8 +159,8 @@ const podcastItems = computed<CommandPaletteItem[]>(() => {
 const contentGroup = computed<CommandPaletteGroup | null>(() => {
   if (contentItems.value.length) {
     return {
-      id: "content",
-      label: "Notes",
+      id: 'content',
+      label: 'Notes',
       items: contentItems.value,
     };
   }
@@ -177,24 +178,24 @@ const groups = computed<CommandPaletteGroup[]>(() => {
 
   if (authorItems.value.length) {
     result.push({
-      id: "authors",
-      label: "Authors",
+      id: 'authors',
+      label: 'Authors',
       items: authorItems.value,
     });
   }
 
   if (newsletterItems.value.length) {
     result.push({
-      id: "newsletters",
-      label: "Newsletters",
+      id: 'newsletters',
+      label: 'Newsletters',
       items: newsletterItems.value,
     });
   }
 
   if (podcastItems.value.length) {
     result.push({
-      id: "podcasts",
-      label: "Podcasts",
+      id: 'podcasts',
+      label: 'Podcasts',
       items: podcastItems.value,
     });
   }
@@ -206,9 +207,9 @@ const groups = computed<CommandPaletteGroup[]>(() => {
 const fuseOptions = {
   fuseOptions: {
     keys: [
-      { name: "label", weight: 1 },
-      { name: "description", weight: 0.7 },
-      { name: "keywords", weight: 0.9 }, // tags, type, authors
+      { name: 'label', weight: 1 },
+      { name: 'description', weight: 0.7 },
+      { name: 'keywords', weight: 0.9 }, // tags, type, authors
     ],
     threshold: 0.4,
     ignoreLocation: true,
@@ -217,7 +218,7 @@ const fuseOptions = {
 };
 
 function onSelect(item: CommandPaletteItem) {
-  if (typeof item.to === "string") {
+  if (typeof item.to === 'string') {
     navigateTo(item.to);
   }
 }
@@ -241,23 +242,50 @@ function onSelect(item: CommandPaletteItem) {
         @update:open="open = $event"
       >
         <template #author-leading="{ item }">
-          <UAvatar v-if="item.avatar" :src="item.avatar.src" :alt="item.avatar.alt" size="2xs" />
-          <span v-else class="i-lucide-user size-5 text-[var(--ui-text-muted)]" />
+          <UAvatar
+            v-if="item.avatar"
+            :src="item.avatar.src"
+            :alt="item.avatar.alt"
+            size="2xs"
+          />
+          <span
+            v-else
+            class="i-lucide-user size-5 text-[var(--ui-text-muted)]"
+          />
         </template>
 
         <template #newsletter-leading="{ item }">
-          <UAvatar v-if="item.avatar" :src="item.avatar.src" :alt="item.avatar.alt" size="2xs" />
-          <span v-else class="i-lucide-newspaper size-5 text-[var(--ui-text-muted)]" />
+          <UAvatar
+            v-if="item.avatar"
+            :src="item.avatar.src"
+            :alt="item.avatar.alt"
+            size="2xs"
+          />
+          <span
+            v-else
+            class="i-lucide-newspaper size-5 text-[var(--ui-text-muted)]"
+          />
         </template>
 
         <template #podcast-leading="{ item }">
-          <UAvatar v-if="item.avatar" :src="item.avatar.src" :alt="item.avatar.alt" size="2xs" />
-          <span v-else class="i-lucide-podcast size-5 text-[var(--ui-text-muted)]" />
+          <UAvatar
+            v-if="item.avatar"
+            :src="item.avatar.src"
+            :alt="item.avatar.alt"
+            size="2xs"
+          />
+          <span
+            v-else
+            class="i-lucide-podcast size-5 text-[var(--ui-text-muted)]"
+          />
         </template>
 
         <template #empty>
           <div class="flex flex-col items-center justify-center py-6 text-[var(--ui-text-muted)]">
-            <span class="i-lucide-search-x size-8 mb-2" aria-hidden="true" />
+            <span
+              class="i-lucide-search-x size-8 mb-2"
+              aria-hidden="true"
+            />
             <p>No results found</p>
           </div>
         </template>

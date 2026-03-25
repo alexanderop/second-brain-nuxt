@@ -6,49 +6,50 @@
  * Images are saved to public/og/[slug].png and served statically.
  */
 
-import { readdir, readFile, writeFile, mkdir, stat } from "node:fs/promises";
-import { join, basename } from "node:path";
-import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
-import * as lucideIcons from "lucide-static";
+import { readdir, readFile, writeFile, mkdir, stat } from 'node:fs/promises';
+import { join, basename } from 'node:path';
+
+import { Resvg } from '@resvg/resvg-js';
+import * as lucideIcons from 'lucide-static';
+import satori from 'satori';
 
 // Map content types to Lucide icon names (matches BaseTypeIcon.vue)
 const TYPE_TO_LUCIDE: Record<string, keyof typeof lucideIcons> = {
-  youtube: "Youtube",
-  podcast: "Mic",
-  article: "FileText",
-  book: "BookOpen",
-  manga: "BookImage",
-  movie: "Clapperboard",
-  tv: "Tv",
-  tweet: "MessageCircle",
-  quote: "Quote",
-  course: "GraduationCap",
-  note: "Pencil",
-  evergreen: "Leaf",
-  map: "Hexagon",
-  reddit: "MessageSquare",
-  github: "Github",
-  newsletter: "Newspaper",
-  talk: "Presentation",
+  youtube: 'Youtube',
+  podcast: 'Mic',
+  article: 'FileText',
+  book: 'BookOpen',
+  manga: 'BookImage',
+  movie: 'Clapperboard',
+  tv: 'Tv',
+  tweet: 'MessageCircle',
+  quote: 'Quote',
+  course: 'GraduationCap',
+  note: 'Pencil',
+  evergreen: 'Leaf',
+  map: 'Hexagon',
+  reddit: 'MessageSquare',
+  github: 'Github',
+  newsletter: 'Newspaper',
+  talk: 'Presentation',
 };
 
-const CONTENT_DIR = join(process.cwd(), "content");
-const OUTPUT_DIR = join(process.cwd(), "public", "og");
+const CONTENT_DIR = join(process.cwd(), 'content');
+const OUTPUT_DIR = join(process.cwd(), 'public', 'og');
 
 // Excluded directories that don't need OG images
 const EXCLUDED_DIRS = [
-  "authors",
-  "pages",
-  "podcasts",
-  "tweets",
-  "newsletters",
-  "Readwise",
-  "blog",
-  "Excalidraw",
-  "newsletter-drafts",
-  "blog-ideas",
-  "_obsidian-templates",
+  'authors',
+  'pages',
+  'podcasts',
+  'tweets',
+  'newsletters',
+  'Readwise',
+  'blog',
+  'Excalidraw',
+  'newsletter-drafts',
+  'blog-ideas',
+  '_obsidian-templates',
 ];
 
 // Cache font data
@@ -60,14 +61,14 @@ async function loadFonts(): Promise<{ regular: ArrayBuffer; medium: ArrayBuffer 
     return { regular: fontRegular, medium: fontMedium };
   }
 
-  console.log("  Loading Geist fonts...");
+  console.log('  Loading Geist fonts...');
 
   const [regular, medium] = await Promise.all([
     fetch(
-      "https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5/files/geist-sans-latin-400-normal.woff",
+      'https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5/files/geist-sans-latin-400-normal.woff',
     ).then((r) => r.arrayBuffer()),
     fetch(
-      "https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5/files/geist-sans-latin-500-normal.woff",
+      'https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5/files/geist-sans-latin-500-normal.woff',
     ).then((r) => r.arrayBuffer()),
   ]);
 
@@ -82,10 +83,10 @@ function truncateText(text: string, maxLength: number): string {
   return `${text.slice(0, maxLength).trim()}...`;
 }
 
-const ICON_STROKE = "#737373";
+const ICON_STROKE = '#737373';
 const ICON_STROKE_WIDTH = 2;
 
-function extractAttr(attrs: string, name: string, fallback = "0"): string {
+function extractAttr(attrs: string, name: string, fallback = '0'): string {
   const match = attrs.match(new RegExp(`${name}="([^"]+)"`));
   return match ? match[1] : fallback;
 }
@@ -94,14 +95,14 @@ function parsePaths(svgString: string): SatoriElement[] {
   const elements: SatoriElement[] = [];
   for (const match of svgString.matchAll(/<path\s+d="([^"]+)"\s*\/>/g)) {
     elements.push({
-      type: "path",
+      type: 'path',
       props: {
         d: match[1],
-        fill: "none",
+        fill: 'none',
         stroke: ICON_STROKE,
         strokeWidth: ICON_STROKE_WIDTH,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
       },
     });
   }
@@ -113,18 +114,18 @@ function parseRects(svgString: string): SatoriElement[] {
   for (const match of svgString.matchAll(/<rect\s+([^>]+)\/>/g)) {
     const attrs = match[1];
     elements.push({
-      type: "rect",
+      type: 'rect',
       props: {
-        x: extractAttr(attrs, "x"),
-        y: extractAttr(attrs, "y"),
-        width: extractAttr(attrs, "width"),
-        height: extractAttr(attrs, "height"),
-        rx: extractAttr(attrs, "rx"),
-        fill: "none",
+        x: extractAttr(attrs, 'x'),
+        y: extractAttr(attrs, 'y'),
+        width: extractAttr(attrs, 'width'),
+        height: extractAttr(attrs, 'height'),
+        rx: extractAttr(attrs, 'rx'),
+        fill: 'none',
         stroke: ICON_STROKE,
         strokeWidth: ICON_STROKE_WIDTH,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
       },
     });
   }
@@ -136,12 +137,12 @@ function parseCircles(svgString: string): SatoriElement[] {
   for (const match of svgString.matchAll(/<circle\s+([^>]+)\/>/g)) {
     const attrs = match[1];
     elements.push({
-      type: "circle",
+      type: 'circle',
       props: {
-        cx: extractAttr(attrs, "cx"),
-        cy: extractAttr(attrs, "cy"),
-        r: extractAttr(attrs, "r"),
-        fill: "none",
+        cx: extractAttr(attrs, 'cx'),
+        cy: extractAttr(attrs, 'cy'),
+        r: extractAttr(attrs, 'r'),
+        fill: 'none',
         stroke: ICON_STROKE,
         strokeWidth: ICON_STROKE_WIDTH,
       },
@@ -155,15 +156,15 @@ function parseLines(svgString: string): SatoriElement[] {
   for (const match of svgString.matchAll(/<line\s+([^>]+)\/>/g)) {
     const attrs = match[1];
     elements.push({
-      type: "line",
+      type: 'line',
       props: {
-        x1: extractAttr(attrs, "x1"),
-        y1: extractAttr(attrs, "y1"),
-        x2: extractAttr(attrs, "x2"),
-        y2: extractAttr(attrs, "y2"),
+        x1: extractAttr(attrs, 'x1'),
+        y1: extractAttr(attrs, 'y1'),
+        x2: extractAttr(attrs, 'x2'),
+        y2: extractAttr(attrs, 'y2'),
         stroke: ICON_STROKE,
         strokeWidth: ICON_STROKE_WIDTH,
-        strokeLinecap: "round",
+        strokeLinecap: 'round',
       },
     });
   }
@@ -174,14 +175,14 @@ function parsePolylines(svgString: string): SatoriElement[] {
   const elements: SatoriElement[] = [];
   for (const match of svgString.matchAll(/<polyline\s+points="([^"]+)"\s*\/>/g)) {
     elements.push({
-      type: "polyline",
+      type: 'polyline',
       props: {
         points: match[1],
-        fill: "none",
+        fill: 'none',
         stroke: ICON_STROKE,
         strokeWidth: ICON_STROKE_WIDTH,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
       },
     });
   }
@@ -214,12 +215,12 @@ function createIconElement(type: string, size = 20): SatoriElement | null {
   const children = parseSvgChildren(svgString);
 
   return {
-    type: "svg",
+    type: 'svg',
     props: {
       width: size,
       height: size,
-      viewBox: "0 0 24 24",
-      fill: "none",
+      viewBox: '0 0 24 24',
+      fill: 'none',
       children,
     },
   };
@@ -244,14 +245,14 @@ interface SatoriElement {
 function createTypeBadge(type: string): SatoriElement {
   const iconElement = createIconElement(type, 20);
   const typeLabel: SatoriElement = {
-    type: "span",
+    type: 'span',
     props: {
       style: {
-        fontSize: "18px",
+        fontSize: '18px',
         fontWeight: 500,
-        textTransform: "uppercase",
-        letterSpacing: "0.1em",
-        color: "#737373",
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        color: '#737373',
       },
       children: type,
     },
@@ -260,12 +261,12 @@ function createTypeBadge(type: string): SatoriElement {
   const badgeChildren: SatoriElement[] = iconElement ? [iconElement, typeLabel] : [typeLabel];
 
   return {
-    type: "div",
+    type: 'div',
     props: {
       style: {
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
       },
       children: badgeChildren,
     },
@@ -277,40 +278,40 @@ function createOgImageMarkup(title: string, description: string, type: string): 
   const truncatedDescription = truncateText(description, 140);
 
   return {
-    type: "div",
+    type: 'div',
     props: {
       style: {
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        padding: "60px",
-        backgroundColor: "#0a0a0a",
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '60px',
+        backgroundColor: '#0a0a0a',
       },
       children: [
         // Top section: Type badge with icon
         createTypeBadge(type),
         // Middle section: Title and description
         {
-          type: "div",
+          type: 'div',
           props: {
             style: {
-              display: "flex",
-              flexDirection: "column",
+              display: 'flex',
+              flexDirection: 'column',
               flex: 1,
-              justifyContent: "center",
-              gap: "24px",
+              justifyContent: 'center',
+              gap: '24px',
             },
             children: [
               {
-                type: "h1",
+                type: 'h1',
                 props: {
                   style: {
-                    fontSize: truncatedTitle.length > 50 ? "48px" : "56px",
+                    fontSize: truncatedTitle.length > 50 ? '48px' : '56px',
                     fontWeight: 500,
                     lineHeight: 1.2,
-                    color: "#fafafa",
+                    color: '#fafafa',
                     margin: 0,
                   },
                   children: truncatedTitle,
@@ -319,12 +320,12 @@ function createOgImageMarkup(title: string, description: string, type: string): 
               ...(truncatedDescription
                 ? [
                     {
-                      type: "p",
+                      type: 'p',
                       props: {
                         style: {
-                          fontSize: "24px",
+                          fontSize: '24px',
                           lineHeight: 1.5,
-                          color: "#a3a3a3",
+                          color: '#a3a3a3',
                           margin: 0,
                         },
                         children: truncatedDescription,
@@ -337,54 +338,54 @@ function createOgImageMarkup(title: string, description: string, type: string): 
         },
         // Bottom section: Branding
         {
-          type: "div",
+          type: 'div',
           props: {
             style: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderTop: "1px solid #262626",
-              paddingTop: "24px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderTop: '1px solid #262626',
+              paddingTop: '24px',
             },
             children: [
               {
-                type: "div",
+                type: 'div',
                 props: {
                   style: {
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
                   },
                   children: [
                     {
-                      type: "span",
+                      type: 'span',
                       props: {
-                        style: { fontSize: "28px" },
-                        children: "🧠",
+                        style: { fontSize: '28px' },
+                        children: '🧠',
                       },
                     },
                     {
-                      type: "span",
+                      type: 'span',
                       props: {
                         style: {
-                          fontSize: "20px",
+                          fontSize: '20px',
                           fontWeight: 500,
-                          color: "#fafafa",
+                          color: '#fafafa',
                         },
-                        children: "Second Brain",
+                        children: 'Second Brain',
                       },
                     },
                   ],
                 },
               },
               {
-                type: "span",
+                type: 'span',
                 props: {
                   style: {
-                    fontSize: "18px",
-                    color: "#525252",
+                    fontSize: '18px',
+                    color: '#525252',
                   },
-                  children: "alexop.dev",
+                  children: 'alexop.dev',
                 },
               },
             ],
@@ -406,17 +407,17 @@ function parseFrontmatter(content: string): Frontmatter {
   if (!frontmatterMatch) return {};
 
   const frontmatter: Frontmatter = {};
-  const lines = frontmatterMatch[1].split("\n");
+  const lines = frontmatterMatch[1].split('\n');
 
   for (const line of lines) {
     const match = line.match(/^(\w+):\s*(.+)$/);
     if (match) {
       const [, key, value] = match;
       // Remove quotes if present
-      const cleanValue = value.replace(/^["']|["']$/g, "");
-      if (key === "title") frontmatter.title = cleanValue;
-      if (key === "type") frontmatter.type = cleanValue;
-      if (key === "summary") frontmatter.summary = cleanValue;
+      const cleanValue = value.replace(/^["']|["']$/g, '');
+      if (key === 'title') frontmatter.title = cleanValue;
+      if (key === 'type') frontmatter.type = cleanValue;
+      if (key === 'summary') frontmatter.summary = cleanValue;
     }
   }
 
@@ -435,13 +436,13 @@ async function generateOgImage(
     width: 1200,
     height: 630,
     fonts: [
-      { name: "Geist", data: fonts.regular, weight: 400, style: "normal" },
-      { name: "Geist", data: fonts.medium, weight: 500, style: "normal" },
+      { name: 'Geist', data: fonts.regular, weight: 400, style: 'normal' },
+      { name: 'Geist', data: fonts.medium, weight: 500, style: 'normal' },
     ],
   });
 
   const resvg = new Resvg(svg, {
-    fitTo: { mode: "width", value: 1200 },
+    fitTo: { mode: 'width', value: 1200 },
   });
 
   const pngData = resvg.render();
@@ -462,7 +463,7 @@ async function findMarkdownFiles(dir: string, files: string[] = []): Promise<str
       continue;
     }
 
-    if (entry.name.endsWith(".md")) {
+    if (entry.name.endsWith('.md')) {
       files.push(fullPath);
     }
   }
@@ -472,13 +473,13 @@ async function findMarkdownFiles(dir: string, files: string[] = []): Promise<str
 
 function getSlugFromPath(filePath: string): string {
   // Get relative path from content dir
-  const relativePath = filePath.replace(`${CONTENT_DIR}/`, "");
+  const relativePath = filePath.replace(`${CONTENT_DIR}/`, '');
   // Remove .md extension and convert to slug
-  return basename(relativePath, ".md");
+  return basename(relativePath, '.md');
 }
 
 async function main() {
-  console.log("Generating OG images...");
+  console.log('Generating OG images...');
 
   // Ensure output directory exists
   await mkdir(OUTPUT_DIR, { recursive: true });
@@ -506,7 +507,7 @@ async function main() {
       continue;
     }
 
-    const content = await readFile(filePath, "utf-8").catch((error) => {
+    const content = await readFile(filePath, 'utf-8').catch((error) => {
       console.error(`  Error reading ${slug}:`, error);
       errors++;
       return null;
@@ -523,8 +524,8 @@ async function main() {
 
     const png = await generateOgImage(
       frontmatter.title,
-      frontmatter.summary || "",
-      frontmatter.type || "note",
+      frontmatter.summary || '',
+      frontmatter.type || 'note',
       fonts,
     ).catch((error) => {
       console.error(`  Error generating OG image for ${slug}:`, error);

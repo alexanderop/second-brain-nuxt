@@ -1,9 +1,10 @@
-import { expect, test } from "@playwright/test";
-import { AuthorsPage } from "./pages/AuthorsPage";
-import { AuthorDetailPage } from "./pages/AuthorDetailPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Authors", () => {
-  test("authors index page loads with author chips", async ({ page }) => {
+import { AuthorDetailPage } from './pages/AuthorDetailPage';
+import { AuthorsPage } from './pages/AuthorsPage';
+
+test.describe('Authors', () => {
+  test('authors index page loads with author chips', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -18,7 +19,7 @@ test.describe("Authors", () => {
     await expect(authorsPage.firstAuthorChip).toBeVisible();
   });
 
-  test("authors display content count badges", async ({ page }) => {
+  test('authors display content count badges', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -33,7 +34,7 @@ test.describe("Authors", () => {
     expect(firstAuthorText).toMatch(/\d+/);
   });
 
-  test("can navigate from author chip to author detail page", async ({ page }) => {
+  test('can navigate from author chip to author detail page', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -43,17 +44,17 @@ test.describe("Authors", () => {
       return;
     }
 
-    const href = await authorsPage.firstAuthorChip.getAttribute("href");
+    const href = await authorsPage.firstAuthorChip.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/authors/**"),
+      page.waitForURL(href || '/authors/**'),
       authorsPage.firstAuthorChip.click(),
     ]);
 
     await expect(page).toHaveURL(/\/authors\//);
   });
 
-  test("author detail page shows notes section if author has notes", async ({ page }) => {
+  test('author detail page shows notes section if author has notes', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -63,10 +64,10 @@ test.describe("Authors", () => {
       return;
     }
 
-    const href = await authorsPage.firstAuthorChip.getAttribute("href");
+    const href = await authorsPage.firstAuthorChip.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/authors/**"),
+      page.waitForURL(href || '/authors/**'),
       authorsPage.firstAuthorChip.click(),
     ]);
 
@@ -82,7 +83,7 @@ test.describe("Authors", () => {
     }
   });
 
-  test("author detail page shows social links when available", async ({ page }) => {
+  test('author detail page shows social links when available', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -92,10 +93,10 @@ test.describe("Authors", () => {
       return;
     }
 
-    const href = await authorsPage.firstAuthorChip.getAttribute("href");
+    const href = await authorsPage.firstAuthorChip.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/authors/**"),
+      page.waitForURL(href || '/authors/**'),
       authorsPage.firstAuthorChip.click(),
     ]);
 
@@ -105,12 +106,12 @@ test.describe("Authors", () => {
     const socialLinkCount = await authorDetailPage.socialLinks.count();
     if (socialLinkCount > 0) {
       const firstLink = authorDetailPage.socialLinks.first();
-      const linkHref = await firstLink.getAttribute("href");
+      const linkHref = await firstLink.getAttribute('href');
       expect(linkHref).toMatch(/^https?:\/\//);
     }
   });
 
-  test("can navigate back to authors index", async ({ page }) => {
+  test('can navigate back to authors index', async ({ page }) => {
     const authorsPage = new AuthorsPage(page);
     await authorsPage.goto();
 
@@ -120,17 +121,17 @@ test.describe("Authors", () => {
       return;
     }
 
-    const href = await authorsPage.firstAuthorChip.getAttribute("href");
+    const href = await authorsPage.firstAuthorChip.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/authors/**"),
+      page.waitForURL(href || '/authors/**'),
       authorsPage.firstAuthorChip.click(),
     ]);
 
     const authorDetailPage = new AuthorDetailPage(page);
 
-    await Promise.all([page.waitForURL("/authors"), authorDetailPage.backLink.click()]);
+    await Promise.all([page.waitForURL('/authors'), authorDetailPage.backLink.click()]);
 
-    await expect(page).toHaveURL("/authors");
+    await expect(page).toHaveURL('/authors');
   });
 });

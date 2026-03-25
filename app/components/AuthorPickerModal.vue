@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { UModal, UButton } from "#components";
-import { defineShortcuts } from "#imports";
-import { getAuthorUrl } from "~/composables/useAuthorShortcut";
+import { ref, watch } from 'vue';
+
+import { UModal, UButton } from '#components';
+import { defineShortcuts } from '#imports';
+import { getAuthorUrl } from '~/composables/useAuthorShortcut';
 
 const props = defineProps<{
   authors: string[];
 }>();
 
-const open = defineModel<boolean>("open", { default: false });
+const open = defineModel<boolean>('open', { default: false });
 const selectedIndex = ref(0);
 
 function openAuthor(slug: string) {
-  window.open(getAuthorUrl(slug), "_blank");
+  window.open(getAuthorUrl(slug), '_blank');
   open.value = false;
 }
 

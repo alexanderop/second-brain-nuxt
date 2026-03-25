@@ -22,7 +22,7 @@ export interface FeatureDefinition {
 export const featuresConfig = {
   chat: {
     enabled: (ctx: FeatureRuleContext) => ctx.isDev,
-    description: "AI-powered chat for querying knowledge base",
+    description: 'AI-powered chat for querying knowledge base',
   },
 } as const satisfies Record<string, FeatureDefinition>;
 

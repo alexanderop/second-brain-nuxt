@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class HomePage {
   readonly page: Page;
@@ -10,15 +10,15 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole("heading", { name: "Recent Additions", level: 1 });
-    this.contentList = page.locator("article").first().locator("..");
-    this.contentCards = page.locator("article");
-    this.firstContentCard = page.locator("article").first();
-    this.noContentMessage = page.getByText("No content found.");
+    this.heading = page.getByRole('heading', { name: 'Recent Additions', level: 1 });
+    this.contentList = page.locator('article').first().locator('..');
+    this.contentCards = page.locator('article');
+    this.firstContentCard = page.locator('article').first();
+    this.noContentMessage = page.getByText('No content found.');
   }
 
   async goto() {
-    await this.page.goto("/", { waitUntil: "networkidle" });
+    await this.page.goto('/', { waitUntil: 'networkidle' });
   }
 
   async waitForContent() {
@@ -29,10 +29,10 @@ export class HomePage {
 
   async clickFirstContentCard() {
     // Click the main link (the one wrapping the card content)
-    await this.firstContentCard.getByRole("link").first().click();
+    await this.firstContentCard.getByRole('link').first().click();
   }
 
   getContentCardByTitle(title: string): Locator {
-    return this.page.locator("article").filter({ hasText: title });
+    return this.page.locator('article').filter({ hasText: title });
   }
 }

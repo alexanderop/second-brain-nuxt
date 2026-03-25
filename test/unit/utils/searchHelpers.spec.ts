@@ -1,37 +1,38 @@
-import { describe, expect, it } from "vitest";
-import { transformPodcastToSearchItem } from "../../../app/utils/searchHelpers";
+import { describe, expect, it } from 'vitest';
 
-describe("transformPodcastToSearchItem", () => {
-  it("transforms podcast to CommandPaletteItem format", () => {
+import { transformPodcastToSearchItem } from '../../../app/utils/searchHelpers';
+
+describe('transformPodcastToSearchItem', () => {
+  it('transforms podcast to CommandPaletteItem format', () => {
     const podcast = {
-      name: "Huberman Lab",
-      slug: "huberman-lab",
-      description: "Science and science-based tools",
-      artwork: "https://example.com/artwork.jpg",
+      name: 'Huberman Lab',
+      slug: 'huberman-lab',
+      description: 'Science and science-based tools',
+      artwork: 'https://example.com/artwork.jpg',
     };
 
     const result = transformPodcastToSearchItem(podcast);
 
     expect(result).toEqual({
-      id: "podcast:huberman-lab",
-      label: "Huberman Lab",
-      description: "Podcast",
-      avatar: { src: "https://example.com/artwork.jpg", alt: "Huberman Lab" },
+      id: 'podcast:huberman-lab',
+      label: 'Huberman Lab',
+      description: 'Podcast',
+      avatar: { src: 'https://example.com/artwork.jpg', alt: 'Huberman Lab' },
       icon: undefined,
-      to: "/podcasts/huberman-lab",
-      slot: "podcast",
+      to: '/podcasts/huberman-lab',
+      slot: 'podcast',
     });
   });
 
-  it("uses fallback icon when no artwork", () => {
+  it('uses fallback icon when no artwork', () => {
     const podcast = {
-      name: "My Podcast",
-      slug: "my-podcast",
+      name: 'My Podcast',
+      slug: 'my-podcast',
     };
 
     const result = transformPodcastToSearchItem(podcast);
 
     expect(result.avatar).toBeUndefined();
-    expect(result.icon).toBe("i-lucide-podcast");
+    expect(result.icon).toBe('i-lucide-podcast');
   });
 });

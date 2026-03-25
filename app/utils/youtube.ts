@@ -45,7 +45,7 @@ export function getYouTubeEmbedUrl(videoId: string): string {
  */
 export function getYouTubeThumbnailUrl(
   videoId: string,
-  quality: "maxresdefault" | "hqdefault" | "mqdefault" | "sddefault" = "hqdefault",
+  quality: 'maxresdefault' | 'hqdefault' | 'mqdefault' | 'sddefault' = 'hqdefault',
 ): string {
   return `https://i.ytimg.com/vi/${videoId}/${quality}.jpg`;
 }

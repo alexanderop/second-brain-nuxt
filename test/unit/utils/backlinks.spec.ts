@@ -1,11 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from 'vitest';
+
 import {
   buildContentMap,
   addBacklinksForItem,
   buildBacklinksIndex,
   type BacklinksIndex,
-} from "../../../server/utils/backlinks";
-import type { ContentItem } from "../../../server/utils/graph";
+} from '../../../server/utils/backlinks';
+import type { ContentItem } from '../../../server/utils/graph';
 
 // Test fixtures with proper typing
 const fixtures: Record<string, ContentItem[]> = {
@@ -13,236 +14,236 @@ const fixtures: Record<string, ContentItem[]> = {
 
   linkedNotes: [
     {
-      path: "/note-a",
-      stem: "note-a",
-      title: "Note A",
-      type: "note",
+      path: '/note-a',
+      stem: 'note-a',
+      title: 'Note A',
+      type: 'note',
       body: {
-        type: "minimark",
-        value: [["p", {}, "Text with ", ["a", { href: "/note-b" }, "link to B"]]],
+        type: 'minimark',
+        value: [['p', {}, 'Text with ', ['a', { href: '/note-b' }, 'link to B']]],
       },
     },
     {
-      path: "/note-b",
-      stem: "note-b",
-      title: "Note B",
-      type: "article",
-      body: { type: "minimark", value: [] },
+      path: '/note-b',
+      stem: 'note-b',
+      title: 'Note B',
+      type: 'article',
+      body: { type: 'minimark', value: [] },
     },
   ],
 
   multipleLinks: [
     {
-      path: "/atomic-habits",
-      stem: "atomic-habits",
-      title: "Atomic Habits",
-      type: "book",
+      path: '/atomic-habits',
+      stem: 'atomic-habits',
+      title: 'Atomic Habits',
+      type: 'book',
       body: {
-        type: "minimark",
+        type: 'minimark',
         value: [
           [
-            "p",
+            'p',
             {},
-            "Links to ",
-            ["a", { href: "/deep-work" }, "Deep Work"],
-            " and ",
-            ["a", { href: "/thinking-fast-and-slow" }, "Thinking Fast"],
+            'Links to ',
+            ['a', { href: '/deep-work' }, 'Deep Work'],
+            ' and ',
+            ['a', { href: '/thinking-fast-and-slow' }, 'Thinking Fast'],
           ],
         ],
       },
     },
     {
-      path: "/deep-work",
-      stem: "deep-work",
-      title: "Deep Work",
-      type: "book",
+      path: '/deep-work',
+      stem: 'deep-work',
+      title: 'Deep Work',
+      type: 'book',
       body: {
-        type: "minimark",
-        value: [["p", {}, "References ", ["a", { href: "/atomic-habits" }, "Atomic Habits"]]],
+        type: 'minimark',
+        value: [['p', {}, 'References ', ['a', { href: '/atomic-habits' }, 'Atomic Habits']]],
       },
     },
     {
-      path: "/thinking-fast-and-slow",
-      stem: "thinking-fast-and-slow",
-      title: "Thinking Fast and Slow",
-      type: "book",
-      body: { type: "minimark", value: [] },
+      path: '/thinking-fast-and-slow',
+      stem: 'thinking-fast-and-slow',
+      title: 'Thinking Fast and Slow',
+      type: 'book',
+      body: { type: 'minimark', value: [] },
     },
   ],
 };
 
-describe("server/utils/backlinks", () => {
-  describe("buildContentMap", () => {
-    it("builds map with title and type", () => {
+describe('server/utils/backlinks', () => {
+  describe('buildContentMap', () => {
+    it('builds map with title and type', () => {
       const contentMap = buildContentMap(fixtures.linkedNotes);
 
-      expect(contentMap.get("note-a")).toEqual({
-        title: "Note A",
-        type: "note",
+      expect(contentMap.get('note-a')).toEqual({
+        title: 'Note A',
+        type: 'note',
       });
-      expect(contentMap.get("note-b")).toEqual({
-        title: "Note B",
-        type: "article",
+      expect(contentMap.get('note-b')).toEqual({
+        title: 'Note B',
+        type: 'article',
       });
     });
 
-    it("defaults to slug for title if missing", () => {
-      const content: ContentItem[] = [{ path: "/untitled" }];
+    it('defaults to slug for title if missing', () => {
+      const content: ContentItem[] = [{ path: '/untitled' }];
       const contentMap = buildContentMap(content);
 
-      expect(contentMap.get("untitled")?.title).toBe("untitled");
+      expect(contentMap.get('untitled')?.title).toBe('untitled');
     });
 
-    it("defaults to note for type if missing", () => {
-      const content: ContentItem[] = [{ path: "/untitled" }];
+    it('defaults to note for type if missing', () => {
+      const content: ContentItem[] = [{ path: '/untitled' }];
       const contentMap = buildContentMap(content);
 
-      expect(contentMap.get("untitled")?.type).toBe("note");
+      expect(contentMap.get('untitled')?.type).toBe('note');
     });
   });
 
-  describe("addBacklinksForItem", () => {
-    it("adds backlinks for linked items", () => {
+  describe('addBacklinksForItem', () => {
+    it('adds backlinks for linked items', () => {
       const item = fixtures.linkedNotes[0];
-      const sourceMeta = { title: "Note A", type: "note" };
+      const sourceMeta = { title: 'Note A', type: 'note' };
       const backlinksIndex: BacklinksIndex = {};
 
-      addBacklinksForItem(item, sourceMeta, "note-a", backlinksIndex);
+      addBacklinksForItem(item, sourceMeta, 'note-a', backlinksIndex);
 
-      expect(backlinksIndex["note-b"]).toEqual([{ slug: "note-a", title: "Note A", type: "note" }]);
+      expect(backlinksIndex['note-b']).toEqual([{ slug: 'note-a', title: 'Note A', type: 'note' }]);
     });
 
-    it("ignores self-links", () => {
+    it('ignores self-links', () => {
       const item: ContentItem = {
-        path: "/note-a",
+        path: '/note-a',
         body: {
-          type: "minimark",
-          value: [["p", {}, ["a", { href: "/note-a" }, "self"]]],
+          type: 'minimark',
+          value: [['p', {}, ['a', { href: '/note-a' }, 'self']]],
         },
       };
-      const sourceMeta = { title: "Note A", type: "note" };
+      const sourceMeta = { title: 'Note A', type: 'note' };
       const backlinksIndex: BacklinksIndex = {};
 
-      addBacklinksForItem(item, sourceMeta, "note-a", backlinksIndex);
+      addBacklinksForItem(item, sourceMeta, 'note-a', backlinksIndex);
 
-      expect(backlinksIndex["note-a"]).toBeUndefined();
+      expect(backlinksIndex['note-a']).toBeUndefined();
     });
 
-    it("accumulates multiple backlinks", () => {
+    it('accumulates multiple backlinks', () => {
       const backlinksIndex: BacklinksIndex = {};
 
       // First note links to target
       addBacklinksForItem(
         {
-          path: "/note-a",
-          body: { type: "minimark", value: [["p", {}, ["a", { href: "/target" }, "link"]]] },
+          path: '/note-a',
+          body: { type: 'minimark', value: [['p', {}, ['a', { href: '/target' }, 'link']]] },
         },
-        { title: "Note A", type: "note" },
-        "note-a",
+        { title: 'Note A', type: 'note' },
+        'note-a',
         backlinksIndex,
       );
 
       // Second note also links to target
       addBacklinksForItem(
         {
-          path: "/note-b",
-          body: { type: "minimark", value: [["p", {}, ["a", { href: "/target" }, "link"]]] },
+          path: '/note-b',
+          body: { type: 'minimark', value: [['p', {}, ['a', { href: '/target' }, 'link']]] },
         },
-        { title: "Note B", type: "article" },
-        "note-b",
+        { title: 'Note B', type: 'article' },
+        'note-b',
         backlinksIndex,
       );
 
-      expect(backlinksIndex["target"]).toHaveLength(2);
-      expect(backlinksIndex["target"]).toEqual([
-        { slug: "note-a", title: "Note A", type: "note" },
-        { slug: "note-b", title: "Note B", type: "article" },
+      expect(backlinksIndex['target']).toHaveLength(2);
+      expect(backlinksIndex['target']).toEqual([
+        { slug: 'note-a', title: 'Note A', type: 'note' },
+        { slug: 'note-b', title: 'Note B', type: 'article' },
       ]);
     });
   });
 
-  describe("buildBacklinksIndex", () => {
-    it("returns empty object for no content", () => {
+  describe('buildBacklinksIndex', () => {
+    it('returns empty object for no content', () => {
       const result = buildBacklinksIndex(fixtures.empty);
 
       expect(result).toEqual({});
     });
 
-    it("builds index from linked notes", () => {
+    it('builds index from linked notes', () => {
       const result = buildBacklinksIndex(fixtures.linkedNotes);
 
-      expect(result["note-b"]).toEqual([{ slug: "note-a", title: "Note A", type: "note" }]);
+      expect(result['note-b']).toEqual([{ slug: 'note-a', title: 'Note A', type: 'note' }]);
     });
 
-    it("handles bidirectional links", () => {
+    it('handles bidirectional links', () => {
       const result = buildBacklinksIndex(fixtures.multipleLinks);
 
       // deep-work is linked by atomic-habits
-      expect(result["deep-work"]).toContainEqual({
-        slug: "atomic-habits",
-        title: "Atomic Habits",
-        type: "book",
+      expect(result['deep-work']).toContainEqual({
+        slug: 'atomic-habits',
+        title: 'Atomic Habits',
+        type: 'book',
       });
 
       // atomic-habits is linked by deep-work
-      expect(result["atomic-habits"]).toContainEqual({
-        slug: "deep-work",
-        title: "Deep Work",
-        type: "book",
+      expect(result['atomic-habits']).toContainEqual({
+        slug: 'deep-work',
+        title: 'Deep Work',
+        type: 'book',
       });
     });
 
-    it("handles multiple incoming links", () => {
+    it('handles multiple incoming links', () => {
       const result = buildBacklinksIndex(fixtures.multipleLinks);
 
       // atomic-habits links to both deep-work and thinking-fast-and-slow
-      expect(result["deep-work"]).toContainEqual({
-        slug: "atomic-habits",
-        title: "Atomic Habits",
-        type: "book",
+      expect(result['deep-work']).toContainEqual({
+        slug: 'atomic-habits',
+        title: 'Atomic Habits',
+        type: 'book',
       });
-      expect(result["thinking-fast-and-slow"]).toContainEqual({
-        slug: "atomic-habits",
-        title: "Atomic Habits",
-        type: "book",
+      expect(result['thinking-fast-and-slow']).toContainEqual({
+        slug: 'atomic-habits',
+        title: 'Atomic Habits',
+        type: 'book',
       });
     });
 
-    it("handles items with empty slug gracefully", () => {
+    it('handles items with empty slug gracefully', () => {
       // Item with empty path returns empty slug
       const content: ContentItem[] = [
         {
-          path: "",
-          body: { type: "minimark", value: [["p", {}, ["a", { href: "/target" }, "link"]]] },
+          path: '',
+          body: { type: 'minimark', value: [['p', {}, ['a', { href: '/target' }, 'link']]] },
         },
-        { path: "/target", title: "Target", type: "note", body: { type: "minimark", value: [] } },
+        { path: '/target', title: 'Target', type: 'note', body: { type: 'minimark', value: [] } },
       ];
 
       // Should process without crashing, empty slug item links to target
       const result = buildBacklinksIndex(content);
-      expect(result["target"]).toBeDefined();
-      expect(result["target"][0].slug).toBe("");
+      expect(result['target']).toBeDefined();
+      expect(result['target'][0].slug).toBe('');
     });
 
-    it("deduplicates links from same source to same target", () => {
+    it('deduplicates links from same source to same target', () => {
       const content: ContentItem[] = [
         {
-          path: "/note-a",
-          title: "Note A",
+          path: '/note-a',
+          title: 'Note A',
           body: {
-            type: "minimark",
+            type: 'minimark',
             value: [
-              ["p", {}, ["a", { href: "/target" }, "link1"], ["a", { href: "/target" }, "link2"]],
+              ['p', {}, ['a', { href: '/target' }, 'link1'], ['a', { href: '/target' }, 'link2']],
             ],
           },
         },
-        { path: "/target", title: "Target", body: { type: "minimark", value: [] } },
+        { path: '/target', title: 'Target', body: { type: 'minimark', value: [] } },
       ];
 
       const result = buildBacklinksIndex(content);
 
       // Should only have one backlink entry despite two links
-      expect(result["target"]).toHaveLength(1);
+      expect(result['target']).toHaveLength(1);
     });
   });
 });

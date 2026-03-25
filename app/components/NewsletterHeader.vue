@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NuxtLink, UButton, UIcon } from "#components";
-import type { NewsletterItem } from "~/types/content";
+import { NuxtLink, UButton, UIcon } from '#components';
+import type { NewsletterItem } from '~/types/content';
 
 defineProps<{
   newsletter: NewsletterItem;
@@ -9,10 +9,10 @@ defineProps<{
 
 function handleImageError(event: Event) {
   if (!(event.target instanceof HTMLImageElement)) return;
-  event.target.style.display = "none";
+  event.target.style.display = 'none';
   const fallback = event.target.nextElementSibling;
   if (fallback instanceof HTMLElement) {
-    fallback.style.display = "flex";
+    fallback.style.display = 'flex';
   }
 }
 </script>
@@ -25,9 +25,16 @@ function handleImageError(event: Event) {
         class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
         aria-label="Back to newsletters"
       >
-        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
+        <UIcon
+          name="i-lucide-arrow-left"
+          class="size-5"
+          aria-hidden="true"
+        />
       </NuxtLink>
-      <UIcon name="i-lucide-newspaper" class="size-6" />
+      <UIcon
+        name="i-lucide-newspaper"
+        class="size-6"
+      />
       <span class="text-[var(--ui-text-muted)]">Newsletter</span>
     </div>
 
@@ -44,13 +51,19 @@ function handleImageError(event: Event) {
           v-if="!newsletter.logo"
           class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
         >
-          <UIcon name="i-lucide-newspaper" class="size-16" />
+          <UIcon
+            name="i-lucide-newspaper"
+            class="size-16"
+          />
         </div>
         <div
           v-else
           class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
         >
-          <UIcon name="i-lucide-newspaper" class="size-16" />
+          <UIcon
+            name="i-lucide-newspaper"
+            class="size-16"
+          />
         </div>
       </div>
 
@@ -59,13 +72,22 @@ function handleImageError(event: Event) {
           {{ newsletter.name }}
         </h1>
 
-        <p v-if="newsletter.description" class="text-[var(--ui-text-muted)] mb-4">
+        <p
+          v-if="newsletter.description"
+          class="text-[var(--ui-text-muted)] mb-4"
+        >
           {{ newsletter.description }}
         </p>
 
-        <div v-if="newsletter.authors.length" class="mb-4 text-[var(--ui-text-muted)]">
+        <div
+          v-if="newsletter.authors.length"
+          class="mb-4 text-[var(--ui-text-muted)]"
+        >
           <span>by </span>
-          <template v-for="(authorSlug, index) in newsletter.authors" :key="authorSlug">
+          <template
+            v-for="(authorSlug, index) in newsletter.authors"
+            :key="authorSlug"
+          >
             <NuxtLink
               :to="`/authors/${encodeURIComponent(authorSlug)}`"
               class="underline text-[var(--ui-text)]"
@@ -76,7 +98,10 @@ function handleImageError(event: Event) {
           </template>
         </div>
 
-        <div v-if="newsletter.website" class="flex flex-wrap items-center gap-2">
+        <div
+          v-if="newsletter.website"
+          class="flex flex-wrap items-center gap-2"
+        >
           <UButton
             :to="newsletter.website"
             target="_blank"

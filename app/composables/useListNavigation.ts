@@ -1,6 +1,7 @@
-import type { Ref } from "vue";
-import { ref, watch, readonly } from "vue";
-import { defineShortcuts, navigateTo } from "#imports";
+import type { Ref } from 'vue';
+import { ref, watch, readonly } from 'vue';
+
+import { defineShortcuts, navigateTo } from '#imports';
 
 interface NavigableItem {
   stem?: string;
@@ -15,7 +16,7 @@ export function useListNavigation<T extends NavigableItem>(items: Ref<T[] | null
     if (item.path) return item.path;
     if (item.stem) return `/${item.stem}`;
     if (item.id) return item.id;
-    return "/";
+    return '/';
   }
 
   defineShortcuts({

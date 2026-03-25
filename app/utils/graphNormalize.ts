@@ -3,7 +3,7 @@ import type {
   FullGraphData,
   UnifiedGraphData,
   UnifiedGraphNode,
-} from "~/types/graph";
+} from '~/types/graph';
 
 /**
  * Normalize NoteGraph format to unified format

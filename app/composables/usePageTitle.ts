@@ -1,5 +1,6 @@
-import { useSeoMeta } from "#imports";
-import { siteConfig } from "~~/config/site";
+import { siteConfig } from '~~/config/site';
+
+import { useSeoMeta } from '#imports';
 
 /**
  * Sets a consistent page title with the site name suffix
@@ -22,7 +23,7 @@ import { siteConfig } from "~~/config/site";
  * // Results in: "Second Brain"
  */
 export function usePageTitle(title?: string | (() => string)) {
-  if (typeof title === "function") {
+  if (typeof title === 'function') {
     // Reactive title - use getter
     useSeoMeta({
       title: () => {

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import BaseGraph from "~/components/BaseGraph.client.vue";
-import type { FullGraphData, UnifiedGraphNode } from "~/types/graph";
-import type { BaseGraphOptions } from "./BaseGraph.client.vue";
+import { ref } from 'vue';
+
+import BaseGraph from '~/components/BaseGraph.client.vue';
+import type { FullGraphData, UnifiedGraphNode } from '~/types/graph';
+
+import type { BaseGraphOptions } from './BaseGraph.client.vue';
 
 const props = defineProps<{
   graphData?: FullGraphData | null;
@@ -27,7 +29,7 @@ const graphOptions: BaseGraphOptions = {
   breathing: true,
   persistZoom: true,
   zoomExtent: [0.1, 4],
-  labelVisibility: "progressive",
+  labelVisibility: 'progressive',
 };
 
 defineExpose({

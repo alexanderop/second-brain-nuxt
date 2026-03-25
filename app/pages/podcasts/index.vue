@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { UIcon } from "#components";
-import PodcastCard from "~/components/PodcastCard.vue";
-import { isPodcastItem } from "~/types/content";
+import { computed } from 'vue';
+
+import { UIcon } from '#components';
+import { useAsyncData, queryCollection } from '#imports';
+import PodcastCard from '~/components/PodcastCard.vue';
+import { usePageTitle } from '~/composables/usePageTitle';
+import { isPodcastItem } from '~/types/content';
 
 interface EpisodeData {
   podcast?: string;
   date?: string;
 }
 
-const { data: allPodcasts } = await useAsyncData("all-podcasts", () => {
-  return queryCollection("podcasts").all();
+const { data: allPodcasts } = await useAsyncData('all-podcasts', () => {
+  return queryCollection('podcasts').all();
 });
 
-const { data: allEpisodes } = await useAsyncData("all-podcast-episodes", () => {
-  return queryCollection("content").where("type", "=", "podcast").select("podcast", "date").all();
+const { data: allEpisodes } = await useAsyncData('all-podcast-episodes', () => {
+  return queryCollection('content').where('type', '=', 'podcast').select('podcast', 'date').all();
 });
 
 interface PodcastStats {
@@ -45,7 +46,7 @@ const podcastStats = computed(() => {
 });
 
 function isPodcastEpisode(ep: unknown): ep is EpisodeData {
-  return typeof ep === "object" && ep !== null;
+  return typeof ep === 'object' && ep !== null;
 }
 
 const activePodcasts = computed(() => {
@@ -54,23 +55,29 @@ const activePodcasts = computed(() => {
   return podcasts
     .filter((p) => (stats[p.slug]?.count ?? 0) > 0)
     .sort((a, b) => {
-      const dateA = stats[a.slug]?.mostRecent ?? "";
-      const dateB = stats[b.slug]?.mostRecent ?? "";
+      const dateA = stats[a.slug]?.mostRecent ?? '';
+      const dateB = stats[b.slug]?.mostRecent ?? '';
       return dateB.localeCompare(dateA);
     });
 });
 
-usePageTitle("Podcasts");
+usePageTitle('Podcasts');
 </script>
 
 <template>
   <div>
     <div class="flex items-center gap-3 mb-6">
-      <UIcon name="i-lucide-podcast" class="size-6" />
+      <UIcon
+        name="i-lucide-podcast"
+        class="size-6"
+      />
       <h1 class="text-2xl font-semibold">Podcasts</h1>
     </div>
 
-    <div v-if="activePodcasts.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      v-if="activePodcasts.length"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
       <PodcastCard
         v-for="podcast in activePodcasts"
         :key="podcast.slug"
@@ -79,7 +86,10 @@ usePageTitle("Podcasts");
       />
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
+    <div
+      v-else
+      class="text-center py-8 text-[var(--ui-text-muted)]"
+    >
       No podcasts with episodes found.
     </div>
   </div>

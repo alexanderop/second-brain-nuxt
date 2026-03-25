@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 /**
  * Accessibility testing utilities using vitest-axe
  *
@@ -15,12 +16,11 @@
  * Note: Automated tests catch ~30% of a11y issues.
  * Manual testing and user feedback remain essential.
  */
-import { axe } from "vitest-axe";
-import * as matchers from "vitest-axe/matchers";
-import { expect } from "vitest";
+import { axe } from 'vitest-axe';
+import * as matchers from 'vitest-axe/matchers';
 
 // Augment Vitest's Assertion interface for vitest-axe matchers
-declare module "vitest" {
+declare module 'vitest' {
   interface Assertion<T> extends CustomMatchers<T> {}
 }
 

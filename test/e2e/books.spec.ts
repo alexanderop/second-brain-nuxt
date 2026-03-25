@@ -1,8 +1,9 @@
-import { expect, test } from "@playwright/test";
-import { BooksPage } from "./pages/BooksPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Books", () => {
-  test("books page loads with total count", async ({ page }) => {
+import { BooksPage } from './pages/BooksPage';
+
+test.describe('Books', () => {
+  test('books page loads with total count', async ({ page }) => {
     const booksPage = new BooksPage(page);
     await booksPage.goto();
 
@@ -13,7 +14,7 @@ test.describe("Books", () => {
     expect(countText).toMatch(/\(\d+\)/);
   });
 
-  test("currently reading section displays books with that status", async ({ page }) => {
+  test('currently reading section displays books with that status', async ({ page }) => {
     const booksPage = new BooksPage(page);
     await booksPage.goto();
 
@@ -24,7 +25,7 @@ test.describe("Books", () => {
     }
   });
 
-  test("want to read section displays books with that status", async ({ page }) => {
+  test('want to read section displays books with that status', async ({ page }) => {
     const booksPage = new BooksPage(page);
     await booksPage.goto();
 
@@ -35,7 +36,7 @@ test.describe("Books", () => {
     }
   });
 
-  test("books by year sections exist when there are finished books", async ({ page }) => {
+  test('books by year sections exist when there are finished books', async ({ page }) => {
     const booksPage = new BooksPage(page);
     await booksPage.goto();
 
@@ -53,7 +54,7 @@ test.describe("Books", () => {
     }
   });
 
-  test("can navigate from book card to book detail page", async ({ page }) => {
+  test('can navigate from book card to book detail page', async ({ page }) => {
     const booksPage = new BooksPage(page);
     await booksPage.goto();
 
@@ -65,13 +66,13 @@ test.describe("Books", () => {
     }
 
     const firstBook = booksPage.contentItems.first();
-    const link = firstBook.getByRole("link").first();
-    const href = await link.getAttribute("href");
+    const link = firstBook.getByRole('link').first();
+    const href = await link.getAttribute('href');
 
-    await Promise.all([page.waitForURL(href || "**"), link.click()]);
+    await Promise.all([page.waitForURL(href || '**'), link.click()]);
 
     // Should have navigated to a book detail page
-    expect(page.url()).not.toContain("/books");
-    expect(page.url()).not.toBe("/books");
+    expect(page.url()).not.toContain('/books');
+    expect(page.url()).not.toBe('/books');
   });
 });

@@ -1,7 +1,8 @@
-import type { Rule } from "eslint";
-import { parseFrontmatter } from "../utils/parse-frontmatter.ts";
-import { findSimilarSlug, getSlugCache } from "../utils/slug-cache.ts";
-import type { YamlNode } from "../utils/types.ts";
+import type { Rule } from 'eslint';
+
+import { parseFrontmatter } from '../utils/parse-frontmatter.ts';
+import { findSimilarSlug, getSlugCache } from '../utils/slug-cache.ts';
+import type { YamlNode } from '../utils/types.ts';
 
 function validateAuthorSlugs(
   slugs: unknown[],
@@ -10,11 +11,11 @@ function validateAuthorSlugs(
   node: YamlNode,
 ): void {
   for (const slug of slugs) {
-    if (typeof slug !== "string") continue;
+    if (typeof slug !== 'string') continue;
     if (cache.authors.has(slug)) continue;
 
     const suggestion = findSimilarSlug(slug, authors);
-    const messageId = suggestion ? "suggestAuthor" : "unknownAuthor";
+    const messageId = suggestion ? 'suggestAuthor' : 'unknownAuthor';
     const data = suggestion ? { slug, suggestion } : { slug };
 
     context.report({ loc: node.position, messageId, data });
@@ -25,9 +26,9 @@ let cache: ReturnType<typeof getSlugCache>;
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Validate author references exist in content/authors/",
+      description: 'Validate author references exist in content/authors/',
       recommended: true,
     },
     messages: {
@@ -36,9 +37,9 @@ const rule: Rule.RuleModule = {
     },
     schema: [
       {
-        type: "object",
+        type: 'object',
         properties: {
-          contentPath: { type: "string", default: "content" },
+          contentPath: { type: 'string', default: 'content' },
         },
         additionalProperties: false,
       },
@@ -46,7 +47,7 @@ const rule: Rule.RuleModule = {
   },
 
   create(context) {
-    const options = { contentPath: "content", ...context.options[0] };
+    const options = { contentPath: 'content', ...context.options[0] };
     cache = getSlugCache(options.contentPath);
 
     return {
@@ -60,7 +61,7 @@ const rule: Rule.RuleModule = {
         }
 
         // Check author field (singular, for tweets)
-        if (typeof frontmatter.author === "string") {
+        if (typeof frontmatter.author === 'string') {
           validateAuthorSlugs([frontmatter.author], cache.authors, context, node);
         }
 

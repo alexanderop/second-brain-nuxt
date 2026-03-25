@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { NuxtLink, UIcon } from "#components";
-import type { NewsletterItem } from "~/types/content";
-import { handleImageError } from "~/utils/imageErrorHandler";
+import { NuxtLink, UIcon } from '#components';
+import type { NewsletterItem } from '~/types/content';
+import { handleImageError } from '~/utils/imageErrorHandler';
 
 defineProps<{
   newsletter: NewsletterItem;
@@ -26,18 +26,30 @@ defineProps<{
         v-if="!newsletter.logo"
         class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
       >
-        <UIcon name="i-lucide-newspaper" class="size-8" />
+        <UIcon
+          name="i-lucide-newspaper"
+          class="size-8"
+        />
       </div>
-      <div v-else class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden">
-        <UIcon name="i-lucide-newspaper" class="size-8" />
+      <div
+        v-else
+        class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
+      >
+        <UIcon
+          name="i-lucide-newspaper"
+          class="size-8"
+        />
       </div>
     </div>
     <div class="min-w-0 flex-1">
       <h3 class="font-medium group-hover:underline">
         {{ newsletter.name }}
       </h3>
-      <p v-if="articleCount" class="text-sm text-[var(--ui-text-muted)]">
-        {{ articleCount }} {{ articleCount === 1 ? "article" : "articles" }}
+      <p
+        v-if="articleCount"
+        class="text-sm text-[var(--ui-text-muted)]"
+      >
+        {{ articleCount }} {{ articleCount === 1 ? 'article' : 'articles' }}
       </p>
     </div>
   </NuxtLink>

@@ -77,7 +77,7 @@
       }
     ],
     "complexity": ["error", { "max": 10 }],
-    "vue/max-props": ["error", { "maxProps": 6 }],
+    "vue/max-props": ["error", { "maxProps": 6 }]
   },
   "overrides": [
     {

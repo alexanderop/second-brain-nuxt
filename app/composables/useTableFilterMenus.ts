@@ -1,33 +1,34 @@
-import type { ComputedRef } from "vue";
-import { computed } from "vue";
-import type { ContentType } from "~/constants/contentTypes";
-import type { FilterState, SortState, TableAuthor } from "~/types/table";
+import type { ComputedRef } from 'vue';
+import { computed } from 'vue';
+
+import type { ContentType } from '~/constants/contentTypes';
+import type { FilterState, SortState, TableAuthor } from '~/types/table';
 
 // Icon map for content types
 export const CONTENT_TYPE_ICONS: Record<ContentType, string> = {
-  youtube: "i-lucide-play",
-  podcast: "i-lucide-mic",
-  article: "i-lucide-file-text",
-  book: "i-lucide-book-open",
-  manga: "i-lucide-book-image",
-  movie: "i-lucide-clapperboard",
-  tv: "i-lucide-tv",
-  tweet: "i-lucide-message-circle",
-  quote: "i-lucide-quote",
-  course: "i-lucide-graduation-cap",
-  note: "i-lucide-pencil",
-  evergreen: "i-lucide-leaf",
-  map: "i-lucide-hexagon",
-  reddit: "i-lucide-message-square",
-  github: "i-lucide-github",
-  newsletter: "i-lucide-newspaper",
-  talk: "i-lucide-presentation",
+  youtube: 'i-lucide-play',
+  podcast: 'i-lucide-mic',
+  article: 'i-lucide-file-text',
+  book: 'i-lucide-book-open',
+  manga: 'i-lucide-book-image',
+  movie: 'i-lucide-clapperboard',
+  tv: 'i-lucide-tv',
+  tweet: 'i-lucide-message-circle',
+  quote: 'i-lucide-quote',
+  course: 'i-lucide-graduation-cap',
+  note: 'i-lucide-pencil',
+  evergreen: 'i-lucide-leaf',
+  map: 'i-lucide-hexagon',
+  reddit: 'i-lucide-message-square',
+  github: 'i-lucide-github',
+  newsletter: 'i-lucide-newspaper',
+  talk: 'i-lucide-presentation',
 };
 
 interface FilterMenuCallbacks {
   onSetTypeFilter: (types: ContentType[]) => void;
   onSetTagsFilter: (tags: string[]) => void;
-  onSetSort: (column: SortState["column"], direction: SortState["direction"]) => void;
+  onSetSort: (column: SortState['column'], direction: SortState['direction']) => void;
 }
 
 interface UseTableFilterMenusOptions {
@@ -45,26 +46,26 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
   // Type filter items for dropdown
   const typeFilterItems = computed(() => [
     [
-      { type: "label" as const, label: "Sort" },
+      { type: 'label' as const, label: 'Sort' },
       {
-        label: "Ascending",
-        icon: "i-lucide-arrow-up",
-        type: "checkbox" as const,
-        checked: sort.value.column === "type" && sort.value.direction === "asc",
-        onSelect: () => callbacks.onSetSort("type", "asc"),
+        label: 'Ascending',
+        icon: 'i-lucide-arrow-up',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'type' && sort.value.direction === 'asc',
+        onSelect: () => callbacks.onSetSort('type', 'asc'),
       },
       {
-        label: "Descending",
-        icon: "i-lucide-arrow-down",
-        type: "checkbox" as const,
-        checked: sort.value.column === "type" && sort.value.direction === "desc",
-        onSelect: () => callbacks.onSetSort("type", "desc"),
+        label: 'Descending',
+        icon: 'i-lucide-arrow-down',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'type' && sort.value.direction === 'desc',
+        onSelect: () => callbacks.onSetSort('type', 'desc'),
       },
     ],
     [
-      { type: "label" as const, label: "Filter by Type" },
+      { type: 'label' as const, label: 'Filter by Type' },
       ...availableTypes.value.map((t) => ({
-        type: "checkbox" as const,
+        type: 'checkbox' as const,
         label: t,
         icon: CONTENT_TYPE_ICONS[t],
         checked: filters.value.type?.includes(t) ?? false,
@@ -77,8 +78,8 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
     ],
     [
       {
-        label: "Clear filter",
-        icon: "i-lucide-x",
+        label: 'Clear filter',
+        icon: 'i-lucide-x',
         disabled: !filters.value.type?.length,
         onSelect: () => callbacks.onSetTypeFilter([]),
       },
@@ -88,9 +89,9 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
   // Tags filter items
   const tagsFilterItems = computed(() => [
     [
-      { type: "label" as const, label: "Filter by Tags" },
+      { type: 'label' as const, label: 'Filter by Tags' },
       ...availableTags.value.slice(0, 15).map((t) => ({
-        type: "checkbox" as const,
+        type: 'checkbox' as const,
         label: t,
         checked: filters.value.tags?.includes(t) ?? false,
         onUpdateChecked: (checked: boolean) => {
@@ -102,8 +103,8 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
     ],
     [
       {
-        label: "Clear filter",
-        icon: "i-lucide-x",
+        label: 'Clear filter',
+        icon: 'i-lucide-x',
         disabled: !filters.value.tags?.length,
         onSelect: () => callbacks.onSetTagsFilter([]),
       },
@@ -113,20 +114,20 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
   // Date consumed filter items
   const dateConsumedFilterItems = computed(() => [
     [
-      { type: "label" as const, label: "Sort" },
+      { type: 'label' as const, label: 'Sort' },
       {
-        label: "Newest first",
-        icon: "i-lucide-arrow-down",
-        type: "checkbox" as const,
-        checked: sort.value.column === "dateConsumed" && sort.value.direction === "desc",
-        onSelect: () => callbacks.onSetSort("dateConsumed", "desc"),
+        label: 'Newest first',
+        icon: 'i-lucide-arrow-down',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'dateConsumed' && sort.value.direction === 'desc',
+        onSelect: () => callbacks.onSetSort('dateConsumed', 'desc'),
       },
       {
-        label: "Oldest first",
-        icon: "i-lucide-arrow-up",
-        type: "checkbox" as const,
-        checked: sort.value.column === "dateConsumed" && sort.value.direction === "asc",
-        onSelect: () => callbacks.onSetSort("dateConsumed", "asc"),
+        label: 'Oldest first',
+        icon: 'i-lucide-arrow-up',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'dateConsumed' && sort.value.direction === 'asc',
+        onSelect: () => callbacks.onSetSort('dateConsumed', 'asc'),
       },
     ],
   ]);
@@ -134,20 +135,20 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
   // Rating filter items
   const ratingFilterItems = computed(() => [
     [
-      { type: "label" as const, label: "Sort" },
+      { type: 'label' as const, label: 'Sort' },
       {
-        label: "Highest first",
-        icon: "i-lucide-arrow-down",
-        type: "checkbox" as const,
-        checked: sort.value.column === "rating" && sort.value.direction === "desc",
-        onSelect: () => callbacks.onSetSort("rating", "desc"),
+        label: 'Highest first',
+        icon: 'i-lucide-arrow-down',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'rating' && sort.value.direction === 'desc',
+        onSelect: () => callbacks.onSetSort('rating', 'desc'),
       },
       {
-        label: "Lowest first",
-        icon: "i-lucide-arrow-up",
-        type: "checkbox" as const,
-        checked: sort.value.column === "rating" && sort.value.direction === "asc",
-        onSelect: () => callbacks.onSetSort("rating", "asc"),
+        label: 'Lowest first',
+        icon: 'i-lucide-arrow-up',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'rating' && sort.value.direction === 'asc',
+        onSelect: () => callbacks.onSetSort('rating', 'asc'),
       },
     ],
   ]);
@@ -155,20 +156,20 @@ export function useTableFilterMenus(options: UseTableFilterMenusOptions) {
   // Title sort items
   const titleSortItems = computed(() => [
     [
-      { type: "label" as const, label: "Sort" },
+      { type: 'label' as const, label: 'Sort' },
       {
-        label: "A to Z",
-        icon: "i-lucide-arrow-up",
-        type: "checkbox" as const,
-        checked: sort.value.column === "title" && sort.value.direction === "asc",
-        onSelect: () => callbacks.onSetSort("title", "asc"),
+        label: 'A to Z',
+        icon: 'i-lucide-arrow-up',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'title' && sort.value.direction === 'asc',
+        onSelect: () => callbacks.onSetSort('title', 'asc'),
       },
       {
-        label: "Z to A",
-        icon: "i-lucide-arrow-down",
-        type: "checkbox" as const,
-        checked: sort.value.column === "title" && sort.value.direction === "desc",
-        onSelect: () => callbacks.onSetSort("title", "desc"),
+        label: 'Z to A',
+        icon: 'i-lucide-arrow-down',
+        type: 'checkbox' as const,
+        checked: sort.value.column === 'title' && sort.value.direction === 'desc',
+        onSelect: () => callbacks.onSetSort('title', 'desc'),
       },
     ],
   ]);

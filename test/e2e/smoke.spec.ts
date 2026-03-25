@@ -1,10 +1,11 @@
-import { expect, test } from "@playwright/test";
-import { HomePage } from "./pages/HomePage";
-import { NotePage } from "./pages/NotePage";
-import { SearchModal } from "./pages/SearchModal";
+import { expect, test } from '@playwright/test';
 
-test.describe("Smoke Tests", () => {
-  test("homepage loads with content list", async ({ page }) => {
+import { HomePage } from './pages/HomePage';
+import { NotePage } from './pages/NotePage';
+import { SearchModal } from './pages/SearchModal';
+
+test.describe('Smoke Tests', () => {
+  test('homepage loads with content list', async ({ page }) => {
     const homePage = new HomePage(page);
 
     await homePage.goto();
@@ -20,29 +21,29 @@ test.describe("Smoke Tests", () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test("can navigate to a note page", async ({ page }) => {
+  test('can navigate to a note page', async ({ page }) => {
     const homePage = new HomePage(page);
     const notePage = new NotePage(page);
 
     await homePage.goto();
 
     // Get the href of first card before clicking
-    const firstLink = homePage.firstContentCard.getByRole("link").first();
-    const href = await firstLink.getAttribute("href");
+    const firstLink = homePage.firstContentCard.getByRole('link').first();
+    const href = await firstLink.getAttribute('href');
 
     // Click and wait for navigation
-    await Promise.all([page.waitForURL(href || "**"), firstLink.click()]);
+    await Promise.all([page.waitForURL(href || '**'), firstLink.click()]);
 
     // Verify note page loaded (single article, not a list)
     await expect(notePage.title).toBeVisible();
-    await expect(page).not.toHaveURL("/");
+    await expect(page).not.toHaveURL('/');
   });
 
-  test("wiki-link navigation works", async ({ page }) => {
+  test('wiki-link navigation works', async ({ page }) => {
     const notePage = new NotePage(page);
 
     // Navigate to a note with known wiki-links
-    await notePage.goto("atomic-habits");
+    await notePage.goto('atomic-habits');
 
     // Verify page loaded
     await expect(notePage.title).toBeVisible();
@@ -58,16 +59,16 @@ test.describe("Smoke Tests", () => {
 
     // Get the href of the first wiki-link before clicking
     const firstWikiLink = notePage.wikiLinks.first();
-    const href = await firstWikiLink.getAttribute("href");
+    const href = await firstWikiLink.getAttribute('href');
 
     // Click and wait for navigation (wiki-links trigger client-side navigation)
-    await Promise.all([page.waitForURL(href || "**"), firstWikiLink.click()]);
+    await Promise.all([page.waitForURL(href || '**'), firstWikiLink.click()]);
 
     // Verify new page loaded
     await expect(notePage.article).toBeVisible();
   });
 
-  test("search modal opens and finds content", async ({ page }) => {
+  test('search modal opens and finds content', async ({ page }) => {
     const homePage = new HomePage(page);
     const searchModal = new SearchModal(page);
     const notePage = new NotePage(page);
@@ -75,7 +76,7 @@ test.describe("Smoke Tests", () => {
     await homePage.goto();
 
     // Wait for page to be fully interactive
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     // Open search modal with button click (more reliable than keyboard shortcut)
     await searchModal.openWithClick();
@@ -83,7 +84,7 @@ test.describe("Smoke Tests", () => {
     await expect(searchModal.searchInput).toBeFocused();
 
     // Search for a known term
-    await searchModal.search("atomic");
+    await searchModal.search('atomic');
 
     // Verify results appear
     await expect(searchModal.results.first()).toBeVisible();

@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute, useAsyncData, queryCollection, createError } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { UIcon } from "#components";
-import NewsletterHeader from "~/components/NewsletterHeader.vue";
-import ContentList from "~/components/ContentList.vue";
-import { isNewsletterItem } from "~/types/content";
-import type { ContentType } from "~/constants/contentTypes";
+import { computed } from 'vue';
+
+import { UIcon } from '#components';
+import { useRoute, useAsyncData, queryCollection, createError } from '#imports';
+import ContentList from '~/components/ContentList.vue';
+import NewsletterHeader from '~/components/NewsletterHeader.vue';
+import { usePageTitle } from '~/composables/usePageTitle';
+import type { ContentType } from '~/constants/contentTypes';
+import { isNewsletterItem } from '~/types/content';
 
 const route = useRoute();
 const slug = computed(() => String(route.params.slug));
 
 const { data: newsletter } = await useAsyncData(`newsletter-${slug.value}`, () => {
-  return queryCollection("newsletters").where("slug", "=", slug.value).first();
+  return queryCollection('newsletters').where('slug', '=', slug.value).first();
 });
 
 if (!newsletter.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: "Newsletter not found",
+    statusMessage: 'Newsletter not found',
   });
 }
 
@@ -28,15 +29,15 @@ const typedNewsletter = computed(() => {
 });
 
 const { data: articles } = await useAsyncData(`newsletter-articles-${slug.value}`, () => {
-  return queryCollection("content")
-    .where("type", "=", "newsletter")
-    .where("newsletter", "=", slug.value)
-    .order("date", "DESC")
+  return queryCollection('content')
+    .where('type', '=', 'newsletter')
+    .where('newsletter', '=', slug.value)
+    .order('date', 'DESC')
     .all();
 });
 
 async function fetchAuthor(authorSlug: string) {
-  const author = await queryCollection("authors").where("slug", "=", authorSlug).first();
+  const author = await queryCollection('authors').where('slug', '=', authorSlug).first();
   return author ? { slug: authorSlug, name: author.name } : { slug: authorSlug, name: authorSlug };
 }
 
@@ -65,11 +66,11 @@ interface ContentWithBody {
 }
 
 function hasStringSlug(obj: object): obj is { slug: string } {
-  return "slug" in obj && typeof obj.slug === "string";
+  return 'slug' in obj && typeof obj.slug === 'string';
 }
 
 function isContentWithBody(item: unknown): item is ContentWithBody {
-  if (typeof item !== "object" || item === null) return false;
+  if (typeof item !== 'object' || item === null) return false;
   return hasStringSlug(item);
 }
 
@@ -90,7 +91,7 @@ const { data: relatedContent } = await useAsyncData(
     const articleSlugs = getArticleSlugs(articles.value);
     if (articleSlugs.length === 0) return [];
 
-    const allContent = await queryCollection("content").all();
+    const allContent = await queryCollection('content').all();
 
     const slugsToCheck: string[] = [...articleSlugs, slug.value];
     const related: ContentWithBody[] = [];
@@ -107,26 +108,43 @@ const { data: relatedContent } = await useAsyncData(
   },
 );
 
-usePageTitle(() => typedNewsletter.value?.name ?? "Newsletter");
+usePageTitle(() => typedNewsletter.value?.name ?? 'Newsletter');
 </script>
 
 <template>
   <div v-if="typedNewsletter">
-    <NewsletterHeader :newsletter="typedNewsletter" :author-names="authorData ?? {}" />
+    <NewsletterHeader
+      :newsletter="typedNewsletter"
+      :author-names="authorData ?? {}"
+    />
 
     <section class="mb-8">
       <div class="flex items-center gap-2 mb-4">
-        <UIcon name="i-lucide-list" class="size-5 text-[var(--ui-text-muted)]" />
+        <UIcon
+          name="i-lucide-list"
+          class="size-5 text-[var(--ui-text-muted)]"
+        />
         <h2 class="text-xl font-semibold">Articles</h2>
         <span class="text-[var(--ui-text-muted)]">({{ articles?.length ?? 0 }})</span>
       </div>
-      <ContentList v-if="articles?.length" :items="articles" />
-      <p v-else class="text-[var(--ui-text-muted)]">No articles yet.</p>
+      <ContentList
+        v-if="articles?.length"
+        :items="articles"
+      />
+      <p
+        v-else
+        class="text-[var(--ui-text-muted)]"
+      >
+        No articles yet.
+      </p>
     </section>
 
     <section v-if="relatedContent?.length">
       <div class="flex items-center gap-2 mb-4">
-        <UIcon name="i-lucide-link" class="size-5 text-[var(--ui-text-muted)]" />
+        <UIcon
+          name="i-lucide-link"
+          class="size-5 text-[var(--ui-text-muted)]"
+        />
         <h2 class="text-xl font-semibold">Related</h2>
         <span class="text-[var(--ui-text-muted)]">({{ relatedContent.length }})</span>
       </div>

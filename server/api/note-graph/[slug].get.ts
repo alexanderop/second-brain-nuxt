@@ -1,9 +1,11 @@
-import { getRouterParam } from "h3";
-import { defineCachedEventHandler } from "nitropack/runtime";
-import { queryCollection } from "@nuxt/content/server";
-import { extractLinksFromBody } from "../../utils/minimark";
-import { tryCatchAsync } from "#shared/utils/tryCatch";
-import { handleApiError } from "../../utils/handleApiError";
+import { queryCollection } from '@nuxt/content/server';
+import { getRouterParam } from 'h3';
+import { defineCachedEventHandler } from 'nitropack/runtime';
+
+import { tryCatchAsync } from '#shared/utils/tryCatch';
+
+import { handleApiError } from '../../utils/handleApiError';
+import { extractLinksFromBody } from '../../utils/minimark';
 
 interface NoteGraphNode {
   id: string;
@@ -35,7 +37,7 @@ interface ContentItem {
 
 // Helper: Extract slug from content item
 function getSlug(item: ContentItem): string {
-  return item.path?.slice(1) || item.stem || "";
+  return item.path?.slice(1) || item.stem || '';
 }
 
 // Helper: Find all notes that link to the target slug
@@ -101,7 +103,7 @@ function buildConnectedNodes(
       connected.push({
         id: itemSlug,
         title: item.title || itemSlug,
-        type: item.type || "note",
+        type: item.type || 'note',
         level,
       });
     }
@@ -222,7 +224,7 @@ function buildL2Nodes(allContent: ContentItem[], level2Slugs: Set<string>): Note
       nodes.push({
         id: itemSlug,
         title: item.title || itemSlug,
-        type: item.type || "note",
+        type: item.type || 'note',
         level: 2,
       });
     }
@@ -263,7 +265,7 @@ function buildGraphData(
     center: {
       id: centerSlug,
       title: currentNote.title || centerSlug,
-      type: currentNote.type || "note",
+      type: currentNote.type || 'note',
       isCenter: true,
       level: 0,
     },
@@ -274,19 +276,19 @@ function buildGraphData(
 
 export default defineCachedEventHandler(
   async (event): Promise<NoteGraphData | null> => {
-    const slug = getRouterParam(event, "slug");
+    const slug = getRouterParam(event, 'slug');
     if (!slug) return null;
 
     const [error, result] = await tryCatchAsync(async () => {
-      const currentNote = await queryCollection(event, "content")
-        .select("path", "stem", "title", "type", "body")
-        .where("path", "=", `/${slug}`)
+      const currentNote = await queryCollection(event, 'content')
+        .select('path', 'stem', 'title', 'type', 'body')
+        .where('path', '=', `/${slug}`)
         .first();
 
       if (!currentNote) return null;
 
-      const allContent = await queryCollection(event, "content")
-        .select("path", "stem", "title", "type", "body")
+      const allContent = await queryCollection(event, 'content')
+        .select('path', 'stem', 'title', 'type', 'body')
         .all();
 
       const centerSlug = getSlug(currentNote) || slug;
@@ -294,7 +296,7 @@ export default defineCachedEventHandler(
     });
 
     if (error) {
-      handleApiError(error, "note-graph");
+      handleApiError(error, 'note-graph');
     }
 
     return result;
@@ -302,6 +304,6 @@ export default defineCachedEventHandler(
   {
     maxAge: 60 * 2,
     swr: true,
-    name: "note-graph",
+    name: 'note-graph',
   },
 );

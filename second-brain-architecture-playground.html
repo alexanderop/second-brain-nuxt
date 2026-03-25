@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>Second Brain Architecture</title>
     <style>
       * {
@@ -34,7 +37,7 @@
 
       body {
         font-family:
-          "Inter",
+          'Inter',
           -apple-system,
           BlinkMacSystemFont,
           sans-serif;
@@ -168,7 +171,7 @@
       }
 
       .toggle-switch::after {
-        content: "";
+        content: '';
         position: absolute;
         top: 3px;
         left: 3px;
@@ -489,7 +492,7 @@
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 20px;
-        font-family: "JetBrains Mono", "Fira Code", monospace;
+        font-family: 'JetBrains Mono', 'Fira Code', monospace;
         font-size: 14px;
         line-height: 1.8;
         color: var(--text-muted);
@@ -576,11 +579,36 @@
         <p>Interactive explorer for your Nuxt-powered knowledge base</p>
 
         <div class="preset-bar">
-          <button class="preset-btn active" onclick="setPreset('full')">Full Stack</button>
-          <button class="preset-btn" onclick="setPreset('frontend')">Frontend</button>
-          <button class="preset-btn" onclick="setPreset('data')">Data Flow</button>
-          <button class="preset-btn" onclick="setPreset('search')">Search System</button>
-          <button class="preset-btn" onclick="setPreset('wikilinks')">Wiki-Links</button>
+          <button
+            class="preset-btn active"
+            onclick="setPreset('full')"
+          >
+            Full Stack
+          </button>
+          <button
+            class="preset-btn"
+            onclick="setPreset('frontend')"
+          >
+            Frontend
+          </button>
+          <button
+            class="preset-btn"
+            onclick="setPreset('data')"
+          >
+            Data Flow
+          </button>
+          <button
+            class="preset-btn"
+            onclick="setPreset('search')"
+          >
+            Search System
+          </button>
+          <button
+            class="preset-btn"
+            onclick="setPreset('wikilinks')"
+          >
+            Wiki-Links
+          </button>
         </div>
       </header>
 
@@ -609,42 +637,82 @@
             <h3>Layers</h3>
             <div class="toggle-list">
               <label class="toggle-item">
-                <input type="checkbox" id="layer-ui" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="layer-ui"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">
-                  <span class="color-indicator" style="background: var(--blue)"></span>
+                  <span
+                    class="color-indicator"
+                    style="background: var(--blue)"
+                  ></span>
                   UI Layer
                 </span>
               </label>
               <label class="toggle-item">
-                <input type="checkbox" id="layer-state" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="layer-state"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">
-                  <span class="color-indicator" style="background: var(--purple)"></span>
+                  <span
+                    class="color-indicator"
+                    style="background: var(--purple)"
+                  ></span>
                   State
                 </span>
               </label>
               <label class="toggle-item">
-                <input type="checkbox" id="layer-api" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="layer-api"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">
-                  <span class="color-indicator" style="background: var(--green)"></span>
+                  <span
+                    class="color-indicator"
+                    style="background: var(--green)"
+                  ></span>
                   API
                 </span>
               </label>
               <label class="toggle-item">
-                <input type="checkbox" id="layer-content" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="layer-content"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">
-                  <span class="color-indicator" style="background: var(--orange)"></span>
+                  <span
+                    class="color-indicator"
+                    style="background: var(--orange)"
+                  ></span>
                   Content
                 </span>
               </label>
               <label class="toggle-item">
-                <input type="checkbox" id="layer-source" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="layer-source"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">
-                  <span class="color-indicator" style="background: var(--pink)"></span>
+                  <span
+                    class="color-indicator"
+                    style="background: var(--pink)"
+                  ></span>
                   Source
                 </span>
               </label>
@@ -653,7 +721,10 @@
 
           <div class="control-card">
             <h3>Focus Area</h3>
-            <select id="focus-area" onchange="updateAll()">
+            <select
+              id="focus-area"
+              onchange="updateAll()"
+            >
               <option value="all">All Systems</option>
               <option value="wiki-links">Wiki-Links Pipeline</option>
               <option value="search">Hybrid Search</option>
@@ -666,7 +737,12 @@
             <h3>Data Flow</h3>
             <div class="toggle-list">
               <label class="toggle-item">
-                <input type="checkbox" id="show-flow" checked onchange="updateAll()" />
+                <input
+                  type="checkbox"
+                  id="show-flow"
+                  checked
+                  onchange="updateAll()"
+                />
                 <span class="toggle-switch"></span>
                 <span class="toggle-label">Show Connections</span>
               </label>
@@ -676,17 +752,27 @@
 
         <main>
           <div class="diagram-container">
-            <div class="architecture-flow" id="diagram"></div>
+            <div
+              class="architecture-flow"
+              id="diagram"
+            ></div>
           </div>
 
           <div class="prompt-section">
             <div class="prompt-header">
               <h3>📋 Generated Prompt</h3>
-              <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">
+              <button
+                class="copy-btn"
+                id="copy-btn"
+                onclick="copyPrompt()"
+              >
                 Copy to Clipboard
               </button>
             </div>
-            <div class="prompt-output" id="prompt"></div>
+            <div
+              class="prompt-output"
+              id="prompt"
+            ></div>
           </div>
         </main>
       </div>
@@ -695,36 +781,36 @@
     <script>
       const state = {
         layers: { ui: true, state: true, api: true, content: true, source: true },
-        focusArea: "all",
+        focusArea: 'all',
         showFlow: true,
       };
 
       function readState() {
-        state.layers.ui = document.getElementById("layer-ui").checked;
-        state.layers.state = document.getElementById("layer-state").checked;
-        state.layers.api = document.getElementById("layer-api").checked;
-        state.layers.content = document.getElementById("layer-content").checked;
-        state.layers.source = document.getElementById("layer-source").checked;
-        state.focusArea = document.getElementById("focus-area").value;
-        state.showFlow = document.getElementById("show-flow").checked;
+        state.layers.ui = document.getElementById('layer-ui').checked;
+        state.layers.state = document.getElementById('layer-state').checked;
+        state.layers.api = document.getElementById('layer-api').checked;
+        state.layers.content = document.getElementById('layer-content').checked;
+        state.layers.source = document.getElementById('layer-source').checked;
+        state.focusArea = document.getElementById('focus-area').value;
+        state.showFlow = document.getElementById('show-flow').checked;
       }
 
       function applyState() {
-        document.getElementById("layer-ui").checked = state.layers.ui;
-        document.getElementById("layer-state").checked = state.layers.state;
-        document.getElementById("layer-api").checked = state.layers.api;
-        document.getElementById("layer-content").checked = state.layers.content;
-        document.getElementById("layer-source").checked = state.layers.source;
-        document.getElementById("focus-area").value = state.focusArea;
-        document.getElementById("show-flow").checked = state.showFlow;
+        document.getElementById('layer-ui').checked = state.layers.ui;
+        document.getElementById('layer-state').checked = state.layers.state;
+        document.getElementById('layer-api').checked = state.layers.api;
+        document.getElementById('layer-content').checked = state.layers.content;
+        document.getElementById('layer-source').checked = state.layers.source;
+        document.getElementById('focus-area').value = state.focusArea;
+        document.getElementById('show-flow').checked = state.showFlow;
       }
 
       function setPreset(preset) {
-        document.querySelectorAll(".preset-btn").forEach((b) => b.classList.remove("active"));
-        event.target.classList.add("active");
+        document.querySelectorAll('.preset-btn').forEach((b) => b.classList.remove('active'));
+        event.target.classList.add('active');
 
         switch (preset) {
-          case "full":
+          case 'full':
             Object.assign(state.layers, {
               ui: true,
               state: true,
@@ -732,9 +818,9 @@
               content: true,
               source: true,
             });
-            state.focusArea = "all";
+            state.focusArea = 'all';
             break;
-          case "frontend":
+          case 'frontend':
             Object.assign(state.layers, {
               ui: true,
               state: true,
@@ -742,9 +828,9 @@
               content: false,
               source: false,
             });
-            state.focusArea = "all";
+            state.focusArea = 'all';
             break;
-          case "data":
+          case 'data':
             Object.assign(state.layers, {
               ui: false,
               state: true,
@@ -752,9 +838,9 @@
               content: true,
               source: true,
             });
-            state.focusArea = "all";
+            state.focusArea = 'all';
             break;
-          case "search":
+          case 'search':
             Object.assign(state.layers, {
               ui: true,
               state: true,
@@ -762,9 +848,9 @@
               content: false,
               source: true,
             });
-            state.focusArea = "search";
+            state.focusArea = 'search';
             break;
-          case "wikilinks":
+          case 'wikilinks':
             Object.assign(state.layers, {
               ui: true,
               state: false,
@@ -772,7 +858,7 @@
               content: true,
               source: true,
             });
-            state.focusArea = "wiki-links";
+            state.focusArea = 'wiki-links';
             break;
         }
 
@@ -782,8 +868,8 @@
       }
 
       function renderDiagram() {
-        const diagram = document.getElementById("diagram");
-        let html = "";
+        const diagram = document.getElementById('diagram');
+        let html = '';
 
         // UI Layer
         if (state.layers.ui) {
@@ -1022,9 +1108,9 @@
 
         // Data Flow Section
         if (state.showFlow) {
-          let flowContent = "";
+          let flowContent = '';
 
-          if (state.focusArea === "wiki-links") {
+          if (state.focusArea === 'wiki-links') {
             flowContent = `
             <div class="flow-diagram">
               <div class="flow-node" style="border-color: var(--pink)">[[slug]]</div>
@@ -1037,7 +1123,7 @@
               <span class="flow-arrow">→</span>
               <div class="flow-node" style="border-color: var(--green)">Rendered Link</div>
             </div>`;
-          } else if (state.focusArea === "search") {
+          } else if (state.focusArea === 'search') {
             flowContent = `
             <div class="flow-diagram">
               <div class="flow-node" style="border-color: var(--cyan)">Search Query</div>
@@ -1050,7 +1136,7 @@
               <span class="flow-arrow">→</span>
               <div class="flow-node" style="border-color: var(--green)">Ranked Results</div>
             </div>`;
-          } else if (state.focusArea === "graph") {
+          } else if (state.focusArea === 'graph') {
             flowContent = `
             <div class="flow-diagram">
               <div class="flow-node" style="border-color: var(--pink)">Markdown [[links]]</div>
@@ -1063,7 +1149,7 @@
               <span class="flow-arrow">→</span>
               <div class="flow-node" style="border-color: var(--blue)">BaseGraph D3</div>
             </div>`;
-          } else if (state.focusArea === "rendering") {
+          } else if (state.focusArea === 'rendering') {
             flowContent = `
             <div class="flow-diagram">
               <div class="flow-node" style="border-color: var(--pink)">Markdown + Frontmatter</div>
@@ -1095,7 +1181,7 @@
         <div class="data-flow-section">
           <div class="data-flow-title">
             <span>⚡</span>
-            Data Flow ${state.focusArea !== "all" ? "— " + state.focusArea.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase()) : ""}
+            Data Flow ${state.focusArea !== 'all' ? '— ' + state.focusArea.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) : ''}
           </div>
           ${flowContent}
         </div>`;
@@ -1108,30 +1194,30 @@
         const parts = [];
         const focus = state.focusArea;
 
-        let prompt = "Explain the Second Brain Nuxt architecture";
+        let prompt = 'Explain the Second Brain Nuxt architecture';
 
-        if (focus === "wiki-links") {
+        if (focus === 'wiki-links') {
           prompt = `Explain how wiki-links work in this Second Brain:
 
 1. How [[slug]] syntax is transformed in nuxt.config.ts beforeParse hook
 2. The regex pattern and output format [text](/slug){.wiki-link}
 3. How ProseA.vue renders these special links
 4. How backlinks are extracted and indexed via /api/backlinks`;
-        } else if (focus === "search") {
+        } else if (focus === 'search') {
           prompt = `Explain the hybrid search architecture:
 
 1. Keyword search via useContentFuse (Fuse.js configuration)
 2. Semantic search via useSemanticSearch (Transformers.js + bge-small-en embeddings)
 3. How hybridSearch() merges and ranks results
 4. The embeddings.json pre-computation pipeline`;
-        } else if (focus === "graph") {
+        } else if (focus === 'graph') {
           prompt = `Explain the knowledge graph system:
 
 1. How /api/graph builds nodes and edges from content
 2. The minimark.ts link extraction from AST
 3. BaseGraph.vue D3 force-directed layout
 4. Graph filtering via useGraphFilters`;
-        } else if (focus === "rendering") {
+        } else if (focus === 'rendering') {
           prompt = `Explain the content rendering pipeline:
 
 1. Markdown parsing with frontmatter validation (Zod schemas)
@@ -1143,39 +1229,39 @@
             .filter(([, v]) => v)
             .map(([k]) => k);
           if (activeLayers.length < 5) {
-            prompt += `, focusing on the ${activeLayers.join(", ")} layer${activeLayers.length > 1 ? "s" : ""}`;
+            prompt += `, focusing on the ${activeLayers.join(', ')} layer${activeLayers.length > 1 ? 's' : ''}`;
           }
           prompt += `.
 
 Cover the key components:`;
           if (state.layers.ui)
             parts.push(
-              "- UI: [...slug].vue catch-all routing, BaseGraph D3 visualization, ChatPanel AI",
+              '- UI: [...slug].vue catch-all routing, BaseGraph D3 visualization, ChatPanel AI',
             );
           if (state.layers.state)
-            parts.push("- State: useSemanticSearch, useBacklinks, useShortcuts composables");
+            parts.push('- State: useSemanticSearch, useBacklinks, useShortcuts composables');
           if (state.layers.api)
-            parts.push("- API: /api/graph, /api/backlinks, /api/chat endpoints");
+            parts.push('- API: /api/graph, /api/backlinks, /api/chat endpoints');
           if (state.layers.content)
-            parts.push("- Content: Nuxt Content v3, SQLite, wiki-link transformation");
+            parts.push('- Content: Nuxt Content v3, SQLite, wiki-link transformation');
           if (state.layers.source)
-            parts.push("- Source: 1000+ markdown notes, 5 collections, embeddings.json");
+            parts.push('- Source: 1000+ markdown notes, 5 collections, embeddings.json');
 
-          prompt += "\n" + parts.join("\n");
+          prompt += '\n' + parts.join('\n');
         }
 
-        document.getElementById("prompt").textContent = prompt;
+        document.getElementById('prompt').textContent = prompt;
       }
 
       function copyPrompt() {
-        const prompt = document.getElementById("prompt").textContent;
+        const prompt = document.getElementById('prompt').textContent;
         navigator.clipboard.writeText(prompt);
-        const btn = document.getElementById("copy-btn");
-        btn.textContent = "Copied!";
-        btn.classList.add("copied");
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
         setTimeout(() => {
-          btn.textContent = "Copy to Clipboard";
-          btn.classList.remove("copied");
+          btn.textContent = 'Copy to Clipboard';
+          btn.classList.remove('copied');
         }, 2000);
       }
 

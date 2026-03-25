@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class GraphPage {
   readonly page: Page;
@@ -19,31 +19,31 @@ export class GraphPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByText("Knowledge Graph");
+    this.heading = page.getByText('Knowledge Graph');
     this.nodeCount = page.getByText(/\d+ nodes/);
     this.connectionCount = page.getByText(/\d+ connections/);
-    this.filterPanel = page.getByText("Filters").locator("..");
-    this.filterToggle = page.getByText("Filters");
+    this.filterPanel = page.getByText('Filters').locator('..');
+    this.filterToggle = page.getByText('Filters');
     this.zoomControls = page
-      .locator(".glass-panel")
-      .filter({ has: page.getByRole("button", { name: /zoom/i }) });
-    this.fitAllButton = page.getByRole("button", { name: /fit all/i });
-    this.zoomInButton = page.getByRole("button", { name: /zoom in/i });
-    this.zoomOutButton = page.getByRole("button", { name: /zoom out/i });
+      .locator('.glass-panel')
+      .filter({ has: page.getByRole('button', { name: /zoom/i }) });
+    this.fitAllButton = page.getByRole('button', { name: /fit all/i });
+    this.zoomInButton = page.getByRole('button', { name: /zoom in/i });
+    this.zoomOutButton = page.getByRole('button', { name: /zoom out/i });
     this.zoomPercent = page.getByText(/%$/);
     this.backLink = page.locator('a[href="/"]');
-    this.nodePanel = page.locator(".glass-panel").filter({ hasText: /outgoing|backlinks/i });
-    this.canvas = page.locator("canvas, svg").first();
-    this.loadingSpinner = page.locator(".animate-spin");
+    this.nodePanel = page.locator('.glass-panel').filter({ hasText: /outgoing|backlinks/i });
+    this.canvas = page.locator('canvas, svg').first();
+    this.loadingSpinner = page.locator('.animate-spin');
   }
 
   async goto() {
-    await this.page.goto("/graph", { waitUntil: "networkidle" });
+    await this.page.goto('/graph', { waitUntil: 'networkidle' });
   }
 
   async waitForGraphLoad() {
     // Wait for node count to appear (indicates graph has loaded)
-    await this.nodeCount.waitFor({ state: "visible", timeout: 30000 });
+    await this.nodeCount.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async openFilters() {
@@ -64,7 +64,7 @@ export class GraphPage {
 
   async getZoomPercent(): Promise<number> {
     const text = await this.zoomPercent.textContent();
-    return Number.parseInt(text?.replace("%", "") || "100", 10);
+    return Number.parseInt(text?.replace('%', '') || '100', 10);
   }
 
   async goBack() {

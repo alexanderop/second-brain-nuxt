@@ -1,13 +1,15 @@
+import { page } from '@vitest/browser/context';
 // @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
-import { describe, it, expect, beforeEach, assert } from "vitest";
-import { page } from "@vitest/browser/context";
-import { render } from "vitest-browser-vue";
-import BaseGraph from "~/components/BaseGraph.client.vue";
-import { createNoteGraphData, createFullGraphData } from "../../fixtures/graphFactory";
+import { describe, it, expect, beforeEach, assert } from 'vitest';
+import { render } from 'vitest-browser-vue';
+
+import BaseGraph from '~/components/BaseGraph.client.vue';
+
+import { createNoteGraphData, createFullGraphData } from '../../fixtures/graphFactory';
 
 /** Type guard that asserts element exists and narrows type */
 function assertElement(el: Element | null): asserts el is Element {
-  assert(el !== null, "Element should exist");
+  assert(el !== null, 'Element should exist');
 }
 
 /** Wait for D3 simulation to settle (nodes stop moving) */
@@ -21,18 +23,18 @@ const stableTestOptions = {
   persistZoom: false,
 };
 
-describe("BaseGraph", () => {
+describe('BaseGraph', () => {
   beforeEach(async () => {
     // Set viewport for consistent rendering
     await page.viewport(800, 600);
   });
 
-  describe("rendering", () => {
-    it("renders graph container when data provided", async () => {
+  describe('rendering', () => {
+    it('renders graph container when data provided', async () => {
       const { container } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
       });
@@ -48,25 +50,25 @@ describe("BaseGraph", () => {
       expect(graphContainer).toBeTruthy();
 
       // SVG should be rendered by D3
-      const svg = container.querySelector("svg");
+      const svg = container.querySelector('svg');
       expect(svg).toBeTruthy();
     });
 
-    it("shows empty state when no data provided", async () => {
+    it('shows empty state when no data provided', async () => {
       render(BaseGraph, {
         props: {},
       });
 
       // Empty state shows "No connections" text
-      await expect.element(page.getByTestId("graph-empty")).toBeVisible();
-      await expect.element(page.getByText("No connections")).toBeVisible();
+      await expect.element(page.getByTestId('graph-empty')).toBeVisible();
+      await expect.element(page.getByText('No connections')).toBeVisible();
     });
 
-    it("renders nodes with data-node-id attribute", async () => {
+    it('renders nodes with data-node-id attribute', async () => {
       const { container } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
       });
@@ -83,11 +85,11 @@ describe("BaseGraph", () => {
       expect(connectedNode).toBeTruthy();
     });
 
-    it("renders hexagon shapes for map nodes in freeform mode", async () => {
+    it('renders hexagon shapes for map nodes in freeform mode', async () => {
       const { container } = render(BaseGraph, {
         props: {
           fullGraphData: createFullGraphData(),
-          mode: "freeform",
+          mode: 'freeform',
           options: { ...stableTestOptions, hexagonMaps: true },
         },
       });
@@ -99,17 +101,17 @@ describe("BaseGraph", () => {
       const mapNode = container.querySelector('[data-node-id="node-3"]');
       expect(mapNode).toBeTruthy();
 
-      const hexagonPath = mapNode?.querySelector("path");
+      const hexagonPath = mapNode?.querySelector('path');
       expect(hexagonPath).toBeTruthy();
     });
   });
 
-  describe("user interactions", () => {
-    it("emits select when clicking node in freeform mode", async () => {
+  describe('user interactions', () => {
+    it('emits select when clicking node in freeform mode', async () => {
       const { container, emitted } = render(BaseGraph, {
         props: {
           fullGraphData: createFullGraphData(),
-          mode: "freeform",
+          mode: 'freeform',
           options: stableTestOptions,
         },
       });
@@ -122,18 +124,18 @@ describe("BaseGraph", () => {
       assertElement(node);
 
       // Use native click which is more reliable for SVG elements
-      node.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      node.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       // Check emitted event
       expect(emitted().select).toBeTruthy();
-      expect(emitted().select?.[0]?.[0]).toMatchObject({ id: "node-1" });
+      expect(emitted().select?.[0]?.[0]).toMatchObject({ id: 'node-1' });
     });
 
-    it("emits navigate when clicking non-center node in radial mode", async () => {
+    it('emits navigate when clicking non-center node in radial mode', async () => {
       const { container, emitted } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
       });
@@ -145,18 +147,18 @@ describe("BaseGraph", () => {
       const node = container.querySelector('[data-node-id="note-1"]');
       assertElement(node);
 
-      node.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      node.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       // Check emitted event - radial mode emits navigate for non-center nodes
       expect(emitted().navigate).toBeTruthy();
-      expect(emitted().navigate?.[0]?.[0]).toBe("note-1");
+      expect(emitted().navigate?.[0]?.[0]).toBe('note-1');
     });
 
-    it("emits select when clicking center node in radial mode", async () => {
+    it('emits select when clicking center node in radial mode', async () => {
       const { container, emitted } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
       });
@@ -168,16 +170,16 @@ describe("BaseGraph", () => {
       const centerNode = container.querySelector('[data-node-id="center-note"]');
       assertElement(centerNode);
 
-      centerNode.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      centerNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
       // Center node emits select, not navigate
       expect(emitted().select).toBeTruthy();
-      expect(emitted().select[0][0]).toMatchObject({ id: "center-note" });
+      expect(emitted().select[0][0]).toMatchObject({ id: 'center-note' });
     });
   });
 
-  describe("slots", () => {
-    it("renders empty slot when no data", async () => {
+  describe('slots', () => {
+    it('renders empty slot when no data', async () => {
       render(BaseGraph, {
         props: {},
         slots: {
@@ -185,14 +187,14 @@ describe("BaseGraph", () => {
         },
       });
 
-      await expect.element(page.getByTestId("custom-empty")).toBeVisible();
+      await expect.element(page.getByTestId('custom-empty')).toBeVisible();
     });
 
-    it("renders header slot with counts", async () => {
+    it('renders header slot with counts', async () => {
       render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
         slots: {
@@ -201,16 +203,16 @@ describe("BaseGraph", () => {
         },
       });
 
-      await expect.element(page.getByTestId("graph")).toBeVisible();
+      await expect.element(page.getByTestId('graph')).toBeVisible();
     });
   });
 
-  describe("mode differences", () => {
-    it("uses radial layout in radial mode", async () => {
+  describe('mode differences', () => {
+    it('uses radial layout in radial mode', async () => {
       const { container } = render(BaseGraph, {
         props: {
           noteGraphData: createNoteGraphData(),
-          mode: "radial",
+          mode: 'radial',
           options: stableTestOptions,
         },
       });
@@ -226,15 +228,15 @@ describe("BaseGraph", () => {
       expect(otherNode).toBeTruthy();
 
       // Both should have transform attributes from D3
-      expect(centerNode?.getAttribute("transform")).toContain("translate");
-      expect(otherNode?.getAttribute("transform")).toContain("translate");
+      expect(centerNode?.getAttribute('transform')).toContain('translate');
+      expect(otherNode?.getAttribute('transform')).toContain('translate');
     });
 
-    it("uses freeform layout in freeform mode", async () => {
+    it('uses freeform layout in freeform mode', async () => {
       const { container } = render(BaseGraph, {
         props: {
           fullGraphData: createFullGraphData(),
-          mode: "freeform",
+          mode: 'freeform',
           options: stableTestOptions,
         },
       });
@@ -243,7 +245,7 @@ describe("BaseGraph", () => {
       await waitForSimulation();
 
       // Nodes should be positioned
-      const nodes = container.querySelectorAll("[data-node-id]");
+      const nodes = container.querySelectorAll('[data-node-id]');
       expect(nodes.length).toBe(3); // 3 nodes in createFullGraphData
     });
   });

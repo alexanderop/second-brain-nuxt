@@ -1,5 +1,5 @@
-import type { Page } from "@playwright/test";
-import { AxeBuilder } from "@axe-core/playwright";
+import { AxeBuilder } from '@axe-core/playwright';
+import type { Page } from '@playwright/test';
 
 interface A11yOptions {
   disableRules?: string[];
@@ -30,5 +30,5 @@ export async function checkA11y(page: Page, options?: A11yOptions) {
  * Filter violations by impact level (critical or serious).
  */
 export function getCriticalViolations(results: Awaited<ReturnType<typeof checkA11y>>) {
-  return results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  return results.violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
 }

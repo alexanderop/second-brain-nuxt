@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import ContentCard from "~/components/ContentCard.vue";
-import type { ContentItem, PodcastItem } from "~/types/content";
+import { computed } from 'vue';
 
-interface ContentListItem extends Omit<ContentItem, "slug"> {
+import { useAsyncData, queryCollection } from '#imports';
+import ContentCard from '~/components/ContentCard.vue';
+import type { ContentItem, PodcastItem } from '~/types/content';
+
+interface ContentListItem extends Omit<ContentItem, 'slug'> {
   stem?: string;
   slug?: string;
   rating?: number;
@@ -26,16 +27,16 @@ const podcastSlugs = computed(() => {
 });
 
 const { data: podcasts } = await useAsyncData(
-  "content-list-podcasts",
+  'content-list-podcasts',
   async () => {
     if (podcastSlugs.value.length === 0) return [];
-    return queryCollection("podcasts").select("slug", "name").all();
+    return queryCollection('podcasts').select('slug', 'name').all();
   },
   { watch: [podcastSlugs] },
 );
 
 function isPodcastItem(p: unknown): p is PodcastItem {
-  return typeof p === "object" && p !== null && "slug" in p && "name" in p && "hosts" in p;
+  return typeof p === 'object' && p !== null && 'slug' in p && 'name' in p && 'hosts' in p;
 }
 
 const podcastMap = computed(() => {
@@ -70,5 +71,10 @@ const podcastMap = computed(() => {
       :podcast-name="item.podcast ? podcastMap[item.podcast] : undefined"
     />
   </div>
-  <div v-else class="py-8 text-center text-[var(--ui-text-muted)]">No content found.</div>
+  <div
+    v-else
+    class="py-8 text-center text-[var(--ui-text-muted)]"
+  >
+    No content found.
+  </div>
 </template>

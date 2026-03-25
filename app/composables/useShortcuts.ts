@@ -1,11 +1,12 @@
-import type { Ref } from "vue";
-import { useState } from "#imports";
-import { siteConfig } from "~~/config/site";
+import type { Ref } from 'vue';
+import { siteConfig } from '~~/config/site';
+
+import { useState } from '#imports';
 
 export interface Shortcut {
   keys: readonly string[];
   description: string;
-  category: "navigation" | "actions" | "general";
+  category: 'navigation' | 'actions' | 'general';
 }
 
 // Derive shortcuts list from site config
@@ -16,19 +17,19 @@ type ActionShortcut = (typeof siteConfig.shortcuts.actions)[number];
 export const shortcutsList: Shortcut[] = [
   ...siteConfig.shortcuts.general.map((s: GeneralShortcut) => ({
     ...s,
-    category: "general" as const,
+    category: 'general' as const,
   })),
   ...siteConfig.shortcuts.navigation.map((s: NavigationShortcut) => ({
     ...s,
-    category: "navigation" as const,
+    category: 'navigation' as const,
   })),
   ...siteConfig.shortcuts.actions.map((s: ActionShortcut) => ({
     ...s,
-    category: "actions" as const,
+    category: 'actions' as const,
   })),
 ];
 
 /** Shared modal state for the shortcuts help dialog. */
 export function useShortcutsModal(): Ref<boolean> {
-  return useState("shortcutsModalOpen", () => false);
+  return useState('shortcutsModalOpen', () => false);
 }

@@ -3,9 +3,10 @@
  * Extracted from server/api/mentions.get.ts for testability.
  */
 
-import { extractLinksFromBody } from "./minimark";
-import { escapeRegex, getSnippet, highlightMatch } from "#shared/utils/text";
-import { getSlug, type ContentItem } from "./graph";
+import { escapeRegex, getSnippet, highlightMatch } from '#shared/utils/text';
+
+import { getSlug, type ContentItem } from './graph';
+import { extractLinksFromBody } from './minimark';
 
 export interface MentionItem {
   slug: string;
@@ -38,7 +39,7 @@ export function buildContentMapWithLinks(allContent: ContentItem[]): Map<string,
     const links = extractLinksFromBody(item.body);
     contentMap.set(slug, {
       title: item.title || slug,
-      type: item.type || "note",
+      type: item.type || 'note',
       linksTo: new Set(links),
     });
   }
@@ -49,8 +50,8 @@ export function buildContentMapWithLinks(allContent: ContentItem[]): Map<string,
  * Extract slug from section ID (handles both "/slug#section" and "slug#section")
  */
 export function extractSlugFromSectionId(sectionId: string): string {
-  const rawPath = sectionId.split("#")[0] || "";
-  return rawPath.startsWith("/") ? rawPath.slice(1) : rawPath;
+  const rawPath = sectionId.split('#')[0] || '';
+  return rawPath.startsWith('/') ? rawPath.slice(1) : rawPath;
 }
 
 /**
@@ -139,7 +140,7 @@ export function findUnlinkedMentions(
   }
 
   const contentMap = buildContentMapWithLinks(allContent);
-  const titleRegex = new RegExp(`\\b${escapeRegex(targetTitle)}\\b`, "i");
+  const titleRegex = new RegExp(`\\b${escapeRegex(targetTitle)}\\b`, 'i');
   const mentionsByPath = buildMentionsMap(searchSections, targetSlug, contentMap, titleRegex);
 
   return buildMentionItems(mentionsByPath, contentMap, targetTitle);

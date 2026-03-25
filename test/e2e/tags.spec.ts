@@ -1,9 +1,10 @@
-import { expect, test } from "@playwright/test";
-import { TagsPage } from "./pages/TagsPage";
-import { TagDetailPage } from "./pages/TagDetailPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Tags", () => {
-  test("tags index page loads with tag cloud", async ({ page }) => {
+import { TagDetailPage } from './pages/TagDetailPage';
+import { TagsPage } from './pages/TagsPage';
+
+test.describe('Tags', () => {
+  test('tags index page loads with tag cloud', async ({ page }) => {
     const tagsPage = new TagsPage(page);
     await tagsPage.goto();
 
@@ -18,7 +19,7 @@ test.describe("Tags", () => {
     await expect(tagsPage.firstTagLink).toBeVisible();
   });
 
-  test("tags display count badges", async ({ page }) => {
+  test('tags display count badges', async ({ page }) => {
     const tagsPage = new TagsPage(page);
     await tagsPage.goto();
 
@@ -34,7 +35,7 @@ test.describe("Tags", () => {
     expect(firstTagText).toMatch(/\d+/);
   });
 
-  test("can navigate from tag to tag detail page", async ({ page }) => {
+  test('can navigate from tag to tag detail page', async ({ page }) => {
     const tagsPage = new TagsPage(page);
     await tagsPage.goto();
 
@@ -44,14 +45,14 @@ test.describe("Tags", () => {
       return;
     }
 
-    const href = await tagsPage.firstTagLink.getAttribute("href");
+    const href = await tagsPage.firstTagLink.getAttribute('href');
 
-    await Promise.all([page.waitForURL(href || "/tags/**"), tagsPage.firstTagLink.click()]);
+    await Promise.all([page.waitForURL(href || '/tags/**'), tagsPage.firstTagLink.click()]);
 
     await expect(page).toHaveURL(/\/tags\//);
   });
 
-  test("tag detail page shows filtered content", async ({ page }) => {
+  test('tag detail page shows filtered content', async ({ page }) => {
     const tagsPage = new TagsPage(page);
     await tagsPage.goto();
 
@@ -62,10 +63,10 @@ test.describe("Tags", () => {
     }
 
     // Get the tag name before clicking
-    const href = await tagsPage.firstTagLink.getAttribute("href");
-    const tagName = href?.replace("/tags/", "") || "";
+    const href = await tagsPage.firstTagLink.getAttribute('href');
+    const tagName = href?.replace('/tags/', '') || '';
 
-    await Promise.all([page.waitForURL(href || "/tags/**"), tagsPage.firstTagLink.click()]);
+    await Promise.all([page.waitForURL(href || '/tags/**'), tagsPage.firstTagLink.click()]);
 
     const tagDetailPage = new TagDetailPage(page);
 
@@ -73,7 +74,7 @@ test.describe("Tags", () => {
     await expect(tagDetailPage.heading).toContainText(tagName);
   });
 
-  test("tag detail page shows correct item count", async ({ page }) => {
+  test('tag detail page shows correct item count', async ({ page }) => {
     const tagsPage = new TagsPage(page);
     await tagsPage.goto();
 
@@ -83,9 +84,9 @@ test.describe("Tags", () => {
       return;
     }
 
-    const href = await tagsPage.firstTagLink.getAttribute("href");
+    const href = await tagsPage.firstTagLink.getAttribute('href');
 
-    await Promise.all([page.waitForURL(href || "/tags/**"), tagsPage.firstTagLink.click()]);
+    await Promise.all([page.waitForURL(href || '/tags/**'), tagsPage.firstTagLink.click()]);
 
     const tagDetailPage = new TagDetailPage(page);
 

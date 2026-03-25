@@ -1,10 +1,12 @@
+import { page } from '@vitest/browser/context';
 // @ts-nocheck — vitest-browser-vue types are incompatible with vue-tsc
-import { describe, it, expect } from "vitest";
-import { page } from "@vitest/browser/context";
-import { render } from "vitest-browser-vue";
-import StatsLineChart from "~/components/StatsLineChart.client.vue";
-import { createLineChartData } from "../../fixtures/chartFactory";
-import type { LineChartDataPoint } from "../../fixtures/chartFactory";
+import { describe, it, expect } from 'vitest';
+import { render } from 'vitest-browser-vue';
+
+import StatsLineChart from '~/components/StatsLineChart.client.vue';
+
+import { createLineChartData } from '../../fixtures/chartFactory';
+import type { LineChartDataPoint } from '../../fixtures/chartFactory';
 
 /** Wait for D3 to render the chart */
 async function waitForChart(ms = 300): Promise<void> {
@@ -17,152 +19,152 @@ async function renderLineChart(props: { data: LineChartDataPoint[]; height?: num
   return render(StatsLineChart, { props });
 }
 
-describe("StatsLineChart", () => {
-  describe("rendering", () => {
-    it("renders SVG when data provided", async () => {
+describe('StatsLineChart', () => {
+  describe('rendering', () => {
+    it('renders SVG when data provided', async () => {
       const { container } = await renderLineChart({ data: createLineChartData() });
       await waitForChart();
 
-      const svg = container.querySelector("svg");
+      const svg = container.querySelector('svg');
       expect(svg).toBeTruthy();
     });
 
-    it("renders area path", async () => {
+    it('renders area path', async () => {
       const { container } = await renderLineChart({ data: createLineChartData() });
       await waitForChart();
 
       // Area path has gradient fill
-      const paths = container.querySelectorAll("path");
+      const paths = container.querySelectorAll('path');
       const areaPath = Array.from(paths).find((p) =>
-        p.getAttribute("fill")?.includes("url(#area-gradient)"),
+        p.getAttribute('fill')?.includes('url(#area-gradient)'),
       );
       expect(areaPath).toBeTruthy();
     });
 
-    it("renders line path", async () => {
+    it('renders line path', async () => {
       const { container } = await renderLineChart({ data: createLineChartData() });
       await waitForChart();
 
       // Line path has stroke and no fill
-      const paths = container.querySelectorAll("path");
+      const paths = container.querySelectorAll('path');
       const linePath = Array.from(paths).find(
-        (p) => p.getAttribute("fill") === "none" && p.getAttribute("stroke"),
+        (p) => p.getAttribute('fill') === 'none' && p.getAttribute('stroke'),
       );
       expect(linePath).toBeTruthy();
-      expect(linePath?.getAttribute("stroke")).toBe("#6ee7b7");
+      expect(linePath?.getAttribute('stroke')).toBe('#6ee7b7');
     });
 
-    it("renders data points as circles", async () => {
+    it('renders data points as circles', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(6) });
       await waitForChart();
 
-      const circles = container.querySelectorAll("circle");
+      const circles = container.querySelectorAll('circle');
       expect(circles.length).toBe(6);
     });
 
-    it("does not render SVG when data is empty", async () => {
+    it('does not render SVG when data is empty', async () => {
       const { container } = await renderLineChart({ data: [] });
       await waitForChart();
 
-      const svg = container.querySelector("svg");
+      const svg = container.querySelector('svg');
       expect(svg).toBeFalsy();
     });
   });
 
-  describe("axes", () => {
-    it("renders x-axis labels", async () => {
+  describe('axes', () => {
+    it('renders x-axis labels', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(4) });
       await waitForChart();
 
-      const xLabels = container.querySelectorAll("text.x-label");
+      const xLabels = container.querySelectorAll('text.x-label');
       expect(xLabels.length).toBeGreaterThan(0);
     });
 
-    it("formats date labels correctly", async () => {
+    it('formats date labels correctly', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3) });
       await waitForChart();
 
       // Labels should be formatted like "Jan 24" from "2024-01"
-      const xLabels = container.querySelectorAll("text.x-label");
+      const xLabels = container.querySelectorAll('text.x-label');
       const labelTexts = Array.from(xLabels)
         .map((l) => l.textContent)
         .filter(Boolean);
 
       // At least one label should match the format
-      const hasFormattedLabel = labelTexts.some((text) => /^[A-Z][a-z]{2} \d{2}$/.test(text ?? ""));
+      const hasFormattedLabel = labelTexts.some((text) => /^[A-Z][a-z]{2} \d{2}$/.test(text ?? ''));
       expect(hasFormattedLabel).toBe(true);
     });
 
-    it("renders y-axis labels", async () => {
+    it('renders y-axis labels', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(4) });
       await waitForChart();
 
-      const yLabels = container.querySelectorAll("text.y-label");
+      const yLabels = container.querySelectorAll('text.y-label');
       expect(yLabels.length).toBeGreaterThan(0);
     });
   });
 
-  describe("grid lines", () => {
-    it("renders horizontal grid lines", async () => {
+  describe('grid lines', () => {
+    it('renders horizontal grid lines', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(4) });
       await waitForChart();
 
-      const gridLines = container.querySelectorAll("line.grid-line");
+      const gridLines = container.querySelectorAll('line.grid-line');
       expect(gridLines.length).toBeGreaterThan(0);
     });
   });
 
-  describe("custom height", () => {
-    it("respects custom height prop", async () => {
+  describe('custom height', () => {
+    it('respects custom height prop', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3), height: 250 });
       await waitForChart();
 
-      const svg = container.querySelector("svg");
-      expect(svg?.getAttribute("height")).toBe("250");
+      const svg = container.querySelector('svg');
+      expect(svg?.getAttribute('height')).toBe('250');
     });
 
-    it("uses default height of 160 when not specified", async () => {
+    it('uses default height of 160 when not specified', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3) });
       await waitForChart();
 
-      const svg = container.querySelector("svg");
-      expect(svg?.getAttribute("height")).toBe("160");
+      const svg = container.querySelector('svg');
+      expect(svg?.getAttribute('height')).toBe('160');
     });
   });
 
-  describe("gradient", () => {
-    it("creates area gradient definition", async () => {
+  describe('gradient', () => {
+    it('creates area gradient definition', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3) });
       await waitForChart();
 
-      const gradient = container.querySelector("defs linearGradient#area-gradient");
+      const gradient = container.querySelector('defs linearGradient#area-gradient');
       expect(gradient).toBeTruthy();
 
       // Should have two stops for the gradient
-      const stops = gradient?.querySelectorAll("stop");
+      const stops = gradient?.querySelectorAll('stop');
       expect(stops?.length).toBe(2);
     });
   });
 
-  describe("data point styling", () => {
-    it("data points have correct fill color", async () => {
+  describe('data point styling', () => {
+    it('data points have correct fill color', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3) });
       await waitForChart();
 
-      const circles = container.querySelectorAll("circle");
+      const circles = container.querySelectorAll('circle');
       const firstCircle = circles[0];
 
-      expect(firstCircle?.getAttribute("fill")).toBe("#6ee7b7");
+      expect(firstCircle?.getAttribute('fill')).toBe('#6ee7b7');
     });
 
-    it("data points have correct radius", async () => {
+    it('data points have correct radius', async () => {
       const { container } = await renderLineChart({ data: createLineChartData(3) });
       await waitForChart();
 
-      const circles = container.querySelectorAll("circle");
+      const circles = container.querySelectorAll('circle');
       const firstCircle = circles[0];
 
-      expect(firstCircle?.getAttribute("r")).toBe("4");
+      expect(firstCircle?.getAttribute('r')).toBe('4');
     });
   });
 });

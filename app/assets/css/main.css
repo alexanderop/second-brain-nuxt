@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import 'tailwindcss';
+@import '@nuxt/ui';
 
 /* Smooth scroll behavior for anchor navigation */
 html {
@@ -8,8 +8,8 @@ html {
 
 /* Typography - Geist font */
 :root {
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 
 body {
@@ -59,25 +59,25 @@ samp {
   --tw-prose-td-borders: var(--ui-border);
 }
 
-.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: var(--ui-bg-elevated);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   font-weight: 500;
 }
 
-.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::before,
-.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::after {
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before,
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
   content: none;
 }
 
-.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   background-color: var(--ui-bg-elevated);
   border: 1px solid var(--ui-border);
   border-radius: 0.5rem;
 }
 
-.prose :where(blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   border-left-color: var(--ui-primary);
   background-color: var(--ui-bg-elevated);
   padding: 1rem 1.5rem;
@@ -85,7 +85,7 @@ samp {
   font-style: normal;
 }
 
-.prose :where(blockquote p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose :where(blockquote p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   margin: 0;
 }
 
