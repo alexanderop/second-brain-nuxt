@@ -1,24 +1,24 @@
-import { defineCollection, defineContentConfig, z } from "@nuxt/content";
+import { defineCollection, defineContentConfig, z } from '@nuxt/content';
 
 // External content types require authors
 const externalContentTypes = [
-  "youtube",
-  "podcast",
-  "article",
-  "book",
-  "manga",
-  "movie",
-  "tv",
-  "tweet",
-  "course",
-  "reddit",
-  "github",
-  "newsletter",
-  "talk",
+  'youtube',
+  'podcast',
+  'article',
+  'book',
+  'manga',
+  'movie',
+  'tv',
+  'tweet',
+  'course',
+  'reddit',
+  'github',
+  'newsletter',
+  'talk',
 ] as const;
 
 // Personal content types have optional authors
-const personalContentTypes = ["quote", "note", "evergreen", "map"] as const;
+const personalContentTypes = ['quote', 'note', 'evergreen', 'map'] as const;
 
 // Combined content types - this Zod enum is the SINGLE SOURCE OF TRUTH
 // Nuxt Content generates ContentCollectionItem['type'] from this schema
@@ -26,24 +26,24 @@ const contentTypesSchema = z.enum([...externalContentTypes, ...personalContentTy
 
 // Newsletter platform values
 const newsletterPlatformValues = [
-  "substack",
-  "beehiiv",
-  "ghost",
-  "convertkit",
-  "buttondown",
-  "revue",
-  "mailchimp",
-  "other",
+  'substack',
+  'beehiiv',
+  'ghost',
+  'convertkit',
+  'buttondown',
+  'revue',
+  'mailchimp',
+  'other',
 ] as const;
 
 // Manga status values
-const mangaStatusValues = ["ongoing", "completed", "hiatus"] as const;
+const mangaStatusValues = ['ongoing', 'completed', 'hiatus'] as const;
 
 // Book reading status values
-const readingStatusValues = ["want-to-read", "reading", "finished"] as const;
+const readingStatusValues = ['want-to-read', 'reading', 'finished'] as const;
 
 // Movie watching status values
-const watchingStatusValues = ["want-to-watch", "watching", "watched"] as const;
+const watchingStatusValues = ['want-to-watch', 'watching', 'watched'] as const;
 
 // NOTE: Types are derived from @nuxt/content generated types in app/constants/contentTypes.ts
 // Do not export types here - import from ~/constants/contentTypes instead
@@ -51,22 +51,22 @@ const watchingStatusValues = ["want-to-watch", "watching", "watched"] as const;
 export default defineContentConfig({
   collections: {
     content: defineCollection({
-      type: "page",
+      type: 'page',
       source: {
-        include: "**/*.md",
+        include: '**/*.md',
         exclude: [
-          "authors/**",
-          "pages/**",
-          "podcasts/**",
-          "tweets/**",
-          "newsletters/**",
-          "Readwise/**",
-          "blog/**",
-          "Excalidraw/**",
-          "newsletter-drafts/**",
-          "blog-ideas/**",
-          "_obsidian-templates/**",
-          "private/**",
+          'authors/**',
+          'pages/**',
+          'podcasts/**',
+          'tweets/**',
+          'newsletters/**',
+          'Readwise/**',
+          'blog/**',
+          'Excalidraw/**',
+          'newsletter-drafts/**',
+          'blog-ideas/**',
+          '_obsidian-templates/**',
+          'private/**',
         ],
       },
       // Note: .passthrough() allows custom frontmatter fields beyond the defined schema
@@ -123,23 +123,23 @@ export default defineContentConfig({
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: `authors is required for ${data.type} content type`,
-              path: ["authors"],
+              path: ['authors'],
             });
           }
           // Volumes and status required for manga type
-          if (data.type === "manga") {
+          if (data.type === 'manga') {
             if (data.volumes === undefined) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "volumes is required for manga content type",
-                path: ["volumes"],
+                message: 'volumes is required for manga content type',
+                path: ['volumes'],
               });
             }
             if (data.status === undefined) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "status is required for manga content type",
-                path: ["status"],
+                message: 'status is required for manga content type',
+                path: ['status'],
               });
             }
           }
@@ -147,8 +147,8 @@ export default defineContentConfig({
     }),
 
     authors: defineCollection({
-      type: "data",
-      source: "authors/**/*.md",
+      type: 'data',
+      source: 'authors/**/*.md',
       schema: z.object({
         name: z.string(),
         slug: z.string(),
@@ -167,8 +167,8 @@ export default defineContentConfig({
     }),
 
     podcasts: defineCollection({
-      type: "data",
-      source: "podcasts/**/*.md",
+      type: 'data',
+      source: 'podcasts/**/*.md',
       schema: z.object({
         name: z.string(),
         slug: z.string(),
@@ -182,8 +182,8 @@ export default defineContentConfig({
     }),
 
     newsletters: defineCollection({
-      type: "data",
-      source: "newsletters/**/*.md",
+      type: 'data',
+      source: 'newsletters/**/*.md',
       schema: z.object({
         name: z.string(),
         slug: z.string(),
@@ -197,10 +197,10 @@ export default defineContentConfig({
     }),
 
     tweets: defineCollection({
-      type: "page",
-      source: "tweets/**/*.md",
+      type: 'page',
+      source: 'tweets/**/*.md',
       schema: z.object({
-        type: z.literal("tweet"),
+        type: z.literal('tweet'),
         title: z.string(),
         tweetId: z.string(),
         tweetUrl: z.string().url(),
@@ -212,8 +212,8 @@ export default defineContentConfig({
     }),
 
     pages: defineCollection({
-      type: "page",
-      source: "pages/**/*.md",
+      type: 'page',
+      source: 'pages/**/*.md',
       schema: z.object({
         title: z.string(),
         description: z.string().optional(),

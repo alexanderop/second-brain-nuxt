@@ -7,7 +7,7 @@
  * Escape special regex characters in a string.
  */
 export function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -15,11 +15,11 @@ export function escapeRegex(str: string): string {
  */
 export function escapeHtml(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /**
@@ -58,7 +58,7 @@ export function highlightMatch(text: string, term: string): string {
 
   const escapedText = escapeHtml(text);
   const escapedTerm = escapeHtml(term);
-  const regex = new RegExp(`(${escapeRegex(escapedTerm)})`, "gi");
+  const regex = new RegExp(`(${escapeRegex(escapedTerm)})`, 'gi');
 
   return escapedText.replace(
     regex,

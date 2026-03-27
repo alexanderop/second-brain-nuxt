@@ -1,3 +1,4 @@
+import { mockNuxtImport, registerEndpoint } from '@nuxt/test-utils/runtime';
 /**
  * Integration tests for [...slug].vue page
  *
@@ -14,10 +15,10 @@
  *
  * For now, use E2E tests (Playwright) for full slug page testing.
  */
-import { describe, it, expect, vi } from "vitest";
-import { mockNuxtImport, registerEndpoint } from "@nuxt/test-utils/runtime";
-import { linkedNotes, emptyBacklinks, emptyMentions, simpleNoteGraph } from "../../fixtures";
-import { createMultiCollectionMock } from "../../fixtures/query-builder";
+import { describe, it, expect, vi } from 'vitest';
+
+import { linkedNotes, emptyBacklinks, emptyMentions, simpleNoteGraph } from '../../fixtures';
+import { createMultiCollectionMock } from '../../fixtures/query-builder';
 
 // Hoisted mock data holder
 interface CollectionConfig {
@@ -41,27 +42,27 @@ const { mockCollections } = vi.hoisted(() => {
 });
 
 // Mock queryCollection auto-import
-mockNuxtImport("queryCollection", () => {
+mockNuxtImport('queryCollection', () => {
   return (collection: string) => createMultiCollectionMock(mockCollections.value)(collection);
 });
 
-describe("[...slug] Page", () => {
+describe('[...slug] Page', () => {
   // Slug page tests are skipped due to route/payload issues in test environment
   // The pattern is documented for when @nuxt/test-utils improves support
 
-  it.skip("renders content page with title", async () => {
+  it.skip('renders content page with title', async () => {
     const noteA = linkedNotes[0];
-    if (!noteA) throw new Error("Test fixture missing");
+    if (!noteA) throw new Error('Test fixture missing');
 
     mockCollections.value = {
-      content: { path: { "/note-a": noteA } },
+      content: { path: { '/note-a': noteA } },
       podcasts: { data: [] },
       newsletters: { data: [] },
       authors: { data: [] },
     };
-    registerEndpoint("/api/backlinks", () => emptyBacklinks);
-    registerEndpoint("/api/mentions", () => emptyMentions);
-    registerEndpoint("/api/note-graph/note-a", () => simpleNoteGraph);
+    registerEndpoint('/api/backlinks', () => emptyBacklinks);
+    registerEndpoint('/api/mentions', () => emptyMentions);
+    registerEndpoint('/api/note-graph/note-a', () => simpleNoteGraph);
 
     // Note: mountSuspended with route option has issues in current test-utils
     // const page = await mountSuspended(SlugPage, { route: '/note-a' })
@@ -69,7 +70,7 @@ describe("[...slug] Page", () => {
   });
 
   // Placeholder test to ensure the file is recognized
-  it("slug page test file placeholder", () => {
+  it('slug page test file placeholder', () => {
     // Slug page requires complex route/payload handling that isn't
     // fully supported in the integration test environment.
     // Use E2E tests for full slug page testing.

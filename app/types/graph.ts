@@ -1,4 +1,4 @@
-import type { ContentType } from "~/constants/contentTypes";
+import type { ContentType } from '~/constants/contentTypes';
 
 /**
  * Unified node representation used internally by BaseGraph.

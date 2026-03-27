@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from "#components";
-import BaseTypeIcon from "~/components/BaseTypeIcon.vue";
-import type { ContentType } from "~/constants/contentTypes";
+import { computed } from 'vue';
+
+import { UCard, UButton, UIcon, UBadge, USeparator, UAccordion } from '#components';
+import BaseTypeIcon from '~/components/BaseTypeIcon.vue';
+import type { ContentType } from '~/constants/contentTypes';
 
 interface GraphNode {
   id: string;
@@ -32,19 +33,19 @@ const accordionItems = computed(() => {
 
   if (props.outgoingLinks.length) {
     items.push({
-      value: "links-to",
+      value: 'links-to',
       label: `Links to (${props.outgoingLinks.length})`,
-      icon: "i-lucide-arrow-right",
-      slot: "links-to",
+      icon: 'i-lucide-arrow-right',
+      slot: 'links-to',
     });
   }
 
   if (props.backlinks.length) {
     items.push({
-      value: "linked-from",
+      value: 'linked-from',
       label: `Linked from (${props.backlinks.length})`,
-      icon: "i-lucide-arrow-left",
-      slot: "linked-from",
+      icon: 'i-lucide-arrow-left',
+      slot: 'linked-from',
     });
   }
 
@@ -74,7 +75,11 @@ const mapMemberCount = computed(() => {
       <template #header>
         <div class="flex items-start justify-between gap-2">
           <div class="flex items-start gap-2 min-w-0">
-            <BaseTypeIcon :type="node.type" size="md" class="mt-1 text-[var(--ui-text-muted)]" />
+            <BaseTypeIcon
+              :type="node.type"
+              size="md"
+              class="mt-1 text-[var(--ui-text-muted)]"
+            />
             <h2 class="font-semibold text-lg leading-tight">
               {{ node.title }}
             </h2>
@@ -91,20 +96,32 @@ const mapMemberCount = computed(() => {
       </template>
 
       <!-- Summary -->
-      <p v-if="node.summary" class="text-sm text-[var(--ui-text-muted)] mb-4">
+      <p
+        v-if="node.summary"
+        class="text-sm text-[var(--ui-text-muted)] mb-4"
+      >
         {{ node.summary }}
       </p>
 
       <!-- Authors -->
-      <div v-if="node.authors?.length" class="flex items-center gap-2 mb-4 text-sm">
-        <UIcon name="i-lucide-user" class="size-4 text-[var(--ui-text-muted)]" />
+      <div
+        v-if="node.authors?.length"
+        class="flex items-center gap-2 mb-4 text-sm"
+      >
+        <UIcon
+          name="i-lucide-user"
+          class="size-4 text-[var(--ui-text-muted)]"
+        />
         <span class="text-[var(--ui-text-muted)]">
-          {{ node.authors.join(", ") }}
+          {{ node.authors.join(', ') }}
         </span>
       </div>
 
       <!-- Tags -->
-      <div v-if="node.tags.length" class="flex flex-wrap gap-1.5 mb-4">
+      <div
+        v-if="node.tags.length"
+        class="flex flex-wrap gap-1.5 mb-4"
+      >
         <UBadge
           v-for="tag in node.tags"
           :key="tag"
@@ -116,11 +133,17 @@ const mapMemberCount = computed(() => {
       </div>
 
       <!-- Map membership (for non-map nodes) -->
-      <div v-if="node.maps?.length && !node.isMap" class="mb-4">
+      <div
+        v-if="node.maps?.length && !node.isMap"
+        class="mb-4"
+      >
         <div
           class="flex items-center gap-2 mb-2 text-xs font-medium text-[var(--ui-text-muted)] uppercase tracking-wider"
         >
-          <UIcon name="i-lucide-hexagon" class="size-3.5" />
+          <UIcon
+            name="i-lucide-hexagon"
+            class="size-3.5"
+          />
           Member of
         </div>
         <div class="flex flex-wrap gap-1.5">
@@ -136,9 +159,15 @@ const mapMemberCount = computed(() => {
       </div>
 
       <!-- Map member count (for map nodes) -->
-      <div v-if="node.isMap && mapMemberCount > 0" class="mb-4">
+      <div
+        v-if="node.isMap && mapMemberCount > 0"
+        class="mb-4"
+      >
         <div class="flex items-center gap-2 text-sm text-[var(--ui-text-muted)]">
-          <UIcon name="i-lucide-layers" class="size-4" />
+          <UIcon
+            name="i-lucide-layers"
+            class="size-4"
+          />
           Contains {{ mapMemberCount }} notes
         </div>
       </div>
@@ -153,7 +182,10 @@ const mapMemberCount = computed(() => {
         class="mb-4"
       />
 
-      <USeparator v-if="accordionItems.length" class="mb-4" />
+      <USeparator
+        v-if="accordionItems.length"
+        class="mb-4"
+      />
 
       <!-- Links Accordion -->
       <UAccordion
@@ -177,7 +209,11 @@ const mapMemberCount = computed(() => {
               @click="emit('selectNode', link)"
             >
               <template #leading>
-                <BaseTypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
+                <BaseTypeIcon
+                  :type="link.type"
+                  size="sm"
+                  class="text-[var(--ui-text-muted)]"
+                />
               </template>
               <span class="truncate">{{ link.title }}</span>
             </UButton>
@@ -196,7 +232,11 @@ const mapMemberCount = computed(() => {
               @click="emit('selectNode', link)"
             >
               <template #leading>
-                <BaseTypeIcon :type="link.type" size="sm" class="text-[var(--ui-text-muted)]" />
+                <BaseTypeIcon
+                  :type="link.type"
+                  size="sm"
+                  class="text-[var(--ui-text-muted)]"
+                />
               </template>
               <span class="truncate">{{ link.title }}</span>
             </UButton>
@@ -204,7 +244,10 @@ const mapMemberCount = computed(() => {
         </template>
       </UAccordion>
 
-      <template v-if="!outgoingLinks.length && !backlinks.length" #footer>
+      <template
+        v-if="!outgoingLinks.length && !backlinks.length"
+        #footer
+      >
         <p class="text-sm text-[var(--ui-text-muted)] text-center">No connections found</p>
       </template>
     </UCard>

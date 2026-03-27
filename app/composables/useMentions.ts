@@ -1,6 +1,7 @@
-import { computed } from "vue";
-import { useAsyncData } from "#imports";
-import type { ContentType } from "~/constants/contentTypes";
+import { computed } from 'vue';
+
+import { useAsyncData } from '#imports';
+import type { ContentType } from '~/constants/contentTypes';
 
 interface MentionItem {
   slug: string;
@@ -14,7 +15,7 @@ export function useMentions(slug: string, title: string) {
   const { data: mentions } = useAsyncData<MentionItem[]>(
     `mentions-${slug}`,
     () =>
-      $fetch<MentionItem[]>("/api/mentions", {
+      $fetch<MentionItem[]>('/api/mentions', {
         params: { slug, title },
       }),
     { default: () => [], server: false, lazy: true },

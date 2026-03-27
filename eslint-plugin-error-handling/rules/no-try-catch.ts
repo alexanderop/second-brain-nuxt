@@ -1,4 +1,4 @@
-import type { Rule } from "eslint";
+import type { Rule } from 'eslint';
 
 const HELP_MESSAGE = `
 Use tryCatch helper functions instead of try-catch blocks for Go/Rust-style error handling.
@@ -29,9 +29,9 @@ WHY:
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "suggestion",
+    type: 'suggestion',
     docs: {
-      description: "Enforce using tryCatch helper instead of try-catch blocks",
+      description: 'Enforce using tryCatch helper instead of try-catch blocks',
       recommended: true,
     },
     messages: {
@@ -45,7 +45,7 @@ const rule: Rule.RuleModule = {
       TryStatement(node) {
         context.report({
           node,
-          messageId: "noTryCatch",
+          messageId: 'noTryCatch',
         });
       },
     };

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { UIcon } from "#components";
-import { extractYouTubeVideoId, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "~/utils/youtube";
+import { computed, ref } from 'vue';
+
+import { UIcon } from '#components';
+import { extractYouTubeVideoId, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from '~/utils/youtube';
 
 const props = defineProps<{
   url: string;
@@ -26,7 +27,10 @@ function activate() {
     v-if="videoId"
     class="mb-8 rounded-xl overflow-hidden border border-[var(--ui-border)] bg-black"
   >
-    <div class="relative w-full" style="aspect-ratio: 16/9">
+    <div
+      class="relative w-full"
+      style="aspect-ratio: 16/9"
+    >
       <!-- Facade: Thumbnail with play button overlay -->
       <button
         v-if="!isActivated"
@@ -51,7 +55,10 @@ function activate() {
           <div
             class="w-16 h-16 sm:w-20 sm:h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:bg-red-500 group-hover:scale-110 transition-all"
           >
-            <UIcon name="i-lucide-play" class="size-8 sm:size-10 text-white ml-1" />
+            <UIcon
+              name="i-lucide-play"
+              class="size-8 sm:size-10 text-white ml-1"
+            />
           </div>
         </div>
       </button>

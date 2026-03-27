@@ -3,8 +3,8 @@
  * Extracted from server/api/backlinks.get.ts for testability.
  */
 
-import { extractLinksFromBody } from "./minimark";
-import { getSlug, type ContentItem } from "./graph";
+import { getSlug, type ContentItem } from './graph';
+import { extractLinksFromBody } from './minimark';
 
 export interface BacklinkItem {
   slug: string;
@@ -27,7 +27,7 @@ export function buildContentMap(
     const slug = getSlug(item);
     contentMap.set(slug, {
       title: item.title || slug,
-      type: item.type || "note",
+      type: item.type || 'note',
     });
   }
   return contentMap;
@@ -71,7 +71,7 @@ export function buildBacklinksIndex(allContent: ContentItem[]): BacklinksIndex {
     const sourceSlug = getSlug(item);
     const sourceMeta = {
       title: item.title || sourceSlug,
-      type: item.type || "note",
+      type: item.type || 'note',
     };
     addBacklinksForItem(item, sourceMeta, sourceSlug, backlinksIndex);
   }

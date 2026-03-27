@@ -1,0 +1,5 @@
+# Commit SHAs whose diffs should be ignored by `git blame`
+# See https://git-scm.com/docs/git-blame#Documentation/git-blame.txt---ignore-revs-fileltfilegt
+
+# oxfmt initial formatting (dfe8dcb86f7c00174a9959ec8ea0b9ab1dec8056)
+dfe8dcb86f7c00174a9959ec8ea0b9ab1dec8056

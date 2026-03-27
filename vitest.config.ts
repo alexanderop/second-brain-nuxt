@@ -1,53 +1,54 @@
-import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
-import { defineVitestProject } from "@nuxt/test-utils/config";
-import vue from "@vitejs/plugin-vue";
-import tailwindcss from "@tailwindcss/vite";
-import AutoImport from "unplugin-auto-import/vite";
+import { fileURLToPath } from 'node:url';
+
+import { defineVitestProject } from '@nuxt/test-utils/config';
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
+import AutoImport from 'unplugin-auto-import/vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     reporters: process.env.CI
-      ? ["default", ["junit", { outputFile: "./test-results/junit.xml" }]]
-      : ["default"],
+      ? ['default', ['junit', { outputFile: './test-results/junit.xml' }]]
+      : ['default'],
     coverage: {
-      provider: "v8",
+      provider: 'v8',
       // Only track unit-testable code: server utilities, pure composables, and app utilities
       include: [
-        "server/utils/**/*.ts",
-        "app/composables/**/*.ts",
-        "app/utils/**/*.ts",
-        "shared/utils/**/*.ts",
+        'server/utils/**/*.ts',
+        'app/composables/**/*.ts',
+        'app/utils/**/*.ts',
+        'shared/utils/**/*.ts',
       ],
       exclude: [
-        "**/*.spec.ts",
-        "**/*.nuxt.spec.ts",
+        '**/*.spec.ts',
+        '**/*.nuxt.spec.ts',
         // Vue composables - require Nuxt environment to test (covered by E2E)
-        "app/composables/useBacklinks.ts",
-        "app/composables/useMentions.ts",
-        "app/composables/useListNavigation.ts",
-        "app/composables/usePreferences.ts",
-        "app/composables/useGraphFilters.ts",
+        'app/composables/useBacklinks.ts',
+        'app/composables/useMentions.ts',
+        'app/composables/useListNavigation.ts',
+        'app/composables/usePreferences.ts',
+        'app/composables/useGraphFilters.ts',
         // Config/site composables - trivial wrappers, not worth unit testing
-        "app/composables/useSiteConfig.ts",
-        "app/composables/usePageTitle.ts",
-        "app/composables/useFocusMode.ts",
-        "app/composables/useTocVisibility.ts",
-        "app/composables/useTableFilterMenus.ts",
+        'app/composables/useSiteConfig.ts',
+        'app/composables/usePageTitle.ts',
+        'app/composables/useFocusMode.ts',
+        'app/composables/useTocVisibility.ts',
+        'app/composables/useTableFilterMenus.ts',
         // useContentTable - pure functions tested (168 tests), composable wrapper needs Nuxt
-        "app/composables/useContentTable.ts",
+        'app/composables/useContentTable.ts',
         // useRandomNote - pure selection tested, navigation wrapper needs Nuxt
-        "app/composables/useRandomNote.ts",
+        'app/composables/useRandomNote.ts',
         // App utils not part of FC/IS extraction (D3/graph helpers, YouTube embed utils)
-        "app/utils/graphColors.ts",
-        "app/utils/graphForces.ts",
-        "app/utils/graphNormalize.ts",
-        "app/utils/youtube.ts",
+        'app/utils/graphColors.ts',
+        'app/utils/graphForces.ts',
+        'app/utils/graphNormalize.ts',
+        'app/utils/youtube.ts',
         // Nitro plugin - logic extracted to server/utils/wikilinks.ts
-        "server/plugins/**/*.ts",
+        'server/plugins/**/*.ts',
       ],
-      reporter: ["text", "html", "junit"],
-      reportsDirectory: "./coverage",
+      reporter: ['text', 'html', 'junit'],
+      reportsDirectory: './coverage',
       thresholds: {
         // Enforced 100% coverage for tracked files
         lines: 100,
@@ -61,18 +62,18 @@ export default defineConfig({
       // Tests server/utils, pure composables, type utilities
       {
         test: {
-          name: "unit",
-          include: ["test/unit/**/*.spec.ts"],
-          environment: "node",
-          setupFiles: ["./test/test-utils/console-spy.ts"],
+          name: 'unit',
+          include: ['test/unit/**/*.spec.ts'],
+          environment: 'node',
+          setupFiles: ['./test/test-utils/console-spy.ts'],
         },
         resolve: {
           alias: {
-            "~": fileURLToPath(new URL("./app", import.meta.url)),
-            "~~": fileURLToPath(new URL("./", import.meta.url)),
-            "#shared": fileURLToPath(new URL("./shared", import.meta.url)),
-            "#imports": fileURLToPath(
-              new URL("./test/test-utils/imports-mock.ts", import.meta.url),
+            '~': fileURLToPath(new URL('./app', import.meta.url)),
+            '~~': fileURLToPath(new URL('./', import.meta.url)),
+            '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+            '#imports': fileURLToPath(
+              new URL('./test/test-utils/imports-mock.ts', import.meta.url),
             ),
           },
         },
@@ -82,13 +83,13 @@ export default defineConfig({
       // Tests pages, composables, and a11y that need Nuxt context
       await defineVitestProject({
         test: {
-          name: "nuxt",
+          name: 'nuxt',
           include: [
-            "test/nuxt/pages/**/*.spec.ts",
-            "test/nuxt/composables/**/*.spec.ts",
-            "test/nuxt/a11y.spec.ts",
+            'test/nuxt/pages/**/*.spec.ts',
+            'test/nuxt/composables/**/*.spec.ts',
+            'test/nuxt/a11y.spec.ts',
           ],
-          environment: "nuxt",
+          environment: 'nuxt',
           environmentOptions: {
             nuxt: {
               mock: {
@@ -97,7 +98,7 @@ export default defineConfig({
               },
             },
           },
-          setupFiles: ["./test/nuxt/setup.ts", "./test/test-utils/console-spy.ts"],
+          setupFiles: ['./test/nuxt/setup.ts', './test/test-utils/console-spy.ts'],
         },
       }),
 
@@ -108,30 +109,30 @@ export default defineConfig({
           vue(),
           tailwindcss(),
           AutoImport({
-            imports: ["vue"],
+            imports: ['vue'],
             dts: false,
           }),
         ],
         test: {
-          name: "nuxt-browser",
-          include: ["test/nuxt/components/**/*.spec.ts"],
-          setupFiles: ["./test/nuxt/browser-setup.ts"],
+          name: 'nuxt-browser',
+          include: ['test/nuxt/components/**/*.spec.ts'],
+          setupFiles: ['./test/nuxt/browser-setup.ts'],
           browser: {
             enabled: true,
-            provider: "playwright",
-            instances: [{ browser: "chromium" }],
+            provider: 'playwright',
+            instances: [{ browser: 'chromium' }],
           },
         },
         resolve: {
           alias: {
-            "~": fileURLToPath(new URL("./app", import.meta.url)),
-            "~~": fileURLToPath(new URL("./", import.meta.url)),
-            "#shared": fileURLToPath(new URL("./shared", import.meta.url)),
+            '~': fileURLToPath(new URL('./app', import.meta.url)),
+            '~~': fileURLToPath(new URL('./', import.meta.url)),
+            '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
           },
-          dedupe: ["vue"],
+          dedupe: ['vue'],
         },
         optimizeDeps: {
-          include: ["vue", "d3"],
+          include: ['vue', 'd3'],
         },
       },
     ],

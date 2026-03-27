@@ -1,6 +1,7 @@
-import { computed } from "vue";
-import { useAsyncData } from "#imports";
-import type { ContentType } from "~/constants/contentTypes";
+import { computed } from 'vue';
+
+import { useAsyncData } from '#imports';
+import type { ContentType } from '~/constants/contentTypes';
 
 interface BacklinkItem {
   slug: string;
@@ -14,8 +15,8 @@ interface BacklinksIndex {
 
 export function useBacklinks(slug: string) {
   const { data: backlinksIndex } = useAsyncData<BacklinksIndex>(
-    "backlinks-index",
-    () => $fetch<BacklinksIndex>("/api/backlinks"),
+    'backlinks-index',
+    () => $fetch<BacklinksIndex>('/api/backlinks'),
     { default: () => ({}), server: false, lazy: true },
   );
 

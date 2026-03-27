@@ -3,7 +3,7 @@
  * No Vue imports, no side effects - easily testable.
  */
 
-import type { FeatureRuleContext, FeatureRule, FeatureDefinition } from "~~/config/features";
+import type { FeatureRuleContext, FeatureRule, FeatureDefinition } from '~~/config/features';
 
 /**
  * Create a feature rule context for evaluation.
@@ -19,7 +19,7 @@ export function createRuleContext(isDev: boolean): FeatureRuleContext {
  * Evaluate a feature rule with the given context.
  */
 export function evaluateRule(rule: FeatureRule, ctx: FeatureRuleContext): boolean {
-  return typeof rule === "function" ? rule(ctx) : rule;
+  return typeof rule === 'function' ? rule(ctx) : rule;
 }
 
 /**

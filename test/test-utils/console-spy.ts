@@ -6,7 +6,7 @@
  *
  * Known harmless warnings can be added to the allowlist below.
  */
-import { afterEach, beforeEach, vi, type MockInstance } from "vitest";
+import { afterEach, beforeEach, vi, type MockInstance } from 'vitest';
 
 const ALLOWED_PATTERNS: RegExp[] = [
   // Vue intlify i18n warnings
@@ -27,17 +27,17 @@ let warnSpy: MockInstance;
 let errorSpy: MockInstance;
 
 beforeEach(() => {
-  warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-  errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+  warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 });
 
 afterEach(() => {
   const unexpectedWarns = warnSpy.mock.calls
-    .map((args) => args.map(String).join(" "))
+    .map((args) => args.map(String).join(' '))
     .filter((msg) => !isAllowed(msg));
 
   const unexpectedErrors = errorSpy.mock.calls
-    .map((args) => args.map(String).join(" "))
+    .map((args) => args.map(String).join(' '))
     .filter((msg) => !isAllowed(msg));
 
   warnSpy.mockRestore();
@@ -45,13 +45,13 @@ afterEach(() => {
 
   if (unexpectedWarns.length > 0) {
     throw new Error(
-      `Unexpected console.warn calls:\n${unexpectedWarns.map((w) => `  - ${w}`).join("\n")}`,
+      `Unexpected console.warn calls:\n${unexpectedWarns.map((w) => `  - ${w}`).join('\n')}`,
     );
   }
 
   if (unexpectedErrors.length > 0) {
     throw new Error(
-      `Unexpected console.error calls:\n${unexpectedErrors.map((e) => `  - ${e}`).join("\n")}`,
+      `Unexpected console.error calls:\n${unexpectedErrors.map((e) => `  - ${e}`).join('\n')}`,
     );
   }
 });

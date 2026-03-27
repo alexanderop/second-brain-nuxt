@@ -1,9 +1,10 @@
-import { describe, it, expect } from "vitest";
-import fc from "fast-check";
-import { escapeRegex, escapeHtml, getSnippet, highlightMatch } from "#shared/utils/text";
+import fc from 'fast-check';
+import { describe, it, expect } from 'vitest';
 
-describe("escapeRegex (property-based)", () => {
-  it("property: produces valid regex for any string", () => {
+import { escapeRegex, escapeHtml, getSnippet, highlightMatch } from '#shared/utils/text';
+
+describe('escapeRegex (property-based)', () => {
+  it('property: produces valid regex for any string', () => {
     fc.assert(
       fc.property(fc.string(), (str) => {
         expect(() => new RegExp(escapeRegex(str))).not.toThrow();
@@ -12,14 +13,14 @@ describe("escapeRegex (property-based)", () => {
   });
 });
 
-describe("escapeHtml (property-based)", () => {
-  it("property: output never contains raw <, >, or unescaped &", () => {
+describe('escapeHtml (property-based)', () => {
+  it('property: output never contains raw <, >, or unescaped &', () => {
     fc.assert(
       fc.property(fc.string(), (str) => {
         const result = escapeHtml(str);
         // After escaping, no raw < or > should remain
         expect(result).not.toMatch(/<(?!$)/);
-        expect(result).not.toContain(">");
+        expect(result).not.toContain('>');
         // & should only appear as part of an entity
         const ampersands = [...result.matchAll(/&/g)];
         for (const match of ampersands) {
@@ -31,8 +32,8 @@ describe("escapeHtml (property-based)", () => {
   });
 });
 
-describe("getSnippet (property-based)", () => {
-  it("property: result length is bounded (always <= content.length + 6 for ellipsis)", () => {
+describe('getSnippet (property-based)', () => {
+  it('property: result length is bounded (always <= content.length + 6 for ellipsis)', () => {
     fc.assert(
       fc.property(
         fc.string(),
@@ -47,7 +48,7 @@ describe("getSnippet (property-based)", () => {
     );
   });
 
-  it("property: preserves the search term when found (case-insensitive)", () => {
+  it('property: preserves the search term when found (case-insensitive)', () => {
     fc.assert(
       fc.property(
         fc.string({ minLength: 1 }),
@@ -64,13 +65,13 @@ describe("getSnippet (property-based)", () => {
   });
 });
 
-describe("highlightMatch (property-based)", () => {
-  it("property: preserves all original text content (strip tags equals escapeHtml of original)", () => {
+describe('highlightMatch (property-based)', () => {
+  it('property: preserves all original text content (strip tags equals escapeHtml of original)', () => {
     fc.assert(
       fc.property(fc.string(), fc.string({ minLength: 1 }), (text, term) => {
         const result = highlightMatch(text, term);
         // Strip all HTML tags from the result
-        const stripped = result.replace(/<[^>]*>/g, "");
+        const stripped = result.replace(/<[^>]*>/g, '');
         // The stripped result should equal the HTML-escaped original text
         expect(stripped).toBe(escapeHtml(text));
       }),

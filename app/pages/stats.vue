@@ -1,44 +1,45 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref, watch } from "vue";
-import { useFetch } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { NuxtLink, UIcon, UInput, UModal, UPagination, UProgress } from "#components";
-import StatCard from "~/components/StatCard.vue";
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
+
+import { NuxtLink, UIcon, UInput, UModal, UPagination, UProgress } from '#components';
+import { useFetch } from '#imports';
+import StatCard from '~/components/StatCard.vue';
+import { usePageTitle } from '~/composables/usePageTitle';
 
 const orphanModalOpen = ref(false);
 const orphanPage = ref(1);
 const orphanPageSize = 10;
-const orphanFilter = ref("");
-const orphanSort = ref<{ column: "title" | "type"; direction: "asc" | "desc" }>({
-  column: "title",
-  direction: "asc",
+const orphanFilter = ref('');
+const orphanSort = ref<{ column: 'title' | 'type'; direction: 'asc' | 'desc' }>({
+  column: 'title',
+  direction: 'asc',
 });
 
 function openOrphanModal() {
   orphanPage.value = 1;
-  orphanFilter.value = "";
-  orphanSort.value = { column: "title", direction: "asc" };
+  orphanFilter.value = '';
+  orphanSort.value = { column: 'title', direction: 'asc' };
   orphanModalOpen.value = true;
 }
 
-function toggleOrphanSort(column: "title" | "type") {
+function toggleOrphanSort(column: 'title' | 'type') {
   if (orphanSort.value.column === column) {
-    orphanSort.value.direction = orphanSort.value.direction === "asc" ? "desc" : "asc";
+    orphanSort.value.direction = orphanSort.value.direction === 'asc' ? 'desc' : 'asc';
     orphanPage.value = 1;
     return;
   }
-  orphanSort.value = { column, direction: "asc" };
+  orphanSort.value = { column, direction: 'asc' };
   orphanPage.value = 1;
 }
 
-function getSortIndicator(column: "title" | "type") {
-  if (orphanSort.value.column !== column) return "↕";
-  return orphanSort.value.direction === "asc" ? "↑" : "↓";
+function getSortIndicator(column: 'title' | 'type') {
+  if (orphanSort.value.column !== column) return '↕';
+  return orphanSort.value.direction === 'asc' ? '↑' : '↓';
 }
 
 // Lazy-load chart components to reduce initial bundle size
-const StatsBarChart = defineAsyncComponent(() => import("~/components/StatsBarChart.client.vue"));
-const StatsLineChart = defineAsyncComponent(() => import("~/components/StatsLineChart.client.vue"));
+const StatsBarChart = defineAsyncComponent(() => import('~/components/StatsBarChart.client.vue'));
+const StatsLineChart = defineAsyncComponent(() => import('~/components/StatsLineChart.client.vue'));
 
 interface HubNode {
   id: string;
@@ -77,25 +78,25 @@ interface StatsData {
   thisWeek: number;
 }
 
-const { data: stats, status } = await useFetch<StatsData>("/api/stats");
+const { data: stats, status } = await useFetch<StatsData>('/api/stats');
 
 // Growth chart filters
-type TimeRange = "7d" | "30d" | "1y" | "all";
-type ChartMode = "cumulative" | "daily";
+type TimeRange = '7d' | '30d' | '1y' | 'all';
+type ChartMode = 'cumulative' | 'daily';
 
-const timeRange = ref<TimeRange>("all");
-const chartMode = ref<ChartMode>("cumulative");
+const timeRange = ref<TimeRange>('all');
+const chartMode = ref<ChartMode>('cumulative');
 
 const timeRangeOptions = [
-  { value: "7d" as const, label: "7D" },
-  { value: "30d" as const, label: "30D" },
-  { value: "1y" as const, label: "1Y" },
-  { value: "all" as const, label: "All" },
+  { value: '7d' as const, label: '7D' },
+  { value: '30d' as const, label: '30D' },
+  { value: '1y' as const, label: '1Y' },
+  { value: 'all' as const, label: 'All' },
 ];
 
 const chartModeOptions = [
-  { value: "cumulative" as const, label: "Cumulative" },
-  { value: "daily" as const, label: "Daily" },
+  { value: 'cumulative' as const, label: 'Cumulative' },
+  { value: 'daily' as const, label: 'Daily' },
 ];
 
 const typeChartData = computed(() => {
@@ -116,13 +117,13 @@ function getCutoffDate(range: TimeRange, startDate: string | null): Date {
   const now = new Date();
   const dayMs = 24 * 60 * 60 * 1000;
 
-  if (range === "7d") return new Date(now.getTime() - 7 * dayMs);
-  if (range === "30d") return new Date(now.getTime() - 30 * dayMs);
-  if (range === "1y") return new Date(now.getTime() - 365 * dayMs);
+  if (range === '7d') return new Date(now.getTime() - 7 * dayMs);
+  if (range === '30d') return new Date(now.getTime() - 30 * dayMs);
+  if (range === '1y') return new Date(now.getTime() - 365 * dayMs);
   return startDate ? new Date(startDate) : new Date(0);
 }
 
-function getDailyChartData(byDay: StatsData["byDay"], cutoffStr: string) {
+function getDailyChartData(byDay: StatsData['byDay'], cutoffStr: string) {
   return byDay
     .filter((d) => d.date >= cutoffStr)
     .map((item) => ({
@@ -131,7 +132,7 @@ function getDailyChartData(byDay: StatsData["byDay"], cutoffStr: string) {
     }));
 }
 
-function getCumulativeDailyData(byDay: StatsData["byDay"], cutoffStr: string) {
+function getCumulativeDailyData(byDay: StatsData['byDay'], cutoffStr: string) {
   const priorCount = byDay.filter((d) => d.date < cutoffStr).reduce((sum, d) => sum + d.count, 0);
   let cumulative = priorCount;
 
@@ -143,7 +144,7 @@ function getCumulativeDailyData(byDay: StatsData["byDay"], cutoffStr: string) {
     });
 }
 
-function getCumulativeMonthlyData(byMonth: StatsData["byMonth"], cutoffStr: string) {
+function getCumulativeMonthlyData(byMonth: StatsData['byMonth'], cutoffStr: string) {
   const cutoffMonth = cutoffStr.substring(0, 7);
   return byMonth
     .filter((m) => m.month >= cutoffMonth)
@@ -161,11 +162,11 @@ const growthChartData = computed(() => {
   const byDay = stats.value.byDay ?? [];
   const byMonth = stats.value.byMonth ?? [];
 
-  if (chartMode.value === "daily") {
+  if (chartMode.value === 'daily') {
     return getDailyChartData(byDay, cutoffStr);
   }
 
-  const useDaily = timeRange.value === "7d" || timeRange.value === "30d";
+  const useDaily = timeRange.value === '7d' || timeRange.value === '30d';
   if (useDaily) {
     return getCumulativeDailyData(byDay, cutoffStr);
   }
@@ -178,12 +179,12 @@ const qualityMetrics = computed(() => {
   if (!q || q.total === 0) return [];
   return [
     {
-      label: "Has summary",
+      label: 'Has summary',
       value: q.withSummary,
       percent: Math.round((q.withSummary / q.total) * 100),
     },
     {
-      label: "Has personal notes",
+      label: 'Has personal notes',
       value: q.withNotes,
       percent: Math.round((q.withNotes / q.total) * 100),
     },
@@ -207,7 +208,7 @@ const filteredOrphans = computed(() => {
     const aVal = a[column].toLowerCase();
     const bVal = b[column].toLowerCase();
     const cmp = aVal.localeCompare(bVal);
-    return direction === "asc" ? cmp : -cmp;
+    return direction === 'asc' ? cmp : -cmp;
   });
 
   return orphans;
@@ -225,22 +226,35 @@ watch(orphanFilter, () => {
   orphanPage.value = 1;
 });
 
-usePageTitle("Stats");
+usePageTitle('Stats');
 </script>
 
 <template>
   <div>
     <h1 class="text-2xl font-semibold mb-8 tracking-tight">Stats</h1>
 
-    <div v-if="status === 'pending'" class="text-center py-12 text-[var(--ui-text-muted)]">
-      <UIcon name="i-lucide-loader-2" class="size-5 animate-spin mb-2" />
+    <div
+      v-if="status === 'pending'"
+      class="text-center py-12 text-[var(--ui-text-muted)]"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-5 animate-spin mb-2"
+      />
       <p>Loading stats...</p>
     </div>
 
-    <div v-else-if="stats" class="space-y-10">
+    <div
+      v-else-if="stats"
+      class="space-y-10"
+    >
       <!-- Overview Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Total Notes" :value="stats.total" icon="i-lucide-file-text" />
+        <StatCard
+          label="Total Notes"
+          :value="stats.total"
+          icon="i-lucide-file-text"
+        />
         <StatCard
           label="Connections"
           :value="stats.connections.totalEdges"
@@ -251,7 +265,11 @@ usePageTitle("Stats");
           :value="`${stats.connections.orphanPercent}%`"
           icon="i-lucide-file-minus"
         />
-        <StatCard label="This Week" :value="stats.thisWeek" icon="i-lucide-calendar" />
+        <StatCard
+          label="This Week"
+          :value="stats.thisWeek"
+          icon="i-lucide-calendar"
+        />
       </div>
 
       <!-- Charts Row -->
@@ -273,7 +291,10 @@ usePageTitle("Stats");
             v-else
             class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-file-plus" class="size-8 mb-2 opacity-50" />
+            <UIcon
+              name="i-lucide-file-plus"
+              class="size-8 mb-2 opacity-50"
+            />
             <p class="text-sm">No content yet</p>
           </div>
         </div>
@@ -295,7 +316,10 @@ usePageTitle("Stats");
             v-else
             class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-tag" class="size-8 mb-2 opacity-50" />
+            <UIcon
+              name="i-lucide-tag"
+              class="size-8 mb-2 opacity-50"
+            />
             <p class="text-sm">No tags yet</p>
           </div>
         </div>
@@ -347,12 +371,19 @@ usePageTitle("Stats");
             </div>
           </div>
         </div>
-        <StatsLineChart v-if="growthChartData.length > 1" :data="growthChartData" :height="180" />
+        <StatsLineChart
+          v-if="growthChartData.length > 1"
+          :data="growthChartData"
+          :height="180"
+        />
         <div
           v-else
           class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
         >
-          <UIcon name="i-lucide-bar-chart-3" class="size-8 mb-2 opacity-50" />
+          <UIcon
+            name="i-lucide-bar-chart-3"
+            class="size-8 mb-2 opacity-50"
+          />
           <p class="text-sm">No data for selected period</p>
         </div>
       </div>
@@ -367,7 +398,10 @@ usePageTitle("Stats");
             Hub Notes
             <span class="font-normal normal-case tracking-normal">(most connected)</span>
           </h2>
-          <div v-if="stats.connections.hubs.length" class="space-y-1">
+          <div
+            v-if="stats.connections.hubs.length"
+            class="space-y-1"
+          >
             <NuxtLink
               v-for="(hub, i) in stats.connections.hubs"
               :key="hub.id"
@@ -387,7 +421,10 @@ usePageTitle("Stats");
             v-else
             class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-link" class="size-8 mb-2 opacity-50" />
+            <UIcon
+              name="i-lucide-link"
+              class="size-8 mb-2 opacity-50"
+            />
             <p class="text-sm mb-1">No connected notes yet</p>
             <p class="text-xs opacity-70">Add [[wiki-links]] to build your knowledge graph</p>
           </div>
@@ -401,7 +438,10 @@ usePageTitle("Stats");
             Orphan Notes
             <span class="font-normal normal-case tracking-normal">(no connections)</span>
           </h2>
-          <div v-if="stats.connections.orphans.length" class="space-y-1">
+          <div
+            v-if="stats.connections.orphans.length"
+            class="space-y-1"
+          >
             <NuxtLink
               v-for="orphan in stats.connections.orphans.slice(0, 5)"
               :key="orphan.id"
@@ -427,7 +467,10 @@ usePageTitle("Stats");
             v-else
             class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-check-circle" class="size-8 mb-2 opacity-50" />
+            <UIcon
+              name="i-lucide-check-circle"
+              class="size-8 mb-2 opacity-50"
+            />
             <p class="text-sm">All notes are connected!</p>
           </div>
         </div>
@@ -439,8 +482,15 @@ usePageTitle("Stats");
           >
             Quality Metrics
           </h2>
-          <div v-if="qualityMetrics.length" class="space-y-5">
-            <div v-for="metric in qualityMetrics" :key="metric.label" class="quality-metric">
+          <div
+            v-if="qualityMetrics.length"
+            class="space-y-5"
+          >
+            <div
+              v-for="metric in qualityMetrics"
+              :key="metric.label"
+              class="quality-metric"
+            >
               <div class="flex justify-between text-sm mb-2">
                 <span>{{ metric.label }}</span>
                 <span class="text-[var(--ui-text-muted)] font-mono text-xs"
@@ -482,7 +532,10 @@ usePageTitle("Stats");
             v-else
             class="flex flex-col items-center justify-center py-10 text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-bar-chart-3" class="size-8 mb-2 opacity-50" />
+            <UIcon
+              name="i-lucide-bar-chart-3"
+              class="size-8 mb-2 opacity-50"
+            />
             <p class="text-sm">No content yet</p>
           </div>
         </div>
@@ -511,7 +564,10 @@ usePageTitle("Stats");
     </div>
 
     <!-- Orphan Notes Modal (outside stats div to reduce nesting) -->
-    <UModal v-model:open="orphanModalOpen" :ui="{ content: 'w-full max-w-2xl' }">
+    <UModal
+      v-model:open="orphanModalOpen"
+      :ui="{ content: 'w-full max-w-2xl' }"
+    >
       <template #content>
         <div class="p-6 flex flex-col max-h-[70vh]">
           <!-- Header (fixed) -->
@@ -527,7 +583,10 @@ usePageTitle("Stats");
               class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)] p-1"
               @click="orphanModalOpen = false"
             >
-              <UIcon name="i-lucide-x" class="size-5" />
+              <UIcon
+                name="i-lucide-x"
+                class="size-5"
+              />
             </button>
           </div>
 
@@ -551,13 +610,13 @@ usePageTitle("Stats");
                   class="pb-2 cursor-pointer hover:text-[var(--ui-text)]"
                   @click="toggleOrphanSort('title')"
                 >
-                  Title {{ getSortIndicator("title") }}
+                  Title {{ getSortIndicator('title') }}
                 </th>
                 <th
                   class="pb-2 text-right cursor-pointer hover:text-[var(--ui-text)]"
                   @click="toggleOrphanSort('type')"
                 >
-                  Type {{ getSortIndicator("type") }}
+                  Type {{ getSortIndicator('type') }}
                 </th>
               </tr>
             </thead>
@@ -585,7 +644,10 @@ usePageTitle("Stats");
                 </td>
               </tr>
               <tr v-if="paginatedOrphans.length === 0">
-                <td colspan="2" class="py-8 text-center text-[var(--ui-text-muted)]">
+                <td
+                  colspan="2"
+                  class="py-8 text-center text-[var(--ui-text-muted)]"
+                >
                   No orphans match your filter
                 </td>
               </tr>

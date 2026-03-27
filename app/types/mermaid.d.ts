@@ -1,6 +1,6 @@
-import type { Mermaid } from "mermaid";
+import type { Mermaid } from 'mermaid';
 
-declare module "#app" {
+declare module '#app' {
   interface NuxtApp {
     $mermaid: () => Mermaid;
   }

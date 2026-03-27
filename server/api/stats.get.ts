@@ -1,6 +1,6 @@
-import type { H3Event } from "h3";
-import { defineCachedEventHandler } from "nitropack/runtime";
-import { queryCollection } from "@nuxt/content/server";
+import { queryCollection } from '@nuxt/content/server';
+import type { H3Event } from 'h3';
+import { defineCachedEventHandler } from 'nitropack/runtime';
 
 interface ContentItem {
   type: string;
@@ -178,8 +178,8 @@ function getStartDate(items: ContentItem[]): string | null {
 
 async function fetchGraphData(_event: H3Event): Promise<GraphData> {
   // Fetch from internal API endpoint using relative path
-  const result = await $fetch<GraphData>("/api/graph").catch((error) => {
-    console.error("Error fetching graph data:", error);
+  const result = await $fetch<GraphData>('/api/graph').catch((error) => {
+    console.error('Error fetching graph data:', error);
     return null;
   });
   return result ?? { nodes: [], edges: [] };
@@ -188,8 +188,8 @@ async function fetchGraphData(_event: H3Event): Promise<GraphData> {
 export default defineCachedEventHandler(
   async (event): Promise<StatsData> => {
     // Query content with minimal fields needed for stats
-    const allContent: ContentItem[] = await queryCollection(event, "content")
-      .select("type", "tags", "authors", "date", "summary", "notes")
+    const allContent: ContentItem[] = await queryCollection(event, 'content')
+      .select('type', 'tags', 'authors', 'date', 'summary', 'notes')
       .all();
 
     // Fetch graph data for connection metrics
@@ -253,6 +253,6 @@ export default defineCachedEventHandler(
   {
     maxAge: 60 * 10, // Cache for 10 minutes
     swr: true, // Stale-while-revalidate
-    name: "stats",
+    name: 'stats',
   },
 );

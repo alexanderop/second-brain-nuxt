@@ -13,7 +13,7 @@
  * const linkedNote = createLinkedContent('My Note', 'atomic-habits')
  * ```
  */
-import type { ContentFixture } from "./content";
+import type { ContentFixture } from './content';
 
 let counter = 0;
 
@@ -36,10 +36,10 @@ export function createContentItem(overrides: Partial<ContentFixture> = {}): Cont
     path: `/${stem}`,
     stem,
     title: overrides.title ?? `Test Note ${counter}`,
-    type: overrides.type ?? "note",
+    type: overrides.type ?? 'note',
     tags: overrides.tags ?? [],
-    summary: overrides.summary ?? "A test note for testing purposes",
-    body: overrides.body ?? { type: "minimark", value: [] },
+    summary: overrides.summary ?? 'A test note for testing purposes',
+    body: overrides.body ?? { type: 'minimark', value: [] },
     ...overrides,
   };
 }
@@ -56,8 +56,8 @@ export function createLinkedContent(
   return createContentItem({
     title: sourceTitle,
     body: {
-      type: "minimark",
-      value: [["p", {}, "Text with ", ["a", { href: `/${targetStem}` }, targetStem]]],
+      type: 'minimark',
+      value: [['p', {}, 'Text with ', ['a', { href: `/${targetStem}` }, targetStem]]],
     },
     ...overrides,
   });
@@ -78,8 +78,8 @@ export function createContentItems(
  */
 export function createBook(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: "book",
-    tags: ["reading"],
+    type: 'book',
+    tags: ['reading'],
     ...overrides,
   });
 }
@@ -89,8 +89,8 @@ export function createBook(overrides: Partial<ContentFixture> = {}): ContentFixt
  */
 export function createArticle(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: "article",
-    tags: ["articles"],
+    type: 'article',
+    tags: ['articles'],
     ...overrides,
   });
 }
@@ -100,8 +100,8 @@ export function createArticle(overrides: Partial<ContentFixture> = {}): ContentF
  */
 export function createPodcast(overrides: Partial<ContentFixture> = {}): ContentFixture {
   return createContentItem({
-    type: "podcast",
-    tags: ["podcasts"],
+    type: 'podcast',
+    tags: ['podcasts'],
     ...overrides,
   });
 }

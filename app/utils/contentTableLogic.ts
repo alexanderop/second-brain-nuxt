@@ -3,8 +3,8 @@
  * No Vue imports, no side effects, no external dependencies.
  */
 
-import type { ContentType } from "~/constants/contentTypes";
-import type { FilterState, SortState, TableAuthor, TableContentItem } from "~/types/table";
+import type { ContentType } from '~/constants/contentTypes';
+import type { FilterState, SortState, TableAuthor, TableContentItem } from '~/types/table';
 
 /**
  * Parse array query param (handles single value, array, or comma-separated).
@@ -12,7 +12,7 @@ import type { FilterState, SortState, TableAuthor, TableContentItem } from "~/ty
 export function parseArrayParam(value: string | Array<string> | null | undefined): Array<string> {
   if (!value) return [];
   if (Array.isArray(value)) return value.filter(Boolean);
-  return value.split(",").filter(Boolean);
+  return value.split(',').filter(Boolean);
 }
 
 /**
@@ -25,13 +25,13 @@ export function applyFiltersExcept<
 
   // Type filter (OR)
   const typeFilter = filters.type;
-  if (exclude !== "type" && typeFilter?.length) {
+  if (exclude !== 'type' && typeFilter?.length) {
     result = result.filter((item) => typeFilter.includes(item.type));
   }
 
   // Tags filter (OR)
   const tagsFilter = filters.tags;
-  if (exclude !== "tags" && tagsFilter?.length) {
+  if (exclude !== 'tags' && tagsFilter?.length) {
     result = result.filter((item) => {
       const itemTags = item.tags;
       if (!itemTags?.length) return false;
@@ -41,7 +41,7 @@ export function applyFiltersExcept<
 
   // Authors filter (OR)
   const authorsFilter = filters.authors;
-  if (exclude !== "authors" && authorsFilter?.length) {
+  if (exclude !== 'authors' && authorsFilter?.length) {
     result = result.filter((item) => {
       if (!item.authors?.length) return false;
       const slugs = item.authors.map((a) => a.slug);
@@ -214,12 +214,12 @@ export function compareValues(
   if (isNullish(bVal)) return -1;
 
   // Compare strings
-  if (typeof aVal === "string" && typeof bVal === "string") {
+  if (typeof aVal === 'string' && typeof bVal === 'string') {
     return aVal.localeCompare(bVal);
   }
 
   // Compare numbers
-  if (typeof aVal === "number" && typeof bVal === "number") {
+  if (typeof aVal === 'number' && typeof bVal === 'number') {
     return compareNumbers(aVal, bVal);
   }
   return 0;
@@ -230,12 +230,12 @@ export function compareValues(
  */
 export function getSortValue(
   item: TableContentItem,
-  column: SortState["column"],
+  column: SortState['column'],
 ): string | number | undefined {
-  if (column === "dateConsumed") return item.date;
-  if (column === "title") return item.title;
-  if (column === "type") return item.type;
-  if (column === "rating") return item.rating;
+  if (column === 'dateConsumed') return item.date;
+  if (column === 'title') return item.title;
+  if (column === 'type') return item.type;
+  if (column === 'rating') return item.rating;
   return undefined;
 }
 
@@ -244,15 +244,15 @@ export function getSortValue(
  */
 export function sortItems(
   items: TableContentItem[],
-  column: SortState["column"],
-  direction: SortState["direction"],
+  column: SortState['column'],
+  direction: SortState['direction'],
 ): TableContentItem[] {
   const sorted = [...items];
   sorted.sort((a, b) => {
     const aVal = getSortValue(a, column);
     const bVal = getSortValue(b, column);
     const cmp = compareValues(aVal, bVal);
-    return direction === "asc" ? cmp : -cmp;
+    return direction === 'asc' ? cmp : -cmp;
   });
   return sorted;
 }
@@ -272,20 +272,20 @@ export function calculateTotalPages(totalItems: number, pageSize: number): numbe
   return Math.ceil(totalItems / pageSize);
 }
 
-const validColumns: readonly string[] = ["title", "type", "dateConsumed", "rating"];
+const validColumns: readonly string[] = ['title', 'type', 'dateConsumed', 'rating'];
 
 /**
  * Validate sort column.
  */
-export function isValidColumn(value: string | null): value is SortState["column"] {
+export function isValidColumn(value: string | null): value is SortState['column'] {
   return value !== null && validColumns.includes(value);
 }
 
 /**
  * Validate sort direction.
  */
-export function isValidDirection(value: string | null): value is SortState["direction"] {
-  return value === "asc" || value === "desc";
+export function isValidDirection(value: string | null): value is SortState['direction'] {
+  return value === 'asc' || value === 'desc';
 }
 
 /**
@@ -293,7 +293,7 @@ export function isValidDirection(value: string | null): value is SortState["dire
  */
 export function toStringArray(arr: unknown): string[] {
   if (!Array.isArray(arr)) return [];
-  return arr.filter((x): x is string => typeof x === "string");
+  return arr.filter((x): x is string => typeof x === 'string');
 }
 
 /**

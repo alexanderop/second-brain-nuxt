@@ -1,4 +1,4 @@
-import type { Rule } from "eslint";
+import type { Rule } from 'eslint';
 
 const HELP_MESSAGE = `
 Wrap queryCollection() with useAsyncData() in composables to enable caching.
@@ -28,9 +28,9 @@ function isInsideUseAsyncData(node: any, ancestors: any[]): boolean {
     const ancestor = ancestors[i];
 
     // Check if this is a CallExpression with callee 'useAsyncData'
-    if (ancestor.type === "CallExpression") {
+    if (ancestor.type === 'CallExpression') {
       const callee = ancestor.callee;
-      if (callee.type === "Identifier" && callee.name === "useAsyncData") {
+      if (callee.type === 'Identifier' && callee.name === 'useAsyncData') {
         // Check if our node is in the callback (2nd argument)
         const callback = ancestor.arguments[1];
         if (callback && isNodeDescendant(node, callback)) {
@@ -65,7 +65,7 @@ function isClientSideQueryCollection(node: any): boolean {
   // Client-side: queryCollection('collection')
   // If first arg is a string literal, it's client-side
   const firstArg = node.arguments[0];
-  return firstArg?.type === "Literal" && typeof firstArg.value === "string";
+  return firstArg?.type === 'Literal' && typeof firstArg.value === 'string';
 }
 
 /**
@@ -76,11 +76,11 @@ function isClientSideQueryCollection(node: any): boolean {
 function isInsideHelperFunction(ancestors: any[]): boolean {
   for (const ancestor of ancestors) {
     // Named function declarations are helper functions
-    if (ancestor.type === "FunctionDeclaration") {
+    if (ancestor.type === 'FunctionDeclaration') {
       return true;
     }
     // Named function expressions (const foo = function() {})
-    if (ancestor.type === "FunctionExpression") {
+    if (ancestor.type === 'FunctionExpression') {
       return true;
     }
   }
@@ -89,9 +89,9 @@ function isInsideHelperFunction(ancestors: any[]): boolean {
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Require queryCollection in composables to be wrapped with useAsyncData",
+      description: 'Require queryCollection in composables to be wrapped with useAsyncData',
       recommended: true,
     },
     messages: {
@@ -104,8 +104,8 @@ const rule: Rule.RuleModule = {
     const filename = context.filename;
 
     // Apply to composables and Vue components (client-side code)
-    const isComposable = filename.includes("/composables/");
-    const isVueComponent = filename.endsWith(".vue");
+    const isComposable = filename.includes('/composables/');
+    const isVueComponent = filename.endsWith('.vue');
 
     if (!isComposable && !isVueComponent) {
       return {};
@@ -115,7 +115,7 @@ const rule: Rule.RuleModule = {
       CallExpression(node) {
         // Check if this is a queryCollection call
         const callee = node.callee;
-        if (callee.type !== "Identifier" || callee.name !== "queryCollection") {
+        if (callee.type !== 'Identifier' || callee.name !== 'queryCollection') {
           return;
         }
 
@@ -137,7 +137,7 @@ const rule: Rule.RuleModule = {
         if (!isInsideUseAsyncData(node, ancestors)) {
           context.report({
             node,
-            messageId: "requireAsyncData",
+            messageId: 'requireAsyncData',
           });
         }
       },

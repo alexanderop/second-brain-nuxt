@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class TagDetailPage {
   readonly page: Page;
@@ -9,14 +9,14 @@ export class TagDetailPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole("heading", { level: 1 });
-    this.itemCount = page.locator("h1 + span, h1 ~ span").first();
-    this.contentList = page.locator("article").first().locator("..");
-    this.contentItems = page.locator("article");
+    this.heading = page.getByRole('heading', { level: 1 });
+    this.itemCount = page.locator('h1 + span, h1 ~ span').first();
+    this.contentList = page.locator('article').first().locator('..');
+    this.contentItems = page.locator('article');
   }
 
   async goto(tag: string) {
-    await this.page.goto(`/tags/${tag}`, { waitUntil: "networkidle" });
+    await this.page.goto(`/tags/${tag}`, { waitUntil: 'networkidle' });
   }
 
   async getContentCount(): Promise<number> {

@@ -1,32 +1,33 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute, useAsyncData, queryCollection } from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { NuxtLink, UIcon, UButton, UAvatar } from "#components";
-import ContentList from "~/components/ContentList.vue";
-import TweetCard from "~/components/TweetCard.vue";
-import type { TweetItem } from "~/types/content";
-import { buildSocialLinks } from "~/utils/socialLinks";
+import { computed } from 'vue';
+
+import { NuxtLink, UIcon, UButton, UAvatar } from '#components';
+import { useRoute, useAsyncData, queryCollection } from '#imports';
+import ContentList from '~/components/ContentList.vue';
+import TweetCard from '~/components/TweetCard.vue';
+import { usePageTitle } from '~/composables/usePageTitle';
+import type { TweetItem } from '~/types/content';
+import { buildSocialLinks } from '~/utils/socialLinks';
 
 const route = useRoute();
 const authorSlug = computed(() => decodeURIComponent(String(route.params.name)));
 
 const { data: authorData } = await useAsyncData(`author-data-${authorSlug.value}`, () => {
-  return queryCollection("authors").where("slug", "=", authorSlug.value).first();
+  return queryCollection('authors').where('slug', '=', authorSlug.value).first();
 });
 
 const { data: items } = await useAsyncData(`author-${authorSlug.value}`, () => {
-  return queryCollection("content")
-    .where("authors", "LIKE", `%${authorSlug.value}%`)
-    .order("date", "DESC")
+  return queryCollection('content')
+    .where('authors', 'LIKE', `%${authorSlug.value}%`)
+    .order('date', 'DESC')
     .all();
 });
 
 // Fetch tweets by this author
 const { data: tweets } = await useAsyncData(`author-tweets-${authorSlug.value}`, () => {
-  return queryCollection("tweets")
-    .where("author", "=", authorSlug.value)
-    .order("tweetedAt", "DESC")
+  return queryCollection('tweets')
+    .where('author', '=', authorSlug.value)
+    .order('tweetedAt', 'DESC')
     .all();
 });
 
@@ -37,11 +38,11 @@ const typedTweets = computed<TweetItem[]>(() => {
     .filter((t) => t.tweetId && t.tweetText && t.author)
     .map(
       (t): TweetItem => ({
-        slug: t.path?.replace(/^\/tweets\//, "") ?? `tweet-${t.tweetId}`,
-        type: "tweet",
-        title: t.title ?? "",
+        slug: t.path?.replace(/^\/tweets\//, '') ?? `tweet-${t.tweetId}`,
+        type: 'tweet',
+        title: t.title ?? '',
         tweetId: t.tweetId,
-        tweetUrl: t.tweetUrl ?? "",
+        tweetUrl: t.tweetUrl ?? '',
         tweetText: t.tweetText,
         author: t.author,
         tweetedAt: t.tweetedAt ?? new Date(),
@@ -63,7 +64,7 @@ const authorInfo = computed(() => {
   let twitterHandle: string | undefined;
   if (authorData.value.socials?.twitter) {
     const twitterUrl = authorData.value.socials.twitter;
-    twitterHandle = twitterUrl.includes("/") ? twitterUrl.split("/").pop() : twitterUrl;
+    twitterHandle = twitterUrl.includes('/') ? twitterUrl.split('/').pop() : twitterUrl;
   }
   return {
     name: authorData.value.name,
@@ -89,10 +90,23 @@ const socialLinks = computed(() => buildSocialLinks(authorData.value?.socials));
           aria-label="Back to authors"
           class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
         >
-          <UIcon name="i-lucide-arrow-left" aria-hidden="true" class="size-5" />
+          <UIcon
+            name="i-lucide-arrow-left"
+            aria-hidden="true"
+            class="size-5"
+          />
         </NuxtLink>
-        <UAvatar v-if="authorData?.avatar" :src="authorData.avatar" :alt="authorName" size="lg" />
-        <UIcon v-else name="i-lucide-user" class="size-6" />
+        <UAvatar
+          v-if="authorData?.avatar"
+          :src="authorData.avatar"
+          :alt="authorName"
+          size="lg"
+        />
+        <UIcon
+          v-else
+          name="i-lucide-user"
+          class="size-6"
+        />
         <h1 class="text-2xl font-semibold">
           {{ authorName }}
         </h1>
@@ -101,11 +115,17 @@ const socialLinks = computed(() => buildSocialLinks(authorData.value?.socials));
         </span>
       </div>
 
-      <div v-if="authorData?.bio" class="text-[var(--ui-text-muted)] mb-4">
+      <div
+        v-if="authorData?.bio"
+        class="text-[var(--ui-text-muted)] mb-4"
+      >
         {{ authorData.bio }}
       </div>
 
-      <div v-if="authorData?.website || socialLinks.length" class="flex items-center gap-3">
+      <div
+        v-if="authorData?.website || socialLinks.length"
+        class="flex items-center gap-3"
+      >
         <UButton
           v-if="authorData?.website"
           :to="authorData.website"
@@ -131,7 +151,10 @@ const socialLinks = computed(() => buildSocialLinks(authorData.value?.socials));
     </div>
 
     <!-- Notes section -->
-    <section v-if="items?.length" class="mb-8">
+    <section
+      v-if="items?.length"
+      class="mb-8"
+    >
       <h2 class="text-lg font-semibold mb-4">Notes ({{ items.length }})</h2>
       <ContentList :items="items" />
     </section>

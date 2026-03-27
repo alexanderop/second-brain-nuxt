@@ -25,32 +25,32 @@ export interface NoteGraphDataFixture {
 }
 
 export const isolatedNoteGraph: NoteGraphDataFixture = {
-  center: { id: "isolated-note", title: "Isolated Note", type: "note", isCenter: true, level: 0 },
+  center: { id: 'isolated-note', title: 'Isolated Note', type: 'note', isCenter: true, level: 0 },
   connected: [],
   edges: [],
 };
 
 export const simpleNoteGraph: NoteGraphDataFixture = {
-  center: { id: "atomic-habits", title: "Atomic Habits", type: "book", isCenter: true, level: 0 },
+  center: { id: 'atomic-habits', title: 'Atomic Habits', type: 'book', isCenter: true, level: 0 },
   connected: [
-    { id: "deep-work", title: "Deep Work", type: "book", level: 1 },
-    { id: "thinking-fast-and-slow", title: "Thinking Fast and Slow", type: "book", level: 1 },
+    { id: 'deep-work', title: 'Deep Work', type: 'book', level: 1 },
+    { id: 'thinking-fast-and-slow', title: 'Thinking Fast and Slow', type: 'book', level: 1 },
   ],
   edges: [
-    { source: "atomic-habits", target: "deep-work", level: 1 },
-    { source: "atomic-habits", target: "thinking-fast-and-slow", level: 1 },
+    { source: 'atomic-habits', target: 'deep-work', level: 1 },
+    { source: 'atomic-habits', target: 'thinking-fast-and-slow', level: 1 },
   ],
 };
 
 export const noteGraphWithL2: NoteGraphDataFixture = {
-  center: { id: "atomic-habits", title: "Atomic Habits", type: "book", isCenter: true, level: 0 },
+  center: { id: 'atomic-habits', title: 'Atomic Habits', type: 'book', isCenter: true, level: 0 },
   connected: [
-    { id: "deep-work", title: "Deep Work", type: "book", level: 1 },
-    { id: "focus-article", title: "On Focus", type: "article", level: 2 },
+    { id: 'deep-work', title: 'Deep Work', type: 'book', level: 1 },
+    { id: 'focus-article', title: 'On Focus', type: 'article', level: 2 },
   ],
   edges: [
-    { source: "atomic-habits", target: "deep-work", level: 1 },
-    { source: "deep-work", target: "focus-article", level: 2 },
+    { source: 'atomic-habits', target: 'deep-work', level: 1 },
+    { source: 'deep-work', target: 'focus-article', level: 2 },
   ],
 };
 

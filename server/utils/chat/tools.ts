@@ -1,13 +1,13 @@
-import type { Anthropic } from "@anthropic-ai/sdk";
+import type { Anthropic } from '@anthropic-ai/sdk';
 
 // Configuration constants
-export const MODEL = "claude-3-5-haiku-20241022";
+export const MODEL = 'claude-3-5-haiku-20241022';
 export const MAX_TOKENS = 1024;
 
 // Request/Response interfaces
 export interface ChatRequest {
   message: string;
-  history: Array<{ role: "user" | "assistant"; content: string }>;
+  history: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
 
 export interface NoteContext {
@@ -55,27 +55,27 @@ export interface FetchSourceInput {
 
 // Type guards for tool inputs
 export function isSearchNotesInput(input: unknown): input is SearchNotesInput {
-  if (typeof input !== "object" || input === null) return false;
-  if (!("query" in input)) return false;
-  return typeof input.query === "string";
+  if (typeof input !== 'object' || input === null) return false;
+  if (!('query' in input)) return false;
+  return typeof input.query === 'string';
 }
 
 export function isGetNoteContentInput(input: unknown): input is GetNoteContentInput {
-  if (typeof input !== "object" || input === null) return false;
-  if (!("slug" in input)) return false;
-  return typeof input.slug === "string";
+  if (typeof input !== 'object' || input === null) return false;
+  if (!('slug' in input)) return false;
+  return typeof input.slug === 'string';
 }
 
 export function isGetNoteDetailsInput(input: unknown): input is GetNoteDetailsInput {
-  if (typeof input !== "object" || input === null) return false;
-  if (!("slug" in input)) return false;
-  return typeof input.slug === "string";
+  if (typeof input !== 'object' || input === null) return false;
+  if (!('slug' in input)) return false;
+  return typeof input.slug === 'string';
 }
 
 export function isFetchSourceInput(input: unknown): input is FetchSourceInput {
-  if (typeof input !== "object" || input === null) return false;
-  if (!("slug" in input)) return false;
-  return typeof input.slug === "string";
+  if (typeof input !== 'object' || input === null) return false;
+  if (!('slug' in input)) return false;
+  return typeof input.slug === 'string';
 }
 
 // System prompt for the chat assistant
@@ -118,82 +118,82 @@ Sources:
 // Tool definitions for Claude
 export const TOOLS: Anthropic.Tool[] = [
   {
-    name: "search_notes",
+    name: 'search_notes',
     description:
-      "Search the knowledge base for notes by keyword matching on titles, summaries, and tags. Use when the user asks about topics, concepts, or wants to find content.",
+      'Search the knowledge base for notes by keyword matching on titles, summaries, and tags. Use when the user asks about topics, concepts, or wants to find content.',
     input_schema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
         query: {
-          type: "string",
-          description: "Search query - can be keywords or natural language",
+          type: 'string',
+          description: 'Search query - can be keywords or natural language',
         },
         type: {
-          type: "string",
+          type: 'string',
           enum: [
-            "article",
-            "book",
-            "podcast",
-            "note",
-            "youtube",
-            "tweet",
-            "course",
-            "reddit",
-            "github",
-            "newsletter",
-            "talk",
-            "movie",
-            "tv",
-            "manga",
-            "quote",
-            "evergreen",
-            "map",
+            'article',
+            'book',
+            'podcast',
+            'note',
+            'youtube',
+            'tweet',
+            'course',
+            'reddit',
+            'github',
+            'newsletter',
+            'talk',
+            'movie',
+            'tv',
+            'manga',
+            'quote',
+            'evergreen',
+            'map',
           ],
-          description: "Optional: filter by content type",
+          description: 'Optional: filter by content type',
         },
-        limit: { type: "number", description: "Max results (default 5, max 10)" },
+        limit: { type: 'number', description: 'Max results (default 5, max 10)' },
       },
-      required: ["query"],
+      required: ['query'],
     },
   },
   {
-    name: "get_note_content",
+    name: 'get_note_content',
     description:
-      "Get the full content of a specific note by its slug/path. Use after searching to read the complete note with all details.",
+      'Get the full content of a specific note by its slug/path. Use after searching to read the complete note with all details.',
     input_schema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        slug: { type: "string", description: "The note slug (e.g., 'vue-reactivity-patterns')" },
+        slug: { type: 'string', description: "The note slug (e.g., 'vue-reactivity-patterns')" },
       },
-      required: ["slug"],
+      required: ['slug'],
     },
   },
   {
-    name: "get_note_details",
+    name: 'get_note_details',
     description:
       "Get comprehensive note details including backlinks (notes that link to this one) and forward links (notes this one links to). Use when you need to understand a note's connections or explore related content.",
     input_schema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        slug: { type: "string", description: "The note slug (e.g., 'atomic-habits')" },
+        slug: { type: 'string', description: "The note slug (e.g., 'atomic-habits')" },
         include_related: {
-          type: "boolean",
-          description: "Whether to include related notes (default: true)",
+          type: 'boolean',
+          description: 'Whether to include related notes (default: true)',
         },
       },
-      required: ["slug"],
+      required: ['slug'],
     },
   },
   {
-    name: "fetch_source",
+    name: 'fetch_source',
     description:
       "Fetch the original source material from a note's URL. Use when the user asks about the original content, wants to verify information, or needs details not captured in the notes. Returns the source content converted to markdown.",
     input_schema: {
-      type: "object" as const,
+      type: 'object' as const,
       properties: {
-        slug: { type: "string", description: "The note slug to fetch the source for" },
+        slug: { type: 'string', description: 'The note slug to fetch the source for' },
       },
-      required: ["slug"],
+      required: ['slug'],
     },
   },
 ];

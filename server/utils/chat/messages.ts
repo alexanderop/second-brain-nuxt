@@ -1,11 +1,11 @@
-import type { Anthropic } from "@anthropic-ai/sdk";
+import type { Anthropic } from '@anthropic-ai/sdk';
 
 type MessageParam = Anthropic.MessageParam;
 type ContentBlock = Anthropic.ContentBlock;
 type ToolResultBlockParam = Anthropic.ToolResultBlockParam;
 
 export interface HistoryMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
 }
 
@@ -16,7 +16,7 @@ export interface HistoryMessage {
 export function buildInitialMessages(history: HistoryMessage[], message: string): MessageParam[] {
   return [
     ...history.map((h): MessageParam => ({ role: h.role, content: h.content })),
-    { role: "user", content: message },
+    { role: 'user', content: message },
   ];
 }
 
@@ -28,7 +28,7 @@ export function appendAssistantMessage(
   messages: MessageParam[],
   content: ContentBlock[],
 ): MessageParam[] {
-  return [...messages, { role: "assistant", content }];
+  return [...messages, { role: 'assistant', content }];
 }
 
 /**
@@ -39,5 +39,5 @@ export function appendToolResults(
   messages: MessageParam[],
   toolResults: ToolResultBlockParam[],
 ): MessageParam[] {
-  return [...messages, { role: "user", content: toolResults }];
+  return [...messages, { role: 'user', content: toolResults }];
 }

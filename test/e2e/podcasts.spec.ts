@@ -1,9 +1,10 @@
-import { expect, test } from "@playwright/test";
-import { PodcastsPage } from "./pages/PodcastsPage";
-import { PodcastDetailPage } from "./pages/PodcastDetailPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Podcasts", () => {
-  test("podcasts index page loads with podcast cards", async ({ page }) => {
+import { PodcastDetailPage } from './pages/PodcastDetailPage';
+import { PodcastsPage } from './pages/PodcastsPage';
+
+test.describe('Podcasts', () => {
+  test('podcasts index page loads with podcast cards', async ({ page }) => {
     const podcastsPage = new PodcastsPage(page);
     await podcastsPage.goto();
 
@@ -18,7 +19,7 @@ test.describe("Podcasts", () => {
     await expect(podcastsPage.firstPodcastCard).toBeVisible();
   });
 
-  test("podcast cards show episode counts", async ({ page }) => {
+  test('podcast cards show episode counts', async ({ page }) => {
     const podcastsPage = new PodcastsPage(page);
     await podcastsPage.goto();
 
@@ -34,7 +35,7 @@ test.describe("Podcasts", () => {
     expect(firstCardText).toBeTruthy();
   });
 
-  test("can navigate from card to podcast detail page", async ({ page }) => {
+  test('can navigate from card to podcast detail page', async ({ page }) => {
     const podcastsPage = new PodcastsPage(page);
     await podcastsPage.goto();
 
@@ -44,17 +45,17 @@ test.describe("Podcasts", () => {
       return;
     }
 
-    const href = await podcastsPage.firstPodcastCard.getAttribute("href");
+    const href = await podcastsPage.firstPodcastCard.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/podcasts/**"),
+      page.waitForURL(href || '/podcasts/**'),
       podcastsPage.firstPodcastCard.click(),
     ]);
 
     await expect(page).toHaveURL(/\/podcasts\//);
   });
 
-  test("podcast detail page shows episodes section", async ({ page }) => {
+  test('podcast detail page shows episodes section', async ({ page }) => {
     const podcastsPage = new PodcastsPage(page);
     await podcastsPage.goto();
 
@@ -64,10 +65,10 @@ test.describe("Podcasts", () => {
       return;
     }
 
-    const href = await podcastsPage.firstPodcastCard.getAttribute("href");
+    const href = await podcastsPage.firstPodcastCard.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/podcasts/**"),
+      page.waitForURL(href || '/podcasts/**'),
       podcastsPage.firstPodcastCard.click(),
     ]);
 
@@ -77,7 +78,7 @@ test.describe("Podcasts", () => {
     await expect(podcastDetailPage.episodesSection).toBeVisible();
   });
 
-  test("can navigate from episode to note page", async ({ page }) => {
+  test('can navigate from episode to note page', async ({ page }) => {
     const podcastsPage = new PodcastsPage(page);
     await podcastsPage.goto();
 
@@ -87,10 +88,10 @@ test.describe("Podcasts", () => {
       return;
     }
 
-    const href = await podcastsPage.firstPodcastCard.getAttribute("href");
+    const href = await podcastsPage.firstPodcastCard.getAttribute('href');
 
     await Promise.all([
-      page.waitForURL(href || "/podcasts/**"),
+      page.waitForURL(href || '/podcasts/**'),
       podcastsPage.firstPodcastCard.click(),
     ]);
 
@@ -103,12 +104,12 @@ test.describe("Podcasts", () => {
     }
 
     const firstEpisode = podcastDetailPage.contentItems.first();
-    const episodeLink = firstEpisode.getByRole("link").first();
-    const episodeHref = await episodeLink.getAttribute("href");
+    const episodeLink = firstEpisode.getByRole('link').first();
+    const episodeHref = await episodeLink.getAttribute('href');
 
-    await Promise.all([page.waitForURL(episodeHref || "**"), episodeLink.click()]);
+    await Promise.all([page.waitForURL(episodeHref || '**'), episodeLink.click()]);
 
     // Should have navigated away from podcasts
-    expect(page.url()).not.toContain("/podcasts/");
+    expect(page.url()).not.toContain('/podcasts/');
   });
 });

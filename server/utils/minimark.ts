@@ -3,7 +3,7 @@ export type MinimarkNode = [string, Record<string, unknown>, ...unknown[]];
 
 // Helper: Check if href is an internal link
 function isInternalLink(href: unknown): href is string {
-  return typeof href === "string" && href.startsWith("/") && !href.startsWith("//");
+  return typeof href === 'string' && href.startsWith('/') && !href.startsWith('//');
 }
 
 // Helper: Extract slug from internal href
@@ -29,7 +29,7 @@ export function extractLinksFromMinimark(node: unknown): string[] {
   const [tag, props, ...children] = node;
   const links: string[] = [];
 
-  if (tag === "a" && typeof props === "object" && props !== null) {
+  if (tag === 'a' && typeof props === 'object' && props !== null) {
     const slug = extractLinkFromAnchor(props);
     if (slug) links.push(slug);
   }
@@ -50,16 +50,16 @@ export function extractLinksFromMinimark(node: unknown): string[] {
 
 // Type guard: check if body has children array (Nuxt Content v3 format)
 function hasChildren(body: object): body is { children: unknown[] } {
-  return "children" in body && Array.isArray(body.children);
+  return 'children' in body && Array.isArray(body.children);
 }
 
 // Type guard: check if body has minimark format
-function isMinimarkBody(body: object): body is { type: "minimark"; value: unknown[] } {
-  return "type" in body && body.type === "minimark" && "value" in body && Array.isArray(body.value);
+function isMinimarkBody(body: object): body is { type: 'minimark'; value: unknown[] } {
+  return 'type' in body && body.type === 'minimark' && 'value' in body && Array.isArray(body.value);
 }
 
 export function extractLinksFromBody(body: unknown): string[] {
-  if (!body || typeof body !== "object") return [];
+  if (!body || typeof body !== 'object') return [];
 
   // Handle Nuxt Content v3 format: { type: '...', children: [...] }
   if (hasChildren(body)) {

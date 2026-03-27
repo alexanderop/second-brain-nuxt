@@ -1,6 +1,7 @@
-import { globSync, existsSync } from "node:fs";
-import { basename, resolve } from "node:path";
-import type { SlugCache } from "./types.ts";
+import { globSync, existsSync } from 'node:fs';
+import { basename, resolve } from 'node:path';
+
+import type { SlugCache } from './types.ts';
 
 let cache: SlugCache | null = null;
 let cachedContentPath: string | null = null;
@@ -10,7 +11,7 @@ let cachedContentPath: string | null = null;
  * Performs a one-time synchronous glob at lint start
  * Subsequent calls return cached results (O(1) lookups)
  */
-export function getSlugCache(contentPath: string = "content"): SlugCache {
+export function getSlugCache(contentPath: string = 'content'): SlugCache {
   const resolvedPath = resolve(contentPath);
 
   // Return cached if path matches
@@ -26,7 +27,7 @@ export function getSlugCache(contentPath: string = "content"): SlugCache {
   if (existsSync(authorsDir)) {
     const authorFiles = globSync(`${authorsDir}/*.md`);
     for (const file of authorFiles) {
-      authors.add(basename(file, ".md"));
+      authors.add(basename(file, '.md'));
     }
   }
 
@@ -40,7 +41,7 @@ export function getSlugCache(contentPath: string = "content"): SlugCache {
   for (const file of allFiles) {
     const isExcluded = excludedPrefixes.some((prefix) => file.startsWith(prefix));
     if (!isExcluded) {
-      notes.add(basename(file, ".md"));
+      notes.add(basename(file, '.md'));
     }
   }
 

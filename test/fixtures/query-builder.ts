@@ -5,10 +5,10 @@
  * for testing pages that use Nuxt Content
  */
 
-import type { ContentFixture } from "./content";
+import type { ContentFixture } from './content';
 
 interface ChainableQuery<T> {
-  order: (field: string, direction?: "ASC" | "DESC") => ChainableQuery<T>;
+  order: (field: string, direction?: 'ASC' | 'DESC') => ChainableQuery<T>;
   limit: (count: number) => ChainableQuery<T>;
   where: (field: string, operator: string, value: unknown) => ChainableQuery<T>;
   path: (path: string) => ChainableQuery<T>;

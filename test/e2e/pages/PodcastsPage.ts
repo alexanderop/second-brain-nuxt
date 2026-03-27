@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class PodcastsPage {
   readonly page: Page;
@@ -9,14 +9,14 @@ export class PodcastsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole("heading", { name: "Podcasts", level: 1 });
+    this.heading = page.getByRole('heading', { name: 'Podcasts', level: 1 });
     this.podcastCards = page.locator('a[href^="/podcasts/"]');
     this.firstPodcastCard = this.podcastCards.first();
-    this.emptyMessage = page.getByText("No podcasts with episodes found.");
+    this.emptyMessage = page.getByText('No podcasts with episodes found.');
   }
 
   async goto() {
-    await this.page.goto("/podcasts", { waitUntil: "networkidle" });
+    await this.page.goto('/podcasts', { waitUntil: 'networkidle' });
   }
 
   getPodcastByName(name: string): Locator {

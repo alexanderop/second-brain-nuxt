@@ -1,41 +1,42 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, watch } from "vue";
-import { USlideover, UButton, UTextarea } from "#components";
-import { useChatHistory, type ChatMessage, type ToolCall } from "~/composables/useChatHistory";
-import ChatMessageComponent from "~/components/ChatMessage.vue";
-import ToolCallItem from "~/components/ToolCallItem.vue";
-import { tryCatch, tryAsync, tryCatchAsync } from "#shared/utils/tryCatch";
+import { ref, computed, nextTick, watch } from 'vue';
 
-type ChatStatus = "ready" | "streaming" | "error";
+import { USlideover, UButton, UTextarea } from '#components';
+import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch';
+import ChatMessageComponent from '~/components/ChatMessage.vue';
+import ToolCallItem from '~/components/ToolCallItem.vue';
+import { useChatHistory, type ChatMessage, type ToolCall } from '~/composables/useChatHistory';
+
+type ChatStatus = 'ready' | 'streaming' | 'error';
 
 type ChatItem =
   | {
-      type: "message";
+      type: 'message';
       id: string;
-      role: "user" | "assistant";
+      role: 'user' | 'assistant';
       content: string;
-      sources?: ChatMessage["sources"];
+      sources?: ChatMessage['sources'];
     }
-  | { type: "tool_call"; id: string; tool: string; input: unknown; result?: unknown };
+  | { type: 'tool_call'; id: string; tool: string; input: unknown; result?: unknown };
 
-const open = defineModel<boolean>("open", { default: false });
+const open = defineModel<boolean>('open', { default: false });
 
 const { messages, addMessage, updateLastMessage, addToolCallToLastMessage, clearHistory } =
   useChatHistory();
-const input = ref("");
-const status = ref<ChatStatus>("ready");
+const input = ref('');
+const status = ref<ChatStatus>('ready');
 const messagesContainer = ref<HTMLElement | null>(null);
 const pendingToolCalls = ref<Map<string, ToolCall>>(new Map());
 
 // Convert messages to a flattened chat flow with tool calls inline
 const chatItems = computed((): ChatItem[] => {
   return messages.value.flatMap((msg): ChatItem[] => {
-    if (msg.role === "user") {
-      return [{ type: "message", id: msg.id, role: "user", content: msg.content }];
+    if (msg.role === 'user') {
+      return [{ type: 'message', id: msg.id, role: 'user', content: msg.content }];
     }
     // For assistant messages, render tool calls BEFORE the message content
     const toolCallItems: ChatItem[] = (msg.toolCalls ?? []).map((tc) => ({
-      type: "tool_call" as const,
+      type: 'tool_call' as const,
       id: tc.id,
       tool: tc.tool,
       input: tc.input,
@@ -44,9 +45,9 @@ const chatItems = computed((): ChatItem[] => {
     return [
       ...toolCallItems,
       {
-        type: "message",
+        type: 'message',
         id: msg.id,
-        role: "assistant",
+        role: 'assistant',
         content: msg.content,
         sources: msg.sources,
       },
@@ -66,25 +67,25 @@ watch(() => messages.value[messages.value.length - 1]?.content, scrollToBottom);
 watch(() => chatItems.value.length, scrollToBottom);
 
 interface SSEData {
-  type: "text" | "tool_call" | "tool_result" | "done" | "error";
+  type: 'text' | 'tool_call' | 'tool_result' | 'done' | 'error';
   id?: string;
   content?: string;
   tool?: string;
   input?: unknown;
   result?: unknown;
-  sources?: ChatMessage["sources"];
+  sources?: ChatMessage['sources'];
   message?: string;
   retryAfter?: number;
   requestId?: string;
 }
 
-const SSE_EVENT_TYPES: readonly string[] = ["text", "tool_call", "tool_result", "done", "error"];
+const SSE_EVENT_TYPES: readonly string[] = ['text', 'tool_call', 'tool_result', 'done', 'error'];
 
 function isSSEData(data: unknown): data is SSEData {
-  if (typeof data !== "object" || data === null) return false;
-  if (!("type" in data)) return false;
+  if (typeof data !== 'object' || data === null) return false;
+  if (!('type' in data)) return false;
   const { type } = data;
-  return typeof type === "string" && SSE_EVENT_TYPES.includes(type);
+  return typeof type === 'string' && SSE_EVENT_TYPES.includes(type);
 }
 
 function parseSSELine(line: string): SSEData | null {
@@ -98,7 +99,7 @@ function parseSSELine(line: string): SSEData | null {
 }
 
 function buildErrorMessage(data: SSEData): string {
-  let errorMessage = data.message || "An error occurred";
+  let errorMessage = data.message || 'An error occurred';
   if (data.retryAfter) errorMessage += ` Try again in ${data.retryAfter} seconds.`;
   if (data.requestId) errorMessage += ` (Request ID: ${data.requestId})`;
   return errorMessage;
@@ -109,7 +110,7 @@ function handleToolCall(data: SSEData, assistantContent: string): { content: str
 
   const toolCall = {
     id: data.id,
-    tool: data.tool || "unknown",
+    tool: data.tool || 'unknown',
     input: data.input,
   };
   pendingToolCalls.value.set(data.id, toolCall);
@@ -133,31 +134,31 @@ function handleToolResult(data: SSEData, assistantContent: string): { content: s
 function processSSEData(
   data: SSEData,
   assistantContent: string,
-): { content: string; sources?: ChatMessage["sources"]; error?: string } {
-  if (data.type === "tool_call") return handleToolCall(data, assistantContent);
-  if (data.type === "tool_result") return handleToolResult(data, assistantContent);
+): { content: string; sources?: ChatMessage['sources']; error?: string } {
+  if (data.type === 'tool_call') return handleToolCall(data, assistantContent);
+  if (data.type === 'tool_result') return handleToolResult(data, assistantContent);
 
-  if (data.type === "text") return { content: assistantContent + (data.content || "") };
-  if (data.type === "done") return { content: assistantContent, sources: data.sources || [] };
-  if (data.type === "error") return { content: assistantContent, error: buildErrorMessage(data) };
+  if (data.type === 'text') return { content: assistantContent + (data.content || '') };
+  if (data.type === 'done') return { content: assistantContent, sources: data.sources || [] };
+  if (data.type === 'error') return { content: assistantContent, error: buildErrorMessage(data) };
   return { content: assistantContent };
 }
 
 async function streamResponse(response: Response): Promise<void> {
   if (!response.body) {
-    throw new Error("No response body");
+    throw new Error('No response body');
   }
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
-  let assistantContent = "";
+  let assistantContent = '';
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
 
     const chunk = decoder.decode(value);
-    const lines = chunk.split("\n").filter((line) => line.trim());
+    const lines = chunk.split('\n').filter((line) => line.trim());
 
     for (const line of lines) {
       const data = parseSSELine(line);
@@ -189,22 +190,22 @@ async function getErrorMessage(response: Response): Promise<string> {
 
 async function sendMessage() {
   const messageText = input.value.trim();
-  if (!messageText || status.value === "streaming") return;
+  if (!messageText || status.value === 'streaming') return;
 
-  input.value = "";
-  status.value = "streaming";
+  input.value = '';
+  status.value = 'streaming';
   pendingToolCalls.value.clear();
 
   // Add user message and placeholder for assistant response
-  addMessage({ role: "user", content: messageText });
-  addMessage({ role: "assistant", content: "" });
+  addMessage({ role: 'user', content: messageText });
+  addMessage({ role: 'assistant', content: '' });
 
   const [error] = await tryCatchAsync(async () => {
     const history = messages.value.slice(0, -2).map((m) => ({ role: m.role, content: m.content }));
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: messageText, history }),
     });
 
@@ -217,18 +218,18 @@ async function sendMessage() {
   });
 
   if (error) {
-    console.error("Chat error:", error);
-    status.value = "error";
-    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    console.error('Chat error:', error);
+    status.value = 'error';
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
     updateLastMessage(`Error: ${errorMessage}`);
     return;
   }
 
-  status.value = "ready";
+  status.value = 'ready';
 }
 
 function handleKeydown(event: KeyboardEvent): void {
-  if (event.key === "Enter" && !event.shiftKey) {
+  if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
     void sendMessage();
   }
@@ -236,22 +237,22 @@ function handleKeydown(event: KeyboardEvent): void {
 
 function handleClearHistory(): void {
   clearHistory();
-  status.value = "ready";
+  status.value = 'ready';
 }
 
 const showStreamingIndicator = computed(() => {
   const lastMessage = messages.value[messages.value.length - 1];
   return (
-    status.value === "streaming" && lastMessage?.role === "assistant" && lastMessage?.content === ""
+    status.value === 'streaming' && lastMessage?.role === 'assistant' && lastMessage?.content === ''
   );
 });
 
 function getMessageClass(role: string): string {
-  return role === "user" ? "bg-[var(--ui-primary)] text-[var(--ui-bg)]" : "bg-[var(--ui-bg-muted)]";
+  return role === 'user' ? 'bg-[var(--ui-primary)] text-[var(--ui-bg)]' : 'bg-[var(--ui-bg-muted)]';
 }
 
 function getSourceLinkClass(role: string): string {
-  return role === "user" ? "text-[var(--ui-bg)]" : "text-[var(--ui-primary)]";
+  return role === 'user' ? 'text-[var(--ui-bg)]' : 'text-[var(--ui-primary)]';
 }
 </script>
 
@@ -269,7 +270,11 @@ function getSourceLinkClass(role: string): string {
     />
 
     <!-- Chat slideover -->
-    <USlideover v-model:open="open" title="Ask your Second Brain" side="right">
+    <USlideover
+      v-model:open="open"
+      title="Ask your Second Brain"
+      side="right"
+    >
       <template #header>
         <div class="flex items-center justify-between w-full">
           <h2 class="text-lg font-semibold">Ask your Second Brain</h2>
@@ -288,19 +293,28 @@ function getSourceLinkClass(role: string): string {
       <template #body>
         <div class="flex flex-col h-full">
           <!-- Messages area -->
-          <div ref="messagesContainer" class="flex-1 overflow-y-auto space-y-4 pb-4">
+          <div
+            ref="messagesContainer"
+            class="flex-1 overflow-y-auto space-y-4 pb-4"
+          >
             <!-- Empty state -->
             <div
               v-if="chatItems.length === 0"
               class="flex flex-col items-center justify-center h-full text-center text-[var(--ui-text-muted)]"
             >
-              <span class="i-lucide-brain size-12 mb-4 opacity-50" aria-hidden="true" />
+              <span
+                class="i-lucide-brain size-12 mb-4 opacity-50"
+                aria-hidden="true"
+              />
               <p class="text-lg font-medium">Ask me anything</p>
               <p class="text-sm mt-1">I'll search your notes and help you find connections.</p>
             </div>
 
             <!-- Chat items (messages and tool calls) -->
-            <template v-for="item in chatItems" :key="item.id">
+            <template
+              v-for="item in chatItems"
+              :key="item.id"
+            >
               <!-- Tool call item -->
               <ToolCallItem
                 v-if="item.type === 'tool_call'"

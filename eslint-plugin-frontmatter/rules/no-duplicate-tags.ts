@@ -1,12 +1,13 @@
-import type { Rule } from "eslint";
-import { parseFrontmatter } from "../utils/parse-frontmatter.ts";
-import type { YamlNode } from "../utils/types.ts";
+import type { Rule } from 'eslint';
+
+import { parseFrontmatter } from '../utils/parse-frontmatter.ts';
+import type { YamlNode } from '../utils/types.ts';
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Prevent duplicate tags in frontmatter",
+      description: 'Prevent duplicate tags in frontmatter',
       recommended: true,
     },
     messages: {
@@ -31,7 +32,7 @@ const rule: Rule.RuleModule = {
         const duplicates = new Set<string>();
 
         for (const tag of frontmatter.tags) {
-          if (typeof tag !== "string") {
+          if (typeof tag !== 'string') {
             continue;
           }
 
@@ -49,7 +50,7 @@ const rule: Rule.RuleModule = {
         for (const tag of duplicates) {
           context.report({
             loc: node.position,
-            messageId: "duplicateTag",
+            messageId: 'duplicateTag',
             data: { tag },
           });
         }

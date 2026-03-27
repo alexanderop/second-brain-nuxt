@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class TagsPage {
   readonly page: Page;
@@ -9,14 +9,14 @@ export class TagsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole("heading", { name: "Tags", level: 1 });
+    this.heading = page.getByRole('heading', { name: 'Tags', level: 1 });
     this.tagLinks = page.locator('a[href^="/tags/"]');
     this.firstTagLink = this.tagLinks.first();
-    this.emptyMessage = page.getByText("No tags found.");
+    this.emptyMessage = page.getByText('No tags found.');
   }
 
   async goto() {
-    await this.page.goto("/tags", { waitUntil: "networkidle" });
+    await this.page.goto('/tags', { waitUntil: 'networkidle' });
   }
 
   getTagByName(name: string): Locator {

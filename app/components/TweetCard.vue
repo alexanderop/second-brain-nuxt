@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { NuxtLink, UIcon } from "#components";
-import type { TweetItem } from "~/types/content";
-import { formatDate } from "~/utils/formatDate";
-import { handleImageError } from "~/utils/imageErrorHandler";
+import { NuxtLink, UIcon } from '#components';
+import type { TweetItem } from '~/types/content';
+import { formatDate } from '~/utils/formatDate';
+import { handleImageError } from '~/utils/imageErrorHandler';
 
 const props = defineProps<{
   tweet: TweetItem;
@@ -15,7 +15,7 @@ const props = defineProps<{
 }>();
 
 function openExternalUrl() {
-  window.open(props.tweet.tweetUrl, "_blank", "noopener,noreferrer");
+  window.open(props.tweet.tweetUrl, '_blank', 'noopener,noreferrer');
 }
 </script>
 
@@ -23,7 +23,10 @@ function openExternalUrl() {
   <article
     class="p-4 rounded-lg border border-[var(--ui-border)] hover:bg-[var(--ui-bg-muted)] transition-colors"
   >
-    <NuxtLink :to="`/tweets/${tweet.slug}`" class="block">
+    <NuxtLink
+      :to="`/tweets/${tweet.slug}`"
+      class="block"
+    >
       <!-- Author header -->
       <div class="flex items-start gap-3">
         <div class="shrink-0 size-12 rounded-full overflow-hidden bg-[var(--ui-bg-muted)]">
@@ -38,20 +41,29 @@ function openExternalUrl() {
             v-if="!author.avatar"
             class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-user" class="size-6" />
+            <UIcon
+              name="i-lucide-user"
+              class="size-6"
+            />
           </div>
           <div
             v-else
             class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
           >
-            <UIcon name="i-lucide-user" class="size-6" />
+            <UIcon
+              name="i-lucide-user"
+              class="size-6"
+            />
           </div>
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-medium">
             {{ author.name }}
           </p>
-          <p v-if="author.twitterHandle" class="text-sm text-[var(--ui-text-muted)]">
+          <p
+            v-if="author.twitterHandle"
+            class="text-sm text-[var(--ui-text-muted)]"
+          >
             @{{ author.twitterHandle }}
           </p>
         </div>
@@ -71,7 +83,10 @@ function openExternalUrl() {
           aria-label="View original tweet"
           @click.stop="openExternalUrl"
         >
-          <UIcon name="i-lucide-external-link" class="size-4" />
+          <UIcon
+            name="i-lucide-external-link"
+            class="size-4"
+          />
         </button>
       </div>
     </NuxtLink>

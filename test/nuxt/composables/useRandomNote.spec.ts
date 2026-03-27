@@ -1,13 +1,14 @@
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime';
 /**
  * Integration test for useRandomNote composable
  *
  * Tests that the composable properly caches stems via useAsyncData
  * to avoid repeated queries on each "r" keypress.
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
-import { defineComponent, h, nextTick } from "vue";
-import { createQueryCollectionMock } from "../../fixtures/query-builder";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { defineComponent, h, nextTick } from 'vue';
+
+import { createQueryCollectionMock } from '../../fixtures/query-builder';
 
 // Track how many times queryCollection is called
 const queryCollectionCallCount = vi.hoisted(() => ({ value: 0 }));
@@ -16,32 +17,32 @@ const queryCollectionCallCount = vi.hoisted(() => ({ value: 0 }));
 const navigateToMock = vi.hoisted(() => vi.fn());
 
 // Mock queryCollection to track calls
-mockNuxtImport("queryCollection", () => {
+mockNuxtImport('queryCollection', () => {
   return () => {
     queryCollectionCallCount.value++;
     return createQueryCollectionMock([
-      { stem: "note-1" },
-      { stem: "note-2" },
-      { stem: "note-3" },
+      { stem: 'note-1' },
+      { stem: 'note-2' },
+      { stem: 'note-3' },
     ])();
   };
 });
 
 // Mock navigateTo
-mockNuxtImport("navigateTo", () => navigateToMock);
+mockNuxtImport('navigateTo', () => navigateToMock);
 
-describe("useRandomNote", () => {
+describe('useRandomNote', () => {
   beforeEach(() => {
     queryCollectionCallCount.value = 0;
     navigateToMock.mockClear();
   });
 
-  it("caches stems via useAsyncData - queryCollection called only once", async () => {
+  it('caches stems via useAsyncData - queryCollection called only once', async () => {
     // Create a test component that uses the composable and calls navigateToRandomNote
     // multiple times after data is loaded
     const TestComponent = defineComponent({
       async setup() {
-        const { useRandomNote } = await import("~/composables/useRandomNote");
+        const { useRandomNote } = await import('~/composables/useRandomNote');
         const { navigateToRandomNote } = useRandomNote();
 
         // Wait for data to load (simulates user waiting before pressing "r")
@@ -52,7 +53,7 @@ describe("useRandomNote", () => {
         await navigateToRandomNote();
         await navigateToRandomNote();
 
-        return () => h("div", "test");
+        return () => h('div', 'test');
       },
     });
 

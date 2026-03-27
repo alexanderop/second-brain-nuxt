@@ -1,9 +1,10 @@
-import { expect, test } from "@playwright/test";
-import { TablePage } from "./pages/TablePage";
-import { NotePage } from "./pages/NotePage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Table Feature", () => {
-  test("table page loads and displays content", async ({ page }) => {
+import { NotePage } from './pages/NotePage';
+import { TablePage } from './pages/TablePage';
+
+test.describe('Table Feature', () => {
+  test('table page loads and displays content', async ({ page }) => {
     const tablePage = new TablePage(page);
 
     await tablePage.goto();
@@ -22,7 +23,7 @@ test.describe("Table Feature", () => {
     await expect(tablePage.itemCount).toBeVisible();
   });
 
-  test("can navigate from table row to note page", async ({ page }) => {
+  test('can navigate from table row to note page', async ({ page }) => {
     const tablePage = new TablePage(page);
     const notePage = new NotePage(page);
 
@@ -34,25 +35,25 @@ test.describe("Table Feature", () => {
 
     // Verify we navigated to a note page
     await expect(notePage.article).toBeVisible();
-    await expect(page).not.toHaveURL("/table");
+    await expect(page).not.toHaveURL('/table');
   });
 
-  test("URL type filter shows filtered content", async ({ page }) => {
+  test('URL type filter shows filtered content', async ({ page }) => {
     const tablePage = new TablePage(page);
 
     // Navigate with type filter in URL
-    await tablePage.gotoWithTypeFilter("book");
+    await tablePage.gotoWithTypeFilter('book');
     await tablePage.waitForTableLoad();
 
     // Verify filter chip is shown
-    await expect(page.getByText("book").first()).toBeVisible();
+    await expect(page.getByText('book').first()).toBeVisible();
 
     // Verify table has rows (books exist in content)
     const rowCount = await tablePage.getRowCount();
     expect(rowCount).toBeGreaterThan(0);
   });
 
-  test("pagination updates URL and content", async ({ page }) => {
+  test('pagination updates URL and content', async ({ page }) => {
     const tablePage = new TablePage(page);
 
     await tablePage.goto();
@@ -67,7 +68,7 @@ test.describe("Table Feature", () => {
 
     // Capture initial state (content-agnostic)
     const initialFirstRowText = await tablePage.getFirstRowText();
-    expect(page.url()).not.toContain("page=");
+    expect(page.url()).not.toContain('page=');
 
     // Navigate to page 2
     await tablePage.goToNextPage();

@@ -1,19 +1,21 @@
-import { defineCachedEventHandler } from "nitropack/runtime";
-import { queryCollection } from "@nuxt/content/server";
-import { buildGraphFromContent, type GraphData } from "../utils/graph";
-import { tryAsync } from "#shared/utils/tryCatch";
-import { handleApiError } from "../utils/handleApiError";
+import { queryCollection } from '@nuxt/content/server';
+import { defineCachedEventHandler } from 'nitropack/runtime';
+
+import { tryAsync } from '#shared/utils/tryCatch';
+
+import { buildGraphFromContent, type GraphData } from '../utils/graph';
+import { handleApiError } from '../utils/handleApiError';
 
 export default defineCachedEventHandler(
   async (event): Promise<GraphData> => {
     const [error, allContent] = await tryAsync(
-      queryCollection(event, "content")
-        .select("path", "stem", "title", "type", "tags", "authors", "summary", "body")
+      queryCollection(event, 'content')
+        .select('path', 'stem', 'title', 'type', 'tags', 'authors', 'summary', 'body')
         .all(),
     );
 
     if (error) {
-      handleApiError(error, "graph");
+      handleApiError(error, 'graph');
     }
 
     return buildGraphFromContent(allContent);
@@ -21,6 +23,6 @@ export default defineCachedEventHandler(
   {
     maxAge: 60 * 5,
     swr: true,
-    name: "graph",
+    name: 'graph',
   },
 );

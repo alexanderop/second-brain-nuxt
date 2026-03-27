@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { UModal, UButton, UKbd } from "#components";
-import { shortcutsList } from "~/composables/useShortcuts";
+import { computed } from 'vue';
 
-const open = defineModel<boolean>("open", { default: false });
+import { UModal, UButton, UKbd } from '#components';
+import { shortcutsList } from '~/composables/useShortcuts';
+
+const open = defineModel<boolean>('open', { default: false });
 
 const groupedShortcuts = computed(() => ({
-  general: shortcutsList.filter((s) => s.category === "general"),
-  navigation: shortcutsList.filter((s) => s.category === "navigation"),
-  actions: shortcutsList.filter((s) => s.category === "actions"),
+  general: shortcutsList.filter((s) => s.category === 'general'),
+  navigation: shortcutsList.filter((s) => s.category === 'navigation'),
+  actions: shortcutsList.filter((s) => s.category === 'actions'),
 }));
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Keyboard Shortcuts" :ui="{ content: 'w-full max-w-2xl' }">
+  <UModal
+    v-model:open="open"
+    title="Keyboard Shortcuts"
+    :ui="{ content: 'w-full max-w-2xl' }"
+  >
     <template #content>
       <div class="p-6">
         <header class="flex items-center justify-between mb-6">
@@ -45,8 +50,15 @@ const groupedShortcuts = computed(() => ({
               >
                 <span class="text-sm">{{ shortcut.description }}</span>
                 <span class="flex items-center gap-1 shrink-0 ml-2">
-                  <template v-for="(key, idx) in shortcut.keys" :key="key">
-                    <span v-if="idx > 0" class="text-[var(--ui-text-muted)] text-xs">+</span>
+                  <template
+                    v-for="(key, idx) in shortcut.keys"
+                    :key="key"
+                  >
+                    <span
+                      v-if="idx > 0"
+                      class="text-[var(--ui-text-muted)] text-xs"
+                      >+</span
+                    >
                     <UKbd>{{ key }}</UKbd>
                   </template>
                 </span>
@@ -67,7 +79,11 @@ const groupedShortcuts = computed(() => ({
               >
                 <span class="text-sm">{{ shortcut.description }}</span>
                 <span class="flex items-center gap-1 shrink-0 ml-2">
-                  <UKbd v-for="key in shortcut.keys" :key="key">{{ key }}</UKbd>
+                  <UKbd
+                    v-for="key in shortcut.keys"
+                    :key="key"
+                    >{{ key }}</UKbd
+                  >
                 </span>
               </div>
             </section>
@@ -87,8 +103,13 @@ const groupedShortcuts = computed(() => ({
             >
               <span class="text-sm">{{ shortcut.description }}</span>
               <span class="flex items-center gap-1 shrink-0 ml-2">
-                <template v-for="(key, idx) in shortcut.keys" :key="key">
-                  <span v-if="idx > 0" class="text-[var(--ui-text-muted)] text-xs mx-0.5"
+                <template
+                  v-for="(key, idx) in shortcut.keys"
+                  :key="key"
+                >
+                  <span
+                    v-if="idx > 0"
+                    class="text-[var(--ui-text-muted)] text-xs mx-0.5"
                     >then</span
                   >
                   <UKbd>{{ key }}</UKbd>

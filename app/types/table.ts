@@ -1,5 +1,6 @@
-import { z } from "zod";
-import { contentTypeValues, type ContentType } from "~/constants/contentTypes";
+import { z } from 'zod';
+
+import { contentTypeValues, type ContentType } from '~/constants/contentTypes';
 
 // Content types array for filtering - derived from constants/contentTypes.ts (single source of truth)
 export const CONTENT_TYPES = contentTypeValues;
@@ -35,8 +36,8 @@ export interface FilterState {
 
 // Sort state for the table
 export interface SortState {
-  column: "title" | "type" | "dateConsumed" | "rating";
-  direction: "asc" | "desc";
+  column: 'title' | 'type' | 'dateConsumed' | 'rating';
+  direction: 'asc' | 'desc';
 }
 
 // Zod schema for URL parameter validation
@@ -50,8 +51,8 @@ export const tableParamsSchema = z.object({
   ratingMin: z.coerce.number().min(1).max(10).optional(),
   ratingMax: z.coerce.number().min(1).max(10).optional(),
   // Sort params
-  sort: z.enum(["title", "type", "dateConsumed", "rating"]).optional(),
-  dir: z.enum(["asc", "desc"]).optional(),
+  sort: z.enum(['title', 'type', 'dateConsumed', 'rating']).optional(),
+  dir: z.enum(['asc', 'desc']).optional(),
   // Pagination
   page: z.coerce.number().min(1).optional(),
 });

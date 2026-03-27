@@ -1,6 +1,7 @@
-import { computed } from "vue";
-import { contentTypeValues, type ContentType } from "~/constants/contentTypes";
-import { useRouteQuery } from "@vueuse/router";
+import { useRouteQuery } from '@vueuse/router';
+import { computed } from 'vue';
+
+import { contentTypeValues, type ContentType } from '~/constants/contentTypes';
 
 export interface GraphFilterState {
   types: Array<ContentType>;
@@ -21,11 +22,11 @@ export function useGraphFilters() {
   }
 
   // URL-synced refs
-  const typesParam = useRouteQuery<string | Array<string> | null>("types");
-  const tagsParam = useRouteQuery<string | Array<string> | null>("tags");
-  const authorsParam = useRouteQuery<string | Array<string> | null>("authors");
-  const mapsParam = useRouteQuery<string | Array<string> | null>("maps");
-  const orphansParam = useRouteQuery<string | null>("orphans");
+  const typesParam = useRouteQuery<string | Array<string> | null>('types');
+  const tagsParam = useRouteQuery<string | Array<string> | null>('tags');
+  const authorsParam = useRouteQuery<string | Array<string> | null>('authors');
+  const mapsParam = useRouteQuery<string | Array<string> | null>('maps');
+  const orphansParam = useRouteQuery<string | null>('orphans');
 
   // Computed getters/setters with proper typing
   // Set of valid content types for O(1) lookup
@@ -76,9 +77,9 @@ export function useGraphFilters() {
   });
 
   const showOrphans = computed({
-    get: () => orphansParam.value !== "false", // default true
+    get: () => orphansParam.value !== 'false', // default true
     set: (v: boolean) => {
-      orphansParam.value = v ? null : "false"; // only store if false
+      orphansParam.value = v ? null : 'false'; // only store if false
     },
   });
 

@@ -6,9 +6,10 @@ import {
   forceRadial,
   forceY,
   forceCollide,
-} from "d3-force";
-import type { Simulation } from "d3-force";
-import type { UnifiedGraphNode, UnifiedGraphEdge } from "~/types/graph";
+} from 'd3-force';
+import type { Simulation } from 'd3-force';
+
+import type { UnifiedGraphNode, UnifiedGraphEdge } from '~/types/graph';
 
 export interface ForceConfig {
   linkDistance: number;
@@ -57,22 +58,22 @@ export function createRadialSimulation(
 
   return forceSimulation<UnifiedGraphNode>(nodes)
     .force(
-      "link",
+      'link',
       forceLink<UnifiedGraphNode, UnifiedGraphEdge>(edges)
         .id((d) => d.id)
         .distance(c.linkDistance),
     )
     .force(
-      "charge",
+      'charge',
       forceManyBody<UnifiedGraphNode>().strength((d) => {
         if (d.isCenter) return c.chargeStrength;
         if (d.level === 2) return c.chargeStrength * (c.level2ChargeMultiplier ?? 0.4);
         return c.chargeStrength;
       }),
     )
-    .force("center", forceCenter(width / 2, height / 2))
+    .force('center', forceCenter(width / 2, height / 2))
     .force(
-      "radial",
+      'radial',
       forceRadial<UnifiedGraphNode>(
         (d): number => {
           if (d.isCenter) return 0;
@@ -84,7 +85,7 @@ export function createRadialSimulation(
       ).strength((d): number => (d.isCenter ? 0 : radialStrength)),
     )
     .force(
-      "collision",
+      'collision',
       forceCollide<UnifiedGraphNode>().radius((d) => radiusScale(d) + c.collisionPadding),
     )
     .alphaDecay(0.05);
@@ -104,21 +105,21 @@ export function createFreeformSimulation(
 
   const simulation = forceSimulation<UnifiedGraphNode>(nodes)
     .force(
-      "link",
+      'link',
       forceLink<UnifiedGraphNode, UnifiedGraphEdge>(edges)
         .id((d) => d.id)
         .distance(c.linkDistance),
     )
-    .force("charge", forceManyBody().strength(c.chargeStrength))
-    .force("center", forceCenter(width / 2, height / 2))
-    .force("y", forceY(height / 2).strength(yStrength))
+    .force('charge', forceManyBody().strength(c.chargeStrength))
+    .force('center', forceCenter(width / 2, height / 2))
+    .force('y', forceY(height / 2).strength(yStrength))
     .force(
-      "collision",
+      'collision',
       forceCollide<UnifiedGraphNode>().radius((d) => radiusScale(d) + c.collisionPadding),
     );
 
   if (clusteringForce) {
-    simulation.force("cluster", clusteringForce);
+    simulation.force('cluster', clusteringForce);
   }
 
   return simulation;

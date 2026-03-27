@@ -1,15 +1,16 @@
-import { expect, test } from "@playwright/test";
-import { AboutPage } from "./pages/AboutPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("About", () => {
-  test("about page loads with title", async ({ page }) => {
+import { AboutPage } from './pages/AboutPage';
+
+test.describe('About', () => {
+  test('about page loads with title', async ({ page }) => {
     const aboutPage = new AboutPage(page);
     await aboutPage.goto();
 
     await expect(aboutPage.heading).toBeVisible();
   });
 
-  test("social links are visible and have correct hrefs", async ({ page }) => {
+  test('social links are visible and have correct hrefs', async ({ page }) => {
     const aboutPage = new AboutPage(page);
     await aboutPage.goto();
 
@@ -21,13 +22,13 @@ test.describe("About", () => {
 
     // Check that social links have proper href attributes
     const firstLink = aboutPage.socialLinks.first();
-    const href = await firstLink.getAttribute("href");
+    const href = await firstLink.getAttribute('href');
     expect(href).toBeTruthy();
     // Social links should be external (twitter, github, linkedin, youtube, bluesky)
     expect(href).toMatch(/^https?:\/\//);
   });
 
-  test("content section renders markdown", async ({ page }) => {
+  test('content section renders markdown', async ({ page }) => {
     const aboutPage = new AboutPage(page);
     await aboutPage.goto();
 
@@ -41,7 +42,7 @@ test.describe("About", () => {
     await expect(aboutPage.content).toBeVisible();
   });
 
-  test("avatar displays if configured", async ({ page }) => {
+  test('avatar displays if configured', async ({ page }) => {
     const aboutPage = new AboutPage(page);
     await aboutPage.goto();
 

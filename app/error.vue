@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { clearError, useHead } from "#imports";
-import { UButton } from "#components";
-import type { NuxtError } from "#app";
+import { computed } from 'vue';
+
+import type { NuxtError } from '#app';
+import { UButton } from '#components';
+import { clearError, useHead } from '#imports';
 
 const props = defineProps<{
   error: NuxtError;
@@ -13,18 +14,18 @@ const status = computed(() => props.error.statusCode || 500);
 const statusText = computed(() => {
   if (props.error.statusMessage) return props.error.statusMessage;
   const messages: Record<number, string> = {
-    400: "Bad Request",
-    401: "Unauthorized",
-    403: "Forbidden",
-    404: "Page Not Found",
-    500: "Internal Server Error",
-    503: "Service Unavailable",
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Page Not Found',
+    500: 'Internal Server Error',
+    503: 'Service Unavailable',
   };
-  return messages[status.value] || "Something went wrong";
+  return messages[status.value] || 'Something went wrong';
 });
 
 function handleError() {
-  clearError({ redirect: "/" });
+  clearError({ redirect: '/' });
 }
 
 useHead({
@@ -51,6 +52,12 @@ useHead({
       {{ error.message }}
     </p>
 
-    <UButton to="/" size="lg" @click="handleError"> Go home </UButton>
+    <UButton
+      to="/"
+      size="lg"
+      @click="handleError"
+    >
+      Go home
+    </UButton>
   </main>
 </template>

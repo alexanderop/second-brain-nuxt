@@ -1,31 +1,32 @@
-import type { Rule } from "eslint";
-import { extractUrlFields, parseFrontmatter } from "../utils/parse-frontmatter.ts";
-import type { YamlNode } from "../utils/types.ts";
+import type { Rule } from 'eslint';
+
+import { extractUrlFields, parseFrontmatter } from '../utils/parse-frontmatter.ts';
+import type { YamlNode } from '../utils/types.ts';
 
 // Patterns that must match as whole words (use word boundary regex)
-const WORD_BOUNDARY_PATTERNS = ["TODO", "FIXME", "placeholder"];
+const WORD_BOUNDARY_PATTERNS = ['TODO', 'FIXME', 'placeholder'];
 
 // Patterns that can match as substrings (domains, IPs)
 const SUBSTRING_PATTERNS = [
-  "localhost",
-  "127.0.0.1",
-  "0.0.0.0",
-  "example.com",
-  "example.org",
-  "example.net",
-  "test.com",
-  "foo.bar",
-  "your-url-here",
-  "change-me",
+  'localhost',
+  '127.0.0.1',
+  '0.0.0.0',
+  'example.com',
+  'example.org',
+  'example.net',
+  'test.com',
+  'foo.bar',
+  'your-url-here',
+  'change-me',
 ];
 
 const DEFAULT_BLOCKED_PATTERNS = [...WORD_BOUNDARY_PATTERNS, ...SUBSTRING_PATTERNS];
 
 const rule: Rule.RuleModule = {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Detect placeholder URLs in frontmatter",
+      description: 'Detect placeholder URLs in frontmatter',
       recommended: true,
     },
     messages: {
@@ -34,11 +35,11 @@ const rule: Rule.RuleModule = {
     },
     schema: [
       {
-        type: "object",
+        type: 'object',
         properties: {
           blockedPatterns: {
-            type: "array",
-            items: { type: "string" },
+            type: 'array',
+            items: { type: 'string' },
           },
         },
         additionalProperties: false,
@@ -71,13 +72,13 @@ const rule: Rule.RuleModule = {
             ).includes(lowerPattern);
 
             const matched = isWordBoundaryPattern
-              ? new RegExp(`\\b${lowerPattern}\\b`, "i").test(lowerValue)
+              ? new RegExp(`\\b${lowerPattern}\\b`, 'i').test(lowerValue)
               : lowerValue.includes(lowerPattern);
 
             if (matched) {
               context.report({
                 loc: node.position,
-                messageId: "placeholderUrl",
+                messageId: 'placeholderUrl',
                 data: { url: value, field, pattern },
               });
               break;

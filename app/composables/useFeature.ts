@@ -1,11 +1,12 @@
-import { computed, readonly } from "vue";
-import { featuresConfig, type FeatureName } from "~~/config/features";
+import { computed, readonly } from 'vue';
+import { featuresConfig, type FeatureName } from '~~/config/features';
+
 import {
   createRuleContext,
   isFeatureEnabled,
   isVariantEnabled,
   getEnabledVariants,
-} from "~/utils/featureTogglesLogic";
+} from '~/utils/featureTogglesLogic';
 
 /**
  * Composable for checking feature flags.
@@ -34,7 +35,7 @@ export function useFeature(featureName: FeatureName) {
     isEnabled: readonly(isEnabled),
     isVariantActive,
     enabledVariants: readonly(enabledVariants),
-    description: definition.description ?? "",
+    description: definition.description ?? '',
   };
 }
 

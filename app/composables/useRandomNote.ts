@@ -1,4 +1,4 @@
-import { useAsyncData, queryCollection, navigateTo } from "#imports";
+import { useAsyncData, queryCollection, navigateTo } from '#imports';
 
 /** Select a random item from an array. Returns undefined for empty arrays. */
 export function selectRandomItem<T>(items: T[]): T | undefined {
@@ -18,8 +18,8 @@ interface UseRandomNoteReturn {
 
 export function useRandomNote(): UseRandomNoteReturn {
   // Cache stems using useAsyncData - fetched once and shared across all usages
-  const { data: stems } = useAsyncData("random-note-stems", () =>
-    queryCollection("content").select("stem").all(),
+  const { data: stems } = useAsyncData('random-note-stems', () =>
+    queryCollection('content').select('stem').all(),
   );
 
   async function navigateToRandomNote(): Promise<void> {

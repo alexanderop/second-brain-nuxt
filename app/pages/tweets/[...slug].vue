@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue';
+
+import { ContentRenderer } from '#components';
 import {
   useRoute,
   useRouter,
@@ -7,18 +9,17 @@ import {
   useSeoMeta,
   createError,
   queryCollection,
-} from "#imports";
-import { usePageTitle } from "~/composables/usePageTitle";
-import { ContentRenderer } from "#components";
-import TweetHeader from "~/components/TweetHeader.vue";
-import ContentBacklinksSection from "~/components/ContentBacklinksSection.vue";
-import NoteGraph from "~/components/NoteGraph.vue";
-import { useBacklinks } from "~/composables/useBacklinks";
-import { useMentions } from "~/composables/useMentions";
-import type { TweetItem } from "~/types/content";
+} from '#imports';
+import ContentBacklinksSection from '~/components/ContentBacklinksSection.vue';
+import NoteGraph from '~/components/NoteGraph.vue';
+import TweetHeader from '~/components/TweetHeader.vue';
+import { useBacklinks } from '~/composables/useBacklinks';
+import { useMentions } from '~/composables/useMentions';
+import { usePageTitle } from '~/composables/usePageTitle';
+import type { TweetItem } from '~/types/content';
 
 function isTweetItem(t: unknown): t is TweetItem {
-  return typeof t === "object" && t !== null && "tweetId" in t && "tweetText" in t && "author" in t;
+  return typeof t === 'object' && t !== null && 'tweetId' in t && 'tweetText' in t && 'author' in t;
 }
 
 const route = useRoute();
@@ -26,16 +27,16 @@ const router = useRouter();
 
 // Get slug from path (remove /tweets/ prefix)
 const tweetSlug = computed(() => {
-  const path = Array.isArray(route.params.slug) ? route.params.slug.join("/") : route.params.slug;
+  const path = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug;
   return path;
 });
 
 const { data: tweet } = await useAsyncData(`tweet-${tweetSlug.value}`, () => {
-  return queryCollection("tweets").path(`/tweets/${tweetSlug.value}`).first();
+  return queryCollection('tweets').path(`/tweets/${tweetSlug.value}`).first();
 });
 
 if (!tweet.value) {
-  throw createError({ status: 404, statusText: "Tweet not found" });
+  throw createError({ status: 404, statusText: 'Tweet not found' });
 }
 
 const typedTweet = computed(() => {
@@ -44,11 +45,11 @@ const typedTweet = computed(() => {
 });
 
 // Fetch author data
-const authorSlug = computed(() => typedTweet.value?.author ?? "");
+const authorSlug = computed(() => typedTweet.value?.author ?? '');
 
 const { data: authorData } = await useAsyncData(`tweet-author-${authorSlug.value}`, async () => {
   if (!authorSlug.value) return null;
-  return queryCollection("authors").where("slug", "=", authorSlug.value).first();
+  return queryCollection('authors').where('slug', '=', authorSlug.value).first();
 });
 
 const authorInfo = computed(() => {
@@ -64,7 +65,7 @@ const authorInfo = computed(() => {
   let twitterHandle: string | undefined;
   if (authorData.value.socials?.twitter) {
     const twitterUrl = authorData.value.socials.twitter;
-    twitterHandle = twitterUrl.includes("/") ? twitterUrl.split("/").pop() : twitterUrl;
+    twitterHandle = twitterUrl.includes('/') ? twitterUrl.split('/').pop() : twitterUrl;
   }
   return {
     name: authorData.value.name,
@@ -77,7 +78,7 @@ const authorInfo = computed(() => {
 // Backlinks and mentions
 const fullSlug = computed(() => `tweets/${tweetSlug.value}`);
 const { backlinks } = useBacklinks(fullSlug.value);
-const { mentions } = useMentions(fullSlug.value, typedTweet.value?.title ?? "");
+const { mentions } = useMentions(fullSlug.value, typedTweet.value?.title ?? '');
 
 // Fetch note graph data for mini-graph visualization
 const { data: noteGraph } = await useAsyncData(`note-graph-${fullSlug.value}`, () =>
@@ -88,17 +89,20 @@ function navigateToNote(targetSlug: string) {
   router.push(`/${targetSlug}`);
 }
 
-usePageTitle(() => typedTweet.value?.title ?? "Tweet");
+usePageTitle(() => typedTweet.value?.title ?? 'Tweet');
 
 useSeoMeta({
-  description: () => typedTweet.value?.tweetText ?? "",
+  description: () => typedTweet.value?.tweetText ?? '',
 });
 </script>
 
 <template>
   <div v-if="typedTweet">
     <article>
-      <TweetHeader :tweet="typedTweet" :author="authorInfo" />
+      <TweetHeader
+        :tweet="typedTweet"
+        :author="authorInfo"
+      />
 
       <!-- Body content (annotations) -->
       <div
@@ -108,9 +112,16 @@ useSeoMeta({
         <ContentRenderer :value="tweet" />
       </div>
 
-      <ContentBacklinksSection :backlinks="backlinks" :mentions="mentions" />
+      <ContentBacklinksSection
+        :backlinks="backlinks"
+        :mentions="mentions"
+      />
 
-      <NoteGraph :slug="fullSlug" :graph-data="noteGraph" @navigate="navigateToNote" />
+      <NoteGraph
+        :slug="fullSlug"
+        :graph-data="noteGraph"
+        @navigate="navigateToNote"
+      />
     </article>
   </div>
 </template>

@@ -2,12 +2,12 @@
  * Server-side feature toggle utilities.
  */
 
-import { featuresConfig, type FeatureName } from "~~/config/features";
 import {
   createRuleContext,
   isFeatureEnabled,
   isVariantEnabled,
-} from "~~/app/utils/featureTogglesLogic";
+} from '~~/app/utils/featureTogglesLogic';
+import { featuresConfig, type FeatureName } from '~~/config/features';
 
 /**
  * Check if a feature is enabled on the server.

@@ -9,19 +9,19 @@ interface TimeGroupResult<T> {
 type TimeGroupKey = keyof TimeGroupResult<unknown>;
 
 export const TIME_GROUP_LABELS: Record<TimeGroupKey, string> = {
-  today: "Today",
-  yesterday: "Yesterday",
-  thisWeek: "This Week",
-  thisMonth: "This Month",
-  older: "Older",
+  today: 'Today',
+  yesterday: 'Yesterday',
+  thisWeek: 'This Week',
+  thisMonth: 'This Month',
+  older: 'Older',
 };
 
 export const TIME_GROUP_ORDER: TimeGroupKey[] = [
-  "today",
-  "yesterday",
-  "thisWeek",
-  "thisMonth",
-  "older",
+  'today',
+  'yesterday',
+  'thisWeek',
+  'thisMonth',
+  'older',
 ];
 
 function startOfDay(date: Date): Date {
@@ -66,14 +66,14 @@ export function groupByTimePeriod<T extends { date?: string }>(items: T[]): Time
     const itemDate = new Date(item.date);
 
     const group = isSameDay(itemDate, now)
-      ? "today"
+      ? 'today'
       : isSameDay(itemDate, yesterdayStart)
-        ? "yesterday"
+        ? 'yesterday'
         : itemDate >= weekStart
-          ? "thisWeek"
+          ? 'thisWeek'
           : itemDate >= monthStart
-            ? "thisMonth"
-            : "older";
+            ? 'thisMonth'
+            : 'older';
 
     groups[group].push(item);
   }

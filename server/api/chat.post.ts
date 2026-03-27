@@ -1,16 +1,26 @@
+import { Anthropic } from '@anthropic-ai/sdk';
+import { queryCollection } from '@nuxt/content/server';
+import { consola } from 'consola';
 import {
   defineEventHandler,
   readBody,
   createEventStream,
   setResponseHeader,
   createError,
-} from "h3";
-import { queryCollection } from "@nuxt/content/server";
-import { useRuntimeConfig } from "#imports";
-import { consola } from "consola";
-import { Anthropic } from "@anthropic-ai/sdk";
-import { z } from "zod";
-import { tryCatch, tryAsync, tryCatchAsync } from "#shared/utils/tryCatch";
+} from 'h3';
+import { z } from 'zod';
+
+import { useRuntimeConfig } from '#imports';
+import { tryCatch, tryAsync, tryCatchAsync } from '#shared/utils/tryCatch';
+
+import { mapApiError } from '../utils/chat/errors';
+import {
+  buildInitialMessages,
+  appendAssistantMessage,
+  appendToolResults,
+} from '../utils/chat/messages';
+import { formatNoteContent, keywordSearch } from '../utils/chat/search';
+import type { RawNote } from '../utils/chat/search';
 import {
   MODEL,
   MAX_TOKENS,
@@ -20,39 +30,31 @@ import {
   isGetNoteContentInput,
   isGetNoteDetailsInput,
   isFetchSourceInput,
-} from "../utils/chat/tools";
-import type { NoteContext } from "../utils/chat/tools";
-import { formatNoteContent, keywordSearch } from "../utils/chat/search";
-import type { RawNote } from "../utils/chat/search";
-import {
-  buildInitialMessages,
-  appendAssistantMessage,
-  appendToolResults,
-} from "../utils/chat/messages";
-import { mapApiError } from "../utils/chat/errors";
-import { isServerFeatureEnabled } from "../utils/featureToggles";
+} from '../utils/chat/tools';
+import type { NoteContext } from '../utils/chat/tools';
+import { isServerFeatureEnabled } from '../utils/featureToggles';
 
-const log = consola.withTag("chat");
+const log = consola.withTag('chat');
 
 type HttpEvent = Parameters<typeof queryCollection>[0];
 
 // Database queries (imperative shell)
 async function fetchAllNotes(httpEvent: HttpEvent, type?: string): Promise<RawNote[]> {
-  let queryBuilder = queryCollection(httpEvent, "content")
-    .select("title", "summary", "path", "stem", "tags", "type")
+  let queryBuilder = queryCollection(httpEvent, 'content')
+    .select('title', 'summary', 'path', 'stem', 'tags', 'type')
     .limit(100);
 
   if (type) {
-    queryBuilder = queryBuilder.where("type", "=", type);
+    queryBuilder = queryBuilder.where('type', '=', type);
   }
 
   return queryBuilder.all();
 }
 
 async function fetchNoteBySlug(httpEvent: HttpEvent, slug: string): Promise<RawNote | null> {
-  const note = await queryCollection(httpEvent, "content")
-    .select("title", "summary", "path", "stem", "tags", "type", "notes", "url", "rawbody")
-    .where("stem", "=", slug)
+  const note = await queryCollection(httpEvent, 'content')
+    .select('title', 'summary', 'path', 'stem', 'tags', 'type', 'notes', 'url', 'rawbody')
+    .where('stem', '=', slug)
     .first();
 
   if (!note) return null;
@@ -60,7 +62,7 @@ async function fetchNoteBySlug(httpEvent: HttpEvent, slug: string): Promise<RawN
   // Cast rawbody to string since Nuxt Content types it as unknown
   return {
     ...note,
-    rawbody: typeof note.rawbody === "string" ? note.rawbody : undefined,
+    rawbody: typeof note.rawbody === 'string' ? note.rawbody : undefined,
   };
 }
 
@@ -70,7 +72,7 @@ async function executeSearchNotes(
   query: string,
   type?: string,
   limit = 5,
-  requestId = "",
+  requestId = '',
 ): Promise<NoteContext[]> {
   log.info(`[${requestId}] Tool: search_notes`, { query, type, limit });
 
@@ -87,7 +89,7 @@ async function executeSearchNotes(
 async function executeGetNoteContent(
   httpEvent: HttpEvent,
   slug: string,
-  requestId = "",
+  requestId = '',
 ): Promise<{
   title: string;
   summary: string | null;
@@ -136,8 +138,8 @@ async function findBacklinks(
   slug: string,
 ): Promise<Array<{ title: string; path: string }>> {
   // Query all notes and check their content for wiki-links to this slug
-  const allNotes = await queryCollection(httpEvent, "content")
-    .select("title", "path", "stem", "notes")
+  const allNotes = await queryCollection(httpEvent, 'content')
+    .select('title', 'path', 'stem', 'notes')
     .limit(500)
     .all();
 
@@ -148,7 +150,7 @@ async function findBacklinks(
     const links = parseWikiLinks(note.notes);
     if (links.includes(slug)) {
       backlinks.push({
-        title: note.title ?? note.stem ?? "Untitled",
+        title: note.title ?? note.stem ?? 'Untitled',
         path: note.path ?? `/${note.stem}`,
       });
     }
@@ -183,11 +185,11 @@ function buildNoteDetails(
   related: RelatedNote[],
 ): NoteDetails {
   return {
-    title: note.title ?? note.stem ?? "Untitled",
+    title: note.title ?? note.stem ?? 'Untitled',
     summary: note.summary ?? null,
     notes: note.notes ?? null,
     tags: note.tags ?? [],
-    type: note.type ?? "note",
+    type: note.type ?? 'note',
     path: note.path ?? `/${note.stem}`,
     url: note.url ?? null,
     backlinks,
@@ -200,7 +202,7 @@ async function executeGetNoteDetails(
   httpEvent: HttpEvent,
   slug: string,
   includeRelated = true,
-  requestId = "",
+  requestId = '',
 ): Promise<NoteDetails | null> {
   log.info(`[${requestId}] Tool: get_note_details`, { slug, includeRelated });
 
@@ -230,8 +232,8 @@ async function executeGetNoteDetails(
  * Validate that a URL is allowed for server-side fetching.
  * Blocks localhost, private IPs, and non-http(s) protocols to prevent SSRF.
  */
-const BLOCKED_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
-const ALLOWED_PROTOCOLS = new Set(["http:", "https:"]);
+const BLOCKED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+const ALLOWED_PROTOCOLS = new Set(['http:', 'https:']);
 
 const PRIVATE_IP_PATTERNS = [
   /^10\./,
@@ -263,7 +265,7 @@ interface FetchSourceResult {
 async function executeFetchSource(
   httpEvent: HttpEvent,
   slug: string,
-  requestId = "",
+  requestId = '',
 ): Promise<FetchSourceResult> {
   log.info(`[${requestId}] Tool: fetch_source`, { slug });
 
@@ -271,12 +273,12 @@ async function executeFetchSource(
 
   if (!note) {
     log.warn(`[${requestId}] fetch_source: note not found for slug "${slug}"`);
-    return { url: "", content: "", error: "Note not found" };
+    return { url: '', content: '', error: 'Note not found' };
   }
 
   if (!note.url) {
     log.warn(`[${requestId}] fetch_source: note "${slug}" has no source URL`);
-    return { url: "", content: "", error: "Note has no source URL" };
+    return { url: '', content: '', error: 'Note has no source URL' };
   }
 
   const noteUrl = note.url;
@@ -284,15 +286,15 @@ async function executeFetchSource(
   // SSRF protection: block requests to private/internal networks
   if (!isAllowedUrl(noteUrl)) {
     log.warn(`[${requestId}] fetch_source: blocked disallowed URL`, { url: noteUrl });
-    return { url: noteUrl, content: "", error: "URL is not allowed (private or non-http)" };
+    return { url: noteUrl, content: '', error: 'URL is not allowed (private or non-http)' };
   }
 
   // Fetch the URL content
   const [fetchError, response] = await tryCatchAsync(async () => {
     const res = await fetch(noteUrl, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; SecondBrain/1.0)",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        'User-Agent': 'Mozilla/5.0 (compatible; SecondBrain/1.0)',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       },
     });
     if (!res.ok) {
@@ -306,16 +308,16 @@ async function executeFetchSource(
       url: note.url,
       error: fetchError.message,
     });
-    return { url: note.url, content: "", error: `Failed to fetch: ${fetchError.message}` };
+    return { url: note.url, content: '', error: `Failed to fetch: ${fetchError.message}` };
   }
 
   // Convert HTML to simple text (basic extraction)
   // Remove scripts, styles, and HTML tags
   const textContent = response
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 10000); // Limit content length
 
@@ -368,7 +370,7 @@ async function handleGetNoteContent(
 ): Promise<ToolResult> {
   const content = await executeGetNoteContent(httpEvent, slug, requestId);
   if (!content) {
-    return { result: JSON.stringify({ error: "Note not found" }), notes: [] };
+    return { result: JSON.stringify({ error: 'Note not found' }), notes: [] };
   }
   return {
     result: JSON.stringify(content),
@@ -384,7 +386,7 @@ async function handleGetNoteDetails(
 ): Promise<ToolResult> {
   const details = await executeGetNoteDetails(httpEvent, slug, includeRelated, requestId);
   if (!details) {
-    return { result: JSON.stringify({ error: "Note not found" }), notes: [] };
+    return { result: JSON.stringify({ error: 'Note not found' }), notes: [] };
   }
   return {
     result: JSON.stringify(details),
@@ -408,13 +410,13 @@ async function executeTool(
   toolInput: unknown,
   requestId: string,
 ): Promise<ToolResult> {
-  if (toolName === "search_notes" && isSearchNotesInput(toolInput)) {
+  if (toolName === 'search_notes' && isSearchNotesInput(toolInput)) {
     return handleSearchNotes(httpEvent, toolInput, requestId);
   }
-  if (toolName === "get_note_content" && isGetNoteContentInput(toolInput)) {
+  if (toolName === 'get_note_content' && isGetNoteContentInput(toolInput)) {
     return handleGetNoteContent(httpEvent, toolInput.slug, requestId);
   }
-  if (toolName === "get_note_details" && isGetNoteDetailsInput(toolInput)) {
+  if (toolName === 'get_note_details' && isGetNoteDetailsInput(toolInput)) {
     return handleGetNoteDetails(
       httpEvent,
       toolInput.slug,
@@ -422,7 +424,7 @@ async function executeTool(
       requestId,
     );
   }
-  if (toolName === "fetch_source" && isFetchSourceInput(toolInput)) {
+  if (toolName === 'fetch_source' && isFetchSourceInput(toolInput)) {
     return handleFetchSource(httpEvent, toolInput.slug, requestId);
   }
   return { result: JSON.stringify({ error: `Unknown tool: ${toolName}` }), notes: [] };
@@ -459,8 +461,8 @@ async function streamChatResponse(
         messages,
       });
 
-      stream.on("text", async (text) => {
-        await eventStream.push(JSON.stringify({ type: "text", content: text }));
+      stream.on('text', async (text) => {
+        await eventStream.push(JSON.stringify({ type: 'text', content: text }));
       });
 
       const response = await stream.finalMessage();
@@ -470,9 +472,9 @@ async function streamChatResponse(
         contentBlocks: response.content.length,
       });
 
-      if (response.stop_reason === "tool_use") {
+      if (response.stop_reason === 'tool_use') {
         const toolUseBlocks = response.content.filter(
-          (block): block is Anthropic.ToolUseBlock => block.type === "tool_use",
+          (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use',
         );
 
         messages = appendAssistantMessage(messages, response.content);
@@ -482,7 +484,7 @@ async function streamChatResponse(
         for (const toolUse of toolUseBlocks) {
           await eventStream.push(
             JSON.stringify({
-              type: "tool_call",
+              type: 'tool_call',
               id: toolUse.id,
               tool: toolUse.name,
               input: toolUse.input,
@@ -508,7 +510,7 @@ async function streamChatResponse(
 
           await eventStream.push(
             JSON.stringify({
-              type: "tool_result",
+              type: 'tool_result',
               id: toolUse.id,
               tool: toolUse.name,
               result: parseError ? result : parsed,
@@ -516,7 +518,7 @@ async function streamChatResponse(
           );
 
           toolResults.push({
-            type: "tool_result",
+            type: 'tool_result',
             tool_use_id: toolUse.id,
             content: result,
           });
@@ -538,7 +540,7 @@ async function streamChatResponse(
 
     await eventStream.push(
       JSON.stringify({
-        type: "done",
+        type: 'done',
         sources: allUsedNotes.map((n) => ({ title: n.title, path: n.path })),
       }),
     );
@@ -557,7 +559,7 @@ async function streamChatResponse(
 
     await eventStream.push(
       JSON.stringify({
-        type: "error",
+        type: 'error',
         message: streamingError.message,
         retryAfter: streamingError.retryAfter,
         requestId: streamingError.requestId,
@@ -570,15 +572,15 @@ async function streamChatResponse(
 
 // Zod schema for chat request validation
 const chatRequestSchema = z.object({
-  message: z.string().min(1, "Message is required").max(10000, "Message too long"),
+  message: z.string().min(1, 'Message is required').max(10000, 'Message too long'),
   history: z
     .array(
       z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().max(50000, "History entry content too long"),
+        role: z.enum(['user', 'assistant']),
+        content: z.string().max(50000, 'History entry content too long'),
       }),
     )
-    .max(50, "Too many history entries")
+    .max(50, 'Too many history entries')
     .default([]),
 });
 
@@ -588,10 +590,10 @@ export default defineEventHandler(async (event) => {
   const requestId = crypto.randomUUID().slice(0, 8);
 
   // Feature toggle: chat availability controlled by features.config.ts
-  if (!isServerFeatureEnabled("chat")) {
+  if (!isServerFeatureEnabled('chat')) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Not Found",
+      statusMessage: 'Not Found',
     });
   }
 
@@ -599,10 +601,10 @@ export default defineEventHandler(async (event) => {
     log.error(`[${requestId}] API key not configured`);
     throw createError({
       statusCode: 500,
-      statusMessage: "API key not configured",
+      statusMessage: 'API key not configured',
       data: {
         message:
-          "ANTHROPIC_API_KEY is not configured. Please add it to your environment variables.",
+          'ANTHROPIC_API_KEY is not configured. Please add it to your environment variables.',
       },
     });
   }
@@ -612,8 +614,8 @@ export default defineEventHandler(async (event) => {
     log.warn(`[${requestId}] Failed to parse request body`, bodyError);
     throw createError({
       statusCode: 400,
-      statusMessage: "Invalid request body",
-      data: { message: "Failed to parse request body." },
+      statusMessage: 'Invalid request body',
+      data: { message: 'Failed to parse request body.' },
     });
   }
 
@@ -622,8 +624,8 @@ export default defineEventHandler(async (event) => {
     log.warn(`[${requestId}] Request validation failed`, parseResult.error.issues);
     throw createError({
       statusCode: 400,
-      statusMessage: "Validation failed",
-      data: { message: parseResult.error.issues.map((i) => i.message).join(", ") },
+      statusMessage: 'Validation failed',
+      data: { message: parseResult.error.issues.map((i) => i.message).join(', ') },
     });
   }
 
@@ -637,9 +639,9 @@ export default defineEventHandler(async (event) => {
 
   const messages = buildInitialMessages(history, message);
 
-  setResponseHeader(event, "Content-Type", "text/event-stream");
-  setResponseHeader(event, "Cache-Control", "no-cache");
-  setResponseHeader(event, "Connection", "keep-alive");
+  setResponseHeader(event, 'Content-Type', 'text/event-stream');
+  setResponseHeader(event, 'Cache-Control', 'no-cache');
+  setResponseHeader(event, 'Connection', 'keep-alive');
 
   const eventStream = createEventStream(event);
   const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });

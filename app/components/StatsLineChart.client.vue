@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
-import { useResizeObserver, useDebounceFn } from "@vueuse/core";
-import { select } from "d3-selection";
-import { scalePoint, scaleLinear } from "d3-scale";
-import { max } from "d3-array";
-import { area, line, curveMonotoneX } from "d3-shape";
+import { useResizeObserver, useDebounceFn } from '@vueuse/core';
+import { max } from 'd3-array';
+import { scalePoint, scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
+import { area, line, curveMonotoneX } from 'd3-shape';
+import { ref, computed, watch, onMounted } from 'vue';
 
 interface DataPoint {
   label: string;
@@ -26,20 +26,20 @@ function drawChart() {
   const height = chartHeight.value;
 
   // Clear existing
-  select(container.value).select("svg").remove();
+  select(container.value).select('svg').remove();
 
   const margin = { top: 20, right: 20, bottom: 30, left: 40 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
   const svg = select(container.value)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("role", "img")
-    .attr("aria-label", `Line chart with ${props.data.length} data points`);
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('role', 'img')
+    .attr('aria-label', `Line chart with ${props.data.length} data points`);
 
-  const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
   // Scales
   const x = scalePoint()
@@ -53,25 +53,25 @@ function drawChart() {
 
   // Area gradient
   const gradient = svg
-    .append("defs")
-    .append("linearGradient")
-    .attr("id", "area-gradient")
-    .attr("x1", "0%")
-    .attr("y1", "0%")
-    .attr("x2", "0%")
-    .attr("y2", "100%");
+    .append('defs')
+    .append('linearGradient')
+    .attr('id', 'area-gradient')
+    .attr('x1', '0%')
+    .attr('y1', '0%')
+    .attr('x2', '0%')
+    .attr('y2', '100%');
 
   gradient
-    .append("stop")
-    .attr("offset", "0%")
-    .attr("stop-color", "#6ee7b7")
-    .attr("stop-opacity", 0.3);
+    .append('stop')
+    .attr('offset', '0%')
+    .attr('stop-color', '#6ee7b7')
+    .attr('stop-opacity', 0.3);
 
   gradient
-    .append("stop")
-    .attr("offset", "100%")
-    .attr("stop-color", "#6ee7b7")
-    .attr("stop-opacity", 0);
+    .append('stop')
+    .attr('offset', '100%')
+    .attr('stop-color', '#6ee7b7')
+    .attr('stop-opacity', 0);
 
   // Area
   const areaGenerator = area<DataPoint>()
@@ -80,7 +80,7 @@ function drawChart() {
     .y1((d) => y(d.value))
     .curve(curveMonotoneX);
 
-  g.append("path").datum(props.data).attr("fill", "url(#area-gradient)").attr("d", areaGenerator);
+  g.append('path').datum(props.data).attr('fill', 'url(#area-gradient)').attr('d', areaGenerator);
 
   // Line
   const lineGenerator = line<DataPoint>()
@@ -88,83 +88,83 @@ function drawChart() {
     .y((d) => y(d.value))
     .curve(curveMonotoneX);
 
-  g.append("path")
+  g.append('path')
     .datum(props.data)
-    .attr("fill", "none")
-    .attr("stroke", "#6ee7b7")
-    .attr("stroke-width", 2)
-    .attr("d", lineGenerator);
+    .attr('fill', 'none')
+    .attr('stroke', '#6ee7b7')
+    .attr('stroke-width', 2)
+    .attr('d', lineGenerator);
 
   // Data points
-  g.selectAll("circle")
+  g.selectAll('circle')
     .data(props.data)
-    .join("circle")
-    .attr("cx", (d) => x(d.label) ?? 0)
-    .attr("cy", (d) => y(d.value))
-    .attr("r", 4)
-    .attr("fill", "#6ee7b7");
+    .join('circle')
+    .attr('cx', (d) => x(d.label) ?? 0)
+    .attr('cy', (d) => y(d.value))
+    .attr('r', 4)
+    .attr('fill', '#6ee7b7');
 
   // X-axis labels (show every other label if too many)
   const showEvery = Math.ceil(props.data.length / 8);
-  g.selectAll(".x-label")
+  g.selectAll('.x-label')
     .data(props.data)
-    .join("text")
-    .attr("class", "x-label")
-    .attr("x", (d) => x(d.label) ?? 0)
-    .attr("y", innerHeight + 20)
-    .attr("text-anchor", "middle")
-    .attr("fill", "var(--ui-text-muted)")
-    .attr("font-size", "10px")
-    .text((d, i) => (i % showEvery === 0 ? formatLabel(d.label) : ""));
+    .join('text')
+    .attr('class', 'x-label')
+    .attr('x', (d) => x(d.label) ?? 0)
+    .attr('y', innerHeight + 20)
+    .attr('text-anchor', 'middle')
+    .attr('fill', 'var(--ui-text-muted)')
+    .attr('font-size', '10px')
+    .text((d, i) => (i % showEvery === 0 ? formatLabel(d.label) : ''));
 
   // Y-axis (just a few ticks)
   const yTicks = y.ticks(4);
-  g.selectAll(".y-label")
+  g.selectAll('.y-label')
     .data(yTicks)
-    .join("text")
-    .attr("class", "y-label")
-    .attr("x", -8)
-    .attr("y", (d) => y(d))
-    .attr("text-anchor", "end")
-    .attr("dominant-baseline", "middle")
-    .attr("fill", "var(--ui-text-muted)")
-    .attr("font-size", "10px")
+    .join('text')
+    .attr('class', 'y-label')
+    .attr('x', -8)
+    .attr('y', (d) => y(d))
+    .attr('text-anchor', 'end')
+    .attr('dominant-baseline', 'middle')
+    .attr('fill', 'var(--ui-text-muted)')
+    .attr('font-size', '10px')
     .text((d) => d);
 
   // Horizontal grid lines
-  g.selectAll(".grid-line")
+  g.selectAll('.grid-line')
     .data(yTicks)
-    .join("line")
-    .attr("class", "grid-line")
-    .attr("x1", 0)
-    .attr("x2", innerWidth)
-    .attr("y1", (d) => y(d))
-    .attr("y2", (d) => y(d))
-    .attr("stroke", "var(--ui-border)")
-    .attr("stroke-opacity", 0.5);
+    .join('line')
+    .attr('class', 'grid-line')
+    .attr('x1', 0)
+    .attr('x2', innerWidth)
+    .attr('y1', (d) => y(d))
+    .attr('y2', (d) => y(d))
+    .attr('stroke', 'var(--ui-border)')
+    .attr('stroke-opacity', 0.5);
 }
 
 function formatLabel(label: string): string {
   const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
-  const parts = label.split("-");
+  const parts = label.split('-');
 
   if (parts.length === 3) {
     // Daily format: "2024-01-15" -> "Jan 15"
-    const month = parts[1] ?? "";
-    const day = parts[2] ?? "";
+    const month = parts[1] ?? '';
+    const day = parts[2] ?? '';
     const monthIndex = Number.parseInt(month, 10) - 1;
     const monthName = monthNames[monthIndex] ?? month;
     return `${monthName} ${Number.parseInt(day, 10)}`;
@@ -172,8 +172,8 @@ function formatLabel(label: string): string {
 
   if (parts.length === 2) {
     // Monthly format: "2024-01" -> "Jan 24"
-    const year = parts[0] ?? "";
-    const month = parts[1] ?? "";
+    const year = parts[0] ?? '';
+    const month = parts[1] ?? '';
     const monthIndex = Number.parseInt(month, 10) - 1;
     const monthName = monthNames[monthIndex] ?? month;
     return `${monthName} ${year.slice(2)}`;
@@ -191,5 +191,9 @@ useResizeObserver(container, useDebounceFn(drawChart, 200));
 </script>
 
 <template>
-  <div ref="container" class="w-full" :style="{ height: `${chartHeight}px` }" />
+  <div
+    ref="container"
+    class="w-full"
+    :style="{ height: `${chartHeight}px` }"
+  />
 </template>

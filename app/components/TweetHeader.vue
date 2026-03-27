@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "@nuxt/ui";
-import { useClipboard } from "@vueuse/core";
-import { useRequestURL } from "#imports";
-import { NuxtLink, UButton, UDropdownMenu, UIcon } from "#components";
-import BaseTagPill from "~/components/BaseTagPill.vue";
-import type { TweetItem } from "~/types/content";
-import { formatDate } from "~/utils/formatDate";
-import { handleImageError } from "~/utils/imageErrorHandler";
+import type { DropdownMenuItem } from '@nuxt/ui';
+import { useClipboard } from '@vueuse/core';
+
+import { NuxtLink, UButton, UDropdownMenu, UIcon } from '#components';
+import { useRequestURL } from '#imports';
+import BaseTagPill from '~/components/BaseTagPill.vue';
+import type { TweetItem } from '~/types/content';
+import { formatDate } from '~/utils/formatDate';
+import { handleImageError } from '~/utils/imageErrorHandler';
 
 const props = defineProps<{
   tweet: TweetItem;
@@ -23,13 +24,13 @@ const requestUrl = useRequestURL();
 
 const copyItems: DropdownMenuItem[] = [
   {
-    label: "Copy Wiki",
-    icon: "i-lucide-link",
+    label: 'Copy Wiki',
+    icon: 'i-lucide-link',
     onSelect: () => copy(`[[${props.tweet.slug}]]`),
   },
   {
-    label: "Copy URL",
-    icon: "i-lucide-globe",
+    label: 'Copy URL',
+    icon: 'i-lucide-globe',
     onSelect: () => copy(`${requestUrl.origin}/tweets/${props.tweet.slug}`),
   },
 ];
@@ -44,9 +45,16 @@ const copyItems: DropdownMenuItem[] = [
         class="text-[var(--ui-text-muted)] hover:text-[var(--ui-text)]"
         aria-label="Back to author page"
       >
-        <UIcon name="i-lucide-arrow-left" class="size-5" aria-hidden="true" />
+        <UIcon
+          name="i-lucide-arrow-left"
+          class="size-5"
+          aria-hidden="true"
+        />
       </NuxtLink>
-      <UIcon name="i-simple-icons-x" class="size-5" />
+      <UIcon
+        name="i-simple-icons-x"
+        class="size-5"
+      />
       <span class="text-[var(--ui-text-muted)]">Tweet</span>
     </div>
 
@@ -70,13 +78,19 @@ const copyItems: DropdownMenuItem[] = [
             v-if="!author.avatar"
             class="size-full flex items-center justify-center text-[var(--ui-text-muted)]"
           >
-            <UIcon name="i-lucide-user" class="size-7" />
+            <UIcon
+              name="i-lucide-user"
+              class="size-7"
+            />
           </div>
           <div
             v-else
             class="size-full items-center justify-center text-[var(--ui-text-muted)] hidden"
           >
-            <UIcon name="i-lucide-user" class="size-7" />
+            <UIcon
+              name="i-lucide-user"
+              class="size-7"
+            />
           </div>
         </NuxtLink>
         <div class="min-w-0 flex-1">
@@ -86,7 +100,10 @@ const copyItems: DropdownMenuItem[] = [
           >
             {{ author.name }}
           </NuxtLink>
-          <p v-if="author.twitterHandle" class="text-[var(--ui-text-muted)]">
+          <p
+            v-if="author.twitterHandle"
+            class="text-[var(--ui-text-muted)]"
+          >
             @{{ author.twitterHandle }}
           </p>
         </div>
@@ -105,8 +122,15 @@ const copyItems: DropdownMenuItem[] = [
 
     <!-- Tags and actions -->
     <div class="flex flex-wrap items-center gap-2 mt-4">
-      <BaseTagPill v-for="tag in tweet.tags ?? []" :key="tag" :tag="tag" />
-      <UDropdownMenu :items="copyItems" class="ml-2">
+      <BaseTagPill
+        v-for="tag in tweet.tags ?? []"
+        :key="tag"
+        :tag="tag"
+      />
+      <UDropdownMenu
+        :items="copyItems"
+        class="ml-2"
+      >
         <UButton
           variant="ghost"
           color="neutral"

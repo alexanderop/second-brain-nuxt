@@ -1,8 +1,9 @@
-import { expect, test } from "@playwright/test";
-import { MoviesPage } from "./pages/MoviesPage";
+import { expect, test } from '@playwright/test';
 
-test.describe("Movies", () => {
-  test("movies page loads with total count", async ({ page }) => {
+import { MoviesPage } from './pages/MoviesPage';
+
+test.describe('Movies', () => {
+  test('movies page loads with total count', async ({ page }) => {
     const moviesPage = new MoviesPage(page);
     await moviesPage.goto();
 
@@ -13,7 +14,7 @@ test.describe("Movies", () => {
     expect(countText).toMatch(/\(\d+\)/);
   });
 
-  test("currently watching section displays movies with that status", async ({ page }) => {
+  test('currently watching section displays movies with that status', async ({ page }) => {
     const moviesPage = new MoviesPage(page);
     await moviesPage.goto();
 
@@ -24,7 +25,7 @@ test.describe("Movies", () => {
     }
   });
 
-  test("want to watch section displays movies with that status", async ({ page }) => {
+  test('want to watch section displays movies with that status', async ({ page }) => {
     const moviesPage = new MoviesPage(page);
     await moviesPage.goto();
 
@@ -35,7 +36,7 @@ test.describe("Movies", () => {
     }
   });
 
-  test("movies by year sections exist when there are watched movies", async ({ page }) => {
+  test('movies by year sections exist when there are watched movies', async ({ page }) => {
     const moviesPage = new MoviesPage(page);
     await moviesPage.goto();
 
@@ -53,7 +54,7 @@ test.describe("Movies", () => {
     }
   });
 
-  test("can navigate from movie card to movie detail page", async ({ page }) => {
+  test('can navigate from movie card to movie detail page', async ({ page }) => {
     const moviesPage = new MoviesPage(page);
     await moviesPage.goto();
 
@@ -65,13 +66,13 @@ test.describe("Movies", () => {
     }
 
     const firstMovie = moviesPage.contentItems.first();
-    const link = firstMovie.getByRole("link").first();
-    const href = await link.getAttribute("href");
+    const link = firstMovie.getByRole('link').first();
+    const href = await link.getAttribute('href');
 
-    await Promise.all([page.waitForURL(href || "**"), link.click()]);
+    await Promise.all([page.waitForURL(href || '**'), link.click()]);
 
     // Should have navigated to a movie detail page
-    expect(page.url()).not.toContain("/movies");
-    expect(page.url()).not.toBe("/movies");
+    expect(page.url()).not.toContain('/movies');
+    expect(page.url()).not.toBe('/movies');
   });
 });

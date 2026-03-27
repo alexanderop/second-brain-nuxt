@@ -1,45 +1,46 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAsyncData, queryCollection } from "#imports";
-import ContentCard from "~/components/ContentCard.vue";
-import TweetCard from "~/components/TweetCard.vue";
-import { useListNavigation } from "~/composables/useListNavigation";
-import { getOrderedGroups } from "~/utils/timeGroups";
-import type { ContentType } from "~/constants/contentTypes";
+import { computed } from 'vue';
+
+import { useAsyncData, queryCollection } from '#imports';
+import ContentCard from '~/components/ContentCard.vue';
+import TweetCard from '~/components/TweetCard.vue';
+import { useListNavigation } from '~/composables/useListNavigation';
+import type { ContentType } from '~/constants/contentTypes';
+import { getOrderedGroups } from '~/utils/timeGroups';
 
 // Fetch content
-const { data: contentItems } = await useAsyncData("recent-content", () => {
-  return queryCollection("content")
+const { data: contentItems } = await useAsyncData('recent-content', () => {
+  return queryCollection('content')
     .select(
-      "stem",
-      "path",
-      "title",
-      "type",
-      "tags",
-      "authors",
-      "date",
-      "summary",
-      "rating",
-      "podcast",
-      "guests",
+      'stem',
+      'path',
+      'title',
+      'type',
+      'tags',
+      'authors',
+      'date',
+      'summary',
+      'rating',
+      'podcast',
+      'guests',
     )
-    .order("date", "DESC")
+    .order('date', 'DESC')
     .all();
 });
 
 // Fetch tweets
-const { data: tweetItems } = await useAsyncData("recent-tweets", () => {
-  return queryCollection("tweets").order("tweetedAt", "DESC").all();
+const { data: tweetItems } = await useAsyncData('recent-tweets', () => {
+  return queryCollection('tweets').order('tweetedAt', 'DESC').all();
 });
 
 // Fetch authors for tweet display
-const { data: authors } = await useAsyncData("homepage-authors", () =>
-  queryCollection("authors").select("slug", "name", "avatar", "socials").all(),
+const { data: authors } = await useAsyncData('homepage-authors', () =>
+  queryCollection('authors').select('slug', 'name', 'avatar', 'socials').all(),
 );
 
 // Fetch podcasts for content display
-const { data: podcasts } = await useAsyncData("homepage-podcasts", () =>
-  queryCollection("podcasts").select("slug", "name").all(),
+const { data: podcasts } = await useAsyncData('homepage-podcasts', () =>
+  queryCollection('podcasts').select('slug', 'name').all(),
 );
 
 interface AuthorInfo {
@@ -53,7 +54,7 @@ interface AuthorInfo {
 const authorMap = computed(() => {
   const map: Record<string, AuthorInfo> = {};
   for (const author of authors.value ?? []) {
-    if (author && typeof author === "object" && "slug" in author && "name" in author) {
+    if (author && typeof author === 'object' && 'slug' in author && 'name' in author) {
       map[author.slug] = {
         name: author.name,
         slug: author.slug,
@@ -69,7 +70,7 @@ const authorMap = computed(() => {
 const podcastMap = computed(() => {
   const map: Record<string, string> = {};
   for (const p of podcasts.value ?? []) {
-    if (p && typeof p === "object" && "slug" in p && "name" in p) {
+    if (p && typeof p === 'object' && 'slug' in p && 'name' in p) {
       map[p.slug] = p.name;
     }
   }
@@ -78,7 +79,7 @@ const podcastMap = computed(() => {
 
 // Types for merged items that include navigation info
 interface MergedContentItem {
-  itemType: "content";
+  itemType: 'content';
   stem: string;
   path: string;
   date?: string;
@@ -93,12 +94,12 @@ interface MergedContentItem {
 }
 
 interface MergedTweetItem {
-  itemType: "tweet";
+  itemType: 'tweet';
   stem: string;
   path: string;
   date: string;
   slug: string;
-  type: "tweet";
+  type: 'tweet';
   title: string;
   tweetId: string;
   tweetUrl: string;
@@ -113,7 +114,7 @@ type MergedItem = MergedContentItem | MergedTweetItem;
 // Merge and normalize items
 const allItems = computed<MergedItem[]>(() => {
   const content: MergedContentItem[] = (contentItems.value ?? []).map((item) => ({
-    itemType: "content" as const,
+    itemType: 'content' as const,
     stem: item.stem,
     path: item.path,
     date: item.date,
@@ -128,12 +129,12 @@ const allItems = computed<MergedItem[]>(() => {
   }));
 
   const tweets: MergedTweetItem[] = (tweetItems.value ?? []).map((tweet) => ({
-    itemType: "tweet" as const,
+    itemType: 'tweet' as const,
     stem: tweet.stem,
     path: tweet.path,
     slug: tweet.stem,
     date: new Date(tweet.tweetedAt).toISOString(),
-    type: "tweet" as const,
+    type: 'tweet' as const,
     title: tweet.title,
     tweetId: tweet.tweetId,
     tweetUrl: tweet.tweetUrl,
@@ -168,13 +169,19 @@ function getGlobalIndex(groupIndex: number, itemIndex: number): number {
   <div>
     <h1 class="text-2xl font-semibold mb-6">Recent Additions</h1>
 
-    <template v-for="(group, groupIndex) in orderedGroups" :key="group.key">
+    <template
+      v-for="(group, groupIndex) in orderedGroups"
+      :key="group.key"
+    >
       <section class="mb-8">
         <h2 class="text-lg font-medium text-[var(--ui-text-muted)] mb-4">
           {{ group.label }}
         </h2>
         <div>
-          <template v-for="(item, itemIndex) in group.items" :key="item.stem">
+          <template
+            v-for="(item, itemIndex) in group.items"
+            :key="item.stem"
+          >
             <TweetCard
               v-if="item.itemType === 'tweet'"
               :tweet="{
@@ -213,7 +220,10 @@ function getGlobalIndex(groupIndex: number, itemIndex: number): number {
       </section>
     </template>
 
-    <div v-if="allItems.length === 0" class="py-8 text-center text-[var(--ui-text-muted)]">
+    <div
+      v-if="allItems.length === 0"
+      class="py-8 text-center text-[var(--ui-text-muted)]"
+    >
       No content found.
     </div>
   </div>

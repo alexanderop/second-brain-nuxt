@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from '@playwright/test';
 
 export class SearchModal {
   readonly page: Page;
@@ -14,17 +14,17 @@ export class SearchModal {
     // UCommandPalette uses an input with placeholder - use placeholder selector for reliability
     this.searchInput = page.getByPlaceholder(/search/i);
     // UCommandPalette renders results as options in a listbox
-    this.results = page.getByRole("option");
-    this.firstResult = page.getByRole("option").first();
-    this.noResultsMessage = page.getByText("No results found");
+    this.results = page.getByRole('option');
+    this.firstResult = page.getByRole('option').first();
+    this.noResultsMessage = page.getByText('No results found');
   }
 
   async open() {
-    await this.page.keyboard.press("Meta+k");
+    await this.page.keyboard.press('Meta+k');
   }
 
   async openWithClick() {
-    await this.page.getByRole("button", { name: /search/i }).click();
+    await this.page.getByRole('button', { name: /search/i }).click();
   }
 
   async search(query: string) {
@@ -38,6 +38,6 @@ export class SearchModal {
   }
 
   async close() {
-    await this.page.keyboard.press("Escape");
+    await this.page.keyboard.press('Escape');
   }
 }

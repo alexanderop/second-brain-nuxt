@@ -13,7 +13,7 @@ export const wikiLinkRegex = /\[\[([^\]#|]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g
  * - Replaces spaces with hyphens
  */
 export function normalizeSlug(slug: string): string {
-  return slug.trim().toLowerCase().replace(/\s+/g, "-");
+  return slug.trim().toLowerCase().replace(/\s+/g, '-');
 }
 
 /**
@@ -21,7 +21,7 @@ export function normalizeSlug(slug: string): string {
  * Uses the same logic as Nuxt Content's heading ID generation
  */
 export function normalizeHeading(heading: string): string {
-  return heading.trim().toLowerCase().replace(/\s+/g, "-");
+  return heading.trim().toLowerCase().replace(/\s+/g, '-');
 }
 
 /**
@@ -33,7 +33,7 @@ export function normalizeHeading(heading: string): string {
  */
 export function transformWikiLink(slug: string, heading?: string, displayText?: string): string {
   const normalizedSlug = normalizeSlug(slug);
-  const fragment = heading ? `#${normalizeHeading(heading)}` : "";
+  const fragment = heading ? `#${normalizeHeading(heading)}` : '';
   const text = displayText?.trim() || (heading ? `${slug.trim()}#${heading.trim()}` : slug.trim());
   return `[${text}](/${normalizedSlug}${fragment}){.wiki-link}`;
 }

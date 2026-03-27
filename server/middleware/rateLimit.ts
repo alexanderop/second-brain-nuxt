@@ -4,7 +4,7 @@ import {
   getRequestHeader,
   getRequestURL,
   setResponseHeader,
-} from "h3";
+} from 'h3';
 
 interface RateLimitEntry {
   count: number;
@@ -36,7 +36,7 @@ function ensureCleanupTimer() {
     }
   }, CLEANUP_INTERVAL_MS);
   // Allow the process to exit even if the timer is running
-  if (cleanupTimer && typeof cleanupTimer === "object" && "unref" in cleanupTimer) {
+  if (cleanupTimer && typeof cleanupTimer === 'object' && 'unref' in cleanupTimer) {
     cleanupTimer.unref();
   }
 }
@@ -45,12 +45,12 @@ export default defineEventHandler((event) => {
   const url = getRequestURL(event);
 
   // Only rate limit the chat endpoint
-  if (!url.pathname.startsWith("/api/chat")) {
+  if (!url.pathname.startsWith('/api/chat')) {
     return;
   }
 
-  const forwarded = getRequestHeader(event, "x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+  const forwarded = getRequestHeader(event, 'x-forwarded-for');
+  const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
 
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
@@ -67,10 +67,10 @@ export default defineEventHandler((event) => {
 
   if (entry.count > MAX_REQUESTS) {
     const retryAfterSeconds = Math.ceil((entry.resetAt - now) / 1000);
-    setResponseHeader(event, "Retry-After", retryAfterSeconds);
+    setResponseHeader(event, 'Retry-After', retryAfterSeconds);
     throw createError({
       statusCode: 429,
-      statusMessage: "Too Many Requests",
+      statusMessage: 'Too Many Requests',
       data: { message: `Rate limit exceeded. Try again in ${retryAfterSeconds} seconds.` },
     });
   }
