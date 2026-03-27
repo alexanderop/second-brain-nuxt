@@ -7,7 +7,7 @@ import {
   createRuleContext,
   isFeatureEnabled,
   isVariantEnabled,
-} from "~~/app/utils/featureTogglesLogic";
+} from "#shared/utils/featureTogglesLogic";
 
 /**
  * Check if a feature is enabled on the server.

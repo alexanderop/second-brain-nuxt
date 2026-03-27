@@ -5,7 +5,7 @@ import {
   isFeatureEnabled,
   isVariantEnabled,
   getEnabledVariants,
-} from "~/utils/featureTogglesLogic";
+} from "#shared/utils/featureTogglesLogic";
 
 /**
  * Composable for checking feature flags.
