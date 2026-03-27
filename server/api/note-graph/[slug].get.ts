@@ -4,34 +4,10 @@ import { queryCollection } from "@nuxt/content/server";
 import { extractLinksFromBody } from "../../utils/minimark";
 import { tryCatchAsync } from "#shared/utils/tryCatch";
 import { handleApiError } from "../../utils/handleApiError";
+import type { NoteGraphNode, NoteGraphEdge, NoteGraphData } from "#shared/types/noteGraph";
+import type { ServerContentItem } from "#shared/types/serverContent";
 
-interface NoteGraphNode {
-  id: string;
-  title: string;
-  type: string;
-  isCenter?: boolean;
-  level?: 0 | 1 | 2; // 0=center, 1=direct connection, 2=second-degree
-}
-
-interface NoteGraphEdge {
-  source: string;
-  target: string;
-  level?: 1 | 2; // 1=center↔L1, 2=L1↔L2
-}
-
-interface NoteGraphData {
-  center: NoteGraphNode;
-  connected: NoteGraphNode[];
-  edges: NoteGraphEdge[];
-}
-
-interface ContentItem {
-  path?: string;
-  stem?: string;
-  title?: string;
-  type?: string;
-  body?: unknown;
-}
+type ContentItem = ServerContentItem;
 
 // Helper: Extract slug from content item
 function getSlug(item: ContentItem): string {

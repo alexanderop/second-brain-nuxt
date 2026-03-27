@@ -1,6 +1,7 @@
 import { defineCachedEventHandler } from "nitropack/runtime";
 import { queryCollection } from "@nuxt/content/server";
-import { buildGraphFromContent, type GraphData } from "../utils/graph";
+import { buildGraphFromContent } from "../utils/graph";
+import type { GraphData } from "#shared/types/graph";
 import { tryAsync } from "#shared/utils/tryCatch";
 import { handleApiError } from "../utils/handleApiError";
 
